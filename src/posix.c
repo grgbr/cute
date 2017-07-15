@@ -19,15 +19,14 @@
 #define POSIX_PIPE_FDS_NR     (2U)
 
 static size_t            posix_page_size;
-static char             *posix_result_buffer;
+static char             *posix_buffer;
 static int               posix_result_pipe[POSIX_PIPE_FDS_NR];
 static int               posix_console_pipe[POSIX_PIPE_FDS_NR];
 static unsigned int      posix_default_timeout = POSIX_DEFAULT_TIMEOUT;
+static struct sigaction  posix_sigact;
 static sig_atomic_t      posix_watchdog_expired;
-static struct sigaction  posix_watchdog_sigact;
 static struct sigaction  posix_default_watchdog_sigact;
 static sig_atomic_t      posix_child_exited;
-static struct sigaction  posix_child_sigact;
 static struct sigaction  posix_default_child_sigact;
 
 static void
@@ -67,95 +66,6 @@ posix_kill_child(pid_t pid)
 		 */
 		kill(pid, SIGKILL);
 }
-
-static void
-posix_setup_signals(void)
-{
-	posix_watchdog_sigact.sa_handler = posix_handle_signal;
-	sigemptyset(&posix_watchdog_sigact.sa_mask);
-	posix_watchdog_sigact.sa_flags = 0;
-	posix_watchdog_sigact.sa_restorer = NULL;
-
-	sigaction(SIGALRM, &posix_watchdog_sigact,
-	          &posix_default_watchdog_sigact);
-
-	posix_child_sigact.sa_handler = posix_handle_signal;
-	sigemptyset(&posix_child_sigact.sa_mask);
-	posix_child_sigact.sa_flags = 0;
-	posix_child_sigact.sa_restorer = NULL;
-
-	sigaction(SIGCHLD, &posix_child_sigact,
-	          &posix_default_child_sigact);
-}
-
-static void
-posix_restore_signals(void)
-{
-	sigaction(SIGALRM, &posix_default_watchdog_sigact, NULL);
-
-	sigaction(SIGCHLD, &posix_default_child_sigact, NULL);
-}
-
-#if 0
-static ssize_t
-posix_clear_result_pipe(void)
-{
-	char    data;
-	int     err;
-	ssize_t bytes = 0;
-
-	while (true) {
-		err = read(posix_result_pipe[POSIX_PIPE_READ_FD], &data, 1U);
-		if (err <= 0)
-			break;
-
-		bytes++;
-	}
-
-	return (err < 0) ? err : bytes;
-}
-
-static ssize_t
-posix_read_result_pipe(void)
-{
-	ssize_t  ret = 0;
-	ssize_t  left = (ssize_t)posix_page_size;
-	char    *data = posix_result_buffer;
-
-	while (true) {
-		ret = read(posix_result_pipe[POSIX_PIPE_READ_FD], data,
-		           (size_t)left);
-		if (ret <= 0)
-			break;
-
-		left -= ret;
-		if (!left)
-			break;
-
-		data += ret;
-	}
-
-	if (!ret)
-		/*
-		 * Child closed its pipe writing end, meaning end of stream:
-		 * return number of bytes read so far.
-		 */
-		return posix_page_size - left;
-
-	if (ret < 0)
-		/* Error occured: return errno code. */
-		return -errno;
-
-	ret = posix_clear_result_pipe();
-	if (ret < 0)
-		return ret;
-
-	if (!ret)
-		return posix_page_size;
-
-	return -ENOBUFS;
-}
-#endif
 
 static int
 posix_write_result_pipe(const char *data, size_t size)
@@ -388,7 +298,7 @@ posix_build_failure_result(struct cute_test *test)
 {
 	int                 err;
 	size_t              left = (ssize_t)posix_page_size;
-	char               *data = posix_result_buffer;
+	char               *data = posix_buffer;
 	size_t              len;
 	struct cute_result *res = &test->result;
 
@@ -453,7 +363,7 @@ posix_wait_test_child(pid_t pid, struct cute_test *test)
 	bool    frozen;
 	int     stat;
 
-	ret = posix_read_pipe(posix_result_pipe, posix_result_buffer);
+	ret = posix_read_pipe(posix_result_pipe, posix_buffer);
 	frozen = (ret == -EINTR) && posix_watchdog_expired;
 
 	if (frozen) {
@@ -520,12 +430,12 @@ posix_fetch_child_console(struct cute_test *test)
 	struct cute_result *res = &test->result;
 	ssize_t             bytes;
 
-	bytes = posix_read_pipe(posix_console_pipe, posix_result_buffer);
+	bytes = posix_read_pipe(posix_console_pipe, posix_buffer);
 	if (bytes < 0)
 		return bytes;
 
 	if (bytes > 0) {
-		res->console = strndup(posix_result_buffer, posix_page_size - 1);
+		res->console = strndup(posix_buffer, posix_page_size - 1);
 		if (!res->console)
 			return -ENOMEM;
 	}
@@ -594,14 +504,17 @@ posix_init_run(unsigned int default_timeout)
 {
 	posix_page_size = (size_t)sysconf(_SC_PAGESIZE);
 
-	posix_result_buffer = malloc(posix_page_size);
-	if (!posix_result_buffer)
+	posix_buffer = malloc(posix_page_size);
+	if (!posix_buffer)
 		return -ENOMEM;
 
 	if (default_timeout > 0)
 		posix_default_timeout = default_timeout;
 
-	posix_setup_signals();
+	posix_sigact.sa_handler = posix_handle_signal;
+	sigemptyset(&posix_sigact.sa_mask);
+	sigaction(SIGALRM, &posix_sigact, &posix_default_watchdog_sigact);
+	sigaction(SIGCHLD, &posix_sigact, &posix_default_child_sigact);
 
 	return 0;
 }
@@ -609,9 +522,10 @@ posix_init_run(unsigned int default_timeout)
 static void
 posix_fini_run(void)
 {
-	posix_restore_signals();
+	sigaction(SIGALRM, &posix_default_watchdog_sigact, NULL);
+	sigaction(SIGCHLD, &posix_default_child_sigact, NULL);
 
-	free(posix_result_buffer);
+	free(posix_buffer);
 }
 
 void __noreturn
