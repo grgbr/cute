@@ -2,7 +2,7 @@ SRC   := $(CURDIR)/src
 TEST  := $(CURDIR)/test
 BUILD := $(CURDIR)/build
 
-CFLAGS := -Wall -Wextra -D_GNU_SOURCE -MD -ggdb3 -I$(CURDIR)/include
+CFLAGS := -Wall -Wextra -D_GNU_SOURCE -MD -O2 -ggdb3 -I$(CURDIR)/include
 
 AR := gcc-ar
 
