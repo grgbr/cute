@@ -23,30 +23,15 @@ static char             *posix_buffer;
 static int               posix_result_pipe[POSIX_PIPE_FDS_NR];
 static int               posix_console_pipe[POSIX_PIPE_FDS_NR];
 static unsigned int      posix_default_timeout = POSIX_DEFAULT_TIMEOUT;
-static struct sigaction  posix_sigact;
 static sig_atomic_t      posix_watchdog_expired;
-static struct sigaction  posix_default_watchdog_sigact;
-static sig_atomic_t      posix_child_exited;
-static struct sigaction  posix_default_child_sigact;
+static struct sigaction  posix_sigact;
+static struct sigaction  posix_default_sigact;
 
 static void
 posix_handle_signal(int signo)
 {
 	if (signo == SIGALRM)
 		posix_watchdog_expired = 1;
-	else if (signo == SIGCHLD)
-		posix_child_exited = 1;
-}
-
-static void
-posix_kill_child(pid_t pid)
-{
-	if (!posix_child_exited)
-		/*
-		 * Explicitly kill the child if SIGCHLD not seen yet,
-		 * i.e. termination has not yet completed
-		 */
-		kill(pid, SIGKILL);
 }
 
 static int
@@ -291,8 +276,7 @@ posix_exec_test_child(const struct cute_test *test)
 	const struct cute_suite *suite = (struct cute_suite *)
 	                                 test->object.parent;
 
-	sigaction(SIGALRM, &posix_default_watchdog_sigact, NULL);
-	sigaction(SIGCHLD, &posix_default_child_sigact, NULL);
+	sigaction(SIGALRM, &posix_default_sigact, NULL);
 
 	if (!test->run)
 		goto exit;
@@ -350,7 +334,7 @@ posix_wait_child(pid_t pid, int *child_status)
 		 * itself or another terminal related signal.
 		 * In all cases we want to complete child termination.
 		 */
-		posix_kill_child(pid);
+		kill(pid, SIGKILL);
 	}
 
 	/* Immediatly disable watchdog as we won't need it anymore. */
@@ -368,7 +352,7 @@ posix_wait_test_child(pid_t pid, int *status)
 	ret = posix_read_pipe(posix_result_pipe, posix_buffer);
 
 	if ((ret == -EINTR) && posix_watchdog_expired) {
-		posix_kill_child(pid);
+		kill(pid, SIGKILL);
 
 		/*
 		 * Watchdog expired before child has closed its pipe writing
@@ -418,8 +402,6 @@ posix_spawn_test(struct cute_test *test)
 		err = -errno;
 		goto result;
 	}
-
-	posix_child_exited = 0;
 
 	pid = fork();
 	if (pid < 0) {
@@ -480,8 +462,7 @@ posix_init_run(unsigned int default_timeout)
 
 	posix_sigact.sa_handler = posix_handle_signal;
 	sigemptyset(&posix_sigact.sa_mask);
-	sigaction(SIGALRM, &posix_sigact, &posix_default_watchdog_sigact);
-	sigaction(SIGCHLD, &posix_sigact, &posix_default_child_sigact);
+	sigaction(SIGALRM, &posix_sigact, &posix_default_sigact);
 
 	return 0;
 }
@@ -489,8 +470,7 @@ posix_init_run(unsigned int default_timeout)
 static void
 posix_fini_run(void)
 {
-	sigaction(SIGALRM, &posix_default_watchdog_sigact, NULL);
-	sigaction(SIGCHLD, &posix_default_child_sigact, NULL);
+	sigaction(SIGALRM, &posix_default_sigact, NULL);
 
 	free(posix_buffer);
 }
