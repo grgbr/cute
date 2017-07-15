@@ -39,24 +39,6 @@ posix_handle_signal(int signo)
 }
 
 static void
-posix_arm_watchdog(struct cute_test *test)
-{
-	posix_watchdog_expired = 0;
-
-	if (!test->timeout)
-		test->timeout = posix_default_timeout;
-
-	alarm(test->timeout);
-}
-
-static void
-posix_disarm_watchdog(void)
-{
-	if (!posix_watchdog_expired)
-		alarm(0);
-}
-
-static void
 posix_kill_child(pid_t pid)
 {
 	if (!posix_child_exited)
@@ -152,81 +134,6 @@ posix_read_pipe(int pipe[POSIX_PIPE_FDS_NR], char *buffer)
 }
 
 static int
-posix_wait_child(pid_t pid, int *child_status)
-{
-	int err;
-
-	while (true) {
-		err = wait(child_status);
-		if (err > 1) {
-			err = 0;
-			/* Child terminated. */
-			break;
-		}
-
-		if ((err < 0) && (errno != EINTR)) {
-			/* Child has already been terminated. */
-			assert(errno == ECHILD);
-			err = -ECHILD;
-			break;
-		}
-
-		/*
-		 * We were interrupted while waiting for child termination
-		 * either by the watchdog, the child termination SIGCHLD signal
-		 * itself or another terminal related signal.
-		 * In all cases we want to complete child termination.
-		 */
-		posix_kill_child(pid);
-	}
-
-	/* Immediatly disable watchdog as we won't need it anymore. */
-	posix_disarm_watchdog();
-
-	return err;
-}
-
-static void __noreturn
-posix_exec_test_child(const struct cute_test *test)
-{
-	int                      status = EXIT_FAILURE;
-	const struct cute_suite *suite = (struct cute_suite *)
-	                                 test->object.parent;
-
-	sigaction(SIGALRM, &posix_default_watchdog_sigact, NULL);
-	sigaction(SIGCHLD, &posix_default_child_sigact, NULL);
-
-	if (!test->run)
-		goto exit;
-
-	if (close(posix_result_pipe[POSIX_PIPE_READ_FD]))
-		goto exit;
-
-	if (close(posix_console_pipe[POSIX_PIPE_READ_FD]))
-		goto exit;
-
-	if (dup2(posix_console_pipe[POSIX_PIPE_WRITE_FD], STDERR_FILENO) !=
-	    STDERR_FILENO)
-		goto exit;
-
-	if (close(posix_console_pipe[POSIX_PIPE_WRITE_FD]))
-		goto exit;
-
-	if (suite && suite->setup)
-		suite->setup();
-
-	test->run();
-
-	if (suite && suite->teardown)
-		suite->teardown();
-
-	status = EXIT_SUCCESS;
-
-exit:
-	exit(status);
-}
-
-static int
 posix_build_freeze_result(struct cute_test *test)
 {
 	struct cute_result *res = &test->result;
@@ -296,7 +203,6 @@ posix_build_unknown_result(struct cute_test *test)
 static int
 posix_build_failure_result(struct cute_test *test)
 {
-	int                 err;
 	size_t              left = (ssize_t)posix_buffer_size;
 	char               *data = posix_buffer;
 	size_t              len;
@@ -339,16 +245,129 @@ posix_build_failure_result(struct cute_test *test)
 }
 
 static int
-posix_wait_test_child(pid_t pid, struct cute_test *test)
+posix_fill_test_result(struct cute_test *test, int error, int child_status)
+{
+	struct cute_result *res = &test->result;
+	int                 ret;
+
+	ret = posix_read_pipe(posix_console_pipe, posix_buffer);
+	if (ret < 0)
+		return ret;
+
+	if (ret > 0) {
+		res->console = strndup(posix_buffer, posix_buffer_size - 1);
+		if (!res->console)
+			return -ENOMEM;
+	}
+
+	if ((error > 0) || posix_watchdog_expired)
+		return posix_build_freeze_result(test);
+
+	if (WIFEXITED(child_status)) {
+		if (WEXITSTATUS(child_status) == EXIT_SUCCESS)
+			return 0;
+
+		return posix_build_failure_result(test);
+	}
+
+	if (WIFSIGNALED(child_status)) {
+		int sig = WTERMSIG(child_status);
+
+		if (sig == SIGABRT)
+			return posix_build_abort_result(test);
+		if (sig == SIGSEGV)
+			return posix_build_segv_result(test);
+		else
+			return posix_build_signo_result(test, sig);
+	}
+
+	return posix_build_unknown_result(test);
+}
+
+static void __noreturn
+posix_exec_test_child(const struct cute_test *test)
+{
+	int                      status = EXIT_FAILURE;
+	const struct cute_suite *suite = (struct cute_suite *)
+	                                 test->object.parent;
+
+	sigaction(SIGALRM, &posix_default_watchdog_sigact, NULL);
+	sigaction(SIGCHLD, &posix_default_child_sigact, NULL);
+
+	if (!test->run)
+		goto exit;
+
+	if (close(posix_result_pipe[POSIX_PIPE_READ_FD]))
+		goto exit;
+
+	if (close(posix_console_pipe[POSIX_PIPE_READ_FD]))
+		goto exit;
+
+	if (dup2(posix_console_pipe[POSIX_PIPE_WRITE_FD], STDERR_FILENO) !=
+	    STDERR_FILENO)
+		goto exit;
+
+	if (close(posix_console_pipe[POSIX_PIPE_WRITE_FD]))
+		goto exit;
+
+	if (suite && suite->setup)
+		suite->setup();
+
+	test->run();
+
+	if (suite && suite->teardown)
+		suite->teardown();
+
+	status = EXIT_SUCCESS;
+
+exit:
+	exit(status);
+}
+
+static int
+posix_wait_child(pid_t pid, int *child_status)
+{
+	int err;
+
+	while (true) {
+		err = wait(child_status);
+		if (err > 1) {
+			err = 0;
+			/* Child terminated. */
+			break;
+		}
+
+		if ((err < 0) && (errno != EINTR)) {
+			/* Child has already been terminated. */
+			assert(errno == ECHILD);
+			err = -ECHILD;
+			break;
+		}
+
+		/*
+		 * We were interrupted while waiting for child termination
+		 * either by the watchdog, the child termination SIGCHLD signal
+		 * itself or another terminal related signal.
+		 * In all cases we want to complete child termination.
+		 */
+		posix_kill_child(pid);
+	}
+
+	/* Immediatly disable watchdog as we won't need it anymore. */
+	if (!posix_watchdog_expired)
+		alarm(0);
+
+	return err;
+}
+
+static int
+posix_wait_test_child(pid_t pid, int *status)
 {
 	ssize_t ret;
-	bool    frozen;
-	int     stat;
 
 	ret = posix_read_pipe(posix_result_pipe, posix_buffer);
-	frozen = (ret == -EINTR) && posix_watchdog_expired;
 
-	if (frozen) {
+	if ((ret == -EINTR) && posix_watchdog_expired) {
 		posix_kill_child(pid);
 
 		/*
@@ -359,7 +378,7 @@ posix_wait_test_child(pid_t pid, struct cute_test *test)
 		if (ret)
 			return ret;
 
-		return posix_build_freeze_result(test);
+		return 1;
 	}
 
 	if ((ret < 0) && (ret != -EINTR)) {
@@ -378,49 +397,9 @@ posix_wait_test_child(pid_t pid, struct cute_test *test)
 	 * Wait for the child process to vanish either on its own or thanks to
 	 * the watchdog which is still running (or another terminating signal).
 	 */
-	ret = posix_wait_child(pid, &stat);
+	ret = posix_wait_child(pid, status);
 	if (ret < 0)
 		return ret;
-
-	if (posix_watchdog_expired)
-		return posix_build_freeze_result(test);
-
-	if (WIFEXITED(stat)) {
-		if (WEXITSTATUS(stat) == EXIT_SUCCESS)
-			return 0;
-
-		return posix_build_failure_result(test);
-	}
-
-	if (WIFSIGNALED(stat)) {
-		int sig = WTERMSIG(stat);
-
-		if (sig == SIGABRT)
-			return posix_build_abort_result(test);
-		if (sig == SIGSEGV)
-			return posix_build_segv_result(test);
-		else
-			return posix_build_signo_result(test, sig);
-	}
-
-	return posix_build_unknown_result(test);
-}
-
-static int
-posix_fetch_child_console(struct cute_test *test)
-{
-	struct cute_result *res = &test->result;
-	ssize_t             bytes;
-
-	bytes = posix_read_pipe(posix_console_pipe, posix_buffer);
-	if (bytes < 0)
-		return bytes;
-
-	if (bytes > 0) {
-		res->console = strndup(posix_buffer, posix_buffer_size - 1);
-		if (!res->console)
-			return -ENOMEM;
-	}
 
 	return 0;
 }
@@ -430,6 +409,7 @@ posix_spawn_test(struct cute_test *test)
 {
 	pid_t pid;
 	int   err;
+	int   stat;
 
 	if (pipe(posix_result_pipe))
 		return -errno;
@@ -453,14 +433,19 @@ posix_spawn_test(struct cute_test *test)
 		assert(0);
 	}
 
-	posix_arm_watchdog(test);
+	posix_watchdog_expired = 0;
+
+	if (!test->timeout)
+		test->timeout = posix_default_timeout;
+
+	alarm(test->timeout);
 
 	close(posix_result_pipe[POSIX_PIPE_WRITE_FD]);
 	close(posix_console_pipe[POSIX_PIPE_WRITE_FD]);
 
-	err = posix_wait_test_child(pid, test);
-	if (!err)
-		err = posix_fetch_child_console(test);
+	err = posix_wait_test_child(pid, &stat);
+	if (err >= 0)
+		err = posix_fill_test_result(test, err, stat);
 
 	close(posix_result_pipe[POSIX_PIPE_READ_FD]);
 	close(posix_console_pipe[POSIX_PIPE_READ_FD]);
