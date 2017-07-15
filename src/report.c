@@ -1,4 +1,5 @@
 #include "core.h"
+#include "utils.h"
 #include <cute/cute.h>
 #include <string.h>
 #include <stdio.h>
@@ -34,6 +35,21 @@ static void text_show_test(const struct cute_test *test)
 	}
 }
 
+static void text_show_suite_begin(const struct cute_suite *suite)
+{
+	text_show_indent(text_indent);
+
+	printf("Running \"%s\" suite (%u tests)\n",
+	       suite->object.name, suite->tests_count);
+
+	text_indent++;
+}
+
+static void text_show_suite_end(const struct cute_suite *suite __unused)
+{
+	text_indent--;
+}
+
 static void text_show_footer(int error)
 {
 	if (error)
@@ -41,8 +57,10 @@ static void text_show_footer(int error)
 }
 
 const struct report text_report = {
-	.show_test   = text_show_test,
-	.show_footer = text_show_footer,
+	.show_test        = text_show_test,
+	.show_suite_begin = text_show_suite_begin,
+	.show_suite_end   = text_show_suite_end,
+	.show_footer      = text_show_footer,
 };
 
 void

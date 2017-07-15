@@ -9,12 +9,18 @@ struct cute_test;
 
 typedef void (show_test_fn)(const struct cute_test *test);
 
+struct cute_suite;
+
+typedef void (show_suite_fn)(const struct cute_suite *suite);
+
 struct report;
 
 typedef void (show_footer_fn)(int error);
 
 struct report {
 	show_test_fn   *show_test;
+	show_suite_fn  *show_suite_begin;
+	show_suite_fn  *show_suite_end;
 	show_footer_fn *show_footer;
 };
 
