@@ -14,6 +14,24 @@ cute_expect_failed(const char *line, const char *file, const char *reason)
 	current_run->expect_failed(line, file, reason);
 }
 
+static void
+cute_fini_test(struct cute_test *test)
+{
+	struct cute_result *res = &test->result;
+
+	free(res->reason);
+	res->reason = NULL;
+
+	free(res->line);
+	res->line = NULL;
+
+	free(res->file);
+	res->file = NULL;
+
+	free(res->console);
+	res->console = NULL;
+}
+
 int
 cute_run_test(struct cute_test *test)
 {
@@ -28,6 +46,8 @@ cute_run_test(struct cute_test *test)
 		current_report->show_test(test);
 
 	current_report->show_footer(err);
+
+	cute_fini_test(test);
 
 	return err;
 }

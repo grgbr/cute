@@ -317,43 +317,25 @@ posix_build_failure_result(struct cute_test *test)
 	left -= len;
 
 	len = strnlen(data, left - 1);
-	if (!len || (len >= (left - 1))) {
-		err = -ERANGE;
-		goto free_line;
-	}
+	if (!len || (len >= (left - 1)))
+		return -ERANGE;
 
 	res->file = strdup(data);
-	if (!res->file) {
-		err = -ENOMEM;
-		goto free_line;
-	}
+	if (!res->file)
+		return -ENOMEM;
 
 	len++;
 	data += len;
 	left -= len;
 
-	if ((left <= 2) || !strlen(data)) {
-		err = -ERANGE;
-		goto free_file;
-	}
+	if ((left <= 2) || !strlen(data))
+		return -ERANGE;
 
 	res->reason = strdup(data);
-	if (!res->reason) {
-		err = -ENOMEM;
-		goto free_file;
-	}
+	if (!res->reason)
+		return -ENOMEM;
 
 	return 0;
-
-free_file:
-	free(res->file);
-	res->file = NULL;
-
-free_line:
-	free(res->line);
-	res->line = NULL;
-
-	return err;
 }
 
 static int
