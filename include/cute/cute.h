@@ -8,6 +8,7 @@
 
 struct cute_object {
 	const char         *name;
+	struct cute_object *next;
 	struct cute_object *parent;
 	struct cute_object *eldest;
 	struct cute_object *youngest;
@@ -17,17 +18,38 @@ struct cute_object {
 	{                                    \
 		.name     = CUTE_STR(_name), \
 		.parent   = NULL,            \
+		.next     = NULL,            \
 		.eldest   = NULL,            \
 		.youngest = NULL,            \
 	}
 
+/******************************************************************************
+ * Suite definition
+ ******************************************************************************/
+
 typedef void (cute_fixture_fn)(void);
 
 struct cute_suite {
-	struct cute_object  super;
+	struct cute_object  object;
 	cute_fixture_fn    *setup;
 	cute_fixture_fn    *teardown;
+	unsigned int        tests_count;
 };
+
+#define CUTE_INIT_SUITE(_suite_name, _setup, _teardown)       \
+	{                                                     \
+		.object      = CUTE_INIT_OBJECT(_suite_name), \
+		.setup       = _setup,                        \
+		.teardown    = _teardown,                     \
+		.tests_count = 0,                             \
+	}
+
+#define CUTE_SUITE(_suite_name, _setup, _teardown)                           \
+	struct cute_suite _suite_name = CUTE_INIT_SUITE(_suite_name, _setup, \
+	                                                _teardown)
+
+extern int cute_register_suite(struct cute_suite *parent,
+                               struct cute_suite *suite);
 
 /******************************************************************************
  * Test definition
@@ -75,6 +97,9 @@ struct cute_test {
 		CUTE_INIT_TEST(_test_name, _test_name ## __cute_test_fn); \
 	static void _test_name ## __cute_test_fn(void)
 
+extern void cute_register_test(struct cute_suite *suite,
+                               struct cute_test  *test);
+
 /******************************************************************************
  * Assertion
  ******************************************************************************/
@@ -106,6 +131,8 @@ extern void cute_setup_text_report(void);
 extern int cute_setup_posix_run(unsigned int default_timeout);
 
 extern int cute_run_test(struct cute_test *test);
+
+extern int cute_run_suite(struct cute_suite *suite);
 
 extern void cute_fini(void);
 
