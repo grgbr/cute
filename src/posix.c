@@ -18,7 +18,7 @@
 #define POSIX_PIPE_WRITE_FD   (1U)
 #define POSIX_PIPE_FDS_NR     (2U)
 
-static size_t            posix_page_size;
+static size_t            posix_buffer_size;
 static char             *posix_buffer;
 static int               posix_result_pipe[POSIX_PIPE_FDS_NR];
 static int               posix_console_pipe[POSIX_PIPE_FDS_NR];
@@ -115,7 +115,7 @@ static ssize_t
 posix_read_pipe(int pipe[POSIX_PIPE_FDS_NR], char *buffer)
 {
 	ssize_t  ret = 0;
-	ssize_t  left = (ssize_t)posix_page_size;
+	ssize_t  left = (ssize_t)posix_buffer_size;
 	char    *data = buffer;
 
 	while (true) {
@@ -135,7 +135,7 @@ posix_read_pipe(int pipe[POSIX_PIPE_FDS_NR], char *buffer)
 		 * Child closed its pipe writing end, meaning end of stream:
 		 * return number of bytes read so far.
 		 */
-		return posix_page_size - left;
+		return posix_buffer_size - left;
 
 	if (ret < 0)
 		/* Error occured: return errno code. */
@@ -146,7 +146,7 @@ posix_read_pipe(int pipe[POSIX_PIPE_FDS_NR], char *buffer)
 		return ret;
 
 	if (!ret)
-		return posix_page_size;
+		return posix_buffer_size;
 
 	return -ENOBUFS;
 }
@@ -297,7 +297,7 @@ static int
 posix_build_failure_result(struct cute_test *test)
 {
 	int                 err;
-	size_t              left = (ssize_t)posix_page_size;
+	size_t              left = (ssize_t)posix_buffer_size;
 	char               *data = posix_buffer;
 	size_t              len;
 	struct cute_result *res = &test->result;
@@ -435,7 +435,7 @@ posix_fetch_child_console(struct cute_test *test)
 		return bytes;
 
 	if (bytes > 0) {
-		res->console = strndup(posix_buffer, posix_page_size - 1);
+		res->console = strndup(posix_buffer, posix_buffer_size - 1);
 		if (!res->console)
 			return -ENOMEM;
 	}
@@ -502,9 +502,9 @@ result:
 static int
 posix_init_run(unsigned int default_timeout)
 {
-	posix_page_size = (size_t)sysconf(_SC_PAGESIZE);
+	posix_buffer_size = (size_t)sysconf(_SC_PAGESIZE);
 
-	posix_buffer = malloc(posix_page_size);
+	posix_buffer = malloc(posix_buffer_size);
 	if (!posix_buffer)
 		return -ENOMEM;
 
