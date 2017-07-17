@@ -26,19 +26,9 @@ cute_register_object(struct cute_object *parent, struct cute_object *child)
 void
 cute_register_test(struct cute_suite *suite, struct cute_test *test)
 {
-	memset(&test->result, 0, sizeof(test->result));
-
 	cute_register_object(&suite->object, &test->object);
 
 	suite->total_count++;
-}
-
-void
-cute_expect_failed(const char *line, const char *file, const char *reason)
-{
-	assert(current_run && current_report);
-
-	current_run->expect_failed(line, file, reason);
 }
 
 static void
@@ -109,10 +99,6 @@ cute_run_object_recurs(struct cute_object *object)
 	}
 
 	suite = (struct cute_suite *)object;
-	suite->success_count = 0;
-	suite->failure_count = 0;
-	suite->error_count = 0;
-	suite->skipped_count = 0;
 
 	current_report->show_suite_begin(suite);
 
@@ -192,8 +178,140 @@ cute_run_test(struct cute_test *test)
 }
 
 void
+cute_expect_failed(const char *line, const char *file, const char *reason)
+{
+	assert(current_run && current_report);
+
+	current_run->expect_failed(line, file, reason);
+}
+
+void
 cute_fini(void)
 {
 	if (current_run)
 		current_run->fini_run();
+}
+
+static CUTE_SUITE(cute_root_suite);
+
+extern char __start_cute_tests;
+extern char __stop_cute_tests;
+extern char __start_cute_suites;
+extern char __stop_cute_suites;
+
+static struct cute_suite *
+cute_pnp_object_parent(struct cute_object *object)
+{
+	struct cute_suite *parent = (struct cute_suite *)object->parent;
+
+	if (parent) {
+		if ((parent < (struct cute_suite *)&__start_cute_suites) ||
+		    (parent >= (struct cute_suite *)&__stop_cute_suites)) {
+			errno = EFAULT;
+			return NULL;
+		}
+	}
+	else
+		parent = &cute_root_suite;
+
+	return parent;
+}
+
+static unsigned long
+cute_pnp_suite_index(const struct cute_suite *suite)
+{
+	return ((unsigned long)suite - (unsigned long)&__start_cute_suites) /
+	       sizeof(*suite);
+}
+
+static int
+cute_register_pnp(const char *root_suite_name)
+{
+	unsigned long       nr;
+	struct cute_suite **suites;
+	struct cute_test   *test;
+	struct cute_suite  *parent;
+	unsigned int        cnt = 0;
+
+	cute_root_suite.object.name = root_suite_name;
+
+	nr = ((unsigned long)&__stop_cute_suites -
+	      (unsigned long)&__start_cute_suites) / sizeof(*suites[0]);
+
+	suites = calloc(nr, sizeof(suites[0]));
+	if (!suites)
+		return -ENOMEM;
+
+	test = (struct cute_test *)&__start_cute_tests;
+	while (test < (struct cute_test *)&__stop_cute_tests) {
+		parent = cute_pnp_object_parent(&test->object);
+		if (!parent)
+			return -errno;
+
+		cute_register_test(parent, test);
+
+		if (parent != &cute_root_suite) {
+			suites[cute_pnp_suite_index(parent)] = parent;
+			cnt++;
+		}
+
+		test++;
+	}
+
+	while (cnt) {
+		unsigned int s;
+
+		for (s = 0, cnt = 0; s < nr; s++) {
+			int err;
+
+			if (!suites[s])
+				continue;
+
+			parent = cute_pnp_object_parent(&suites[s]->object);
+			if (!parent)
+				return -errno;
+
+			err = cute_register_suite(parent, suites[s]);
+			if (err)
+				return err;
+
+			if (parent != &cute_root_suite) {
+				unsigned int p = cute_pnp_suite_index(parent);
+
+				if (!suites[p]) {
+					suites[p] = parent;
+					cnt++;
+				}
+			}
+
+			suites[s] = NULL;
+		}
+	}
+
+	free(suites);
+
+	return 0;
+}
+
+int
+cute_main(const char *root_suite_name)
+{
+	int err;
+
+	cute_setup_text_report();
+
+	err = cute_setup_posix_run(CUTE_DEFAULT_TIMEOUT);
+	if (err)
+		return err;
+
+	err = cute_register_pnp(root_suite_name);
+	if (err)
+		goto fini;
+
+	err = cute_run_suite(&cute_root_suite);
+
+fini:
+	cute_fini();
+
+	return err;
 }
