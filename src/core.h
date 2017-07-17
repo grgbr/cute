@@ -15,7 +15,7 @@ typedef void (show_suite_fn)(const struct cute_suite *suite);
 
 struct report;
 
-typedef void (show_footer_fn)(int error);
+typedef void (show_footer_fn)(const struct cute_suite *suite, int error);
 
 struct report {
 	show_test_fn   *show_test;

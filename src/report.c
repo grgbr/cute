@@ -3,13 +3,14 @@
 #include <cute/cute.h>
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
 
 static unsigned int text_indent;
 
 static void text_show_indent(unsigned int indent)
 {
 	while (indent--)
-		putchar('\t');
+		printf("    ");
 }
 
 static void text_show_test(const struct cute_test *test)
@@ -17,21 +18,34 @@ static void text_show_test(const struct cute_test *test)
 	const struct cute_result *res = &test->result;
 
 	text_show_indent(text_indent);
+	printf("%-28.28s", test->object.name);
 
-	if (res->reason) {
-		if (res->file && res->line)
-			printf("%s:: %s @%s:%s\n", test->object.name, res->reason,
-			       res->file, res->line);
-		else
-			printf("%s:: %s @%s:%u\n", test->object.name, res->reason,
-			       test->file, test->line);
-	}
-	else
-		printf("%s:: success\n", test->object.name);
+	switch (res->state) {
+	case CUTE_SKIPPED_STATE:
+		printf("  skipped\n");
+		break;
 
-	if (res->console) {
+	case CUTE_SUCCESS_STATE:
+		printf("  success\n");
+		break;
+
+	case CUTE_FAILURE_STATE:
+		printf("  failure\n");
 		text_show_indent(text_indent + 1);
-		printf("%s", res->console);
+		printf("@%s:%s\n", res->file, res->line);
+		text_show_indent(text_indent + 1);
+		printf("%s\n", res->reason);
+		break;
+
+	case CUTE_ERROR_STATE:
+		printf("  error    %s\n", res->reason);
+		if (res->console) {
+			printf("<console>\n%s</console>\n", res->console);
+		}
+		break;
+
+	default:
+		assert(0);
 	}
 }
 
@@ -39,21 +53,27 @@ static void text_show_suite_begin(const struct cute_suite *suite)
 {
 	text_show_indent(text_indent);
 
-	printf("Running \"%s\" suite (%u tests)\n",
-	       suite->object.name, suite->tests_count);
+	printf("Running %s suite...\n", suite->object.name);
 
 	text_indent++;
 }
 
-static void text_show_suite_end(const struct cute_suite *suite __unused)
+static void text_show_suite_end(const struct cute_suite *suite)
 {
 	text_indent--;
+	text_show_indent(text_indent);
+
+	printf("Completed %s suite [total:%u, success:%u, failures:%u, "
+	       "errors:%u, skipped:%u]\n",
+	       suite->object.name,
+	       suite->total_count, suite->success_count, suite->failure_count,
+	       suite->error_count, suite->skipped_count);
 }
 
-static void text_show_footer(int error)
+static void text_show_footer(const struct cute_suite *suite __unused, int error)
 {
 	if (error)
-		printf("internal error: %s\n", strerror(-error));
+		printf("\nInternal error: %s\n", strerror(-error));
 }
 
 const struct report text_report = {

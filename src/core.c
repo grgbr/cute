@@ -19,6 +19,7 @@ cute_register_object(struct cute_object *parent, struct cute_object *child)
 
 	if (parent->youngest)
 		parent->youngest->next = child;
+
 	parent->youngest = child;
 }
 
@@ -29,7 +30,7 @@ cute_register_test(struct cute_suite *suite, struct cute_test *test)
 
 	cute_register_object(&suite->object, &test->object);
 
-	suite->tests_count++;
+	suite->total_count++;
 }
 
 void
@@ -61,14 +62,79 @@ cute_fini_test(struct cute_test *test)
 int
 cute_register_suite(struct cute_suite *parent, struct cute_suite *suite)
 {
-	if (!suite->tests_count)
+	if (!suite->total_count)
 		return -ENODATA;
 
 	cute_register_object(&parent->object, &suite->object);
 
-	parent->tests_count += suite->tests_count;
+	parent->total_count += suite->total_count;
 
 	return 0;
+}
+
+static int
+cute_run_object_recurs(struct cute_object *object)
+{
+	struct cute_suite  *parent = (struct cute_suite *)object->parent;
+	struct cute_suite  *suite;
+	struct cute_object *obj = object->eldest;
+	int                 err;
+
+	if (!obj) {
+		struct cute_test *test = (struct cute_test *)object;
+
+		err = current_run->spawn_test(test);
+		if (!err) {
+			switch (test->result.state) {
+			case CUTE_SUCCESS_STATE:
+				parent->success_count++;
+				break;
+
+			case CUTE_FAILURE_STATE:
+				parent->failure_count++;
+				break;
+
+			case CUTE_ERROR_STATE:
+				parent->error_count++;
+				break;
+
+			default:
+				return -EPROTO;
+			}
+
+			current_report->show_test(test);
+		}
+
+		return err;
+	}
+
+	suite = (struct cute_suite *)object;
+	suite->success_count = 0;
+	suite->failure_count = 0;
+	suite->error_count = 0;
+	suite->skipped_count = 0;
+
+	current_report->show_suite_begin(suite);
+
+	do {
+		err = cute_run_object_recurs(obj);
+		if (err)
+			break;
+
+		obj = obj->next;
+	} while (obj);
+
+	if (parent) {
+		parent->success_count += suite->success_count;
+		parent->failure_count += suite->failure_count;
+		parent->error_count += suite->error_count;
+		parent->skipped_count += suite->skipped_count;
+	}
+
+	if (!err)
+		current_report->show_suite_end((struct cute_suite *)object);
+
+	return err;
 }
 
 static void
@@ -88,36 +154,6 @@ cute_fini_object_recurs(struct cute_object *object)
 	} while (obj);
 }
 
-static int
-cute_run_object_recurs(struct cute_object *object)
-{
-	struct cute_object *obj = object->eldest;
-	int                 err;
-
-	if (!obj) {
-		err = current_run->spawn_test((struct cute_test *)object);
-		if (!err)
-			current_report->show_test((struct cute_test *)object);
-
-		return err;
-	}
-
-	current_report->show_suite_begin((struct cute_suite *)object);
-
-	do {
-		err = cute_run_object_recurs(obj);
-		if (err)
-			break;
-
-		obj = obj->next;
-	} while (obj);
-
-	if (!err)
-		current_report->show_suite_end((struct cute_suite *)object);
-
-	return err;
-}
-
 int
 cute_run_suite(struct cute_suite *suite)
 {
@@ -128,7 +164,7 @@ cute_run_suite(struct cute_suite *suite)
 
 	err = cute_run_object_recurs(&suite->object);
 
-	current_report->show_footer(err);
+	current_report->show_footer(suite, err);
 
 	cute_fini_object_recurs(&suite->object);
 
@@ -148,7 +184,7 @@ cute_run_test(struct cute_test *test)
 	if (!err)
 		current_report->show_test(test);
 
-	current_report->show_footer(err);
+	current_report->show_footer(NULL, err);
 
 	cute_fini_test(test);
 

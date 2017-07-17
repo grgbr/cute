@@ -129,6 +129,8 @@ posix_build_freeze_result(struct cute_test *test)
 		return -ENOMEM;
 	}
 
+	res->state = CUTE_ERROR_STATE;
+
 	return 0;
 }
 
@@ -142,6 +144,8 @@ posix_build_abort_result(struct cute_test *test)
 		return -ENOMEM;
 	}
 
+	res->state = CUTE_ERROR_STATE;
+
 	return 0;
 }
 
@@ -154,6 +158,8 @@ posix_build_segv_result(struct cute_test *test)
 		res->reason = NULL;
 		return -ENOMEM;
 	}
+
+	res->state = CUTE_ERROR_STATE;
 
 	return 0;
 }
@@ -169,6 +175,8 @@ posix_build_signo_result(struct cute_test *test, int signo)
 		return -ENOMEM;
 	}
 
+	res->state = CUTE_ERROR_STATE;
+
 	return 0;
 }
 
@@ -181,6 +189,8 @@ posix_build_unknown_result(struct cute_test *test)
 		res->reason = NULL;
 		return -ENOMEM;
 	}
+
+	res->state = CUTE_ERROR_STATE;
 
 	return 0;
 }
@@ -226,6 +236,8 @@ posix_build_failure_result(struct cute_test *test)
 	if (!res->reason)
 		return -ENOMEM;
 
+	res->state = CUTE_FAILURE_STATE;
+
 	return 0;
 }
 
@@ -249,8 +261,10 @@ posix_fill_test_result(struct cute_test *test, int error, int child_status)
 		return posix_build_freeze_result(test);
 
 	if (WIFEXITED(child_status)) {
-		if (WEXITSTATUS(child_status) == EXIT_SUCCESS)
+		if (WEXITSTATUS(child_status) == EXIT_SUCCESS) {
+			res->state = CUTE_SUCCESS_STATE;
 			return 0;
+		}
 
 		return posix_build_failure_result(test);
 	}

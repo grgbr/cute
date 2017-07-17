@@ -33,15 +33,23 @@ struct cute_suite {
 	struct cute_object  object;
 	cute_fixture_fn    *setup;
 	cute_fixture_fn    *teardown;
-	unsigned int        tests_count;
+	unsigned int        total_count;
+	unsigned int        success_count;
+	unsigned int        failure_count;
+	unsigned int        error_count;
+	unsigned int        skipped_count;
 };
 
-#define CUTE_INIT_SUITE(_suite_name, _setup, _teardown)       \
-	{                                                     \
-		.object      = CUTE_INIT_OBJECT(_suite_name), \
-		.setup       = _setup,                        \
-		.teardown    = _teardown,                     \
-		.tests_count = 0,                             \
+#define CUTE_INIT_SUITE(_suite_name, _setup, _teardown)         \
+	{                                                       \
+		.object        = CUTE_INIT_OBJECT(_suite_name), \
+		.setup         = _setup,                        \
+		.teardown      = _teardown,                     \
+		.total_count   = 0,                             \
+		.success_count = 0,                             \
+		.failure_count = 0,                             \
+		.error_count   = 0,                             \
+		.skipped_count = 0,                             \
 	}
 
 #define CUTE_SUITE(_suite_name, _setup, _teardown)                           \
@@ -55,19 +63,28 @@ extern int cute_register_suite(struct cute_suite *parent,
  * Test definition
  ******************************************************************************/
 
-struct cute_result {
-	char *reason;
-	char *line;
-	char *file;
-	char *console;
+enum cute_state {
+	CUTE_SKIPPED_STATE = 0,
+	CUTE_SUCCESS_STATE = 1,
+	CUTE_FAILURE_STATE = 2,
+	CUTE_ERROR_STATE   = 3,
 };
 
-#define CUTE_INIT_RESULT()       \
-	{                        \
-		.reason  = NULL, \
-		.line    = NULL, \
-		.file    = NULL, \
-		.console = NULL, \
+struct cute_result {
+	enum cute_state  state;
+	char            *reason;
+	char            *line;
+	char            *file;
+	char            *console;
+};
+
+#define CUTE_INIT_RESULT()                     \
+	{                                      \
+		.state   = CUTE_SKIPPED_STATE, \
+		.reason  = NULL,               \
+		.line    = NULL,               \
+		.file    = NULL,               \
+		.console = NULL,               \
 	}
 
 typedef void (cute_test_fn)(void);
