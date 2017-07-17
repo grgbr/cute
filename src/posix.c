@@ -1,4 +1,3 @@
-#include "utils.h"
 #include "core.h"
 #include <cute/cute.h>
 #include <stdbool.h>

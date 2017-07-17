@@ -1,5 +1,4 @@
 #include "core.h"
-#include "utils.h"
 #include <cute/cute.h>
 #include <string.h>
 #include <stdio.h>

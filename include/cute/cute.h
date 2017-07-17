@@ -1,10 +1,14 @@
 #ifndef _CUTE_H
 #define _CUTE_H
 
+#include <cute/utils.h>
 #include <stddef.h>
 
 #define _CUTE_STR(_symbol) # _symbol
 #define CUTE_STR(_symbol)  _CUTE_STR(_symbol)
+
+#define __cute_pnp(...) \
+	__section(__VA_ARGS__) __aligned(__SIZEOF_POINTER__) __used
 
 struct cute_object {
 	const char         *name;
@@ -14,10 +18,10 @@ struct cute_object {
 	struct cute_object *youngest;
 };
 
-#define CUTE_INIT_OBJECT(_name)              \
+#define CUTE_INIT_OBJECT(_name, _parent)     \
 	{                                    \
 		.name     = CUTE_STR(_name), \
-		.parent   = NULL,            \
+		.parent   = _parent,         \
 		.next     = NULL,            \
 		.eldest   = NULL,            \
 		.youngest = NULL,            \
@@ -40,21 +44,31 @@ struct cute_suite {
 	unsigned int        skipped_count;
 };
 
-#define CUTE_INIT_SUITE(_suite_name, _setup, _teardown)         \
-	{                                                       \
-		.object        = CUTE_INIT_OBJECT(_suite_name), \
-		.setup         = _setup,                        \
-		.teardown      = _teardown,                     \
-		.total_count   = 0,                             \
-		.success_count = 0,                             \
-		.failure_count = 0,                             \
-		.error_count   = 0,                             \
-		.skipped_count = 0,                             \
+#define CUTE_INIT_SUITE(_suite_name, _parent, _setup, _teardown)         \
+	{                                                                \
+		.object        = CUTE_INIT_OBJECT(_suite_name, _parent), \
+		.setup         = _setup,                                 \
+		.teardown      = _teardown,                              \
+		.total_count   = 0,                                      \
+		.success_count = 0,                                      \
+		.failure_count = 0,                                      \
+		.error_count   = 0,                                      \
+		.skipped_count = 0,                                      \
 	}
 
-#define CUTE_SUITE(_suite_name, _setup, _teardown)                           \
-	struct cute_suite _suite_name = CUTE_INIT_SUITE(_suite_name, _setup, \
-	                                                _teardown)
+#define CUTE_FIXTURED_SUITE(_suite_name, _setup, _teardown) \
+	struct cute_suite _suite_name =                     \
+		CUTE_INIT_SUITE(_suite_name, NULL, _setup, _teardown)
+
+#define CUTE_SUITE(_suite_name) \
+	CUTE_FIXTURED_SUITE(_suite_name, NULL, NULL)
+
+#define CUTE_PNP_FIXTURED_SUITE(_suite_name, _parent, _setup, _teardown) \
+	struct cute_suite _suite_name __cute_pnp("cute_suites") =        \
+		CUTE_INIT_SUITE(_suite_name, _parent, _setup, _teardown)
+
+#define CUTE_PNP_SUITE(_suite_name, _parent) \
+	CUTE_PNP_FIXTURED_SUITE(_suite_name, _parent, NULL, NULL)
 
 extern int cute_register_suite(struct cute_suite *parent,
                                struct cute_suite *suite);
@@ -98,21 +112,35 @@ struct cute_test {
 	struct cute_result  result;
 };
 
-#define CUTE_INIT_TEST(_test_name, _test_function)           \
-	{                                                    \
-		.object  = CUTE_INIT_OBJECT(_test_name),     \
-		.file    = __FILE__,                         \
-		.line    = __LINE__,                         \
-		.timeout = CUTE_DEFAULT_TIMEOUT,             \
-		.run     = _test_function,                   \
-		.result  = CUTE_INIT_RESULT()                \
+#define CUTE_INIT_TEST(_test_name, _suite, _test_function, _timeout)        \
+	{                                                                   \
+		.object  = CUTE_INIT_OBJECT(_test_name, &(_suite)->object), \
+		.file    = __FILE__,                                        \
+		.line    = __LINE__,                                        \
+		.timeout = _timeout,                                        \
+		.run     = _test_function,                                  \
+		.result  = CUTE_INIT_RESULT()                               \
 	}
 
-#define CUTE_TEST(_test_name)                                             \
-	static void _test_name ## __cute_test_fn(void);                   \
-	static struct cute_test _test_name =                              \
-		CUTE_INIT_TEST(_test_name, _test_name ## __cute_test_fn); \
+#define CUTE_TIMED_TEST(_test_name, _timeout)                           \
+	static void _test_name ## __cute_test_fn(void);                 \
+	static struct cute_test _test_name =                            \
+		CUTE_INIT_TEST(_test_name, (struct cute_suite *)NULL,   \
+		               _test_name ## __cute_test_fn, _timeout); \
 	static void _test_name ## __cute_test_fn(void)
+
+#define CUTE_TEST(_test_name) \
+	CUTE_TIMED_TEST(_test_name, CUTE_DEFAULT_TIMEOUT)
+
+#define CUTE_PNP_TIMED_TEST(_test_name, _suite, _timeout)               \
+	static void _test_name ## __cute_test_fn(void);                 \
+	static struct cute_test _test_name __cute_pnp("cute_tests") =   \
+		CUTE_INIT_TEST(_test_name, _suite,                      \
+		               _test_name ## __cute_test_fn, _timeout); \
+	static void _test_name ## __cute_test_fn(void)
+
+#define CUTE_PNP_TEST(_test_name, _suite) \
+	CUTE_PNP_TIMED_TEST(_test_name, _suite, CUTE_DEFAULT_TIMEOUT)
 
 extern void cute_register_test(struct cute_suite *suite,
                                struct cute_test  *test);
@@ -152,5 +180,7 @@ extern int cute_run_test(struct cute_test *test);
 extern int cute_run_suite(struct cute_suite *suite);
 
 extern void cute_fini(void);
+
+extern int cute_main(const char *root_suite_name);
 
 #endif

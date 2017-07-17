@@ -5,9 +5,9 @@
 #include <unistd.h>
 #include <signal.h>
 
-CUTE_SUITE(root, NULL, NULL);
+CUTE_SUITE(root);
 
-CUTE_SUITE(first, NULL, NULL);
+CUTE_SUITE(first);
 
 CUTE_TEST(ok00)
 {
@@ -50,7 +50,7 @@ CUTE_TEST(abrt07)
 	abort();
 }
 
-CUTE_SUITE(second, NULL, NULL);
+CUTE_SUITE(second);
 
 CUTE_TEST(ok10)
 {

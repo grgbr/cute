@@ -1,8 +1,10 @@
 #ifndef _CUTE_CORE_H
 #define _CUTE_CORE_H
 
+#include <stdio.h>
+
 /******************************************************************************
- * Report handling
+ * Reporting
  ******************************************************************************/
 
 struct cute_test;
@@ -27,7 +29,7 @@ struct report {
 extern const struct report *current_report;
 
 /******************************************************************************
- * Run handling
+ * Running
  ******************************************************************************/
 
 typedef void (expect_failed_fn)(const char *line,

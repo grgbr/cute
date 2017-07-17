@@ -42,7 +42,7 @@ CUTE_TEST(term)
 	kill(getpid(), SIGINT);
 }
 
-CUTE_SUITE(root, NULL, NULL);
+CUTE_SUITE(root);
 
 int main(void)
 {
