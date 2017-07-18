@@ -67,15 +67,12 @@ core_list_recurs(const struct cute_object *object)
 }
 
 static int
-core_run_object_recurs(struct cute_object *object)
+core_run_recurs(struct cute_object *object)
 {
 	struct cute_suite  *parent = (struct cute_suite *)object->parent;
 	struct cute_suite  *suite;
 	struct cute_object *obj = object->eldest;
 	int                 err;
-
-	if (!parent)
-		parent = &cute_root_suite;
 
 	if (!obj) {
 		struct cute_test *test = (struct cute_test *)object;
@@ -110,7 +107,7 @@ core_run_object_recurs(struct cute_object *object)
 	report_current->show_suite_begin(suite);
 
 	do {
-		err = core_run_object_recurs(obj);
+		err = core_run_recurs(obj);
 		if (err)
 			break;
 
@@ -236,7 +233,7 @@ cute_run(struct cute_object *object)
 	if (!core_current_run || !report_current)
 		return -EPERM;
 
-	err = core_run_object_recurs(object);
+	err = core_run_recurs(object);
 
 	if (core_issuite_object(object))
 		report_current->show_footer((struct cute_suite *)object, err);
@@ -372,7 +369,7 @@ int
 cute_pnp_main(int argc, char *argv[], const char *root_name)
 {
 	int                 err;
-	bool                list;
+	bool                list = false;
 	const char         *obj_name = NULL;
 	struct cute_object *obj = CUTE_ROOT_OBJECT;
 	unsigned long       timeout = (unsigned long)CUTE_DEFAULT_TIMEOUT;
@@ -441,7 +438,7 @@ cute_pnp_main(int argc, char *argv[], const char *root_name)
 	}
 
 	if (obj_name) {
-		obj = cute_find(NULL, obj_name);
+		obj = cute_find(obj, obj_name);
 		if (!obj) {
 			fprintf(stderr,
 			        "\"%s\" testing object not found\n", obj_name);
