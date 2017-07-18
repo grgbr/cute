@@ -79,21 +79,27 @@ core_run_recurs(struct cute_object *object)
 
 		err = core_current_run->spawn_test(test);
 		if (!err) {
-			switch (test->result.state) {
-			case CUTE_SUCCESS_STATE:
-				parent->success_count++;
-				break;
+			/*
+			 * When running a single test with no declared parent
+			 * suite, don't update statistics.
+			 */
+			if (parent) {
+				switch (test->result.state) {
+				case CUTE_SUCCESS_STATE:
+					parent->success_count++;
+					break;
 
-			case CUTE_FAILURE_STATE:
-				parent->failure_count++;
-				break;
+				case CUTE_FAILURE_STATE:
+					parent->failure_count++;
+					break;
 
-			case CUTE_ERROR_STATE:
-				parent->error_count++;
-				break;
+				case CUTE_ERROR_STATE:
+					parent->error_count++;
+					break;
 
-			default:
-				return -EPROTO;
+				default:
+					return -EPROTO;
+				}
 			}
 
 			report_current->show_test(test);
