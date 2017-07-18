@@ -2,9 +2,10 @@ SRC   := $(CURDIR)/src
 TEST  := $(CURDIR)/test
 BUILD := $(CURDIR)/build
 
-CFLAGS := -Wall -Wextra -D_GNU_SOURCE -MD -O2 -DNDEBUG -I$(CURDIR)/include
+CFLAGS := -Wall -Wextra -D_GNU_SOURCE -DNDEBUG -MD -I$(CURDIR)/include -O2
 
-AR := gcc-ar
+TARGET_CC ?= gcc
+TARGET_AR ?= gcc-ar
 
 test_bin := cute_test_success cute_test_abort cute_test_freeze cute_test_segv \
             cute_test_term cute_test_fail cute_test_assert \
@@ -12,29 +13,45 @@ test_bin := cute_test_success cute_test_abort cute_test_freeze cute_test_segv \
 lib_src  := core.c posix.c report.c
 
 .PHONY: build
-build: $(BUILD)/libcute.a
+build: $(BUILD)/libcute.a $(BUILD)/libcute.so
 
 .PHONY: test
-test: $(addprefix $(BUILD)/,$(test_bin))
+test: $(addprefix $(BUILD)/static/,$(test_bin)) \
+      $(addprefix $(BUILD)/shared/,$(test_bin))
 
 .PHONY: clean
 clean:
-	$(RM) -r $(BUILD)
+	find build/ -name "*.[od]" -delete
 
-$(BUILD)/%: $(BUILD)/%.o $(BUILD)/libcute.a
-	$(CC) $(CFLAGS) -L$(BUILD) -Wl,--strip-all -T $(SRC)/cute.ld -o $@ \
-		$(filter %.o,$^) -lcute
+# Build test with static libcute (use shared version for all other libs )
+$(BUILD)/static/%: $(BUILD)/%.o $(BUILD)/libcute.a
+	$(TARGET_CC) $(CFLAGS) -L$(BUILD) -Wl,--strip-all -T $(SRC)/cute.ld \
+		-o $@ $(filter %.o,$^) -Wl,-static -lcute -Wl,-Bdynamic
 
-$(BUILD)/%.a: $(addprefix $(BUILD)/,$(lib_src:.c=.o))
-	$(AR) crs $@ $(filter-out %.h,$^)
-
-$(BUILD)/%.o: $(SRC)/%.c | $(BUILD)
-	$(CC) $(CFLAGS) -o $@ -c $<
+# Build tests linked with shared libraries
+$(BUILD)/shared/%: $(BUILD)/%.o $(BUILD)/libcute.so
+	$(TARGET_CC) $(CFLAGS) -L$(BUILD) -Wl,--strip-all -T $(SRC)/cute.ld \
+		-o $@ $(filter %.o,$^) -Wl,-Bdynamic -lcute
 
 $(BUILD)/%.o: $(TEST)/%.c | $(BUILD)
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(TARGET_CC) $(CFLAGS) -o $@ -c $<
 
-$(BUILD):
+$(BUILD)/%.a: $(addprefix $(BUILD)/static/,$(lib_src:.c=.o))
+	$(TARGET_AR) crs $@ $(filter-out %.h,$^)
+
+$(BUILD)/static/%.o: $(SRC)/%.c | $(BUILD)/static
+	$(TARGET_CC) $(CFLAGS) -o $@ -c $<
+
+$(BUILD)/%.so: $(addprefix $(BUILD)/shared/,$(lib_src:.c=.o))
+	$(TARGET_CC) $(CFLAGS) -shared -fpic -o $@ $(filter-out %.h,$^)
+
+$(BUILD)/shared/%.o: $(SRC)/%.c | $(BUILD)/shared
+	$(TARGET_CC) $(CFLAGS) -fpic -o $@ -c $<
+
+$(BUILD) $(BUILD)/static $(BUILD)/shared:
 	mkdir -p $@
 
--include $(wildcard $(BUILD)/*.d)
+.SECONDARY:
+
+-include $(wildcard $(BUILD)/static/*.d)
+-include $(wildcard $(BUILD)/shared/*.d)
