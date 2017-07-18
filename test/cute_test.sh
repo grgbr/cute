@@ -5,6 +5,6 @@ builddir=$(realpath $srcdir/../build)
 
 for t in $srcdir/cute_test_*.c; do
 	base=$(basename $t)
-	echo -n "========\n${base%%.c}."
+	echo "======== ${base%%.c} ========"
 	$builddir/${base%%.c}
 done

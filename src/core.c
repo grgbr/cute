@@ -1,15 +1,31 @@
 #include "core.h"
 #include <cute/cute.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
+#include <getopt.h>
 #include <assert.h>
 #include <errno.h>
 
-const struct report *current_report;
-const struct run    *current_run;
+#define CUTE_TIMEOUT_MAX (3600U)
+#define CUTE_NAME_MAX    (256U)
+
+CUTE_SUITE(            cute_root_suite);
+const struct core_run *core_current_run;
+
+/******************************************************************************
+ * Internal stuff
+ ******************************************************************************/
+
+static bool
+core_issuite_object(const struct cute_object *object)
+{
+	return object->eldest && object->youngest;
+}
 
 static void
-cute_register_object(struct cute_object *parent, struct cute_object *child)
+core_register_object(struct cute_object *parent, struct cute_object *child)
 {
 	child->parent = parent;
 	child->next = NULL;
@@ -23,57 +39,48 @@ cute_register_object(struct cute_object *parent, struct cute_object *child)
 	parent->youngest = child;
 }
 
-void
-cute_register_test(struct cute_suite *suite, struct cute_test *test)
-{
-	cute_register_object(&suite->object, &test->object);
-
-	suite->total_count++;
-}
-
 static void
-cute_fini_test(struct cute_test *test)
+core_list_recurs(const struct cute_object *object)
 {
-	struct cute_result *res = &test->result;
+	const struct cute_object *obj = object->eldest;
 
-	free(res->reason);
-	res->reason = NULL;
+	if (!obj) {
+		report_indent(report_indent_depth);
+		printf("%s test\n", object->name);
+		return;
+	}
 
-	free(res->line);
-	res->line = NULL;
+	report_indent(report_indent_depth);
+	printf("%s suite\n", object->name);
 
-	free(res->file);
-	res->file = NULL;
+	report_indent_depth++;
 
-	free(res->console);
-	res->console = NULL;
-}
+	do {
+		core_list_recurs(obj);
 
-int
-cute_register_suite(struct cute_suite *parent, struct cute_suite *suite)
-{
-	if (!suite->total_count)
-		return -ENODATA;
+		obj = obj->next;
+	} while (obj);
 
-	cute_register_object(&parent->object, &suite->object);
+	report_indent(--report_indent_depth);
 
-	parent->total_count += suite->total_count;
-
-	return 0;
+	printf("[total: %u]\n", ((struct cute_suite *)object)->total_count);
 }
 
 static int
-cute_run_object_recurs(struct cute_object *object)
+core_run_object_recurs(struct cute_object *object)
 {
 	struct cute_suite  *parent = (struct cute_suite *)object->parent;
 	struct cute_suite  *suite;
 	struct cute_object *obj = object->eldest;
 	int                 err;
 
+	if (!parent)
+		parent = &cute_root_suite;
+
 	if (!obj) {
 		struct cute_test *test = (struct cute_test *)object;
 
-		err = current_run->spawn_test(test);
+		err = core_current_run->spawn_test(test);
 		if (!err) {
 			switch (test->result.state) {
 			case CUTE_SUCCESS_STATE:
@@ -92,7 +99,7 @@ cute_run_object_recurs(struct cute_object *object)
 				return -EPROTO;
 			}
 
-			current_report->show_test(test);
+			report_current->show_test(test);
 		}
 
 		return err;
@@ -100,10 +107,10 @@ cute_run_object_recurs(struct cute_object *object)
 
 	suite = (struct cute_suite *)object;
 
-	current_report->show_suite_begin(suite);
+	report_current->show_suite_begin(suite);
 
 	do {
-		err = cute_run_object_recurs(obj);
+		err = core_run_object_recurs(obj);
 		if (err)
 			break;
 
@@ -118,81 +125,134 @@ cute_run_object_recurs(struct cute_object *object)
 	}
 
 	if (!err)
-		current_report->show_suite_end((struct cute_suite *)object);
+		report_current->show_suite_end((struct cute_suite *)object);
 
 	return err;
 }
 
 static void
-cute_fini_object_recurs(struct cute_object *object)
+core_fini_test(struct cute_test *test)
+{
+	struct cute_result *res = &test->result;
+
+	free(res->reason);
+	res->reason = NULL;
+
+	free(res->line);
+	res->line = NULL;
+
+	free(res->file);
+	res->file = NULL;
+
+	free(res->console);
+	res->console = NULL;
+}
+
+static void
+core_fini_object_recurs(struct cute_object *object)
 {
 	struct cute_object *obj = object->eldest;
 
 	if (!obj) {
-		cute_fini_test((struct cute_test *)object);
+		core_fini_test((struct cute_test *)object);
 		return;
 	}
 
 	do {
-		cute_fini_object_recurs(obj);
+		core_fini_object_recurs(obj);
 
 		obj = obj->next;
 	} while (obj);
 }
 
-int
-cute_run_suite(struct cute_suite *suite)
-{
-	int err;
-
-	if (!current_run || !current_report)
-		return -EPERM;
-
-	err = cute_run_object_recurs(&suite->object);
-
-	current_report->show_footer(suite, err);
-
-	cute_fini_object_recurs(&suite->object);
-
-	return err;
-}
-
-int
-cute_run_test(struct cute_test *test)
-{
-	int err;
-
-	if (!current_run || !current_report)
-		return -EPERM;
-
-	err = current_run->spawn_test(test);
-
-	if (!err)
-		current_report->show_test(test);
-
-	current_report->show_footer(NULL, err);
-
-	cute_fini_test(test);
-
-	return err;
-}
+/******************************************************************************
+ * Exposed API
+ ******************************************************************************/
 
 void
 cute_expect_failed(const char *line, const char *file, const char *reason)
 {
-	assert(current_run && current_report);
+	assert(core_current_run && report_current);
 
-	current_run->expect_failed(line, file, reason);
+	core_current_run->expect_failed(line, file, reason);
 }
 
 void
-cute_fini(void)
+cute_register_test(struct cute_suite *suite, struct cute_test *test)
 {
-	if (current_run)
-		current_run->fini_run();
+	core_register_object(&suite->object, &test->object);
+
+	suite->total_count++;
 }
 
-static CUTE_SUITE(cute_root_suite);
+int
+cute_register_suite(struct cute_suite *parent, struct cute_suite *suite)
+{
+	if (!suite->total_count)
+		return -ENODATA;
+
+	core_register_object(&parent->object, &suite->object);
+
+	parent->total_count += suite->total_count;
+
+	return 0;
+}
+
+void
+cute_list(const struct cute_object *object)
+{
+	report_indent_depth = 0;
+
+	core_list_recurs(object);
+}
+
+struct cute_object *
+cute_find(struct cute_object *object, const char *name)
+{
+	struct cute_object *obj;
+
+	if (!strncmp(object->name, name, CUTE_NAME_MAX))
+		return object;
+
+	obj = object->eldest;
+	while (obj) {
+		struct cute_object *o;
+
+		o = cute_find(obj, name);
+		if (o)
+			return o;
+
+		obj = obj->next;
+	}
+
+	return NULL;
+}
+
+int
+cute_run(struct cute_object *object)
+{
+	int err;
+
+	if (!core_current_run || !report_current)
+		return -EPERM;
+
+	err = core_run_object_recurs(object);
+
+	if (core_issuite_object(object))
+		report_current->show_footer((struct cute_suite *)object, err);
+	else
+		report_current->show_footer(NULL, err);
+
+	core_fini_object_recurs(object);
+
+	core_current_run->fini_run();
+
+	return err;
+}
+
+/******************************************************************************
+ * Plug aNd Play handling
+ ******************************************************************************/
 
 extern char __start_cute_tests;
 extern char __stop_cute_tests;
@@ -200,7 +260,7 @@ extern char __start_cute_suites;
 extern char __stop_cute_suites;
 
 static struct cute_suite *
-cute_pnp_object_parent(struct cute_object *object)
+pnp_object_parent(struct cute_object *object)
 {
 	struct cute_suite *parent = (struct cute_suite *)object->parent;
 
@@ -218,14 +278,14 @@ cute_pnp_object_parent(struct cute_object *object)
 }
 
 static unsigned long
-cute_pnp_suite_index(const struct cute_suite *suite)
+pnp_suite_index(const struct cute_suite *suite)
 {
 	return ((unsigned long)suite - (unsigned long)&__start_cute_suites) /
 	       sizeof(*suite);
 }
 
 static int
-cute_register_pnp(const char *root_suite_name)
+pnp_register(const char *root_suite_name)
 {
 	unsigned long       nr;
 	struct cute_suite **suites;
@@ -244,14 +304,14 @@ cute_register_pnp(const char *root_suite_name)
 
 	test = (struct cute_test *)&__start_cute_tests;
 	while (test < (struct cute_test *)&__stop_cute_tests) {
-		parent = cute_pnp_object_parent(&test->object);
+		parent = pnp_object_parent(&test->object);
 		if (!parent)
 			return -errno;
 
 		cute_register_test(parent, test);
 
 		if (parent != &cute_root_suite) {
-			suites[cute_pnp_suite_index(parent)] = parent;
+			suites[pnp_suite_index(parent)] = parent;
 			cnt++;
 		}
 
@@ -267,7 +327,7 @@ cute_register_pnp(const char *root_suite_name)
 			if (!suites[s])
 				continue;
 
-			parent = cute_pnp_object_parent(&suites[s]->object);
+			parent = pnp_object_parent(&suites[s]->object);
 			if (!parent)
 				return -errno;
 
@@ -276,7 +336,7 @@ cute_register_pnp(const char *root_suite_name)
 				return err;
 
 			if (parent != &cute_root_suite) {
-				unsigned int p = cute_pnp_suite_index(parent);
+				unsigned int p = pnp_suite_index(parent);
 
 				if (!suites[p]) {
 					suites[p] = parent;
@@ -293,25 +353,114 @@ cute_register_pnp(const char *root_suite_name)
 	return 0;
 }
 
-int
-cute_main(const char *root_suite_name)
+static void
+pnp_usage(const char *me)
 {
-	int err;
+	fprintf(stderr,
+	        "Usage: %s [OPTIONS] [SUITE_NAME|TEST_NAME]\n"
+	        "    SUITE_NAME  run a single suite specified by SUITE_NAME\n"
+	        "    TEST_NAME   run a single test specified by TEST_NAME\n"
+	        "\n"
+	        "where OPTIONS:\n"
+	        "    -l|--list             list available suite tests\n"
+	        "    -t|--timeout SECONDS  default per test timeout in seconds\n"
+	        "    -h|--help\n",
+	        me);
+}
+
+int
+cute_pnp_main(int argc, char *argv[], const char *root_name)
+{
+	int                 err;
+	bool                list;
+	const char         *obj_name = NULL;
+	struct cute_object *obj = CUTE_ROOT_OBJECT;
+	unsigned long       timeout = (unsigned long)CUTE_DEFAULT_TIMEOUT;
+	char               *errptr;
+
+	while (true) {
+		int                        opt;
+		static const struct option lopts[] = {
+			{ "list",     0, NULL, 'l' },
+			{ "timeout",  1, NULL, 't' },
+			{ "help",     0, NULL, 'h' },
+			{ 0,          0, 0,    0   }
+		};
+
+		opt = getopt_long(argc, argv, "lt:h", lopts, NULL);
+		if (opt < 0)
+			break;
+
+		switch (opt) {
+		case 'l':
+			list = true;
+			break;
+
+		case 't':
+			timeout = strtoul(optarg, &errptr, 10);
+			if (*optarg && !*errptr && (timeout < CUTE_TIMEOUT_MAX))
+				break;
+
+			fprintf(stderr,
+			        "invalid \"%s\" timeout argument\n", optarg);
+			pnp_usage(argv[0]);
+			return EXIT_FAILURE;
+
+		case 'h': /* Help message. */
+			pnp_usage(argv[0]);
+			return EXIT_SUCCESS;
+
+		case '?': /* Unknown option. */
+		default:
+			pnp_usage(argv[0]);
+			return EXIT_FAILURE;
+		}
+	}
+
+	argc -= optind;
+
+	switch (argc) {
+	case 1:
+		obj_name = argv[optind];
+		break;
+
+	case 0:
+		break;
+
+	default:
+		fprintf(stderr, "missing argument\n");
+		pnp_usage(argv[0]);
+		return EXIT_FAILURE;
+	}
+
+	err = pnp_register(root_name);
+	if (err) {
+		fprintf(stderr, "failed to register test suites: %s\n",
+		        strerror(-err));
+		return EXIT_FAILURE;
+	}
+
+	if (obj_name) {
+		obj = cute_find(NULL, obj_name);
+		if (!obj) {
+			fprintf(stderr,
+			        "\"%s\" testing object not found\n", obj_name);
+			return EXIT_FAILURE;
+		}
+	}
+
+	if (list) {
+		cute_list(obj);
+		return EXIT_SUCCESS;
+	}
 
 	cute_setup_text_report();
 
-	err = cute_setup_posix_run(CUTE_DEFAULT_TIMEOUT);
-	if (err)
-		return err;
+	err = cute_setup_posix_run((unsigned int)timeout);
+	if (err) {
+		fprintf(stderr, "failed to setup runner: %s\n", strerror(-err));
+		return EXIT_FAILURE;
+	}
 
-	err = cute_register_pnp(root_suite_name);
-	if (err)
-		goto fini;
-
-	err = cute_run_suite(&cute_root_suite);
-
-fini:
-	cute_fini();
-
-	return err;
+	return cute_run(obj) ? EXIT_FAILURE : EXIT_SUCCESS;
 }

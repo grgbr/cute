@@ -14,12 +14,7 @@ int main(void)
 
 	err = cute_setup_posix_run(CUTE_DEFAULT_TIMEOUT);
 	if (err)
-		goto out;
+		return EXIT_FAILURE;
 
-	err = cute_run_test(&segv);
-
-	cute_fini();
-
-out:
-	return err ? EXIT_SUCCESS : EXIT_FAILURE;
+	return cute_run_test(&segv) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

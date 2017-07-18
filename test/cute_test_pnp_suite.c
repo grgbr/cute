@@ -81,7 +81,7 @@ CUTE_PNP_TEST(ok15, &second)
 	cute_ensure(1 == 1);
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
-	return cute_main("root") ? EXIT_FAILURE : EXIT_SUCCESS;
+	return cute_pnp_main(argc, argv, "root");
 }

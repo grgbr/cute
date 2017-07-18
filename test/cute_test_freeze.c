@@ -16,12 +16,7 @@ int main(void)
 
 	err = cute_setup_posix_run(2);
 	if (err)
-		goto out;
+		return EXIT_FAILURE;
 
-	err = cute_run_test(&freeze);
-
-	cute_fini();
-
-out:
-	return err ? EXIT_SUCCESS : EXIT_FAILURE;
+	return cute_run_test(&freeze) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

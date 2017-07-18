@@ -498,7 +498,7 @@ posix_expect_failed(const char *line, const char *file, const char *reason)
 	exit(EXIT_FAILURE);
 }
 
-static const struct run posix_run = {
+static const struct core_run posix_run = {
 	.expect_failed = posix_expect_failed,
 	.spawn_test    = posix_spawn_test,
 	.fini_run      = posix_fini_run,
@@ -513,7 +513,7 @@ cute_setup_posix_run(unsigned int default_timeout)
 	if (err)
 		return err;
 
-	current_run = &posix_run;
+	core_current_run = &posix_run;
 
 	return 0;
 }

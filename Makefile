@@ -2,7 +2,7 @@ SRC   := $(CURDIR)/src
 TEST  := $(CURDIR)/test
 BUILD := $(CURDIR)/build
 
-CFLAGS := -Wall -Wextra -D_GNU_SOURCE -MD -O0 -ggdb3 -I$(CURDIR)/include
+CFLAGS := -Wall -Wextra -D_GNU_SOURCE -MD -O2 -DNDEBUG -I$(CURDIR)/include
 
 AR := gcc-ar
 
@@ -22,7 +22,7 @@ clean:
 	$(RM) -r $(BUILD)
 
 $(BUILD)/%: $(BUILD)/%.o $(BUILD)/libcute.a
-	$(CC) $(CFLAGS) -L$(BUILD) -T $(SRC)/cute.ld -o $@ \
+	$(CC) $(CFLAGS) -L$(BUILD) -Wl,--strip-all -T $(SRC)/cute.ld -o $@ \
 		$(filter %.o,$^) -lcute
 
 $(BUILD)/%.a: $(addprefix $(BUILD)/,$(lib_src:.c=.o))
