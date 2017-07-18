@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <assert.h>
 
-static unsigned int text_indent;
+unsigned int         report_indent_depth;
+const struct report *report_current;
 
-static void text_show_indent(unsigned int indent)
+void report_indent(unsigned int indent)
 {
 	while (indent--)
 		printf("    ");
@@ -16,7 +17,7 @@ static void text_show_test(const struct cute_test *test)
 {
 	const struct cute_result *res = &test->result;
 
-	text_show_indent(text_indent);
+	report_indent(report_indent_depth);
 	printf("%-28.28s", test->object.name);
 
 	switch (res->state) {
@@ -30,9 +31,9 @@ static void text_show_test(const struct cute_test *test)
 
 	case CUTE_FAILURE_STATE:
 		printf("  failure\n");
-		text_show_indent(text_indent + 1);
+		report_indent(report_indent_depth + 1);
 		printf("@%s:%s\n", res->file, res->line);
-		text_show_indent(text_indent + 1);
+		report_indent(report_indent_depth + 1);
 		printf("%s\n", res->reason);
 		break;
 
@@ -50,17 +51,17 @@ static void text_show_test(const struct cute_test *test)
 
 static void text_show_suite_begin(const struct cute_suite *suite)
 {
-	text_show_indent(text_indent);
+	report_indent(report_indent_depth);
 
 	printf("Running %s suite...\n", suite->object.name);
 
-	text_indent++;
+	report_indent_depth++;
 }
 
 static void text_show_suite_end(const struct cute_suite *suite)
 {
-	text_indent--;
-	text_show_indent(text_indent);
+	report_indent_depth--;
+	report_indent(report_indent_depth);
 
 	printf("Completed %s suite [total:%u, success:%u, failures:%u, "
 	       "errors:%u, skipped:%u]\n",
@@ -85,7 +86,7 @@ const struct report text_report = {
 void
 cute_setup_text_report(void)
 {
-	text_indent = 0;
+	report_indent_depth = 0;
 
-	current_report = &text_report;
+	report_current = &text_report;
 }

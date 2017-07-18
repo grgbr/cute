@@ -4,11 +4,27 @@
 #include <cute/utils.h>
 #include <stddef.h>
 
-#define _CUTE_STR(_symbol) # _symbol
-#define CUTE_STR(_symbol)  _CUTE_STR(_symbol)
+/******************************************************************************
+ * Assertion
+ ******************************************************************************/
 
-#define __cute_pnp(...) \
-	__section(__VA_ARGS__) __aligned(__SIZEOF_POINTER__) __used
+extern void cute_expect_failed(const char *line,
+                               const char *file,
+                               const char *reason);
+
+#define cute_ensure(_expect)                                   \
+	({                                                     \
+		if (!(_expect))                                \
+			cute_expect_failed(CUTE_STR(__LINE__), \
+			                   __FILE__,           \
+			                   CUTE_STR(_expect)); \
+	 })
+
+/******************************************************************************
+ * Base testing object
+ ******************************************************************************/
+
+#define CUTE_ROOT_OBJECT (&cute_root_suite.object);
 
 struct cute_object {
 	const char         *name;
@@ -27,6 +43,13 @@ struct cute_object {
 		.youngest = NULL,            \
 	}
 
+extern int cute_run(struct cute_object *object);
+
+extern void cute_list(const struct cute_object *object);
+
+extern struct cute_object * cute_find(struct cute_object *object,
+                                      const char         *name);
+
 /******************************************************************************
  * Suite definition
  ******************************************************************************/
@@ -43,6 +66,8 @@ struct cute_suite {
 	unsigned int        error_count;
 	unsigned int        skipped_count;
 };
+
+extern struct cute_suite cute_root_suite;
 
 #define CUTE_INIT_SUITE(_suite_name, _parent, _setup, _teardown)         \
 	{                                                                \
@@ -72,6 +97,12 @@ struct cute_suite {
 
 extern int cute_register_suite(struct cute_suite *parent,
                                struct cute_suite *suite);
+
+static inline int
+cute_run_suite(struct cute_suite *suite)
+{
+	return cute_run(&suite->object);
+}
 
 /******************************************************************************
  * Test definition
@@ -145,42 +176,22 @@ struct cute_test {
 extern void cute_register_test(struct cute_suite *suite,
                                struct cute_test  *test);
 
-/******************************************************************************
- * Assertion
- ******************************************************************************/
-
-extern void cute_expect_failed(const char *line,
-                               const char *file,
-                               const char *reason);
-
-#define cute_ensure(_expect)                                   \
-	({                                                     \
-		if (!(_expect))                                \
-			cute_expect_failed(CUTE_STR(__LINE__), \
-			                   __FILE__,           \
-			                   CUTE_STR(_expect)); \
-	 })
+static inline int
+cute_run_test(struct cute_test *test)
+{
+	return cute_run(&test->object);
+}
 
 /******************************************************************************
- * Reporting
- ******************************************************************************/
-
-extern void cute_setup_text_report(void);
-
-/******************************************************************************
- * Running
+ * High level API
  ******************************************************************************/
 
 #define CUTE_DEFAULT_TIMEOUT (0U)
 
+extern void cute_setup_text_report(void);
+
 extern int cute_setup_posix_run(unsigned int default_timeout);
 
-extern int cute_run_test(struct cute_test *test);
-
-extern int cute_run_suite(struct cute_suite *suite);
-
-extern void cute_fini(void);
-
-extern int cute_main(const char *root_suite_name);
+extern int cute_pnp_main(int argc, char *argv[], const char *root_name);
 
 #endif
