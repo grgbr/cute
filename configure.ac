@@ -86,4 +86,22 @@ AC_HEADER_ASSERT
 dnl generate all files specified by AC_CONFIG_ macros
 AC_OUTPUT
 
-make help
+dnl Small macro to print out a nice, pretty section title.
+define(SECTION_TITLE,
+[
+	echo >& AS_MESSAGE_FD
+	echo '   $1   ' | sed -e's/./-/g' >&AS_MESSAGE_FD
+	echo '   $1' >& AS_MESSAGE_FD
+	echo '   $1   ' | sed -e's/./-/g' >&AS_MESSAGE_FD
+	echo >& AS_MESSAGE_FD
+])
+
+SECTION_TITLE([Configuration results])
+echo "prefix       $prefix" >& AS_MESSAGE_FD
+echo "exec_prefix  $exec_prefix" >& AS_MESSAGE_FD
+echo "bindir       $bindir" >& AS_MESSAGE_FD
+echo "libdir       $libdir" >& AS_MESSAGE_FD
+echo "includedir   $includedir" >& AS_MESSAGE_FD
+echo "libexecdir   $libexecdir" >& AS_MESSAGE_FD
+echo "" >& AS_MESSAGE_FD
+echo "assertions   $ac_enable_assert" >& AS_MESSAGE_FD

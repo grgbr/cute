@@ -83,7 +83,6 @@ distclean: clean
 
 .PHONY: help
 help:
-	@echo ""
 	@echo "Build configuration:"
 	@echo "  prefix         $(prefix)"
 	@echo "  exec_prefix    $(exec_prefix)"
