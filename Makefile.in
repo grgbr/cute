@@ -1,5 +1,5 @@
 #
-# Autoconf + autoscan approache (no libtool / automake combination)
+# Autoconf + autoscan approach (no libtool / automake combination)
 # Inspired by http://www.sax.de/unix-stammtisch/docs/autotools/autotools.html
 #
 
@@ -9,20 +9,27 @@ TEST    := $(TOP)/test
 BUILD   := $(CURDIR)/build
 INCLUDE := $(TOP)/include
 
+HOST           := @build@
+TARGET         := @host@
 TARGET_CC      := @CC@
 TARGET_AR      := @AR@
 TARGET_CFLAGS  := @CFLAGS@ -Wall -Wextra -D_GNU_SOURCE -DNDEBUG -MD -I$(INCLUDE)
 TARGET_LDFLAGS := @LDFLAGS@ -L$(BUILD)
 
-SHELL        := @SHELL@
-MKDIR_P      := @MKDIR_P@
-INSTALL      := @INSTALL@
+SHELL                 := @SHELL@
+MKDIR_P               := @MKDIR_P@
+INSTALL               := @INSTALL@
+INSTALL_PROGRAM       := @INSTALL_PROGRAM@
+INSTALL_STRIP_PROGRAM := @INSTALL_STRIP_PROGRAM@
+INSTALL_SCRIPT        := @INSTALL_SCRIPT@
+INSTALL_DATA          := @INSTALL_DATA@
 
 prefix       := @prefix@
 exec_prefix  := @exec_prefix@
 bindir       := @bindir@
 libdir       := @libdir@
 includedir   := @includedir@
+libexecdir   := @libexecdir@
 
 test_bin := cute_test_success cute_test_abort cute_test_freeze cute_test_segv \
             cute_test_term cute_test_fail cute_test_assert \
@@ -30,66 +37,185 @@ test_bin := cute_test_success cute_test_abort cute_test_freeze cute_test_segv \
 lib_src  := core.c posix.c report.c
 headers  := cute/cute.h cute/utils.h
 
-.PHONY: all
-all: $(BUILD)/libcute.a $(BUILD)/libcute.so
+################################################################################
+# Top-level targets
+################################################################################
 
-.PHONY: test
-test: $(addprefix $(BUILD)/static/,$(test_bin)) \
-      $(addprefix $(BUILD)/shared/,$(test_bin))
+.PHONY: all
+all: $(BUILD)/libcute.a $(BUILD)/libcute.so \
+     $(addprefix $(BUILD)/static/,$(test_bin)) \
+     $(addprefix $(BUILD)/shared/,$(test_bin))
+
+ifeq ($(HOST),$(TARGET))
+# Native build: tests may be run onto build host...
+.PHONY: check
+check: $(addprefix $(BUILD)/static/,$(test_bin)) \
+       $(addprefix $(BUILD)/shared/,$(test_bin))
+	env LD_LIBRARY_PATH="$(BUILD):$(LD_LIBRARY_PATH)" \
+		testbindir="$(BUILD)" \
+		$(TEST)/cute_test.sh
+else
+# Cross compiling: user must rely upon install-check to install tests so that
+# they may be run onto final target.
+check:
+	$(warning ***check target disabled since cross compiling)
+endif
 
 .PHONY: install
-install: install-lib
+install: install-exec
 
-.PHONY: install-lib
-install-lib: $(BUILD)/libcute.a $(BUILD)/libcute.so
-	echo $(INSTALL) -D -t $(DESTDIR)$(libdir) $^
-
-.PHONY: install-include
-install-include: $(addprefix $(DESTDIR)$(includedir)/,$(headers))
+.PHONY: uninstall
+uninstall:
+	$(RM) $(addprefix $(DESTDIR)$(libdir)/,libcute.a libcute.so) \
+	      $(DESTDIR)$(bindir)/cute_test.sh \
+	$(RM) -r $(DESTDIR)$(includedir) \
+	         $(DESTDIR)$(libdir)/cute \
+	         $(DESTDIR)$(libexecdir)/cute
 
 .PHONY: clean
 clean:
-	find $(BUILD) \( -name "*.[oda]" -o -name "*.so" \) -delete
+	-find $(BUILD) \( -name "*.[oda]" -o -name "*.so" \) -delete
 
 .PHONY: distclean
 distclean: clean
 	$(RM) Makefile config.h config.log config.status stamp-h1
 
-# Install header
-$(DESTDIR)$(includedir)/%.h: $(INCLUDE)/%.h
-	echo $(INSTALL) -D $< $@
+.PHONY: help
+help:
+	@echo ""
+	@echo "Build configuration:"
+	@echo "  prefix         $(prefix)"
+	@echo "  exec_prefix    $(exec_prefix)"
+	@echo "  bindir         $(bindir)"
+	@echo "  libdir         $(libdir)"
+	@echo "  includedir     $(includedir)"
+	@echo "  libexecdir     $(libexecdir)"
+	@echo ""
+	@echo "Available targets:"
+	@echo "  all            build library and tests"
+	@echo "  install        run install-exec target"
+	@echo "  install-exec   install library"
+	@echo "  install-dev    install development files"
+	@echo "  install-check  install tests"
+	@echo "  uninstall      remove all installed files"
+ifeq ($(HOST),$(TARGET))
+	@echo "  check          run tests"
+endif
+	@echo "  clean          cleanup build objects"
+	@echo "  distclean      cleanup build and configuration objects"
+	@echo "  help           this help message"
 
-# Build test with static libcute (use shared version for all other libs )
-$(BUILD)/static/%: $(BUILD)/%.o $(BUILD)/libcute.a
+################################################################################
+# Build / install libraries
+################################################################################
+
+.PHONY: install-exec
+install-exec: $(DESTDIR)$(libdir)/libcute.a $(DESTDIR)$(libdir)/libcute.so \
+              | $(DESTDIR)$(libdir)
+
+$(DESTDIR)$(libdir)/libcute%: $(BUILD)/libcute% \
+                              | $(DESTDIR)$(libdir)
+	$(INSTALL_DATA) -T $< $@
+
+$(BUILD)/%.a: $(addprefix $(BUILD)/static/,$(lib_src:.c=.o))
+	$(TARGET_AR) crs $@ $(filter-out %.h,$^)
+
+$(BUILD)/%.so: $(addprefix $(BUILD)/shared/,$(lib_src:.c=.o))
+	$(TARGET_CC) $(TARGET_CFLAGS) -shared -fpic -o $@ $(filter-out %.h,$^)
+
+$(DESTDIR)$(libdir):
+	$(MKDIR_P) -m755 $@
+
+################################################################################
+# Install development files
+################################################################################
+
+.PHONY: install-dev
+install-dev: $(addprefix $(DESTDIR)$(includedir)/,$(headers)) \
+             $(DESTDIR)$(libdir)/cute/cute.lds
+
+# Install header
+$(DESTDIR)$(includedir)/%.h: $(INCLUDE)/%.h \
+                             | $(DESTDIR)$(includedir)/cute
+	$(INSTALL_DATA) -T $< $@
+
+# Install linker script
+$(DESTDIR)$(libdir)/cute/cute.lds: $(SRC)/cute.lds \
+                                   | $(DESTDIR)$(libdir)/cute
+	$(INSTALL_DATA) -T $< $@
+
+$(DESTDIR)$(includedir)/cute $(DESTDIR)$(libdir)/cute:
+	$(MKDIR_P) -m755 $@
+
+################################################################################
+# Build / install testing files
+################################################################################
+
+.PHONY: install-check
+install-check: $(addprefix $(DESTDIR)$(libexecdir)/cute/static/,$(test_bin)) \
+               $(addprefix $(DESTDIR)$(libexecdir)/cute/shared/,$(test_bin)) \
+               $(DESTDIR)$(bindir)/cute_test.sh
+
+# Install statically linked test binaries
+$(DESTDIR)$(libexecdir)/cute/static/%: $(BUILD)/static/% \
+                                       | $(DESTDIR)$(libexecdir)/cute/static
+	$(INSTALL_PROGRAM) -m755 -T $< $@
+
+# Install dynamically linked test binaries
+$(DESTDIR)$(libexecdir)/cute/shared/%: $(BUILD)/shared/% \
+                                       | $(DESTDIR)$(libexecdir)/cute/shared
+	$(INSTALL_PROGRAM) -m755 -T $< $@
+
+# Install top-level test script
+$(DESTDIR)$(bindir)/cute_test.sh: $(BUILD)/cute_test.sh \
+                                  | $(DESTDIR)$(bindir)
+	$(INSTALL_SCRIPT) -m755 -T $< $@
+	# 
+# Build top-level test script
+$(BUILD)/cute_test.sh: $(TEST)/cute_test.sh | $(BUILD)
+	sed -e 's;__LIBEXECDIR__;$(libexecdir);' $< > $@
+
+# Build test with static libcute (use shared version for all other libs)
+$(BUILD)/static/%: $(BUILD)/%.o $(BUILD)/libcute.a $(SRC)/cute.lds
 	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) \
-		-Wl,--strip-all -T $(SRC)/cute.ld \
+		-Wl,--strip-all -T $(SRC)/cute.lds \
 		-o $@ $(filter %.o,$^) -Wl,-static -lcute -Wl,-Bdynamic
 
-# Build tests linked with shared libraries
-$(BUILD)/shared/%: $(BUILD)/%.o $(BUILD)/libcute.so
+# Build test with shared libcute
+$(BUILD)/shared/%: $(BUILD)/%.o $(BUILD)/libcute.so $(SRC)/cute.lds
 	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) \
-		-Wl,--strip-all -T $(SRC)/cute.ld \
+		-Wl,--strip-all -T $(SRC)/cute.lds \
 		-o $@ $(filter %.o,$^) -Wl,-Bdynamic -lcute
 
 $(BUILD)/%.o: $(TEST)/%.c | $(BUILD)
 	$(TARGET_CC) $(TARGET_CFLAGS) -o $@ -c $<
 
-$(BUILD)/%.a: $(addprefix $(BUILD)/static/,$(lib_src:.c=.o))
-	$(TARGET_AR) crs $@ $(filter-out %.h,$^)
+$(DESTDIR)$(bindir) \
+$(DESTDIR)$(libexecdir)/cute/static \
+$(DESTDIR)$(libexecdir)/cute/shared:
+	$(MKDIR_P) -m755 $@
 
+################################################################################
+# Build commom objects
+################################################################################
+
+# for static linking
 $(BUILD)/static/%.o: $(SRC)/%.c | $(BUILD)/static
 	$(TARGET_CC) $(TARGET_CFLAGS) -o $@ -c $<
 
-$(BUILD)/%.so: $(addprefix $(BUILD)/shared/,$(lib_src:.c=.o))
-	$(TARGET_CC) $(TARGET_CFLAGS) -shared -fpic -o $@ $(filter-out %.h,$^)
-
+# for dynamic linking
 $(BUILD)/shared/%.o: $(SRC)/%.c | $(BUILD)/shared
 	$(TARGET_CC) $(TARGET_CFLAGS) -fpic -o $@ -c $<
+
+################################################################################
+# Various
+################################################################################
 
 $(BUILD) $(BUILD)/static $(BUILD)/shared:
 	$(MKDIR_P) $@
 
 .SECONDARY:
 
+# Include source dependencies
 -include $(wildcard $(BUILD)/static/*.d)
 -include $(wildcard $(BUILD)/shared/*.d)

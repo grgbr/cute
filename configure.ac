@@ -6,7 +6,7 @@ AC_INIT([cute], [0.1])
 
 dnl Ensure src/cute.ld is there to make sure that the directory that it is told
 dnl contains the source code in fact does.
-AC_CONFIG_SRCDIR([src/cute.ld])
+AC_CONFIG_SRCDIR([src/cute.lds])
 
 dnl Locate auxiliary build tools in a separate directory
 AC_CONFIG_AUX_DIR([build-aux])
@@ -60,3 +60,5 @@ AC_HEADER_ASSERT
 
 dnl generate Makefile
 AC_OUTPUT
+
+make help
