@@ -1,3 +1,3 @@
-autoreconf -ivf
-autoheader --force
-automake --add-missing --copy
+#!/bin/sh
+
+autoreconf -if
