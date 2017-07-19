@@ -13,8 +13,9 @@ HOST           := @build@
 TARGET         := @host@
 TARGET_CC      := @CC@
 TARGET_AR      := @AR@
-TARGET_CFLAGS  := @CFLAGS@ -Wall -Wextra -D_GNU_SOURCE -DNDEBUG -MD -I$(INCLUDE)
-TARGET_LDFLAGS := @LDFLAGS@ -L$(BUILD)
+TARGET_CFLAGS  := -I$(INCLUDE) -include config.h @CFLAGS@ -Wall -Wextra \
+                  -Werror=attributes -MD
+TARGET_LDFLAGS := -L$(BUILD) @LDFLAGS@
 
 SHELL                 := @SHELL@
 MKDIR_P               := @MKDIR_P@
@@ -45,7 +46,6 @@ headers  := cute/cute.h cute/utils.h
 all: $(BUILD)/libcute.a $(BUILD)/libcute.so \
      $(addprefix $(BUILD)/static/,$(test_bin)) \
      $(addprefix $(BUILD)/shared/,$(test_bin))
-	echo $^
 
 ifeq ($(HOST),$(TARGET))
 # Native build: tests may be run onto build host...
@@ -189,7 +189,7 @@ $(BUILD)/shared/%: $(BUILD)/%.o $(BUILD)/libcute.so $(SRC)/cute.lds
 		-o $@ $(filter %.o,$^) -Wl,-Bdynamic -lcute
 
 $(BUILD)/%.o: $(TEST)/%.c Makefile | $(BUILD)
-	$(TARGET_CC) $(TARGET_CFLAGS) -o $@ -c $<
+	$(TARGET_CC) $(TARGET_CFLAGS) @NO_TOPLEVEL_REORDER_CFLAGS@ -o $@ -c $<
 
 $(DESTDIR)$(bindir) \
 $(DESTDIR)$(libexecdir)/cute/static \

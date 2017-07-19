@@ -8,6 +8,9 @@ dnl Ensure src/cute.ld is there to make sure that the directory that it is told
 dnl contains the source code in fact does.
 AC_CONFIG_SRCDIR([src/cute.lds])
 
+dnl Tell autoconf where to search for additional macros
+AC_CONFIG_MACRO_DIR([m4])
+
 dnl Locate auxiliary build tools in a separate directory
 AC_CONFIG_AUX_DIR([build-aux])
 
@@ -33,14 +36,32 @@ AC_PROG_INSTALL
 AC_PROG_MKDIR_P
 
 dnl Check presence of a working compiler with GNU extensions if available
-AC_GNU_SOURCE
+dnl and generate _GNU_SOURCE CFLAGS accordingly into config.h
+AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CC
 
-# Check compiler characteristics and requires GNU extensions
+dnl Check compiler characteristics and requires GNU extensions
 AC_PROG_CC_STDC
 AC_C_CONST
 AC_C_RESTRICT
 AC_C_INLINE
+
+dnl Check wether compiler allows us to prevent from top-level statements
+dnl reordering
+NO_TOPLEVEL_REORDER_CFLAGS=""
+
+dnl Check __attribute__((no_reorder)) support first
+AX_GCC_VAR_ATTRIBUTE([no_reorder])
+if test "x$ax_cv_have_var_attribute_no_reorder" != xyes; then
+	dnl no_reorder attribute not supported, try -fno-toplevel-reorder
+	dnl compiler option
+	AX_CHECK_COMPILE_FLAG([-fno-toplevel-reorder],
+	                      [NO_TOPLEVEL_REORDER_CFLAGS="-fno-toplevel-reorder"],
+	                      [AC_MSG_ERROR([neither -fno-toplevel-reorder nor __attribute__((no_reorder)) supported])])
+fi
+dnl Now that NO_TOPLEVEL_REORDER_CFLAGS is properly set, allow substitution
+dnl within Makefile.in
+AC_SUBST(NO_TOPLEVEL_REORDER_CFLAGS)
 
 # Checks for typedefs, structures, and header files.
 AC_CHECK_HEADER_STDBOOL
@@ -58,7 +79,8 @@ for func in alarm dup2 asprintf strdup strerror strndup strtoul; do
 	AC_CHECK_FUNCS([$func],, AC_MSG_ERROR([$func function not found]))
 done
 
-dnl Check assert.h, will also add the --disable-assert option
+dnl Check assert.h, will also add the --disable-assert option and generate
+dnl NDEBUG CFLAGS accordingly into config.h
 AC_HEADER_ASSERT
 
 dnl generate all files specified by AC_CONFIG_ macros

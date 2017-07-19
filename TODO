@@ -1,6 +1,4 @@
 autoconf:
 * configuration result at end of configure
 * refine CFLAGS and co
-* assert.h handling
-* config.h options support
 * debianize
