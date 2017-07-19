@@ -18,6 +18,9 @@ AM_INIT_AUTOMAKE
 dnl Generate Makefile from Makefile.in
 AC_CONFIG_FILES([Makefile])
 
+dnl So that config.status ensures that config.h is considered up to date
+AC_CONFIG_FILES([stamp-h], [echo timestamp > stamp-h])
+
 dnl Generate config.h.in using autoreconf / autoheader
 AC_CONFIG_HEADERS([config.h])
 
@@ -58,7 +61,7 @@ done
 dnl Check assert.h, will also add the --disable-assert option
 AC_HEADER_ASSERT
 
-dnl generate Makefile
+dnl generate all files specified by AC_CONFIG_ macros
 AC_OUTPUT
 
 make help
