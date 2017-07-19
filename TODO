@@ -1,4 +1,3 @@
 autoconf:
-* configuration result at end of configure
 * refine CFLAGS and co
 * debianize
