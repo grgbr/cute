@@ -1,7 +1,6 @@
 autoconf:
 * configuration result at end of configure
 * configure dependencies
-* hide autoreconf warnings
 * refine CFLAGS and co
 * assert.h handling
 * config.h options support

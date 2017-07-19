@@ -2,6 +2,8 @@
 
 # Autoreconf will produce necessary files needed to run configure.
 # It will complain (and fail) since we use no Makefile.am setup...
+cd $(dirname $0)
+echo timestamp > stamp-h.in
 autoreconf --install --force >/dev/null 2>&1 || :;
 
 # Generate autoconf macros into aclocal.m4, otherwise they will not be seen
