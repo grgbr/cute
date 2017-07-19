@@ -1,29 +1,63 @@
-SRC     := $(CURDIR)/src
-TEST    := $(CURDIR)/test
-BUILD   := $(CURDIR)/build
-INCLUDE := $(CURDIR)/include
+#
+# Autoconf + autoscan approache (no libtool / automake combination)
+# Inspired by http://www.sax.de/unix-stammtisch/docs/autotools/autotools.html
+#
 
-TARGET_CFLAGS  := @CFLAGS@ -Wall -Wextra -D_GNU_SOURCE -DNDEBUG -MD -I$(INCLUDE)
-TARGET_LDFLAGS := @LDFLAGS@ -L$(BUILD)
+TOP     := @srcdir@
+SRC     := $(TOP)/src
+TEST    := $(TOP)/test
+BUILD   := $(CURDIR)/build
+INCLUDE := $(TOP)/include
 
 TARGET_CC      := @CC@
 TARGET_AR      := @AR@
+TARGET_CFLAGS  := @CFLAGS@ -Wall -Wextra -D_GNU_SOURCE -DNDEBUG -MD -I$(INCLUDE)
+TARGET_LDFLAGS := @LDFLAGS@ -L$(BUILD)
+
+SHELL        := @SHELL@
+MKDIR_P      := @MKDIR_P@
+INSTALL      := @INSTALL@
+
+prefix       := @prefix@
+exec_prefix  := @exec_prefix@
+bindir       := @bindir@
+libdir       := @libdir@
+includedir   := @includedir@
 
 test_bin := cute_test_success cute_test_abort cute_test_freeze cute_test_segv \
             cute_test_term cute_test_fail cute_test_assert \
             cute_test_root_suite cute_test_complex_suite cute_test_pnp_suite
 lib_src  := core.c posix.c report.c
+headers  := cute/cute.h cute/utils.h
 
-.PHONY: build
-build: $(BUILD)/libcute.a $(BUILD)/libcute.so
+.PHONY: all
+all: $(BUILD)/libcute.a $(BUILD)/libcute.so
 
 .PHONY: test
 test: $(addprefix $(BUILD)/static/,$(test_bin)) \
       $(addprefix $(BUILD)/shared/,$(test_bin))
 
+.PHONY: install
+install: install-lib
+
+.PHONY: install-lib
+install-lib: $(BUILD)/libcute.a $(BUILD)/libcute.so
+	echo $(INSTALL) -D -t $(DESTDIR)$(libdir) $^
+
+.PHONY: install-include
+install-include: $(addprefix $(DESTDIR)$(includedir)/,$(headers))
+
 .PHONY: clean
 clean:
-	find build/ -name "*.[od]" -delete
+	find $(BUILD) \( -name "*.[oda]" -o -name "*.so" \) -delete
+
+.PHONY: distclean
+distclean: clean
+	$(RM) Makefile config.h config.log config.status stamp-h1
+
+# Install header
+$(DESTDIR)$(includedir)/%.h: $(INCLUDE)/%.h
+	echo $(INSTALL) -D $< $@
 
 # Build test with static libcute (use shared version for all other libs )
 $(BUILD)/static/%: $(BUILD)/%.o $(BUILD)/libcute.a
@@ -53,7 +87,7 @@ $(BUILD)/shared/%.o: $(SRC)/%.c | $(BUILD)/shared
 	$(TARGET_CC) $(TARGET_CFLAGS) -fpic -o $@ -c $<
 
 $(BUILD) $(BUILD)/static $(BUILD)/shared:
-	mkdir -p $@
+	$(MKDIR_P) $@
 
 .SECONDARY:
 
