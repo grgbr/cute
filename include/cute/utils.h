@@ -11,7 +11,11 @@
  * Prevent reordering of top-level statements for optimization purposes (see
  * -fno-toplevel-reorder gcc option.
  */
+#if HAVE_VAR_ATTRIBUTE_NO_REORDER == 1
 #define __noreorder    __attribute__((no_reorder))
+#else
+#define __noreorder
+#endif
 
 #define _CUTE_STR(_symbol) # _symbol
 #define CUTE_STR(_symbol)  _CUTE_STR(_symbol)
