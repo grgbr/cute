@@ -1,14 +1,19 @@
 #!/bin/sh
 
-srcdir=$(dirname $(realpath $0))
-builddir=$(realpath $srcdir/../build)
+if [ -z "$testbindir" ]; then
+	testbindir=__LIBEXECDIR__/cute
+fi
 
-for t in $srcdir/cute_test_*.c; do
+for t in $testbindir/static/cute_test_*; do
 	base=$(basename $t)
-	echo "======== static ${base%%.c} ====================================="
-	$builddir/static/${base%%.c}
+	echo "======== static $base ========"
+	$t
 	echo
-	echo "======== shared ${base%%.c} ====================================="
-	env LD_LIBRARY_PATH=$builddir $builddir/shared/${base%%.c}
+done
+
+for t in $testbindir/shared/cute_test_*; do
+	base=$(basename $t)
+	echo "======== shared $base ========"
+	$t
 	echo
 done
