@@ -45,6 +45,7 @@ headers  := cute/cute.h cute/utils.h
 all: $(BUILD)/libcute.a $(BUILD)/libcute.so \
      $(addprefix $(BUILD)/static/,$(test_bin)) \
      $(addprefix $(BUILD)/shared/,$(test_bin))
+	echo $^
 
 ifeq ($(HOST),$(TARGET))
 # Native build: tests may be run onto build host...
@@ -78,7 +79,7 @@ clean:
 
 .PHONY: distclean
 distclean: clean
-	$(RM) Makefile config.h config.log config.status stamp-h1
+	$(RM) Makefile config.h config.log config.status stamp-h stamp-h1
 
 .PHONY: help
 help:
@@ -135,12 +136,12 @@ install-dev: $(addprefix $(DESTDIR)$(includedir)/,$(headers)) \
              $(DESTDIR)$(libdir)/cute/cute.lds
 
 # Install header
-$(DESTDIR)$(includedir)/%.h: $(INCLUDE)/%.h \
+$(DESTDIR)$(includedir)/%.h: $(INCLUDE)/%.h Makefile \
                              | $(DESTDIR)$(includedir)/cute
 	$(INSTALL_DATA) -T $< $@
 
 # Install linker script
-$(DESTDIR)$(libdir)/cute/cute.lds: $(SRC)/cute.lds \
+$(DESTDIR)$(libdir)/cute/cute.lds: $(SRC)/cute.lds Makefile \
                                    | $(DESTDIR)$(libdir)/cute
 	$(INSTALL_DATA) -T $< $@
 
@@ -170,9 +171,9 @@ $(DESTDIR)$(libexecdir)/cute/shared/%: $(BUILD)/shared/% \
 $(DESTDIR)$(bindir)/cute_test.sh: $(BUILD)/cute_test.sh \
                                   | $(DESTDIR)$(bindir)
 	$(INSTALL_SCRIPT) -m755 -T $< $@
-	# 
+
 # Build top-level test script
-$(BUILD)/cute_test.sh: $(TEST)/cute_test.sh | $(BUILD)
+$(BUILD)/cute_test.sh: $(TEST)/cute_test.sh Makefile | $(BUILD)
 	sed -e 's;__LIBEXECDIR__;$(libexecdir);' $< > $@
 
 # Build test with static libcute (use shared version for all other libs)
@@ -187,7 +188,7 @@ $(BUILD)/shared/%: $(BUILD)/%.o $(BUILD)/libcute.so $(SRC)/cute.lds
 		-Wl,--strip-all -T $(SRC)/cute.lds \
 		-o $@ $(filter %.o,$^) -Wl,-Bdynamic -lcute
 
-$(BUILD)/%.o: $(TEST)/%.c | $(BUILD)
+$(BUILD)/%.o: $(TEST)/%.c Makefile | $(BUILD)
 	$(TARGET_CC) $(TARGET_CFLAGS) -o $@ -c $<
 
 $(DESTDIR)$(bindir) \
@@ -200,16 +201,36 @@ $(DESTDIR)$(libexecdir)/cute/shared:
 ################################################################################
 
 # for static linking
-$(BUILD)/static/%.o: $(SRC)/%.c | $(BUILD)/static
+$(BUILD)/static/%.o: $(SRC)/%.c Makefile | $(BUILD)/static
 	$(TARGET_CC) $(TARGET_CFLAGS) -o $@ -c $<
 
 # for dynamic linking
-$(BUILD)/shared/%.o: $(SRC)/%.c | $(BUILD)/shared
+$(BUILD)/shared/%.o: $(SRC)/%.c Makefile | $(BUILD)/shared
 	$(TARGET_CC) $(TARGET_CFLAGS) -fpic -o $@ -c $<
 
 ################################################################################
-# Various
+# Autoconf related files update
+# See section 4.8.5 Automatic Remaking of autoconf manual
 ################################################################################
+
+$(TOP)/configure: $(TOP)/configure.ac $(TOP)/aclocal.m4
+	cd $(TOP) && autoconf
+
+# autoheader might not change config.h.in, so touch a stamp file.
+$(TOP)/config.h.in: $(TOP)/stamp-h.in
+$(TOP)/stamp-h.in: $(TOP)/configure.ac $(TOP)/aclocal.m4
+	cd $(TOP) && autoheader
+	echo timestamp > $@
+
+config.h: stamp-h
+stamp-h: $(TOP)/config.h.in config.status
+	./config.status
+
+Makefile: $(TOP)/Makefile.in config.status
+	./config.status
+
+config.status: $(TOP)/configure
+	./config.status --recheck
 
 $(BUILD) $(BUILD)/static $(BUILD)/shared:
 	$(MKDIR_P) $@
