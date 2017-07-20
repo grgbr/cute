@@ -293,17 +293,15 @@ pnp_object_parent(struct cute_object *object)
 {
 	struct cute_suite *parent = (struct cute_suite *)object->parent;
 
-	if (parent) {
-		if ((parent < (struct cute_suite *)&__start_cute_suites) ||
-		    (parent >= (struct cute_suite *)&__stop_cute_suites)) {
-			errno = EFAULT;
-			return NULL;
-		}
-	}
-	else
-		parent = &pnp_root_suite;
+	if (!parent || (parent == &pnp_root_suite))
+		return &pnp_root_suite;
 
-	return parent;
+	if ((parent >= (struct cute_suite *)&__start_cute_suites) &&
+	    (parent < (struct cute_suite *)&__stop_cute_suites))
+		return parent;
+
+	errno = EFAULT;
+	return NULL;
 }
 
 static unsigned long
@@ -373,7 +371,8 @@ pnp_register(const char *root_suite_name)
 			if (ret)
 				goto ret;
 
-			if (parent != &pnp_root_suite)
+			if (parent != &pnp_root_suite &&
+			    !core_isobject_registered(&parent->object))
 				suites[pnp_suite_index(parent)] = parent;
 
 			suites[s] = NULL;
