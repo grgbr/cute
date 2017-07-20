@@ -235,5 +235,6 @@ $(BUILD) $(BUILD)/static $(BUILD)/shared:
 .SECONDARY:
 
 # Include source dependencies
+-include $(wildcard $(BUILD)/*.d)
 -include $(wildcard $(BUILD)/static/*.d)
 -include $(wildcard $(BUILD)/shared/*.d)
