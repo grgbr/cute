@@ -6,7 +6,7 @@ AC_INIT([cute], [0.1])
 
 dnl Ensure src/cute.ld is there to make sure that the directory that it is told
 dnl contains the source code in fact does.
-AC_CONFIG_SRCDIR([src/cute.lds])
+AC_CONFIG_SRCDIR([cute.lds])
 
 dnl Tell autoconf where to search for additional macros
 AC_CONFIG_MACRO_DIR([m4])
@@ -82,6 +82,13 @@ done
 dnl Check assert.h, will also add the --disable-assert option and generate
 dnl NDEBUG CFLAGS accordingly into config.h
 AC_HEADER_ASSERT
+
+dnl Generate pkg-config file from template libcute.pc.in
+AC_CONFIG_FILES([libcute.pc])
+dnl Check for pkg-config existence
+PKG_PROG_PKG_CONFIG
+dnl Allow pkgconfigdir variable substitution within Makefile.in
+PKG_INSTALLDIR
 
 dnl generate all files specified by AC_CONFIG_ macros
 AC_OUTPUT

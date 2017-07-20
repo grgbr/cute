@@ -24,6 +24,7 @@ INSTALL_PROGRAM       := @INSTALL_PROGRAM@
 INSTALL_STRIP_PROGRAM := @INSTALL_STRIP_PROGRAM@
 INSTALL_SCRIPT        := @INSTALL_SCRIPT@
 INSTALL_DATA          := @INSTALL_DATA@
+PKG_CONFIG            := @PKG_CONFIG@
 
 prefix       := @prefix@
 exec_prefix  := @exec_prefix@
@@ -31,6 +32,7 @@ bindir       := @bindir@
 libdir       := @libdir@
 includedir   := @includedir@
 libexecdir   := @libexecdir@
+pkgconfigdir := @pkgconfigdir@
 
 test_bin := cute_test_success cute_test_abort cute_test_freeze cute_test_segv \
             cute_test_term cute_test_fail cute_test_assert \
@@ -79,7 +81,8 @@ clean:
 
 .PHONY: distclean
 distclean: clean
-	$(RM) Makefile config.h config.log config.status stamp-h stamp-h1
+	$(RM) Makefile config.h config.log config.status libcute.pc stamp-h \
+	      stamp-h1
 
 .PHONY: help
 help:
@@ -131,7 +134,8 @@ $(DESTDIR)$(libdir):
 .PHONY: install-dev
 install-dev: $(DESTDIR)$(libdir)/libcute.a \
              $(addprefix $(DESTDIR)$(includedir)/,$(headers)) \
-             $(DESTDIR)$(libdir)/cute/cute.lds
+             $(DESTDIR)$(libdir)/cute/cute.lds \
+             $(DESTDIR)$(pkgconfigdir)/libcute.pc
 
 # Install header
 $(DESTDIR)$(includedir)/%.h: $(INCLUDE)/%.h Makefile \
@@ -139,7 +143,7 @@ $(DESTDIR)$(includedir)/%.h: $(INCLUDE)/%.h Makefile \
 	$(INSTALL_DATA) -T $< $@
 
 # Install linker script
-$(DESTDIR)$(libdir)/cute/cute.lds: $(SRC)/cute.lds Makefile \
+$(DESTDIR)$(libdir)/cute/cute.lds: $(TOP)/cute.lds Makefile \
                                    | $(DESTDIR)$(libdir)/cute
 	$(INSTALL_DATA) -T $< $@
 
@@ -148,11 +152,16 @@ $(DESTDIR)$(libdir)/libcute.a: $(BUILD)/libcute.a \
                                | $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) -T $< $@
 
-# Install static library
+# Install pkg-config file
+$(DESTDIR)$(pkgconfigdir)/libcute.pc: libcute.pc \
+                                      | $(DESTDIR)$(pkgconfigdir)
+	$(INSTALL_DATA) -T $< $@
+
+# Build static library
 $(BUILD)/%.a: $(addprefix $(BUILD)/static/,$(lib_src:.c=.o))
 	$(TARGET_AR) crs $@ $(filter-out %.h,$^)
 
-$(DESTDIR)$(includedir)/cute $(DESTDIR)$(libdir)/cute:
+$(DESTDIR)$(includedir)/cute $(DESTDIR)$(libdir)/cute $(DESTDIR)$(pkgconfigdir):
 	$(MKDIR_P) -m755 $@
 
 ################################################################################
@@ -184,13 +193,13 @@ $(BUILD)/cute_test.sh: $(TEST)/cute_test.sh Makefile | $(BUILD)
 	sed -e 's;__LIBEXECDIR__;$(libexecdir);' $< > $@
 
 # Build test with static libcute (use shared version for all other libs)
-$(BUILD)/static/%: $(BUILD)/%.o $(BUILD)/libcute.a $(SRC)/cute.lds
-	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) -T $(SRC)/cute.lds \
+$(BUILD)/static/%: $(BUILD)/%.o $(BUILD)/libcute.a $(TOP)/cute.lds
+	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) -T $(TOP)/cute.lds \
 		-o $@ $(filter %.o,$^) -Wl,-static -lcute -Wl,-Bdynamic
 
 # Build test with shared libcute
-$(BUILD)/shared/%: $(BUILD)/%.o $(BUILD)/libcute.so $(SRC)/cute.lds
-	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) -T $(SRC)/cute.lds \
+$(BUILD)/shared/%: $(BUILD)/%.o $(BUILD)/libcute.so $(TOP)/cute.lds
+	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) -T $(TOP)/cute.lds \
 		-o $@ $(filter %.o,$^) -Wl,-Bdynamic -lcute
 
 $(BUILD)/%.o: $(TEST)/%.c Makefile | $(BUILD)
