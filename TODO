@@ -1,5 +1,4 @@
-autoconf:
-* run single spawned test: NULL top level root suite
+TODO:
 * pkg-config
 * install static library with install-dev target
 * time / date

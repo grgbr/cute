@@ -177,14 +177,12 @@ $(BUILD)/cute_test.sh: $(TEST)/cute_test.sh Makefile | $(BUILD)
 
 # Build test with static libcute (use shared version for all other libs)
 $(BUILD)/static/%: $(BUILD)/%.o $(BUILD)/libcute.a $(SRC)/cute.lds
-	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) \
-		-Wl,--strip-all -T $(SRC)/cute.lds \
+	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) -T $(SRC)/cute.lds \
 		-o $@ $(filter %.o,$^) -Wl,-static -lcute -Wl,-Bdynamic
 
 # Build test with shared libcute
 $(BUILD)/shared/%: $(BUILD)/%.o $(BUILD)/libcute.so $(SRC)/cute.lds
-	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) \
-		-Wl,--strip-all -T $(SRC)/cute.lds \
+	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) -T $(SRC)/cute.lds \
 		-o $@ $(filter %.o,$^) -Wl,-Bdynamic -lcute
 
 $(BUILD)/%.o: $(TEST)/%.c Makefile | $(BUILD)
