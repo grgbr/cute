@@ -1,6 +1,5 @@
 TODO:
 * pkg-config
-* install static library with install-dev target
 * time / date
 * xml report
 * refine CFLAGS and co

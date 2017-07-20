@@ -94,7 +94,7 @@ help:
 	@echo "Available targets:"
 	@echo "  all            build library and tests"
 	@echo "  install        run install-exec target"
-	@echo "  install-exec   install library"
+	@echo "  install-exec   install runtime library"
 	@echo "  install-dev    install development files"
 	@echo "  install-check  install tests"
 	@echo "  uninstall      remove all installed files"
@@ -110,16 +110,14 @@ endif
 ################################################################################
 
 .PHONY: install-exec
-install-exec: $(DESTDIR)$(libdir)/libcute.a $(DESTDIR)$(libdir)/libcute.so \
-              | $(DESTDIR)$(libdir)
+install-exec: $(DESTDIR)$(libdir)/libcute.so
 
-$(DESTDIR)$(libdir)/libcute%: $(BUILD)/libcute% \
+# Install shared library
+$(DESTDIR)$(libdir)/libcute.so: $(BUILD)/libcute.so \
                               | $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) -T $< $@
 
-$(BUILD)/%.a: $(addprefix $(BUILD)/static/,$(lib_src:.c=.o))
-	$(TARGET_AR) crs $@ $(filter-out %.h,$^)
-
+# Build shared library
 $(BUILD)/%.so: $(addprefix $(BUILD)/shared/,$(lib_src:.c=.o))
 	$(TARGET_CC) $(TARGET_CFLAGS) -shared -fpic -o $@ $(filter-out %.h,$^)
 
@@ -131,7 +129,8 @@ $(DESTDIR)$(libdir):
 ################################################################################
 
 .PHONY: install-dev
-install-dev: $(addprefix $(DESTDIR)$(includedir)/,$(headers)) \
+install-dev: $(DESTDIR)$(libdir)/libcute.a \
+             $(addprefix $(DESTDIR)$(includedir)/,$(headers)) \
              $(DESTDIR)$(libdir)/cute/cute.lds
 
 # Install header
@@ -143,6 +142,15 @@ $(DESTDIR)$(includedir)/%.h: $(INCLUDE)/%.h Makefile \
 $(DESTDIR)$(libdir)/cute/cute.lds: $(SRC)/cute.lds Makefile \
                                    | $(DESTDIR)$(libdir)/cute
 	$(INSTALL_DATA) -T $< $@
+
+# Install static library
+$(DESTDIR)$(libdir)/libcute.a: $(BUILD)/libcute.a \
+                               | $(DESTDIR)$(libdir)
+	$(INSTALL_DATA) -T $< $@
+
+# Install static library
+$(BUILD)/%.a: $(addprefix $(BUILD)/static/,$(lib_src:.c=.o))
+	$(TARGET_AR) crs $@ $(filter-out %.h,$^)
 
 $(DESTDIR)$(includedir)/cute $(DESTDIR)$(libdir)/cute:
 	$(MKDIR_P) -m755 $@
