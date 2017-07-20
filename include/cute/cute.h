@@ -13,6 +13,9 @@ extern void cute_expect_failed(const char *line,
                                const char *file,
                                const char *reason);
 
+#define cute_fail(_reason) \
+	cute_expect_failed(CUTE_STR(__LINE__), __FILE__, _reason)
+
 #define cute_ensure(_expect)                                   \
 	({                                                     \
 		if (!(_expect))                                \
