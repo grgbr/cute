@@ -1,7 +1,6 @@
 #include "core.h"
 #include <cute/cute.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
@@ -11,7 +10,6 @@
 #define CUTE_TIMEOUT_MAX (3600U)
 #define CUTE_NAME_MAX    (256U)
 
-CUTE_SUITE(            cute_root_suite);
 const struct core_run *core_current_run;
 
 /******************************************************************************
@@ -22,6 +20,12 @@ static bool
 core_issuite_object(const struct cute_object *object)
 {
 	return object->eldest && object->youngest;
+}
+
+static bool
+core_isobject_registered(const struct cute_object *object)
+{
+	return object->registered;
 }
 
 static void
@@ -37,6 +41,8 @@ core_register_object(struct cute_object *parent, struct cute_object *child)
 		parent->youngest->next = child;
 
 	parent->youngest = child;
+
+	child->registered = true;
 }
 
 static void
@@ -180,23 +186,41 @@ cute_expect_failed(const char *line, const char *file, const char *reason)
 	core_current_run->expect_failed(line, file, reason);
 }
 
-void
+int
 cute_register_test(struct cute_suite *suite, struct cute_test *test)
 {
+	if (core_isobject_registered(&test->object))
+		return -EPERM;
+
 	core_register_object(&suite->object, &test->object);
 
-	suite->total_count++;
+	do {
+		suite->total_count++;
+
+		suite = (struct cute_suite *)suite->object.parent;
+	} while (suite && core_isobject_registered(&suite->object));
+
+	return 0;
 }
 
 int
 cute_register_suite(struct cute_suite *parent, struct cute_suite *suite)
 {
-	if (!suite->total_count)
+	unsigned int cnt = suite->total_count;
+
+	if (!cnt)
 		return -ENODATA;
+
+	if (core_isobject_registered(&suite->object))
+		return -EPERM;
 
 	core_register_object(&parent->object, &suite->object);
 
-	parent->total_count += suite->total_count;
+	do {
+		parent->total_count += cnt;
+
+		parent = (struct cute_suite *)parent->object.parent;
+	} while (parent && core_isobject_registered(&parent->object));
 
 	return 0;
 }
@@ -262,6 +286,8 @@ extern char __stop_cute_tests;
 extern char __start_cute_suites;
 extern char __stop_cute_suites;
 
+static CUTE_SUITE(     pnp_root_suite);
+
 static struct cute_suite *
 pnp_object_parent(struct cute_object *object)
 {
@@ -275,7 +301,7 @@ pnp_object_parent(struct cute_object *object)
 		}
 	}
 	else
-		parent = &cute_root_suite;
+		parent = &pnp_root_suite;
 
 	return parent;
 }
@@ -293,10 +319,12 @@ pnp_register(const char *root_suite_name)
 	unsigned long       nr;
 	struct cute_suite **suites;
 	struct cute_test   *test;
+	int                 ret;
 	struct cute_suite  *parent;
-	unsigned int        cnt = 0;
+	unsigned int        cnt;
 
-	cute_root_suite.object.name = root_suite_name;
+	pnp_root_suite.object.name = root_suite_name;
+	pnp_root_suite.object.registered = true;
 
 	nr = ((unsigned long)&__stop_cute_suites -
 	      (unsigned long)&__start_cute_suites) / sizeof(*suites[0]);
@@ -306,54 +334,59 @@ pnp_register(const char *root_suite_name)
 		return -ENOMEM;
 
 	test = (struct cute_test *)&__start_cute_tests;
-	while (test < (struct cute_test *)&__stop_cute_tests) {
+	if (test >= (struct cute_test *)&__stop_cute_tests) {
+		/* No tests were declared. */
+		ret = -ENODATA;
+		goto ret;
+	}
+
+	do {
 		parent = pnp_object_parent(&test->object);
-		if (!parent)
-			return -errno;
+		if (!parent) {
+			ret = -errno;
+			goto ret;
+		}
 
 		cute_register_test(parent, test);
 
-		if (parent != &cute_root_suite) {
+		if (parent != &pnp_root_suite)
 			suites[pnp_suite_index(parent)] = parent;
-			cnt++;
-		}
 
 		test++;
-	}
+	} while (test < (struct cute_test *)&__stop_cute_tests);
 
+	cnt = nr;
 	while (cnt) {
 		unsigned int s;
 
-		for (s = 0, cnt = 0; s < nr; s++) {
-			int err;
-
+		for (s = 0; s < nr; s++) {
 			if (!suites[s])
 				continue;
 
 			parent = pnp_object_parent(&suites[s]->object);
-			if (!parent)
-				return -errno;
-
-			err = cute_register_suite(parent, suites[s]);
-			if (err)
-				return err;
-
-			if (parent != &cute_root_suite) {
-				unsigned int p = pnp_suite_index(parent);
-
-				if (!suites[p]) {
-					suites[p] = parent;
-					cnt++;
-				}
+			if (!parent) {
+				ret = -errno;
+				goto ret;
 			}
 
+			ret = cute_register_suite(parent, suites[s]);
+			if (ret)
+				goto ret;
+
+			if (parent != &pnp_root_suite)
+				suites[pnp_suite_index(parent)] = parent;
+
 			suites[s] = NULL;
+			cnt--;
 		}
 	}
 
+	ret = 0;
+
+ret:
 	free(suites);
 
-	return 0;
+	return ret;
 }
 
 static void
@@ -377,7 +410,7 @@ cute_pnp_main(int argc, char *argv[], const char *root_name)
 	int                 err;
 	bool                list = false;
 	const char         *obj_name = NULL;
-	struct cute_object *obj = CUTE_ROOT_OBJECT;
+	struct cute_object *obj = &pnp_root_suite.object;
 	unsigned long       timeout = (unsigned long)CUTE_DEFAULT_TIMEOUT;
 	char               *errptr;
 

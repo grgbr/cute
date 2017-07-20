@@ -3,6 +3,7 @@
 
 #include <cute/utils.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 /******************************************************************************
  * Assertion
@@ -24,23 +25,23 @@ extern void cute_expect_failed(const char *line,
  * Base testing object
  ******************************************************************************/
 
-#define CUTE_ROOT_OBJECT (&cute_root_suite.object);
-
 struct cute_object {
 	const char         *name;
+	bool                registered;
 	struct cute_object *next;
 	struct cute_object *parent;
 	struct cute_object *eldest;
 	struct cute_object *youngest;
 };
 
-#define CUTE_INIT_OBJECT(_name, _parent)     \
-	{                                    \
-		.name     = CUTE_STR(_name), \
-		.parent   = _parent,         \
-		.next     = NULL,            \
-		.eldest   = NULL,            \
-		.youngest = NULL,            \
+#define CUTE_INIT_OBJECT(_name, _parent)       \
+	{                                      \
+		.name       = CUTE_STR(_name), \
+		.registered = false,           \
+		.parent     = _parent,         \
+		.next       = NULL,            \
+		.eldest     = NULL,            \
+		.youngest   = NULL,            \
 	}
 
 extern int cute_run(struct cute_object *object);
@@ -67,11 +68,11 @@ struct cute_suite {
 	unsigned int        skipped_count;
 };
 
-extern struct cute_suite cute_root_suite;
-
 #define CUTE_INIT_SUITE(_suite_name, _parent, _setup, _teardown)         \
 	{                                                                \
-		.object        = CUTE_INIT_OBJECT(_suite_name, _parent), \
+		.object        = CUTE_INIT_OBJECT(_suite_name,           \
+		                                  (struct cute_object *) \
+		                                  (_parent)),            \
 		.setup         = _setup,                                 \
 		.teardown      = _teardown,                              \
 		.total_count   = 0,                                      \
@@ -173,8 +174,7 @@ struct cute_test {
 #define CUTE_PNP_TEST(_test_name, _suite) \
 	CUTE_PNP_TIMED_TEST(_test_name, _suite, CUTE_DEFAULT_TIMEOUT)
 
-extern void cute_register_test(struct cute_suite *suite,
-                               struct cute_test  *test);
+extern int cute_register_test(struct cute_suite *suite, struct cute_test *test);
 
 static inline int
 cute_run_test(struct cute_test *test)

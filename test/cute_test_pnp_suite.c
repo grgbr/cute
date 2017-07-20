@@ -81,6 +81,13 @@ CUTE_PNP_TEST(ok15, &second)
 	cute_ensure(1 == 1);
 }
 
+static CUTE_PNP_SUITE(third, &second);
+
+CUTE_PNP_TEST(ok110, &third)
+{
+	cute_ensure(1 == 1);
+}
+
 int main(int argc, char *argv[])
 {
 	return cute_pnp_main(argc, argv, "root");
