@@ -1,3 +1,9 @@
 autoconf:
+* run single spawned test: NULL top level root suite
+* pkg-config
+* install static library with install-dev target
+* time / date
+* xml report
 * refine CFLAGS and co
 * debianize
+* run single test in no fork mode
