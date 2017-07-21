@@ -76,7 +76,7 @@ static void text_show_footer(const struct cute_suite *suite __unused, int error)
 		printf("\nInternal error: %s\n", strerror(-error));
 }
 
-const struct report text_report = {
+static const struct report text_report = {
 	.show_test        = text_show_test,
 	.show_suite_begin = text_show_suite_begin,
 	.show_suite_end   = text_show_suite_end,
