@@ -416,6 +416,12 @@ posix_spawn_test(struct cute_test *test)
 		goto result;
 	}
 
+	/*
+	 * Flush all stdio buffers so that output does not get duplicated at
+	 * exit() time.
+	 */
+	fflush(NULL);
+
 	pid = fork();
 	if (pid < 0) {
 		err = -errno;
