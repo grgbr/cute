@@ -9,8 +9,6 @@ bool                 report_isatty = false;
 int                  report_indent_depth;
 const struct report *report_current;
 
-#define TEXT_INDENT_CHAR_NR (4)
-
 #define TEXT_REGULAR_SGR    (0U)
 #define TEXT_BOLD_SGR       (1U)
 
@@ -77,17 +75,6 @@ static void text_title_gr(void)
 {
 	text_set_gr(TEXT_BOLD_SGR, TEXT_WHITE_SGR);
 }
-
-void report_indent(int indent)
-{
-	assert(indent >= 0);
-
-	printf("%*s", TEXT_INDENT_CHAR_NR * indent, "");
-}
-
-#define text_start_line(_indent, _format, ...)                     \
-	printf("%*s" _format, TEXT_INDENT_CHAR_NR * (_indent), "", \
-	       ## __VA_ARGS__)
 
 static void text_show_test(const struct cute_test *test)
 {

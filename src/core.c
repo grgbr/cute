@@ -51,14 +51,13 @@ core_list_recurs(const struct cute_object *object)
 	const struct cute_object *obj = object->eldest;
 
 	if (!obj) {
-		report_indent(report_indent_depth);
-		printf("%s test\n", object->name);
+		text_start_line(report_indent_depth, "%s test\n", object->name);
 		return;
 	}
 
-	report_indent(report_indent_depth);
-	printf("%s suite\n", object->name);
-
+	text_start_line(report_indent_depth, "%s suite (#%u)\n",
+	                object->name,
+	                ((struct cute_suite *)object)->total_count);
 	report_indent_depth++;
 
 	do {
@@ -67,9 +66,7 @@ core_list_recurs(const struct cute_object *object)
 		obj = obj->next;
 	} while (obj);
 
-	report_indent(--report_indent_depth);
-
-	printf("[total: %u]\n", ((struct cute_suite *)object)->total_count);
+	report_indent_depth--;
 }
 
 static int

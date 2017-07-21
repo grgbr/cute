@@ -28,8 +28,13 @@ struct report {
 
 extern const struct report *report_current;
 
-extern int                  report_indent_depth;
-extern void                 report_indent(int indent);
+extern int report_indent_depth;
+
+#define TEXT_INDENT_CHAR_NR (4)
+
+#define text_start_line(_indent, _format, ...)                     \
+	printf("%*s" _format, TEXT_INDENT_CHAR_NR * (_indent), "", \
+	       ## __VA_ARGS__)
 
 /******************************************************************************
  * Running
