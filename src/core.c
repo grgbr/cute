@@ -29,6 +29,33 @@ core_isobject_registered(const struct cute_object *object)
 }
 
 static void
+core_start_timing(struct cute_object *object)
+{
+	assert(object);
+
+	object->start_date = time(NULL);
+
+	clock_gettime(CLOCK_MONOTONIC, &object->start_time);
+}
+
+static void
+core_stop_timing(struct cute_object *object)
+{
+	struct timespec stop;
+
+	clock_gettime(CLOCK_MONOTONIC, &stop);
+
+	stop.tv_sec -= object->start_time.tv_sec;
+	stop.tv_nsec -= object->start_time.tv_nsec;
+	if (stop.tv_nsec < 0) {
+		stop.tv_sec--;
+		stop.tv_nsec += 1000000000;
+	}
+
+	object->usecs = (stop.tv_sec * 1000000ULL) + (stop.tv_nsec / 1000ULL);
+}
+
+static void
 core_register_object(struct cute_object *parent, struct cute_object *child)
 {
 	child->parent = parent;
@@ -80,7 +107,12 @@ core_run_recurs(struct cute_object *object)
 	if (!obj) {
 		struct cute_test *test = (struct cute_test *)object;
 
+		core_start_timing(object);
+
 		err = core_current_run->spawn_test(test);
+
+		core_stop_timing(object);
+
 		if (!err) {
 			/*
 			 * When running a single test with no declared parent
@@ -113,15 +145,20 @@ core_run_recurs(struct cute_object *object)
 
 	suite = (struct cute_suite *)object;
 
+	core_start_timing(object);
+
 	report_current->show_suite_begin(suite);
 
 	do {
 		err = core_run_recurs(obj);
+
 		if (err)
 			break;
 
 		obj = obj->next;
 	} while (obj);
+
+	core_stop_timing(object);
 
 	if (parent) {
 		parent->success_count += suite->success_count;

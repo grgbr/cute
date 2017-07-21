@@ -4,6 +4,7 @@
 #include <cute/utils.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <time.h>
 
 /******************************************************************************
  * Assertion
@@ -35,6 +36,11 @@ struct cute_object {
 	struct cute_object *parent;
 	struct cute_object *eldest;
 	struct cute_object *youngest;
+	time_t              start_date;
+	union {
+		struct timespec    start_time;
+		unsigned long long usecs;
+	};
 };
 
 #define CUTE_INIT_OBJECT(_name, _parent)       \

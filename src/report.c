@@ -86,7 +86,8 @@ static void text_show_test(const struct cute_test *test)
 		text_start_line(report_indent_depth, "K");
 
 		text_clear_gr();
-		printf(". %-2.3f  %s\n", 0.0, test->object.name);
+		printf(". %6lluus    %s\n",
+		       test->object.usecs, test->object.name);
 		break;
 
 	case CUTE_SUCCESS_STATE:
@@ -94,13 +95,14 @@ static void text_show_test(const struct cute_test *test)
 		text_start_line(report_indent_depth, "S");
 
 		text_clear_gr();
-		printf(". %-2.3f  %s\n", 0.0, test->object.name);
+		printf(". %6lluus    %s\n",
+		       test->object.usecs, test->object.name);
 		break;
 
 	case CUTE_FAILURE_STATE:
 		text_failure_gr();
-		text_start_line(report_indent_depth, "F. %-2.3f  %s\n",
-		                0.0, test->object.name);
+		text_start_line(report_indent_depth, "F. %6lluus    %s\n",
+		                test->object.usecs, test->object.name);
 
 		text_clear_gr();
 		text_start_line(report_indent_depth + 1, "@");
@@ -120,8 +122,8 @@ static void text_show_test(const struct cute_test *test)
 
 	case CUTE_ERROR_STATE:
 		text_error_gr();
-		text_start_line(report_indent_depth, "E. %-2.3f  %s\n",
-		                0.0, test->object.name);
+		text_start_line(report_indent_depth, "E. %6lluus    %s\n",
+		                test->object.usecs, test->object.name);
 
 		if (res->console) {
 			const char *begin;
@@ -172,7 +174,8 @@ static void text_show_suite_end(const struct cute_suite *suite)
 	text_start_line(report_indent_depth, "#");
 
 	text_clear_gr();
-	printf(". %-2.3f  total:", 0.0);
+	printf(". %6lluus    total:", suite->object.usecs);
+
 	if (suite->total_count != suite->success_count) {
 		text_suite_gr();
 		printf("%u  ", suite->total_count);
@@ -228,9 +231,9 @@ static void text_show_footer(const struct cute_suite *suite, int error)
 		text_suite_gr();
 		fputs(" summary (", stdout);
 		text_title_gr();
-		printf("%.3f", 0.0);
+		printf("%.3f", (float)suite->object.usecs / 1000000.0);
 		text_suite_gr();
-		fputs(" ms) ========\n", stdout);
+		fputs(" s) ========\n", stdout);
 		text_clear_gr();
 
 		fputs("Error  :  ", stdout);
