@@ -28,8 +28,8 @@ struct report {
 
 extern const struct report *report_current;
 
-extern unsigned int         report_indent_depth;
-extern void                 report_indent(unsigned int indent);
+extern int                  report_indent_depth;
+extern void                 report_indent(int indent);
 
 /******************************************************************************
  * Running
