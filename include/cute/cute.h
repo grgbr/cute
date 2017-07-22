@@ -36,7 +36,6 @@ struct cute_object {
 	struct cute_object *parent;
 	struct cute_object *eldest;
 	struct cute_object *youngest;
-	time_t              start_date;
 	union {
 		struct timespec    start_time;
 		unsigned long long usecs;
@@ -198,6 +197,7 @@ cute_run_test(struct cute_test *test)
 #define CUTE_DEFAULT_TIMEOUT (0U)
 
 extern void cute_setup_text_report(void);
+extern void cute_setup_xunit_report(void);
 
 extern int cute_setup_posix_run(unsigned int default_timeout);
 

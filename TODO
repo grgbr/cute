@@ -1,6 +1,4 @@
 TODO:
-* time / date
-* xml report
 * refine CFLAGS and co
 * install stripping support
 * debianize

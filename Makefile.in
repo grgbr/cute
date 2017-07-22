@@ -37,7 +37,7 @@ pkgconfigdir := @pkgconfigdir@
 test_bin := cute_test_success cute_test_abort cute_test_freeze cute_test_segv \
             cute_test_term cute_test_fail cute_test_assert \
             cute_test_root_suite cute_test_complex_suite cute_test_pnp_suite
-lib_src  := core.c posix.c report.c
+lib_src  := core.c posix.c report.c xunit.c
 headers  := cute/cute.h cute/utils.h
 
 ################################################################################

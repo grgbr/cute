@@ -33,8 +33,6 @@ core_start_timing(struct cute_object *object)
 {
 	assert(object);
 
-	object->start_date = time(NULL);
-
 	clock_gettime(CLOCK_MONOTONIC, &object->start_time);
 }
 
@@ -137,7 +135,8 @@ core_run_recurs(struct cute_object *object)
 				}
 			}
 
-			report_current->show_test(test);
+			if (report_current->show_test)
+				report_current->show_test(test);
 		}
 
 		return err;
@@ -147,7 +146,8 @@ core_run_recurs(struct cute_object *object)
 
 	core_start_timing(object);
 
-	report_current->show_suite_begin(suite);
+	if (report_current->show_suite_begin)
+		report_current->show_suite_begin(suite);
 
 	do {
 		err = core_run_recurs(obj);
@@ -167,7 +167,7 @@ core_run_recurs(struct cute_object *object)
 		parent->skipped_count += suite->skipped_count;
 	}
 
-	if (!err)
+	if (!err && report_current->show_suite_end)
 		report_current->show_suite_end((struct cute_suite *)object);
 
 	return err;
@@ -433,6 +433,7 @@ pnp_usage(const char *me)
 	        "where OPTIONS:\n"
 	        "    -l|--list             list available suite tests\n"
 	        "    -t|--timeout SECONDS  default per test timeout in seconds\n"
+	        "    -x|--xunit            output xunit compliant xml\n"
 	        "    -h|--help\n",
 	        me);
 }
@@ -442,6 +443,7 @@ cute_pnp_main(int argc, char *argv[], const char *root_name)
 {
 	int                 err;
 	bool                list = false;
+	bool                xml = false;
 	const char         *obj_name = NULL;
 	struct cute_object *obj = &pnp_root_suite.object;
 	unsigned long       timeout = (unsigned long)CUTE_DEFAULT_TIMEOUT;
@@ -452,11 +454,12 @@ cute_pnp_main(int argc, char *argv[], const char *root_name)
 		static const struct option lopts[] = {
 			{ "list",     0, NULL, 'l' },
 			{ "timeout",  1, NULL, 't' },
+			{ "xunit",    0, NULL, 'x' },
 			{ "help",     0, NULL, 'h' },
 			{ 0,          0, 0,    0   }
 		};
 
-		opt = getopt_long(argc, argv, "lt:h", lopts, NULL);
+		opt = getopt_long(argc, argv, "lt:xh", lopts, NULL);
 		if (opt < 0)
 			break;
 
@@ -474,6 +477,10 @@ cute_pnp_main(int argc, char *argv[], const char *root_name)
 			        "invalid \"%s\" timeout argument\n", optarg);
 			pnp_usage(argv[0]);
 			return EXIT_FAILURE;
+
+		case 'x':
+			xml = true;
+			break;
 
 		case 'h': /* Help message. */
 			pnp_usage(argv[0]);
@@ -523,7 +530,10 @@ cute_pnp_main(int argc, char *argv[], const char *root_name)
 		return EXIT_SUCCESS;
 	}
 
-	cute_setup_text_report();
+	if (xml)
+		cute_setup_xunit_report();
+	else
+		cute_setup_text_report();
 
 	err = cute_setup_posix_run((unsigned int)timeout);
 	if (err) {
