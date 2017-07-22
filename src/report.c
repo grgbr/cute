@@ -76,80 +76,102 @@ static void text_title_gr(void)
 	text_set_gr(TEXT_BOLD_SGR, TEXT_WHITE_SGR);
 }
 
+static void text_show_skipped_test(const struct cute_test *test)
+{
+	text_skipped_gr();
+	text_start_line(report_indent_depth, "K");
+
+	text_clear_gr();
+	printf(". %6lluus    %s\n", test->object.usecs, test->object.name);
+}
+
+static void text_show_success_test(const struct cute_test *test)
+{
+	text_success_gr();
+	text_start_line(report_indent_depth, "S");
+
+	text_clear_gr();
+	printf(". %6lluus    %s\n", test->object.usecs, test->object.name);
+}
+
+static void text_show_failure_test(const struct cute_test *test)
+{
+	const struct cute_result *res = &test->result;
+
+	text_failure_gr();
+	text_start_line(report_indent_depth, "F. %6lluus    %s\n",
+			test->object.usecs, test->object.name);
+
+	text_clear_gr();
+	text_start_line(report_indent_depth + 1, "@");
+
+	text_details_gr();
+	fputs(res->file, stdout);
+
+	text_clear_gr();
+	putchar(':');
+
+	text_details_gr();
+	puts(res->line);
+
+	text_start_line(report_indent_depth + 1, "%s\n", res->reason);
+	text_clear_gr();
+}
+
+static void text_show_error_test(const struct cute_test *test)
+{
+	const struct cute_result *res = &test->result;
+
+	text_error_gr();
+	text_start_line(report_indent_depth, "E. %6lluus    %s\n",
+			test->object.usecs, test->object.name);
+
+	if (res->console) {
+		const char *begin;
+		const char *end;
+
+		text_details_gr();
+
+		begin = res->console;
+		assert(*begin);
+		do {
+			end = index(begin, '\n');
+			if (!end) {
+				text_start_line(report_indent_depth + 1,
+						"%s\n", begin);
+				break;
+			}
+
+			text_start_line(report_indent_depth + 1, "%*s",
+					(int)((unsigned long)end -
+					      (unsigned long)begin),
+					begin);
+			begin = end + 1;
+		} while (*begin);
+	}
+
+	text_clear_gr();
+}
+
 static void text_show_test(const struct cute_test *test)
 {
 	const struct cute_result *res = &test->result;
 
 	switch (res->state) {
 	case CUTE_SKIPPED_STATE:
-		text_skipped_gr();
-		text_start_line(report_indent_depth, "K");
-
-		text_clear_gr();
-		printf(". %6lluus    %s\n",
-		       test->object.usecs, test->object.name);
+		text_show_skipped_test(test);
 		break;
 
 	case CUTE_SUCCESS_STATE:
-		text_success_gr();
-		text_start_line(report_indent_depth, "S");
-
-		text_clear_gr();
-		printf(". %6lluus    %s\n",
-		       test->object.usecs, test->object.name);
+		text_show_success_test(test);
 		break;
 
 	case CUTE_FAILURE_STATE:
-		text_failure_gr();
-		text_start_line(report_indent_depth, "F. %6lluus    %s\n",
-		                test->object.usecs, test->object.name);
-
-		text_clear_gr();
-		text_start_line(report_indent_depth + 1, "@");
-
-		text_details_gr();
-		fputs(res->file, stdout);
-
-		text_clear_gr();
-		putchar(':');
-
-		text_details_gr();
-		puts(res->line);
-
-		text_start_line(report_indent_depth + 1, "%s\n", res->reason);
-		text_clear_gr();
+		text_show_failure_test(test);
 		break;
 
 	case CUTE_ERROR_STATE:
-		text_error_gr();
-		text_start_line(report_indent_depth, "E. %6lluus    %s\n",
-		                test->object.usecs, test->object.name);
-
-		if (res->console) {
-			const char *begin;
-			const char *end;
-
-			text_details_gr();
-
-			begin = res->console;
-			assert(*begin);
-			do {
-				end = index(begin, '\n');
-				if (!end) {
-					text_start_line(report_indent_depth + 1,
-					                "%s\n", begin);
-					break;
-				}
-
-				text_start_line(report_indent_depth + 1, "%*s",
-				                (int)((unsigned long)end -
-				                      (unsigned long)begin),
-				                begin);
-				begin = end + 1;
-			} while (*begin);
-		}
-
-		text_clear_gr();
+		text_show_error_test(test);
 		break;
 
 	default:
