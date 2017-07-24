@@ -138,7 +138,7 @@ static void xunit_show_footer(const struct cute_suite *suite, int error)
 		obj = obj->next;
 	}
 
-	printf("</testsuites>");
+	printf("</testsuites>\n");
 }
 
 static const struct report xunit_report = {
