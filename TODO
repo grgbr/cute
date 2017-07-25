@@ -1,6 +1,8 @@
 TODO:
+* expected assertion support
 * refine CFLAGS and co
 * install stripping support
 * debianize
 * documentation
 * run single test in no fork mode
+* unit tests
