@@ -1,0 +1,24 @@
+node {
+	deleteDir()
+
+	def srcdir = pwd()
+
+	dir ('src') {
+		checkout scm
+		sh './autogen.sh'
+	}
+
+	dir ('build') {
+		stage('Config') {
+			sh "../src/configure --prefix=${srcdir}/root"
+		}
+		stage('Build') {
+			sh 'make'
+		}
+		stage('Install') {
+			sh 'make install install-dev'
+		}
+	}
+
+	step([$class: 'ArtifactArchiver', artifacts: 'root/**', fingerprint: true])
+}
