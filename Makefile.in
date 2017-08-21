@@ -71,6 +71,7 @@ install: install-exec
 uninstall:
 	$(RM) $(addprefix $(DESTDIR)$(libdir)/,libcute.a libcute.so) \
 	      $(DESTDIR)$(bindir)/cute_test.sh \
+	      $(DESTDIR)$(pkgconfigdir)/libcute.pc
 	$(RM) -r $(DESTDIR)$(includedir) \
 	         $(DESTDIR)$(libdir)/cute \
 	         $(DESTDIR)$(libexecdir)/cute
