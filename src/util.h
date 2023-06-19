@@ -45,6 +45,9 @@ cute_fail_assert(const char * message,
                  int          line,
                  const char * func);
 
+extern int
+cute_close_stdio(FILE * stdio);
+
 /******************************************************************************
  * Memory allocation wrapping.
  ******************************************************************************/

@@ -2,7 +2,6 @@
 #include "suite.h"
 #include <ctype.h>
 #include <string.h>
-#include <unistd.h>
 
 static struct cute_report * cute_the_cons_report;
 
@@ -84,7 +83,7 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 	        cute_issue_label(run->issue),
 	        report->term.regular);
 
-	if (run->what) {
+	if ((run->issue == CUTE_FAIL_ISSUE) && run->what) {
 		fprintf(report->stdio,
 		        "%s@ %s:%d%s\n",
 		        report->term.gray,
@@ -393,40 +392,11 @@ _cute_cons_report_release(struct cute_report * report)
 
 	struct cute_cons_report * rprt = (struct cute_cons_report *)report;
 	FILE *                    stdio = rprt->stdio;
-	const char *              msg;
-	int                       err;
 
 	cute_free(rprt->fill);
 	cute_free(report);
 
-	if (fflush(stdio)) {
-		msg = "flushing";
-		goto err;
-	}
-	if (fsync(fileno(stdio))) {
-		if (errno != EINVAL) {
-			msg = "syncing";
-			goto err;
-		}
-	}
-	if (fclose(stdio)) {
-		err = -errno;
-		msg = "closing";
-		goto log;
-	}
-
-	return 0;
-
-err:
-	err = -errno;
-	fclose(stdio);
-log:
-	cute_error("%s report failed: %s (%d).\n",
-	           msg,
-	           strerror(errno),
-	           errno);
-
-	return err;
+	return cute_close_stdio(stdio);
 }
 
 int

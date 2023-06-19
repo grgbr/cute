@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <unistd.h>
 
 void
 cute_fail_assert(const char * message,
@@ -17,6 +18,43 @@ cute_fail_assert(const char * message,
 	        func,
 	        message);
 	abort();
+}
+
+int
+cute_close_stdio(FILE * stdio)
+{
+	cute_assert_intern(stdio);
+
+	const char * msg;
+	int          err;
+
+	if (fflush(stdio)) {
+		msg = "flushing";
+		goto err;
+	}
+
+	if (fsync(fileno(stdio))) {
+		if (errno != EINVAL) {
+			msg = "syncing";
+			goto err;
+		}
+	}
+
+	if (fclose(stdio)) {
+		err = errno;
+		msg = "closing";
+		goto log;
+	}
+
+	return 0;
+
+err:
+	err = errno;
+	fclose(stdio);
+log:
+	cute_error("%s file failed: %s (%d).\n", msg, strerror(err), err);
+
+	return -err;
 }
 
 /******************************************************************************
