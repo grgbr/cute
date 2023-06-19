@@ -104,12 +104,31 @@ cute_suite_complete_run(struct cute_suite_run * run)
 		cute_run_sum_stats(run->subs[s], &run->sums);
 	}
 
-	if (run->super.issue != CUTE_OFF_ISSUE) {
-		if (run->stats.fail)
+	if (run->super.issue == CUTE_UNK_ISSUE) {
+		if (run->stats.fail) {
+			cute_assert_intern(!run->super.file);
+			cute_assert_intern(run->super.line == -1);
+			cute_assert_intern(!run->super.what);
+			cute_assert_intern(!run->super.why);
+
 			run->super.issue = CUTE_FAIL_ISSUE;
-		else if (run->stats.skip == run->stats.exec)
+			run->super.file = run->super.base->file;
+			run->super.line = run->super.base->line;
+			run->super.what = "exec check failed";
+			run->super.why = "descendant(s) failed";
+		}
+		else if (run->stats.skip == run->stats.exec) {
+			cute_assert_intern(!run->super.file);
+			cute_assert_intern(run->super.line == -1);
+			cute_assert_intern(!run->super.what);
+			cute_assert_intern(!run->super.why);
+
 			run->super.issue = CUTE_SKIP_ISSUE;
-		else if (run->super.issue == CUTE_UNK_ISSUE)
+			run->super.file = run->super.base->file;
+			run->super.line = run->super.base->line;
+			run->super.what = "all descendants skipped";
+		}
+		else
 			run->super.issue = CUTE_PASS_ISSUE;
 	}
 
@@ -193,6 +212,7 @@ cute_suite_join_run(struct cute_run * run, struct cute_run * sub)
 	cute_assert_intern(!srun->sums.total);
 	cute_assert_intern(srun->count < suite->nr);
 
+	sub->id = (int)srun->count;
 	srun->subs[srun->count++] = sub;
 }
 

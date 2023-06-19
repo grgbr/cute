@@ -126,7 +126,7 @@ cute_verb_report_on_head(struct cute_cons_report * report)
 
 static void
 cute_verb_report_suite_setup(const struct cute_cons_report * report,
-                             const struct cute_suite_run *   run)
+                             const struct cute_suite_run *   suite)
 {
 	fprintf(report->stdio,
 	        CUTE_CONS_REPORT_PROG_FMT " ",
@@ -134,10 +134,10 @@ cute_verb_report_suite_setup(const struct cute_cons_report * report,
 
 	cute_term_depth_printf(&report->term,
 	                       report->stdio,
-	                       run->super.depth,
+	                       suite->super.depth,
 	                       "%s%s%s\n",
 	                       report->term.blue,
-	                       run->super.base->name,
+	                       suite->super.base->name,
 	                       report->term.regular);
 }
 

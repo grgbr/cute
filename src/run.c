@@ -132,7 +132,6 @@ cute_run_setup(struct cute_run * run)
 	cute_assert_intern(run->line == -1);
 	cute_assert_intern(!run->what);
 	cute_assert_intern(!run->why);
-	cute_assert_intern(!run->ensure_cnt);
 
 	int          ret = -EPERM;
 	volatile int issue;
@@ -308,6 +307,7 @@ cute_run_init(struct cute_run *           run,
 	run->ops = ops;
 	run->name = cute_run_build_name(base, parent);
 	run->parent = parent;
+	run->id = -1;
         run->base = base;
 	run->issue = CUTE_UNK_ISSUE;
 	run->begin.tv_sec = run->begin.tv_nsec = 0;
@@ -316,7 +316,6 @@ cute_run_init(struct cute_run *           run,
 	run->line = -1;
 	run->what = NULL;
 	run->why = NULL;
-	run->ensure_cnt = 0;
 
 	if (parent) {
 		cute_run_assert_intern(parent);
@@ -429,8 +428,8 @@ cute_break(enum cute_issue issue,
 
 	switch (run->state) {
 	case CUTE_SETUP_STATE:
-		/* Cannot skip from within setup fixture. */
-		cute_assert(issue == CUTE_FAIL_ISSUE);
+		cute_assert((issue == CUTE_FAIL_ISSUE) ||
+		            (issue == CUTE_SKIP_ISSUE));
 		cute_assert_intern(!run->file);
 		cute_assert_intern(run->line == -1);
 		cute_assert_intern(!run->what);
@@ -438,9 +437,14 @@ cute_break(enum cute_issue issue,
 
 		run->file = file;
 		run->line = line;
-		run->what = why ? "setup check failed"
-		                : "setup failure requested";
+
+		if (issue == CUTE_FAIL_ISSUE)
+			run->what = why ? "setup check failed"
+			                : "setup failure requested";
+		else
+			run->what = "setup skipping requested";
 		run->why = why;
+
 		break;
 
 	case CUTE_EXEC_STATE:
@@ -451,11 +455,15 @@ cute_break(enum cute_issue issue,
 
 		run->file = file;
 		run->line = line;
+
 		if (issue == CUTE_FAIL_ISSUE) {
 			run->what = why ? "exec check failed"
 			                : "exec failure requested";
 			run->why = why;
 		}
+		else if (issue == CUTE_SKIP_ISSUE)
+			run->what = "exec skipping requested";
+
 		break;
 
 	case CUTE_TEARDOWN_STATE:

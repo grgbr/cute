@@ -89,7 +89,6 @@ cute_test_oper_run(struct cute_run * run, enum cute_oper oper __cute_unused)
 	cute_assert_intern(run->line == -1);
 	cute_assert_intern(!run->what);
 	cute_assert_intern(!run->why);
-	cute_assert_intern(!run->ensure_cnt);
 	cute_assert_intern(oper == CUTE_COMPLETE_OPER);
 
 	if (cute_run_setup(run))

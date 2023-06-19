@@ -71,6 +71,7 @@ struct cute_run {
 	char *                      name;
 	struct cute_run *           parent;
 	int                         depth;
+	int                         id;
 	const struct cute_base *    base;
 	enum cute_state             state;
 	enum cute_issue             issue;
@@ -80,7 +81,6 @@ struct cute_run {
 	int                         line;
 	const char *                what;
 	const char *                why;
-	unsigned long               ensure_cnt;
 };
 
 #define cute_run_assert(_run) \
