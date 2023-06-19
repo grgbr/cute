@@ -1,7 +1,5 @@
-* help message
+* mocking
 * get stdout / stderr output
 * tests
-* mocking
 * xml
-* tap
 * fork
