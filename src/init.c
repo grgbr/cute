@@ -141,7 +141,7 @@ cute_config_enable_verb(struct cute_config * config, const char * tty)
 static int
 cute_config_enable_tap(struct cute_config * config, const char * path)
 {
-	if (!path || !(strcmp(path, "-"))) {
+	if (!path || !path[0] || !(strcmp(path, "-"))) {
 		int err;
 
 		err = cute_config_enable_cons(config,
@@ -153,8 +153,10 @@ cute_config_enable_tap(struct cute_config * config, const char * path)
 
 		config->tap_path = NULL;
 	}
-	else
+	else {
 		config->tap_path = path;
+		config->reports |= CUTE_CONFIG_TAP_REPORT;
+	}
 
 	return 0;
 }
@@ -164,7 +166,7 @@ cute_config_enable_xml(struct cute_config * config, const char * path)
 {
 	cute_assert_intern(config);
 
-	if (!path || !(strcmp(path, "-"))) {
+	if (!path || !path[0] || !(strcmp(path, "-"))) {
 		int err;
 
 		err = cute_config_enable_cons(config,
@@ -176,8 +178,11 @@ cute_config_enable_xml(struct cute_config * config, const char * path)
 
 		config->xml_path = NULL;
 	}
-	else
+	else {
 		config->xml_path = path;
+		config->reports |= CUTE_CONFIG_XML_REPORT;
+
+	}
 
 	return 0;
 }
@@ -187,7 +192,7 @@ cute_config_load(struct cute_config * config)
 {
 	cute_config_assert_intern(config);
 
-	int err;
+	int err = 0;
 
 	if (config->match) {
 		err = cute_regex_init(&cute_config_regex,
@@ -286,24 +291,37 @@ cute_fini(void)
 }
 
 #define CUTE_HELP \
-	"Usage:\n" \
-	"       %1$s [<OPTIONS>] show [<TESTS>] -- show informations about TESTS\n" \
-	"       %1$s [<OPTIONS>] run [<TESTS>]  -- run requested TESTS\n" \
-	"       %1$s help                       -- this help message\n" \
-	"\n" \
-	"Where OPTIONS:\n" \
-	"    -i          | --icase             -- FILLME\n" \
-	"    -s[<COLOR>] | --silent[=<COLOR>]  -- FILLME\n" \
-	"    -t[<COLOR>] | --terse[=<COLOR>]   -- FILLME\n" \
-	"    -v[<COLOR>] | --verbose[=<COLOR>] -- FILLME\n" \
-	"    -x[<PATH>]  | --xml[=<PATH>]      -- FILLME\n" \
-	"    -a[<PATH>]  | --tap[=<PATH>]      -- FILLME\n" \
-	"    -h          | --help              -- FILLME\n" \
-	"\n" \
-	"With:\n" \
-	"    COLOR -- FILLME\n" \
-	"    PATH  -- FILLME\n" \
-	"    TESTS -- FILLME\n"
+"Usage:\n" \
+"       %1$s [<OPTIONS>] show [<PATTERN>]\n" \
+"       Show informations about requested suites and tests.\n" \
+"\n" \
+"       %1$s [<OPTIONS>] run [<PATTERN>]\n" \
+"       Run requested suites and / or tests.\n" \
+"\n" \
+"       %1$s [-h|--help] [help]\n" \
+"       This help message.\n" \
+"\n" \
+"With OPTIONS:\n" \
+"    -i|--icase                      -- Ignore case when matching against\n" \
+"                                       <PATTERN>.\n" \
+"    -s[<COLOR>]|--silent[=<COLOR>]  -- Silence all suites and tests console\n" \
+"                                       output.\n" \
+"    -t[<COLOR>]|--terse[=<COLOR>]   -- Enable minimal suites and tests console\n" \
+"                                       output.\n" \
+"    -v[<COLOR>]|--verbose[=<COLOR>] -- Enable verbose suites and tests console\n" \
+"                                       output.\n" \
+"    -x[<PATH>]|--xml[=<PATH>]       -- Generate output to <PATH> according to\n" \
+"                                       JUnit XML format.\n" \
+"    -a[<PATH>]|--tap[=<PATH>]       -- Generate output to <PATH> according to\n" \
+"                                       Test Anything Protocol format.\n" \
+"\n" \
+"With:\n" \
+"    PATTERN -- POSIX extended regular expression used to select suites and / or\n" \
+"               tests ; by default, all suites and tests are selected.\n" \
+"    COLOR   -- enforce output colorization when `on', disable it when `off' ;\n" \
+"               when unspecified, it is enabled only if terminal supports it.\n" \
+"    PATH    -- pathname to file where output is generated into ; when\n" \
+"               unspecified or specified as `-', output is directed to stdout.\n"
 
 static void
 cute_usage(FILE * stdio)
@@ -381,8 +399,10 @@ cute_main(int                        argc,
 			goto usage;
 		}
 
-		if (ret)
+		if (ret) {
+			fputc('\n', stderr);
 			goto usage;
+		}
 	}
 
 	argc -= optind - 1;

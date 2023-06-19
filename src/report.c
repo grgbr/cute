@@ -172,7 +172,6 @@ void
 cute_report_register(struct cute_report * report)
 {
 	cute_report_assert_intern(report);
-	cute_config_assert_intern(cute_the_config);
 
 	cute_report_table = cute_realloc(cute_report_table,
 	                                 (cute_report_count + 1) *
