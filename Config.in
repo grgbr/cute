@@ -1,0 +1,14 @@
+config CUTE_INTERN_ASSERT
+	bool "Internal assertion"
+	default n
+	help
+	  Build CUTe with internal assertions enabled to check for internal CUTe
+	  behavioral consistency.
+
+config CUTE_UTEST
+	bool "Unit tests"
+	default n
+	help
+	  Build CUTe with unit test suite.
+
+# ex: ft=kconfig:
