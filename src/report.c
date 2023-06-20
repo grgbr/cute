@@ -89,6 +89,7 @@ cute_term_issue_color(const struct cute_term * term, enum cute_issue issue)
 		return term->yellow;
 
 	case CUTE_FAIL_ISSUE:
+	case CUTE_EXCP_ISSUE:
 		return term->red;
 
 	case CUTE_OFF_ISSUE:

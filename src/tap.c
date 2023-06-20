@@ -58,6 +58,7 @@ cute_tap_report_test_done(const struct cute_tap_report * report,
 		break;
 
 	case CUTE_FAIL_ISSUE:
+	case CUTE_EXCP_ISSUE:
 		cute_assert_intern(run->what);
 		cute_assert_intern(run->why);
 

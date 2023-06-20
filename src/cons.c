@@ -83,7 +83,8 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 	        cute_issue_label(run->issue),
 	        report->term.regular);
 
-	if (run->issue == CUTE_FAIL_ISSUE) {
+	if ((run->issue == CUTE_FAIL_ISSUE) ||
+	    (run->issue == CUTE_EXCP_ISSUE)) {
 		cute_assert_intern(run->what);
 		cute_assert_intern(run->why);
 
@@ -147,6 +148,7 @@ cute_cons_report_suite_sumup(const struct cute_cons_report * report,
 	                       " %s" CUTE_CONS_REPORT_PASS_FMT
 	                       " %s" CUTE_CONS_REPORT_SKIP_FMT
 	                       " %s" CUTE_CONS_REPORT_FAIL_FMT
+	                       " %s" CUTE_CONS_REPORT_EXCP_FMT
 	                       " %s" CUTE_CONS_REPORT_EXEC_FMT
 	                       " " CUTE_CONS_REPORT_TOTAL_FMT
 	                       "%s"
@@ -156,8 +158,9 @@ cute_cons_report_suite_sumup(const struct cute_cons_report * report,
 	                       color, cute_issue_label(issue), term->fore,
 	                       diff.tv_sec, diff.tv_nsec / 1000L,
 	                       green, stats->pass,
-	                       yellow, stats->skip,
-	                       red, stats->fail,
+	                       stats->skip ? yellow : fore, stats->skip,
+	                       stats->fail ? red : fore, stats->fail,
+	                       stats->excp ? red : fore, stats->excp,
 	                       fore, stats->exec,
 	                       stats->total,
 	                       term->regular);
@@ -171,14 +174,20 @@ cute_cons_report_suite_sumup(const struct cute_cons_report * report,
 		        "%s" CUTE_CONS_REPORT_PASS_FMT "%%"
 		        "%s" CUTE_CONS_REPORT_SKIP_FMT "%%"
 		        "%s" CUTE_CONS_REPORT_FAIL_FMT "%%"
+		        "%s" CUTE_CONS_REPORT_EXCP_FMT "%%"
 		        "%s" CUTE_CONS_REPORT_EXEC_FMT "%%"
 		        "%s"
 		        "\n",
 		        bold,
 		        report->ncols, report->ncols, "",
-		        green, (stats->pass * 100) / stats->exec,
-		        yellow, (stats->skip * 100) / stats->exec,
-		        red, (stats->fail * 100) / stats->exec,
+		        green,
+		        (stats->pass * 100) / stats->exec,
+		        stats->skip ? yellow : fore,
+		        (stats->skip * 100) / stats->exec,
+		        stats->fail ? red : fore,
+		        (stats->fail * 100) / stats->exec,
+		        stats->excp ? red : fore,
+		        (stats->excp * 100) / stats->exec,
 		        fore, (stats->exec * 100) / stats->total,
 		        term->regular);
 	else
@@ -187,18 +196,20 @@ cute_cons_report_suite_sumup(const struct cute_cons_report * report,
 		        CUTE_CONS_REPORT_NAME_FMT
 		        " " CUTE_CONS_REPORT_STAT_PAD
 		        " " CUTE_CONS_REPORT_TIME_PAD
-		        "%s" CUTE_CONS_REPORT_PASS_FMT "%%"
-		        "%s" CUTE_CONS_REPORT_SKIP_FMT "%%"
-		        "%s" CUTE_CONS_REPORT_FAIL_FMT "%%"
-		        "%s" CUTE_CONS_REPORT_EXEC_FMT "%%"
+		        "%s" CUTE_CONS_REPORT_PASS_FMT "%%%s"
+		        CUTE_CONS_REPORT_SKIP_FMT "%%"
+		        CUTE_CONS_REPORT_FAIL_FMT "%%"
+		        CUTE_CONS_REPORT_EXCP_FMT "%%"
+		        CUTE_CONS_REPORT_EXEC_FMT "%%"
 		        "%s"
 		        "\n",
 		        bold,
 		        report->ncols, report->ncols, "",
-		        green, 0,
-		        yellow, 0,
-		        red, 0,
-		        fore, 0,
+		        green, 0, fore,
+		        0,
+		        0,
+		        0,
+		        0,
 		        term->regular);
 }
 
@@ -260,12 +271,14 @@ cute_cons_report_results(const struct cute_cons_report * report,
 		break;
 
 	case CUTE_FAIL_ISSUE:
+	case CUTE_EXCP_ISSUE:
 		blen = snprintf(body,
 		                sz,
 		                "%u/%u (%u%%) test(s) FAILED",
-		                suite->sums.fail,
+		                suite->sums.fail + suite->sums.excp,
 		                suite->sums.exec,
-		                suite->sums.fail * 100 / suite->sums.exec);
+		                (suite->sums.fail + suite->sums.excp) * 100 /
+		                suite->sums.exec);
 		break;
 
 	case CUTE_OFF_ISSUE:
@@ -329,6 +342,7 @@ cute_cons_report_sumup(const struct cute_cons_report * report,
 	        " " CUTE_CONS_REPORT_PASS_HEAD
 	        " " CUTE_CONS_REPORT_SKIP_HEAD
 	        " " CUTE_CONS_REPORT_FAIL_HEAD
+	        " " CUTE_CONS_REPORT_EXCP_HEAD
 	        " " CUTE_CONS_REPORT_EXEC_HEAD
 	        " " CUTE_CONS_REPORT_TOTAL_HEAD
 	        "%s"

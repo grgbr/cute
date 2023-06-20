@@ -2,10 +2,6 @@
 #include "run.h"
 #include "suite.h"
 
-#define CUTE_VERB_REPORT_OVER_LABEL "OVERALL"
-#define CUTE_VERB_REPORT_OVER_WIDTH ((int) \
-                                     sizeof(CUTE_VERB_REPORT_OVER_LABEL) - 1)
-
 static void
 cute_verb_report_on_init(struct cute_cons_report * report,
                          const struct cute_run *   run)
@@ -142,39 +138,57 @@ cute_verb_report_suite_setup(const struct cute_cons_report * report,
 }
 
 static void
+cute_verb_report_suite_done(const struct cute_cons_report * report,
+                            const struct cute_suite_run *   suite)
+{
+	int          depth = suite->super.depth;
+	const char * name = suite->super.base->name;
+	const char * blue = report->term.blue;
+	const char * reg = report->term.regular;
+
+	fprintf(report->stdio,
+	        CUTE_CONS_REPORT_PROG_FMT " ",
+	        cute_report_progress());
+
+	if (suite->super.issue != CUTE_UNK_ISSUE) {
+		int             fill = report->colnr -
+		                       CUTE_CONS_REPORT_PROG_WIDTH -
+		                       (1 + cute_term_depth_width(name,
+		                                                  depth)) -
+		                       1 -
+		                       (1 + CUTE_CONS_REPORT_TIME_WIDTH) -
+		                       (1 + CUTE_CONS_REPORT_STAT_WIDTH);
+		struct timespec diff;
+
+		cute_term_depth_printf(&report->term,
+		                       report->stdio,
+		                       depth,
+		                       "%s%s%s %*.*s ",
+		                       blue, name, reg,
+		                       fill, fill, report->fill);
+
+
+		cute_diff_tspec(&diff, &suite->super.begin, &suite->super.end);
+
+		fprintf(report->stdio,
+		        CUTE_CONS_REPORT_TIME_FMT " ",
+		        diff.tv_sec, diff.tv_nsec / 1000L);
+
+		cute_cons_report_test_done(report, &suite->super);
+	}
+	else
+		cute_term_depth_printf(&report->term,
+		                       report->stdio,
+		                       depth,
+		                       "%s%s%s\n",
+		                       blue, name, reg);
+}
+
+static void
 cute_verb_report_on_foot(const struct cute_cons_report * report,
                          const struct cute_suite_run *   suite)
 {
-	enum cute_issue issue = suite->super.issue;
-	const char *    color;
-	const char *    label;
-	struct timespec diff;
-	int             fill = report->colnr -
-	                       CUTE_CONS_REPORT_PROG_WIDTH -
-	                       (1 + CUTE_VERB_REPORT_OVER_WIDTH) -
-	                       1 -
-	                       (1 + CUTE_CONS_REPORT_TIME_WIDTH) -
-	                       (1 + CUTE_CONS_REPORT_STAT_WIDTH);
-
-	color = cute_term_issue_color(&report->term, issue);
-	label = cute_issue_label(issue);
-
-	cute_diff_tspec(&diff, &suite->super.begin, &suite->super.end);
-
-	fprintf(report->stdio,
-	        CUTE_CONS_REPORT_PROG_FMT
-	        " %s" CUTE_VERB_REPORT_OVER_LABEL "%s"
-	        " %*.*s"
-	        " " CUTE_CONS_REPORT_TIME_FMT
-	        " %s%*s"
-	        "%s\n\n\n",
-	        cute_report_progress(),
-	        report->term.blue, report->term.regular,
-	        fill, fill, report->fill,
-	        diff.tv_sec, diff.tv_nsec / 1000L,
-	        color, CUTE_CONS_REPORT_STAT_WIDTH, label,
-	        report->term.regular);
-
+	fputc('\n', report->stdio);
 	cute_cons_report_sumup(report, suite);
 }
 
@@ -311,6 +325,10 @@ cute_verb_report_suite(struct cute_cons_report *     report,
 		cute_verb_report_suite_setup(report, suite);
 		break;
 
+	case CUTE_DONE_EVT:
+		cute_verb_report_suite_done(report, suite);
+		break;
+
 	case CUTE_FOOT_EVT:
 		cute_verb_report_on_foot(report, suite);
 		break;
@@ -321,7 +339,6 @@ cute_verb_report_suite(struct cute_cons_report *     report,
 
 	case CUTE_EXEC_EVT:
 	case CUTE_TEARDOWN_EVT:
-	case CUTE_DONE_EVT:
 	case CUTE_FINI_EVT:
 		break;
 

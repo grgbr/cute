@@ -45,6 +45,18 @@ simple-fixture-exec-utest-cflags   := $(sample-cflags)
 simple-fixture-exec-utest-ldflags  := $(sample-ldflags) -lcute
 simple-fixture-exec-utest-path     := $(LIBEXECDIR)/cute/simple-fixture-exec-utest
 
+bins                               += simple-except-utest
+simple-except-utest-objs           := simple_except.o
+simple-except-utest-cflags         := $(sample-cflags)
+simple-except-utest-ldflags        := $(sample-ldflags) -lcute
+simple-except-utest-path           := $(LIBEXECDIR)/cute/simple-except-utest
+
+bins                               += simple-except-setup-utest
+simple-except-setup-utest-objs     := simple_except_setup.o
+simple-except-setup-utest-cflags   := $(sample-cflags)
+simple-except-setup-utest-ldflags  := $(sample-ldflags) -lcute
+simple-except-setup-utest-path     := $(LIBEXECDIR)/cute/simple-except-setup-utest
+
 build: $(BUILDDIR)/cute-utest.sh
 
 $(BUILDDIR)/cute-utest.sh: $(SRCDIR)/cute-utest.sh | $(BUILDDIR)

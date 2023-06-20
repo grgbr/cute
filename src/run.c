@@ -40,7 +40,7 @@ cute_run_handle_sig(int sig)
 
 	cute_assert_intern(desc);
 
-	cute_break(CUTE_FAIL_ISSUE,
+	cute_break((sig != SIGALRM) ? CUTE_EXCP_ISSUE : CUTE_FAIL_ISSUE,
 	           cute_curr_run->base->file,
 	           cute_curr_run->base->line,
 	           desc);
@@ -110,15 +110,32 @@ cute_run_active(struct cute_run * run)
 
 		enum cute_issue issue = run->parent->issue;
 
-		if ((issue != CUTE_FAIL_ISSUE) && (issue != CUTE_SKIP_ISSUE))
+		switch (issue) {
+		case CUTE_UNK_ISSUE:
+		case CUTE_PASS_ISSUE:
+		case CUTE_OFF_ISSUE:
 			return true;
+
+		case CUTE_SKIP_ISSUE:
+			run->why = "ancestor skipped";
+			break;
+
+		case CUTE_FAIL_ISSUE:
+			run->why = "ancestor failed";
+			break;
+
+		case CUTE_EXCP_ISSUE:
+			run->why = "ancestor crashed";
+			break;
+
+		default:
+			__cute_unreachable();
+		}
 
 		run->issue = issue;
 		run->file = run->base->file;
 		run->line = run->base->line;
 		run->what = "cannot run setup";
-		run->why = (issue == CUTE_FAIL_ISSUE) ? "ancestor failed"
-		                                      : "ancestor skipped";
 
 		return false;
 	}
@@ -155,8 +172,10 @@ cute_run_setup(struct cute_run * run)
 		goto unsettle;
 	}
 
-	cute_assert_intern(issue == CUTE_FAIL_ISSUE);
-	run->issue = CUTE_FAIL_ISSUE;
+	cute_assert_intern((issue == CUTE_SKIP_ISSUE) ||
+	                   (issue == CUTE_FAIL_ISSUE) ||
+	                   (issue == CUTE_EXCP_ISSUE));
+	run->issue = issue;
 
 unsettle:
 	cute_run_unsettle(run);
@@ -188,7 +207,8 @@ cute_run_teardown(struct cute_run * run)
 		goto unsettle;
 	}
 
-	cute_assert_intern(issue == CUTE_FAIL_ISSUE);
+	cute_assert_intern((issue == CUTE_SKIP_ISSUE) ||
+	                   (issue == CUTE_FAIL_ISSUE));
 	run->issue = issue;
 
 unsettle:
@@ -223,6 +243,7 @@ cute_run_done(struct cute_run * run)
 		break;
 
 	case CUTE_FAIL_ISSUE:
+	case CUTE_EXCP_ISSUE:
 		ret = -EPERM;
 		break;
 
@@ -433,6 +454,7 @@ cute_break(enum cute_issue issue,
 	switch (run->state) {
 	case CUTE_SETUP_STATE:
 		cute_assert((issue == CUTE_FAIL_ISSUE) ||
+		            (issue == CUTE_EXCP_ISSUE) ||
 		            (issue == CUTE_SKIP_ISSUE));
 		cute_assert_intern(!run->file);
 		cute_assert_intern(run->line == -1);
@@ -442,10 +464,23 @@ cute_break(enum cute_issue issue,
 		run->file = file;
 		run->line = line;
 
-		if (issue == CUTE_FAIL_ISSUE)
-			run->what = "setup failed";
-		else
+		switch (issue) {
+		case CUTE_SKIP_ISSUE:
 			run->what = "setup skipped";
+			break;
+
+		case CUTE_FAIL_ISSUE:
+			run->what = "setup failed";
+			break;
+
+		case CUTE_EXCP_ISSUE:
+			run->what = "setup crashed";
+			break;
+
+		default:
+			__cute_unreachable();
+		}
+
 		run->why = why;
 
 		break;
@@ -459,22 +494,37 @@ cute_break(enum cute_issue issue,
 		run->file = file;
 		run->line = line;
 
-		if (issue == CUTE_FAIL_ISSUE)
-			run->what = "exec failed";
-		else if (issue == CUTE_SKIP_ISSUE)
+		switch (issue) {
+		case CUTE_SKIP_ISSUE:
 			run->what = "exec skipped";
+			break;
+
+		case CUTE_FAIL_ISSUE:
+			run->what = "exec failed";
+			break;
+
+		case CUTE_EXCP_ISSUE:
+			run->what = "exec crashed";
+			break;
+
+		default:
+			__cute_unreachable();
+		}
+
 		run->why = why;
 
 		break;
 
 	case CUTE_TEARDOWN_STATE:
 		/* Cannot skip from within teardown fixture. */
-		cute_assert(issue == CUTE_FAIL_ISSUE);
+		cute_assert((issue == CUTE_FAIL_ISSUE) ||
+		            (issue == CUTE_EXCP_ISSUE));
 
 		if (!run->file && (run->line < 0) && !run->what && !run->why) {
 			run->file = file;
 			run->line = line;
-			run->what = "teardown failed";
+			run->what = (issue == CUTE_FAIL_ISSUE) ?
+			            "teardown failed" : "teardown crashed";
 			run->why = why;
 		}
 

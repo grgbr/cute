@@ -129,6 +129,10 @@ cute_test_sum_run(const struct cute_run * run, struct cute_stats * sums)
 		sums->fail++;
 		break;
 
+	case CUTE_EXCP_ISSUE:
+		sums->excp++;
+		break;
+
 	default:
 		__cute_unreachable();
 	}

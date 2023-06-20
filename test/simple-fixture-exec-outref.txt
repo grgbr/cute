@@ -1,17 +1,21 @@
 
-##########################################  Running CUTe test(s)  ##########################################
+#################################  Running CUTe test(s)  ##################################
 
-simple_fixture_exec_suite::simple_fixture_fail_exec_test .............................................. fail
+simple_fixture_exec_suite::simple_fixture_fail_exec_test ............................. fail
 @ /mnt/devel/greg/tidor/cute/test/simple_fixture_exec.c:31
 exec failed: 0 == 1
 
-NAME                                                     STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXEC #TOTAL
-simple_fixture_exec_suite                                fail    0.032642      1      0      1      2      2
-                                                                             50%     0%    50%   100%
-------------------------------------------------------------------------------------------------------------
-Total                                                    fail    0.032642      1      0      1      2      2
-                                                                             50%     0%    50%   100%
+simple_fixture_exec_suite ............................................................ fail
+@ /mnt/devel/greg/tidor/cute/test/simple_fixture_exec.c:39
+exec failed: descendant(s) failed
 
-                                     ###          SUMMARY           ###
-                                     ###  1/2 (50%) test(s) FAILED  ###
+NAME                             STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+simple_fixture_exec_suite        fail    0.025976      1      0      1      0      2      2
+                                                     50%     0%    50%     0%   100%
+-------------------------------------------------------------------------------------------
+Total                            fail    0.025976      1      0      1      0      2      2
+                                                     50%     0%    50%     0%   100%
+
+                            ###          SUMMARY           ###
+                            ###  1/2 (50%) test(s) FAILED  ###
 

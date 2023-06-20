@@ -3,3 +3,4 @@
 * tests
 * xml
 * fork
+* tap: implement show suite, output root suite as top-level node ??

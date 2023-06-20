@@ -105,5 +105,7 @@ run_testcase "simple-fail-utest" 1 || ret=1
 run_testcase "simple-fail-setup-utest" 1 || ret=1
 run_testcase "simple-fail-teardown-utest" 1 || ret=1
 run_testcase "simple-fixture-exec-utest" 1 || ret=1
+run_testcase "simple-except-utest" 1 || ret=1
+run_testcase "simple-except-setup-utest" 1 || ret=1
 
 exit $ret

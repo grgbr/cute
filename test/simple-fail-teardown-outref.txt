@@ -1,17 +1,21 @@
 
-########################################  Running CUTe test(s)  #########################################
+###############################  Running CUTe test(s)  ################################
 
-simple_fail_teardown_suite::simple_fail_teardown_test .............................................. fail
+simple_fail_teardown_suite::simple_fail_teardown_test ............................ fail
 @ /mnt/devel/greg/tidor/cute/test/simple_fail_teardown.c:6
 teardown failed: explicit failure requested
 
-NAME                                                  STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXEC #TOTAL
-simple_fail_teardown_suite                            fail    0.024418      0      0      1      1      1
-                                                                           0%     0%   100%   100%
----------------------------------------------------------------------------------------------------------
-Total                                                 fail    0.024418      0      0      1      1      1
-                                                                           0%     0%   100%   100%
+simple_fail_teardown_suite ....................................................... fail
+@ /mnt/devel/greg/tidor/cute/test/simple_fail_teardown.c:20
+exec failed: descendant(s) failed
 
-                                   ###           SUMMARY           ###
-                                   ###  1/1 (100%) test(s) FAILED  ###
+NAME                         STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+simple_fail_teardown_suite   fail    0.025246      0      0      1      0      1      1
+                                                  0%     0%   100%     0%   100%
+---------------------------------------------------------------------------------------
+Total                        fail    0.025246      0      0      1      0      1      1
+                                                  0%     0%   100%     0%   100%
+
+                          ###           SUMMARY           ###
+                          ###  1/1 (100%) test(s) FAILED  ###
 

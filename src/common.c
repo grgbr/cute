@@ -35,6 +35,7 @@ cute_issue_label(enum cute_issue issue)
 		[CUTE_PASS_ISSUE] = "pass",
 		[CUTE_SKIP_ISSUE] = "skip",
 		[CUTE_FAIL_ISSUE] = "fail",
+		[CUTE_EXCP_ISSUE] = "excp",
 		[CUTE_OFF_ISSUE]  = "off"
 	};
 

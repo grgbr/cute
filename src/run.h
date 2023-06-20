@@ -15,6 +15,7 @@ struct cute_stats {
 	unsigned int pass;
 	unsigned int skip;
 	unsigned int fail;
+	unsigned int excp;
 	unsigned int exec;
 	unsigned int total;
 };

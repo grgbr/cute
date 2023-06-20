@@ -54,11 +54,13 @@ cute_suite_complete_run(struct cute_suite_run * run)
 	cute_assert_intern(!run->stats.pass);
 	cute_assert_intern(!run->stats.skip);
 	cute_assert_intern(!run->stats.fail);
+	cute_assert_intern(!run->stats.excp);
 	cute_assert_intern(!run->stats.exec);
 	cute_assert_intern(run->stats.total);
 	cute_assert_intern(!run->sums.pass);
 	cute_assert_intern(!run->sums.skip);
 	cute_assert_intern(!run->sums.fail);
+	cute_assert_intern(!run->sums.excp);
 	cute_assert_intern(!run->sums.exec);
 	cute_assert_intern(!run->sums.total);
 
@@ -97,6 +99,11 @@ cute_suite_complete_run(struct cute_suite_run * run)
 			run->stats.exec++;
 			break;
 
+		case CUTE_EXCP_ISSUE:
+			run->stats.excp++;
+			run->stats.exec++;
+			break;
+
 		default:
 			__cute_unreachable();
 		}
@@ -105,29 +112,27 @@ cute_suite_complete_run(struct cute_suite_run * run)
 	}
 
 	if (run->super.issue == CUTE_UNK_ISSUE) {
-		if (run->stats.fail) {
-			cute_assert_intern(!run->super.file);
-			cute_assert_intern(run->super.line == -1);
-			cute_assert_intern(!run->super.what);
-			cute_assert_intern(!run->super.why);
+		cute_assert_intern(!run->super.file);
+		cute_assert_intern(run->super.line == -1);
+		cute_assert_intern(!run->super.what);
+		cute_assert_intern(!run->super.why);
 
-			run->super.issue = CUTE_FAIL_ISSUE;
-			run->super.file = run->super.base->file;
-			run->super.line = run->super.base->line;
-			run->super.what = "exec failed";
-			run->super.why = "descendant(s) failed";
-		}
-		else if (run->stats.skip == run->stats.exec) {
-			cute_assert_intern(!run->super.file);
-			cute_assert_intern(run->super.line == -1);
-			cute_assert_intern(!run->super.what);
-			cute_assert_intern(!run->super.why);
+		if (run->stats.skip == run->stats.exec) {
+			cute_assert_intern(!run->stats.fail);
+			cute_assert_intern(!run->stats.excp);
 
 			run->super.issue = CUTE_SKIP_ISSUE;
 			run->super.file = run->super.base->file;
 			run->super.line = run->super.base->line;
 			run->super.what = "exec skipped";
 			run->super.why = "all descendants skipped";
+		}
+		else if (run->stats.fail || run->stats.excp) {
+			run->super.issue = CUTE_FAIL_ISSUE;
+			run->super.file = run->super.base->file;
+			run->super.line = run->super.base->line;
+			run->super.what = "exec failed";
+			run->super.why = "descendant(s) failed";
 		}
 		else
 			run->super.issue = CUTE_PASS_ISSUE;
@@ -144,11 +149,13 @@ cute_suite_oper_run(struct cute_run * run, enum cute_oper oper)
 	cute_assert_intern(!((struct cute_suite_run *)run)->stats.pass);
 	cute_assert_intern(!((struct cute_suite_run *)run)->stats.skip);
 	cute_assert_intern(!((struct cute_suite_run *)run)->stats.fail);
+	cute_assert_intern(!((struct cute_suite_run *)run)->stats.excp);
 	cute_assert_intern(!((struct cute_suite_run *)run)->stats.exec);
 	cute_assert_intern(((struct cute_suite_run *)run)->stats.total);
 	cute_assert_intern(!((struct cute_suite_run *)run)->sums.pass);
 	cute_assert_intern(!((struct cute_suite_run *)run)->sums.skip);
 	cute_assert_intern(!((struct cute_suite_run *)run)->sums.fail);
+	cute_assert_intern(!((struct cute_suite_run *)run)->sums.excp);
 	cute_assert_intern(!((struct cute_suite_run *)run)->sums.exec);
 	cute_assert_intern(!((struct cute_suite_run *)run)->sums.total);
 
@@ -186,6 +193,7 @@ cute_suite_sum_run(const struct cute_run * run, struct cute_stats * sums)
 	sums->pass += stats->pass;
 	sums->skip += stats->skip;
 	sums->fail += stats->fail;
+	sums->excp += stats->excp;
 	sums->exec += stats->exec;
 	sums->total += stats->total;
 }
@@ -205,10 +213,12 @@ cute_suite_join_run(struct cute_run * run, struct cute_run * sub)
 	cute_assert_intern(!srun->stats.pass);
 	cute_assert_intern(!srun->stats.skip);
 	cute_assert_intern(!srun->stats.fail);
+	cute_assert_intern(!srun->stats.excp);
 	cute_assert_intern(!srun->stats.exec);
 	cute_assert_intern(!srun->sums.pass);
 	cute_assert_intern(!srun->sums.skip);
 	cute_assert_intern(!srun->sums.fail);
+	cute_assert_intern(!srun->sums.excp);
 	cute_assert_intern(!srun->sums.exec);
 	cute_assert_intern(!srun->sums.total);
 	cute_assert_intern(srun->count < suite->nr);
@@ -307,6 +317,7 @@ cute_suite_run_tree(void)
 		return 0;
 
 	case CUTE_FAIL_ISSUE:
+	case CUTE_EXCP_ISSUE:
 		return -EPERM;
 
 	default:

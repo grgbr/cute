@@ -35,22 +35,35 @@ cute_terse_report_on_init(struct cute_cons_report * report,
 	len = (int)strnlen(run->name, CUTE_FULL_NAME_MAX_LEN);
 	cols = cute_term_depth_width(run->base->name, run->depth);
 
-	if (len > cols)
+	if ((len + 1 + 3 + 1 + CUTE_CONS_REPORT_STAT_WIDTH) >
+	    (cols + CUTE_CONS_REPORT_SUMUP_WIDTH))
 		cols = (int)len;
 
 	cute_cons_report_on_init(report, cols);
+}
+
+static int
+cute_terse_report_fill_len(const struct cute_cons_report * report,
+                           const char *                    name)
+{
+	int max = report->colnr - (1 + 3 + 1 + CUTE_CONS_REPORT_STAT_WIDTH);
+
+	return report->colnr -
+	       (int)strnlen(name, (size_t)max) -
+	       1 -
+	       (1 + CUTE_CONS_REPORT_STAT_WIDTH);
 }
 
 static void
 cute_terse_report_test_done(const struct cute_cons_report * report,
                             const struct cute_run *         run)
 {
-	if (run->issue == CUTE_FAIL_ISSUE) {
+	if ((run->issue == CUTE_FAIL_ISSUE) ||
+	    (run->issue == CUTE_EXCP_ISSUE)) {
 		const char * name = run->name;
-		int          fill = report->colnr -
-		                    (int)strnlen(name, (size_t)report->ncols) -
-		                    1 -
-		                    (1 + CUTE_CONS_REPORT_STAT_WIDTH);
+		int          fill;
+
+		fill = cute_terse_report_fill_len(report, name);
 
 		fputc('\r', stderr);
 
@@ -92,6 +105,36 @@ cute_terse_report_test(struct cute_cons_report * report,
 	default:
 		__cute_unreachable();
 	}
+}
+
+static void
+cute_terse_report_suite_done(const struct cute_cons_report * report,
+                             const struct cute_suite_run *   suite)
+{
+	if ((suite->super.issue == CUTE_FAIL_ISSUE) ||
+	    (suite->super.issue == CUTE_EXCP_ISSUE)) {
+		const char * name = suite->super.name;
+		int          fill;
+
+		fill = cute_terse_report_fill_len(report, name);
+
+		fputc('\r', stderr);
+
+		fprintf(report->stdio,
+		        "%s%s%s %*.*s ",
+		        report->term.blue,
+		        name,
+		        report->term.regular,
+		        fill,
+		        fill,
+		        report->fill);
+
+		cute_cons_report_test_done(report, &suite->super);
+
+		fputc('\n', report->stdio);
+	}
+
+	cute_terse_report_progress(report);
 }
 
 static void
@@ -164,7 +207,7 @@ cute_terse_report_suite(struct cute_cons_report *     report,
 		break;
 
 	case CUTE_DONE_EVT:
-		cute_terse_report_progress(report);
+		cute_terse_report_suite_done(report, suite);
 		break;
 
 	case CUTE_FOOT_EVT:
