@@ -146,10 +146,16 @@ cute_break(enum cute_issue issue,
            const char *    reason) __cute_noreturn __cute_export;
 
 #define cute_skip(void) \
-	cute_break(CUTE_SKIP_ISSUE, __FILE__, __LINE__, NULL)
+	cute_break(CUTE_SKIP_ISSUE, \
+	           __FILE__, \
+	           __LINE__, \
+	           "explicit skipping requested")
 
 #define cute_fail(void) \
-	cute_break(CUTE_FAIL_ISSUE, __FILE__, __LINE__, NULL)
+	cute_break(CUTE_FAIL_ISSUE, \
+	           __FILE__, \
+	           __LINE__, \
+	           "explicit failure requested")
 
 #define cute_ensure(_expr) \
 	({ \

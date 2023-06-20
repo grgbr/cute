@@ -3,7 +3,7 @@
 
 simple_fail_suite::simple_fail .............................................. fail
 @ /mnt/devel/greg/tidor/cute/test/simple_fail.c:5
-exec check failed: 0 == 1
+exec failed: 0 == 1
 
 NAME                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXEC #TOTAL
 simple_fail_suite              fail    0.029135      0      0      1      1      1

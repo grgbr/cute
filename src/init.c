@@ -270,8 +270,6 @@ cute_init(struct cute_config * config, const char * title)
 	cute_the_config = config;
 	cute_run_nr = 0;
 
-	cute_setup_time();
-
 	return 0;
 }
 

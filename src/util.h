@@ -85,8 +85,6 @@ cute_regex_fini(regex_t * regex);
  * Timestamps handling.
  ******************************************************************************/
 
-extern clockid_t cute_clkid;
-
 #if defined(CONFIG_CUTE_INTERN_ASSERT)
 
 static inline void
@@ -94,7 +92,7 @@ cute_gettime(struct timespec * tspec)
 {
 	cute_assert_intern(tspec);
 
-	cute_assert_intern(!clock_gettime(cute_clkid, tspec));
+	cute_assert_intern(!clock_gettime(CLOCK_REALTIME, tspec));
 }
 
 #else  /* !defined(CONFIG_CUTE_INTERN_ASSERT) */
@@ -102,7 +100,7 @@ cute_gettime(struct timespec * tspec)
 static inline void
 cute_gettime(struct timespec * tspec)
 {
-	clock_gettime(cute_clkid, tspec);
+	clock_gettime(CLOCK_REALTIME, tspec);
 }
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
@@ -111,9 +109,6 @@ extern void
 cute_diff_tspec(struct timespec *       result,
                 const struct timespec * begin,
                 const struct timespec * end);
-
-extern void
-cute_setup_time(void);
 
 /******************************************************************************
  * NULL terminated pointer array iterator handling

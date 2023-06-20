@@ -41,52 +41,42 @@ cute_tap_report_test_done(const struct cute_tap_report * report,
 		break;
 
 	case CUTE_SKIP_ISSUE:
+		cute_assert_intern(run->what);
+		cute_assert_intern(run->why);
+
 		fprintf(report->stdio,
-		        "%*sok %d - %s # SKIP%s%s\n",
+		        "%2$*1$sok %3$d - %4$s # SKIP %5$s: %6$s\n"
+		        "%2$*1$s  ---\n"
+		        "%2$*1$s  at:\n"
+		        "%2$*1$s    file: %7$s\n"
+		        "%2$*1$s    line: %8$d\n"
+		        "%2$*1$s  ...\n",
 		        depth, "",
-		        run->id + 1,
-		        run->base->name,
-		        run->what ? " " : "",
-		        run->what ? run->what : "");
-		if (run->what)
-			fprintf(report->stdio,
-			        "%2$*1$s  ---\n"
-			        "%2$*1$s  at:\n"
-			        "%2$*1$s    file: %3$s\n"
-			        "%2$*1$s    line: %4$d\n"
-			        "%2$*1$s  ...\n",
-			        depth, "",
-			        run->file,
-			        run->line);
+		        run->id + 1, run->base->name, run->what, run->why,
+		        run->file,
+		        run->line);
 		break;
 
 	case CUTE_FAIL_ISSUE:
+		cute_assert_intern(run->what);
+		cute_assert_intern(run->why);
+
 		fprintf(report->stdio,
-		        "%*snot ok %d - %s\n",
+		        "%2$*1$snot ok %3$d - %4$s\n"
+		        "%2$*1$s  ---\n"
+		        "%2$*1$s  severity: fail\n"
+		        "%2$*1$s  message: \"%5$s\"\n"
+		        "%2$*1$s  reason: \"%6$s\"\n"
+		        "%2$*1$s  at:\n"
+		        "%2$*1$s    file: %7$s\n"
+		        "%2$*1$s    line: %8$d\n"
+		        "%2$*1$s  ...\n",
 		        depth, "",
-		        run->id + 1,
-		        run->base->name);
-		if (run->what) {
-			fprintf(report->stdio,
-			        "%2$*1$s  ---\n"
-			        "%2$*1$s  severity: fail\n"
-			        "%2$*1$s  message: \"%3$s\"\n",
-			        depth, "",
-			        run->what);
-			if (run->why)
-				fprintf(report->stdio,
-				        "%*s  reason: \"%s\"\n",
-				        depth, "",
-				        run->why);
-			fprintf(report->stdio,
-			        "%2$*1$s  at:\n"
-			        "%2$*1$s    file: %3$s\n"
-			        "%2$*1$s    line: %4$d\n"
-			        "%2$*1$s  ...\n",
-			        depth, "",
-			        run->file,
-			        run->line);
-		}
+		        run->id + 1, run->base->name,
+		        run->what,
+		        run->why,
+		        run->file,
+		        run->line);
 		break;
 
 	case CUTE_OFF_ISSUE:

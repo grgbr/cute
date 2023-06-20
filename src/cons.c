@@ -83,7 +83,10 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 	        cute_issue_label(run->issue),
 	        report->term.regular);
 
-	if ((run->issue == CUTE_FAIL_ISSUE) && run->what) {
+	if (run->issue == CUTE_FAIL_ISSUE) {
+		cute_assert_intern(run->what);
+		cute_assert_intern(run->why);
+
 		fprintf(report->stdio,
 		        "%s@ %s:%d%s\n",
 		        report->term.gray,
@@ -91,20 +94,13 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 		        run->line,
 		        report->term.fore);
 
-		if (run->why)
-			fprintf(report->stdio,
-			        "%s%s: %s%s%s\n",
-			        report->term.gray,
-			        run->what,
-			        report->term.bold,
-			        run->why,
-			        report->term.regular);
-		else
-			fprintf(report->stdio,
-			        "%s%s%s\n",
-			        report->term.gray,
-			        run->what,
-			        report->term.fore);
+		fprintf(report->stdio,
+		        "%s%s: %s%s%s\n",
+		        report->term.gray,
+		        run->what,
+		        report->term.bold,
+		        run->why,
+		        report->term.regular);
 	}
 }
 

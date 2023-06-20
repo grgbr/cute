@@ -114,7 +114,7 @@ cute_suite_complete_run(struct cute_suite_run * run)
 			run->super.issue = CUTE_FAIL_ISSUE;
 			run->super.file = run->super.base->file;
 			run->super.line = run->super.base->line;
-			run->super.what = "exec check failed";
+			run->super.what = "exec failed";
 			run->super.why = "descendant(s) failed";
 		}
 		else if (run->stats.skip == run->stats.exec) {
@@ -126,7 +126,8 @@ cute_suite_complete_run(struct cute_suite_run * run)
 			run->super.issue = CUTE_SKIP_ISSUE;
 			run->super.file = run->super.base->file;
 			run->super.line = run->super.base->line;
-			run->super.what = "all descendants skipped";
+			run->super.what = "exec skipped";
+			run->super.why = "all descendants skipped";
 		}
 		else
 			run->super.issue = CUTE_PASS_ISSUE;

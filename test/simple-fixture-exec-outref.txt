@@ -3,7 +3,7 @@
 
 simple_fixture_exec_suite::simple_fixture_fail_exec_test .............................................. fail
 @ /mnt/devel/greg/tidor/cute/test/simple_fixture_exec.c:31
-exec check failed: 0 == 1
+exec failed: 0 == 1
 
 NAME                                                     STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXEC #TOTAL
 simple_fixture_exec_suite                                fail    0.032642      1      0      1      2      2

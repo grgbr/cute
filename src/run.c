@@ -10,12 +10,12 @@ static struct {
 	int          no;
 	const char * desc;
 } const cute_run_sigs[] = {
-    { SIGALRM, "timer expired" },
-    { SIGFPE,  "floating point exception (SIGFPE) raised" },
-    { SIGILL,  "illegal instruction (SIGILL) raised" },
-    { SIGSEGV, "segmentation fault (SIGSEGV) raised" },
-    { SIGBUS,  "bus error / bad memory access (SIGBUS) raised" },
-    { SIGSYS,  "bad system call (SIGSYS) raised" }
+	{ SIGALRM, "timer expired" },
+	{ SIGFPE,  "floating point exception (SIGFPE) raised" },
+	{ SIGILL,  "illegal instruction (SIGILL) raised" },
+	{ SIGSEGV, "segmentation fault (SIGSEGV) raised" },
+	{ SIGBUS,  "bus error / bad memory access (SIGBUS) raised" },
+	{ SIGSYS,  "bad system call (SIGSYS) raised" }
 };
 
 static sighandler_t cute_run_saved_sigs[sizeof(cute_run_sigs) /
@@ -61,6 +61,11 @@ cute_run_settle(const struct cute_run * run)
 		cute_assert_intern(cute_run_saved_sigs[s] != SIG_ERR);
 	}
 
+	/*
+	 * As stated into section "Sleeping" of the glibc manual:
+	 * On GNU system, it is safe to use sleep and SIGALRM in the same
+	 * program, because sleep does not work by means of SIGALRM.
+	 */
 	if (run->base->tmout > 0)
 		alarm(run->base->tmout);
 }
@@ -165,15 +170,13 @@ void
 cute_run_teardown(struct cute_run * run)
 {
 	cute_run_assert_intern(run);
+	cute_assert_intern(run->state != CUTE_INIT_STATE);
 	cute_assert_intern(run->state != CUTE_TEARDOWN_STATE);
 	cute_assert_intern(run->state != CUTE_DONE_STATE);
 	cute_assert_intern(run->state != CUTE_FINI_STATE);
 	cute_assert_intern(run->issue < CUTE_ISSUE_NR);
 
 	volatile int issue;
-
-	if (run->state == CUTE_INIT_STATE)
-		goto report;
 
 	run->state = CUTE_TEARDOWN_STATE;
 
@@ -190,7 +193,7 @@ cute_run_teardown(struct cute_run * run)
 
 unsettle:
 	cute_run_unsettle(run);
-report:
+
 	cute_run_report(run, CUTE_TEARDOWN_EVT);
 }
 
@@ -421,7 +424,8 @@ cute_break(enum cute_issue issue,
 	cute_assert(file);
 	cute_assert(file[0]);
 	cute_assert(line >= 0);
-	cute_assert(!why || why[0]);
+	cute_assert(why);
+	cute_assert(why[0]);
 	cute_run_assert_intern(cute_curr_run);
 
 	volatile struct cute_run * run = cute_curr_run;
@@ -439,10 +443,9 @@ cute_break(enum cute_issue issue,
 		run->line = line;
 
 		if (issue == CUTE_FAIL_ISSUE)
-			run->what = why ? "setup check failed"
-			                : "setup failure requested";
+			run->what = "setup failed";
 		else
-			run->what = "setup skipping requested";
+			run->what = "setup skipped";
 		run->why = why;
 
 		break;
@@ -456,13 +459,11 @@ cute_break(enum cute_issue issue,
 		run->file = file;
 		run->line = line;
 
-		if (issue == CUTE_FAIL_ISSUE) {
-			run->what = why ? "exec check failed"
-			                : "exec failure requested";
-			run->why = why;
-		}
+		if (issue == CUTE_FAIL_ISSUE)
+			run->what = "exec failed";
 		else if (issue == CUTE_SKIP_ISSUE)
-			run->what = "exec skipping requested";
+			run->what = "exec skipped";
+		run->why = why;
 
 		break;
 
@@ -473,10 +474,10 @@ cute_break(enum cute_issue issue,
 		if (!run->file && (run->line < 0) && !run->what && !run->why) {
 			run->file = file;
 			run->line = line;
-			run->what = why ? "teardown check failed"
-			                : "teardown failure requested";
+			run->what = "teardown failed";
 			run->why = why;
 		}
+
 		break;
 
 	default:

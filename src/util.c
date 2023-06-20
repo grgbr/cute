@@ -169,8 +169,6 @@ cute_regex_fini(regex_t * regex)
  * Timestamps handling.
  ******************************************************************************/
 
-clockid_t cute_clkid;
-
 void
 cute_diff_tspec(struct timespec *       result,
                 const struct timespec * begin,
@@ -186,25 +184,6 @@ cute_diff_tspec(struct timespec *       result,
 		result->tv_sec = end->tv_sec - begin->tv_sec;
 		result->tv_nsec = nsec;
 	}
-}
-
-void
-cute_setup_time(void)
-{
-	int             ret;
-	struct timespec ts;
-
-	cute_clkid = CLOCK_MONOTONIC;
-	ret = clock_gettime(cute_clkid, &ts);
-	if (!ret)
-		return;
-	cute_assert(errno == EINVAL);
-
-	cute_clkid = CLOCK_REALTIME;
-	ret = clock_gettime(cute_clkid, &ts);
-	if (!ret)
-		return;
-	cute_assert(errno == EINVAL);
 }
 
 /******************************************************************************

@@ -3,7 +3,7 @@
 
 simple_fail_setup_suite::simple_fail_setup_test .............................................. fail
 @ /mnt/devel/greg/tidor/cute/test/simple_fail_setup.c:6
-setup failure requested
+setup failed: explicit failure requested
 
 NAME                                            STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXEC #TOTAL
 simple_fail_setup_suite                         fail    0.000073      0      0      1      1      1
