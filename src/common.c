@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+const char * cute_package = "???";
+const char * cute_package_version;
+char         cute_hostname[HOST_NAME_MAX + 1];
 sigjmp_buf   cute_jmp_env;
 unsigned int cute_run_nr;
 

@@ -186,6 +186,23 @@ cute_diff_tspec(struct timespec *       result,
 	}
 }
 
+const char *
+cute_time_string(char                    string[CUTE_TIME_STRING_SZ],
+                 const struct timespec * time)
+{
+	cute_assert_intern(string);
+	cute_assert_intern(time);
+
+	struct tm tmp;
+
+	if (gmtime_r(&time->tv_sec, &tmp))
+		if (strftime(string, CUTE_TIME_STRING_SZ, "%FT%T", &tmp) ==
+		    (CUTE_TIME_STRING_SZ - 1))
+			return string;
+
+	return NULL;
+}
+
 /******************************************************************************
  * NULL terminated pointer array iterator handling
  ******************************************************************************/

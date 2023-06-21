@@ -1,6 +1,6 @@
 * mocking
 * get stdout / stderr output
 * tests
-* xml
 * fork
 * tap: implement show suite, output root suite as top-level node ??
+* ensure terminal is left in a sane state on interrupt / signal

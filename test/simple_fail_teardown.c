@@ -23,4 +23,4 @@ static CUTE_SUITE_DEFINE(simple_fail_teardown_suite,
                          CUTE_NULL_TEARDOWN,
                          CUTE_FOREVER_TMOUT);
 
-CUTE_MAIN(simple_fail_teardown_suite, "CUTe")
+CUTE_MAIN(simple_fail_teardown_suite, "CUTe", NULL)

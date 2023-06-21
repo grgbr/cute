@@ -216,7 +216,9 @@ extern int
 cute_run_suite(const struct cute_suite * suite) __cute_export;
 
 extern int
-cute_init(struct cute_config * config, const char * title) __cute_export;
+cute_init(struct cute_config * config,
+          const char *         package,
+          const char *         version) __cute_export;
 
 extern int
 cute_fini(void) __cute_export;
@@ -225,12 +227,13 @@ extern int
 cute_main(int                       argc,
           char * const              argv[],
           const struct cute_suite * suite,
-          const char *              title) __cute_export;
+          const char *              package,
+          const char *              version) __cute_export;
 
-#define CUTE_MAIN(_root, _title) \
+#define CUTE_MAIN(_root, _package, _version) \
 	int main(int argc, char * const argv[]) \
 	{ \
-		return cute_main(argc, argv, &(_root), _title); \
+		return cute_main(argc, argv, &(_root), _package, _version); \
 	}
 
 #endif /* _CUTE_H */

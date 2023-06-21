@@ -42,4 +42,4 @@ static CUTE_SUITE_DEFINE(simple_fixture_exec_suite,
                          CUTE_NULL_TEARDOWN,
                          CUTE_FOREVER_TMOUT);
 
-CUTE_MAIN(simple_fixture_exec_suite, "CUTe")
+CUTE_MAIN(simple_fixture_exec_suite, "CUTe", NULL)

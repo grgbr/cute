@@ -65,4 +65,4 @@ static CUTE_SUITE_DEFINE(hello_suite,
                          CUTE_NULL_TEARDOWN,
                          CUTE_FOREVER_TMOUT);
 
-CUTE_MAIN(hello_suite, "CUTe hello sample")
+CUTE_MAIN(hello_suite, "CUTe hello sample", CUTE_VERSION_STRING)

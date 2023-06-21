@@ -8,6 +8,7 @@ sample-cflags             := -Wall \
                              -Wcast-align \
                              -Wmissing-declarations \
                              -D_GNU_SOURCE \
+                             -DCUTE_VERSION_STRING=\"$(VERSION)\" \
                              -I $(TOPDIR)/include \
                              $(filter-out -DNDEBUG,$(EXTRA_CFLAGS))
 sample-ldflags            := $(common-cflags) \

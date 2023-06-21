@@ -28,10 +28,10 @@ cute_cons_report_head(const struct cute_cons_report * report)
 	cute_assert_intern(report->fill);
 	cute_assert_intern((report->ncols + CUTE_CONS_REPORT_SUMUP_WIDTH) <=
 	                   report->colnr);
-	cute_assert_intern(cute_report_title);
-	cute_assert_intern(cute_report_title[0]);
 
 	char *       hrule;
+	size_t       max;
+	char *       title;
 	size_t       ttl_len;
 	size_t       prt_len;
 	int          pre_len;
@@ -42,10 +42,18 @@ cute_cons_report_head(const struct cute_cons_report * report)
 	hrule = cute_cons_report_create_hrule(CUTE_CONS_REPORT_HRULE_SYM,
 	                                      report->colnr / 2);
 
-	ttl_len = strnlen(cute_report_title,
-	                  (size_t)report->colnr -
-	                  (sizeof("###  Running ") - 1) -
-	                  (sizeof(" test(s)  ###") - 1));
+	max = (size_t)report->colnr -
+	      (sizeof("###  Running ") - 1) -
+	      (sizeof(" test(s)  ###") - 1);
+	title = cute_malloc(max + 1);
+	snprintf(title,
+	         max,
+	         "%s%s%s",
+	         cute_package,
+	         cute_package_version ? " " : "",
+	         cute_package_version ? cute_package_version : "");
+
+	ttl_len = strnlen(title, max);
 	prt_len = (sizeof("  Running ") - 1) +
 	          ttl_len +
 	          (sizeof(" test(s)  ") - 1);
@@ -59,9 +67,10 @@ cute_cons_report_head(const struct cute_cons_report * report)
 	        "%.*s"
 	        "\n\n",
 	        pre_len, hrule,
-	        bold, (int)ttl_len, cute_report_title, reg,
+	        bold, (int)ttl_len, title, reg,
 	        post_len, hrule);
 
+	cute_free(title);
 	cute_free(hrule);
 }
 

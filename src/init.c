@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <locale.h>
+#include <unistd.h>
 
 #define CUTE_MATCH_SIZE (1024U)
 
@@ -253,15 +255,23 @@ cute_config_match_run(const struct cute_run * run)
 }
 
 int
-cute_init(struct cute_config * config, const char * title)
+cute_init(struct cute_config * config,
+          const char *         package,
+          const char *         version)
 {
 	cute_config_assert(config);
 	cute_assert(!cute_the_config);
 
 	int err;
 
-	if (title && title[0])
-		cute_report_title = title;
+	setlocale(LC_ALL, "");
+
+	gethostname(cute_hostname, sizeof(cute_hostname));
+
+	if (package && package[0])
+		cute_package = package;
+	if (package && package[0])
+		cute_package_version = version;
 
 	err = cute_config_load(config);
 	if (err)
@@ -331,7 +341,8 @@ int
 cute_main(int                        argc,
           char * const               argv[],
           const struct cute_suite *  suite,
-          const char *               title)
+          const char *               package,
+          const char *               version)
 {
 	cute_assert(argc);
 	cute_assert(suite);
@@ -428,7 +439,7 @@ cute_main(int                        argc,
 			goto usage;
 	}
 
-	ret = cute_init(&conf, title);
+	ret = cute_init(&conf, package, version);
 	if (ret)
 		goto out;
 

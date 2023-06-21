@@ -160,4 +160,4 @@ static CUTE_SUITE_DEFINE(root_suite,
                          CUTE_NULL_TEARDOWN,
                          CUTE_FOREVER_TMOUT);
 
-CUTE_MAIN(root_suite, "CUTe full sample")
+CUTE_MAIN(root_suite, "CUTe full sample", CUTE_VERSION_STRING)

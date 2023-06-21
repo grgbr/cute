@@ -158,7 +158,6 @@ cute_term_setup(struct cute_term *   term,
  * Generic report handling
  ******************************************************************************/
 
-const char *                 cute_report_title = "???";
 static unsigned int          cute_report_count;
 static struct cute_report ** cute_report_table;
 static unsigned int          cute_report_done;

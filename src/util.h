@@ -110,6 +110,12 @@ cute_diff_tspec(struct timespec *       result,
                 const struct timespec * begin,
                 const struct timespec * end);
 
+#define CUTE_TIME_STRING_SZ (20U)
+
+extern const char *
+cute_time_string(char                    string[CUTE_TIME_STRING_SZ],
+                 const struct timespec * time);
+
 /******************************************************************************
  * NULL terminated pointer array iterator handling
  ******************************************************************************/

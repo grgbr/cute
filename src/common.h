@@ -5,7 +5,7 @@
 #include "cute/cute.h"
 #include "util.h"
 #include <setjmp.h>
-#include <values.h>
+#include <limits.h>
 
 #define CUTE_NAME_MAX_LEN      (96U)
 #define CUTE_FULL_NAME_MAX_LEN (192U)
@@ -127,6 +127,9 @@ cute_issue_label(enum cute_issue issue);
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
 extern struct cute_config * cute_the_config;
+extern const char *         cute_package;
+extern const char *         cute_package_version;
+extern char                 cute_hostname[HOST_NAME_MAX + 1];
 extern sigjmp_buf           cute_jmp_env;
 extern unsigned int         cute_run_nr;
 

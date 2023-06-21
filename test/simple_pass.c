@@ -15,4 +15,4 @@ static CUTE_SUITE_DEFINE(simple_pass_suite,
                          CUTE_NULL_TEARDOWN,
                          CUTE_FOREVER_TMOUT);
 
-CUTE_MAIN(simple_pass_suite, "CUTe")
+CUTE_MAIN(simple_pass_suite, "CUTe", NULL)

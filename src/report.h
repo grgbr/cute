@@ -118,8 +118,6 @@ enum cute_kind {
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
-extern const char * cute_report_title;
-
 struct cute_report;
 struct cute_run;
 
