@@ -1,19 +1,19 @@
 
 ###############################  Running CUTe test(s)  ################################
 
-simple_fail_teardown_suite::simple_fail_teardown_test ............................ fail
-@ /mnt/devel/greg/tidor/cute/test/simple_fail_teardown.c:6
+simple_teardown_fail_suite::simple_teardown_fail_test ............................ fail
+@ /home/grb/dev/proto/icsw/src/cute/test/simple_teardown_fail.c:6
 teardown failed: explicit failure requested
 
-simple_fail_teardown_suite ....................................................... fail
-@ /mnt/devel/greg/tidor/cute/test/simple_fail_teardown.c:20
+simple_teardown_fail_suite ....................................................... fail
+@ /home/grb/dev/proto/icsw/src/cute/test/simple_teardown_fail.c:24
 exec failed: descendant(s) failed
 
 NAME                         STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-simple_fail_teardown_suite   fail    0.025246      0      0      1      0      1      1
+simple_teardown_fail_suite   fail    0.022186      0      0      1      0      1      1
                                                   0%     0%   100%     0%   100%
 ---------------------------------------------------------------------------------------
-Total                        fail    0.025246      0      0      1      0      1      1
+Total                        fail    0.022186      0      0      1      0      1      1
                                                   0%     0%   100%     0%   100%
 
                           ###           SUMMARY           ###

@@ -1,19 +1,19 @@
 
 #################################  Running CUTe test(s)  ##################################
 
-simple_fixture_exec_suite::simple_fixture_fail_exec_test ............................. fail
-@ /mnt/devel/greg/tidor/cute/test/simple_fixture_exec.c:31
+simple_fixture_fail_suite::simple_fixture_fail_fail_test ............................. fail
+@ /home/grb/dev/proto/icsw/src/cute/test/simple_fixture_fail.c:31
 exec failed: 0 == 1
 
-simple_fixture_exec_suite ............................................................ fail
-@ /mnt/devel/greg/tidor/cute/test/simple_fixture_exec.c:39
+simple_fixture_fail_suite ............................................................ fail
+@ /home/grb/dev/proto/icsw/src/cute/test/simple_fixture_fail.c:43
 exec failed: descendant(s) failed
 
 NAME                             STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-simple_fixture_exec_suite        fail    0.025976      1      0      1      0      2      2
+simple_fixture_fail_suite        fail    0.009966      1      0      1      0      2      2
                                                      50%     0%    50%     0%   100%
 -------------------------------------------------------------------------------------------
-Total                            fail    0.025976      1      0      1      0      2      2
+Total                            fail    0.009966      1      0      1      0      2      2
                                                      50%     0%    50%     0%   100%
 
                             ###          SUMMARY           ###

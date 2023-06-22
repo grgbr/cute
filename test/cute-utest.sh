@@ -100,12 +100,12 @@ ret=0
 mkdir -p ${testdir}
 cols=30
 
-run_testcase "simple-pass-utest" 0 || ret=1
-run_testcase "simple-fail-utest" 1 || ret=1
-run_testcase "simple-fail-setup-utest" 1 || ret=1
-run_testcase "simple-fail-teardown-utest" 1 || ret=1
-run_testcase "simple-fixture-exec-utest" 1 || ret=1
-run_testcase "simple-except-utest" 1 || ret=1
-run_testcase "simple-except-setup-utest" 1 || ret=1
+run_testcase "simple-exec-pass-utest" 0 || ret=1
+run_testcase "simple-exec-fail-utest" 1 || ret=1
+run_testcase "simple-exec-error-utest" 1 || ret=1
+run_testcase "simple-setup-fail-utest" 1 || ret=1
+run_testcase "simple-setup-error-utest" 1 || ret=1
+run_testcase "simple-teardown-fail-utest" 1 || ret=1
+run_testcase "simple-fixture-fail-utest" 1 || ret=1
 
 exit $ret

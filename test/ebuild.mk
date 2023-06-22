@@ -15,47 +15,47 @@ sample-ldflags            := $(common-cflags) \
                              $(filter-out -DNDEBUG,$(EXTRA_LDFLAGS)) \
                              -Wl,-z,start-stop-visibility=hidden
 
-bins                               += simple-pass-utest
-simple-pass-utest-objs             := simple_pass.o
-simple-pass-utest-cflags           := $(sample-cflags)
-simple-pass-utest-ldflags          := $(sample-ldflags) -lcute
-simple-pass-utest-path             := $(LIBEXECDIR)/cute/simple-pass-utest
+bins                               += simple-exec-pass-utest
+simple-exec-pass-utest-objs        := simple_exec_pass.o
+simple-exec-pass-utest-cflags      := $(sample-cflags)
+simple-exec-pass-utest-ldflags     := $(sample-ldflags) -lcute
+simple-exec-pass-utest-path        := $(LIBEXECDIR)/cute/simple-exec-pass-utest
 
-bins                               += simple-fail-utest
-simple-fail-utest-objs             := simple_fail.o
-simple-fail-utest-cflags           := $(sample-cflags)
-simple-fail-utest-ldflags          := $(sample-ldflags) -lcute
-simple-fail-utest-path             := $(LIBEXECDIR)/cute/simple-fail-utest
+bins                               += simple-exec-fail-utest
+simple-exec-fail-utest-objs        := simple_exec_fail.o
+simple-exec-fail-utest-cflags      := $(sample-cflags)
+simple-exec-fail-utest-ldflags     := $(sample-ldflags) -lcute
+simple-exec-fail-utest-path        := $(LIBEXECDIR)/cute/simple-exec-fail-utest
 
-bins                               += simple-fail-setup-utest
-simple-fail-setup-utest-objs       := simple_fail_setup.o
-simple-fail-setup-utest-cflags     := $(sample-cflags)
-simple-fail-setup-utest-ldflags    := $(sample-ldflags) -lcute
-simple-fail-setup-utest-path       := $(LIBEXECDIR)/cute/simple-fail-setup-utest
+bins                               += simple-exec-error-utest
+simple-exec-error-utest-objs       := simple_exec_error.o
+simple-exec-error-utest-cflags     := $(sample-cflags)
+simple-exec-error-utest-ldflags    := $(sample-ldflags) -lcute
+simple-exec-error-utest-path       := $(LIBEXECDIR)/cute/simple-exec-error-utest
 
-bins                               += simple-fail-teardown-utest
-simple-fail-teardown-utest-objs    := simple_fail_teardown.o
-simple-fail-teardown-utest-cflags  := $(sample-cflags)
-simple-fail-teardown-utest-ldflags := $(sample-ldflags) -lcute
-simple-fail-teardown-utest-path    := $(LIBEXECDIR)/cute/simple-fail-teardown-utest
+bins                               += simple-setup-fail-utest
+simple-setup-fail-utest-objs       := simple_setup_fail.o
+simple-setup-fail-utest-cflags     := $(sample-cflags)
+simple-setup-fail-utest-ldflags    := $(sample-ldflags) -lcute
+simple-setup-fail-utest-path       := $(LIBEXECDIR)/cute/simple-setup-fail-utest
 
-bins                               += simple-fixture-exec-utest
-simple-fixture-exec-utest-objs     := simple_fixture_exec.o
-simple-fixture-exec-utest-cflags   := $(sample-cflags)
-simple-fixture-exec-utest-ldflags  := $(sample-ldflags) -lcute
-simple-fixture-exec-utest-path     := $(LIBEXECDIR)/cute/simple-fixture-exec-utest
+bins                               += simple-setup-error-utest
+simple-setup-error-utest-objs      := simple_setup_error.o
+simple-setup-error-utest-cflags    := $(sample-cflags)
+simple-setup-error-utest-ldflags   := $(sample-ldflags) -lcute
+simple-setup-error-utest-path      := $(LIBEXECDIR)/cute/simple-setup-error-utest
 
-bins                               += simple-except-utest
-simple-except-utest-objs           := simple_except.o
-simple-except-utest-cflags         := $(sample-cflags)
-simple-except-utest-ldflags        := $(sample-ldflags) -lcute
-simple-except-utest-path           := $(LIBEXECDIR)/cute/simple-except-utest
+bins                               += simple-teardown-fail-utest
+simple-teardown-fail-utest-objs    := simple_teardown_fail.o
+simple-teardown-fail-utest-cflags  := $(sample-cflags)
+simple-teardown-fail-utest-ldflags := $(sample-ldflags) -lcute
+simple-teardown-fail-utest-path    := $(LIBEXECDIR)/cute/simple-teardown-fail-utest
 
-bins                               += simple-except-setup-utest
-simple-except-setup-utest-objs     := simple_except_setup.o
-simple-except-setup-utest-cflags   := $(sample-cflags)
-simple-except-setup-utest-ldflags  := $(sample-ldflags) -lcute
-simple-except-setup-utest-path     := $(LIBEXECDIR)/cute/simple-except-setup-utest
+bins                               += simple-fixture-fail-utest
+simple-fixture-fail-utest-objs     := simple_fixture_fail.o
+simple-fixture-fail-utest-cflags   := $(sample-cflags)
+simple-fixture-fail-utest-ldflags  := $(sample-ldflags) -lcute
+simple-fixture-fail-utest-path     := $(LIBEXECDIR)/cute/simple-fixture-fail-utest
 
 build: $(BUILDDIR)/cute-utest.sh
 

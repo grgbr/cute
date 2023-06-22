@@ -1,0 +1,21 @@
+
+#############################  Running CUTe test(s)  ##############################
+
+simple_exec_fail_suite::simple_exec_fail_test ................................ fail
+@ /home/grb/dev/proto/icsw/src/cute/test/simple_exec_fail.c:5
+exec failed: 0 == 1
+
+simple_exec_fail_suite ....................................................... fail
+@ /home/grb/dev/proto/icsw/src/cute/test/simple_exec_fail.c:16
+exec failed: descendant(s) failed
+
+NAME                     STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+simple_exec_fail_suite   fail    0.006947      0      0      1      0      1      1
+                                              0%     0%   100%     0%   100%
+-----------------------------------------------------------------------------------
+Total                    fail    0.006947      0      0      1      0      1      1
+                                              0%     0%   100%     0%   100%
+
+                        ###           SUMMARY           ###
+                        ###  1/1 (100%) test(s) FAILED  ###
+

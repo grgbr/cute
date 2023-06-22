@@ -1,0 +1,29 @@
+
+################################  Running CUTe test(s)  #################################
+
+simple_exec_error_suite::simple_exec_error_segv_test ............................... excp
+@ /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:3
+exec crashed: segmentation fault (SIGSEGV) raised
+
+simple_exec_error_suite::simple_exec_error_ill_test ................................ excp
+@ /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:10
+exec crashed: illegal instruction (SIGILL) raised
+
+simple_exec_error_suite::simple_exec_error_fpe_test ................................ excp
+@ /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:15
+exec crashed: floating point exception (SIGFPE) raised
+
+simple_exec_error_suite ............................................................ fail
+@ /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:35
+exec failed: descendant(s) failed
+
+NAME                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+simple_exec_error_suite        fail    0.036470      0      0      0      3      3      3
+                                                    0%     0%     0%   100%   100%
+-----------------------------------------------------------------------------------------
+Total                          fail    0.036470      0      0      0      3      3      3
+                                                    0%     0%     0%   100%   100%
+
+                           ###           SUMMARY           ###
+                           ###  3/3 (100%) test(s) FAILED  ###
+
