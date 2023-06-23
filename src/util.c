@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdarg.h>
 
 void
 cute_fail_assert(const char * message,
@@ -121,6 +122,45 @@ cute_toupper(const char * string, size_t max_size)
 	up[len] = '\0';
 
 	return up;
+}
+
+char *
+cute_asprintf(const char * format, ...)
+{
+	va_list args;
+	char *  res;
+	int     len;
+
+#define CUTE_ASPRINTF_ERROR_MSG  "cannot create formatted string"
+
+	res = cute_malloc(sizeof(CUTE_ASPRINTF_ERROR_MSG));
+
+	va_start(args, format);
+	len = vsnprintf(res, sizeof(CUTE_ASPRINTF_ERROR_MSG), format, args);
+	va_end(args);
+	if (len < 0)
+		goto err;
+
+	if (len < (int)sizeof(CUTE_ASPRINTF_ERROR_MSG))
+		return res;
+
+	cute_free(res);
+	res = cute_malloc((size_t)len + 1);
+
+	va_start(args, format);
+	len = vsnprintf(res, (size_t)len + 1, format, args);
+	va_end(args);
+	if (len < 0)
+		goto err;
+
+	return res;
+
+err:
+	memcpy(res,
+	       CUTE_ASPRINTF_ERROR_MSG,
+	       sizeof(CUTE_ASPRINTF_ERROR_MSG));
+
+	return res;
 }
 
 /******************************************************************************

@@ -68,6 +68,9 @@ cute_free(void * ptr);
 extern char *
 cute_toupper(const char * string, size_t max_size);
 
+extern char *
+cute_asprintf(const char * format, ...) __attribute__((format(printf, 1, 2)));
+
 /******************************************************************************
  * POSIX extended regular expressions
  ******************************************************************************/
