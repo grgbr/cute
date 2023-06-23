@@ -9,5 +9,5 @@ Total                    pass    0.037163      1      0      0      0      1    
                                             100%     0%     0%     0%   100%
 
                             ###      SUMMARY       ###
-                            ###  1 test(s) PASSED  ###
+                            ###  All tests PASSED  ###
 

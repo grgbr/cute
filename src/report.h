@@ -61,7 +61,8 @@ cute_term_depth_printf(const struct cute_term * term,
                        FILE *                   stdio,
                        int                      depth,
                        const char *             format,
-                                                ...);
+                                                ...)
+	__attribute__((format(printf, 4, 5)));
 
 extern const char *
 cute_term_issue_color(const struct cute_term * term, enum cute_issue issue);

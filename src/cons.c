@@ -266,17 +266,11 @@ cute_cons_report_results(const struct cute_cons_report * report,
 
 	switch (issue) {
 	case CUTE_PASS_ISSUE:
-		blen = snprintf(body,
-		                sz,
-		                "%u test(s) PASSED",
-		                suite->sums.pass);
+		blen = snprintf(body, sz, "All tests PASSED");
 		break;
 
 	case CUTE_SKIP_ISSUE:
-		blen = snprintf(body,
-		                sz,
-		                "%u test(s) SKIPPED",
-		                suite->sums.skip);
+		blen = snprintf(body, sz, "All tests SKIPPED");
 		break;
 
 	case CUTE_FAIL_ISSUE:
@@ -291,10 +285,7 @@ cute_cons_report_results(const struct cute_cons_report * report,
 		break;
 
 	case CUTE_OFF_ISSUE:
-		blen = snprintf(body,
-		                sz,
-		                "%u test(s) DISABLED",
-		                suite->sums.total);
+		blen = snprintf(body, sz, "All tests DISABLED");
 		break;
 
 	default:
