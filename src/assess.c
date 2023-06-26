@@ -1,3 +1,8 @@
+#include "assess.h"
+#include "cute/ensure.h"
+#include "run.h"
+#include <inttypes.h>
+
 /*
 int / float:
     ==  equals
@@ -39,56 +44,6 @@ memory:
     unequals
 */
 
-enum cute_assess_oper {
-    CUTE_ASSESS_EQUAL_OPER = 0,
-    CUTE_ASSESS_UNEQUAL_OPER,
-    CUTE_ASSESS_GREATER_OPER,
-    CUTE_ASSESS_GREATER_EQUAL_OPER,
-    CUTE_ASSESS_LOWER_OPER,
-    CUTE_ASSESS_LOWER_EQUAL_OPER,
-    CUTE_ASSESS_INRANGE_OPER,
-    CUTE_ASSESS_NOT_INRANGE_OPER,
-    CUTE_ASSESS_INSET_OPER,
-    CUTE_ASSESS_NOT_INSET_OPER,
-    CUTE_ASSESS_START_WITH_OPER,
-    CUTE_ASSESS_END_WITH_OPER,
-    CUTE_ASSESS_CONTAINS_OPER,
-    CUTE_ASSESS_OPER_NR,
-};
-
-#define cute_assess_assert_oper(_oper) \
-	cute_assert((_oper) >= 0); \
-	cute_assert((_oper) < CUTE_ASSESS_OPER_NR)
-
-#if defined(CONFIG_CUTE_INTERN_ASSERT)
-
-#define cute_assess_assert_oper_intern(_oper) \
-	cute_assess_assert_oper(_oper)
-
-#else  /* !defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-#define cute_assess_assert_oper_intern(_oper)
-
-#endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-union cute_assess_member {
-	intmax_t    i;
-	uintmax_t   u;
-	long double f;
-	void *      p;
-	char *      s;
-};
-
-struct cute_assess_range {
-	union cute_assess_member min;
-	union cute_assess_member max;
-};
-
-struct cute_assess_set {
-	unsigned int               count;
-	union cute_assess_member * items;
-};
-
 #define cute_assess_assert_set(_set) \
 	cute_assert(_set); \
 	cute_assert((_set)->count); \
@@ -105,12 +60,6 @@ struct cute_assess_set {
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
-enum cute_assess_desc {
-	CUTE_ASSESS_EXPECT_DESC = 0,
-	CUTE_ASSESS_FOUND_DESC,
-	CUTE_ASSESS_DESC_NR
-};
-
 #define cute_assess_assert_desc(_desc) \
 	cute_assert((_desc) >= 0); \
 	cute_assert((_desc) < CUTE_ASSESS_DESC_NR)
@@ -126,55 +75,14 @@ enum cute_assess_desc {
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
-typedef bool (cute_assess_cmp_fn)(const struct cute_assess * assess,
-                                  union cute_assess_member   value);
-
-typedef void (cute_assess_desc_fn)(const struct cute_assess * assess,
-                                   enum cute_assess_desc      desc,
-                                   FILE *                     stdio);
-
-struct cute_assess_ops {
-	cute_assess_cmp_fn *  cmp;
-	cute_assess_desc_fn * desc;
-};
-
-#define cute_assess_assert_ops(_ops) \
-	cute_assert(_ops); \
-	cute_assert((_ops)->cmp); \
-	cute_assert((_ops)->desc)
-
-#if defined(CONFIG_CUTE_INTERN_ASSERT)
-
-#define cute_assess_assert_ops_intern(_ops) \
-	cute_assess_assert_ops(_ops)
-
-#else  /* !defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-#define cute_assess_assert_ops_intern(_ops)
-
-#endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-struct cute_assess {
-	const struct cute_assess_ops * ops;
-	enum cute_oper                 oper;
-	const char *                   chk_expr;
-	const char *                   xpct_expr;
-	union {
-		union cute_assess_member member;
-		struct cute_assess_range range;
-		struct cute_assess_set   set;
-	}                              xpct_val;
-	union cute_assess_member       chk_val;
-};
-
 #define cute_assess_assert(_assess) \
 	cute_assert(_assess); \
-	cute_assess_assert_ops((_assess)->ops); \
-	cute_assess_assert_oper((_assess)->oper); \
-	cute_assess((_assess)->chk_expr); \
-	cute_assess((_assess)->chk_expr[0]); \
-	cute_assess((_assess)->xpct_expr); \
-	cute_assess((_assess)->xpct_expr[0])
+	cute_assert((_assess)->cmp); \
+	cute_assert((_assess)->desc); \
+	cute_assert((_assess)->chk_expr); \
+	cute_assert((_assess)->chk_expr[0]); \
+	cute_assert((_assess)->xpct_expr); \
+	cute_assert((_assess)->xpct_expr[0])
 
 #if defined(CONFIG_CUTE_INTERN_ASSERT)
 
@@ -187,182 +95,218 @@ struct cute_assess {
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
-static const char *
-cute_assess_oper_label(enum cute_assess_oper oper)
+static char *
+cute_assess_desc_null(const struct cute_assess * assess __cute_unused,
+                      enum cute_assess_desc      desc __cute_unused)
 {
-	cute_assess_assert_oper_intern(oper);
+	cute_assess_assert_desc_intern(desc);
 
-	static const char * labels[] = {
-		[CUTE_ASSESS_EQUAL_OPER]         = "==",
-		[CUTE_ASSESS_UNEQUAL_OPER]       = "!=",
-		[CUTE_ASSESS_GREATER_OPER]       = ">",
-		[CUTE_ASSESS_GREATER_EQUAL_OPER] = ">=",
-		[CUTE_ASSESS_LOWER_OPER] =       = "<",
-		[CUTE_ASSESS_LOWER_EQUAL_OPER]   = "<=",
-		[CUTE_ASSESS_INRANGE_OPER]       = "in range",
-		[CUTE_ASSESS_NOT_INRANGE_OPER]   = "not in range",
-		[CUTE_ASSESS_INSET_OPER]         = "in set",
-		[CUTE_ASSESS_NOT_INSET_OPER]     = "not in set",
-		[CUTE_ASSESS_START_WITH_OPER]    = "starts with",
-		[CUTE_ASSESS_END_WITH_OPER]      = "ends with"
-		[CUTE_ASSESS_CONTAINS_OPER]      = "contains"
-	};
-
-	return labels[oper];
+	return NULL;
 }
 
 void
+cute_assess_build_null(struct cute_assess * assess)
+{
+	cute_assert_intern(assess);
+
+	assess->desc = cute_assess_desc_null;
+}
+
+static char *
+cute_assess_desc_assert(const struct cute_assess * assess,
+                        enum cute_assess_desc      desc)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(assess->desc);
+	cute_assert_intern(assess->xpct_expr);
+	cute_assert_intern(assess->xpct_expr[0]);
+	cute_assess_assert_desc_intern(desc);
+
+	switch (desc) {
+	case CUTE_ASSESS_EXPECT_DESC:
+		return cute_dup(assess->xpct_expr);
+
+	case CUTE_ASSESS_FOUND_DESC:
+		return NULL;
+
+	default:
+		__cute_unreachable();
+	}
+}
+
+void
+cute_assess_build_assert(struct cute_assess * assess, const char * expr)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(expr);
+	cute_assert_intern(expr[0]);
+
+	assess->desc = &cute_assess_desc_assert;
+	assess->xpct_expr = expr;
+}
+
+bool
 cute_assess_check(struct cute_assess * assess, union cute_assess_member value)
 {
-	cute_assess_assert(assess);
+	cute_assess_assert_intern(assess);
 
-	if (assess->ops->cmp(assess, value))
-		return;
+	if (assess->cmp(assess, value))
+		return true;
 
-	assess->chk_val.member = value;
+	assess->chk_val = value;
 
-	//cute_break()
+	return false;
 }
 
-void
+char *
 cute_assess_desc(const struct cute_assess * assess,
-                 enum cute_assess_desc      desc,
-                 FILE *                     stdio)
+                 enum cute_assess_desc      desc)
 {
-	cute_assess_assert(assess);
-	cute_assess_assert_desc(desc);
-	cute_assert(stdio);
+	cute_assert_intern(assess);
+	cute_assert_intern(assess->desc);
+	cute_assess_assert_desc_intern(desc);
 
-	assess->ops->desc(assess, desc, stdio);
+	return assess->desc(assess, desc);
 }
 
 static bool
-cute_assess_cmp_int_member(const struct cute_assess * assess,
+cute_assess_cmp_sint_equal(const struct cute_assess * assess,
                            union cute_assess_member   value)
 {
 	cute_assess_assert_intern(assess);
 
-	switch (assess->oper) {
-	case CUTE_ASSESS_EQUAL_OPER:
-		return value.i == assess->xpct_val.member.i;
-
-	case CUTE_ASSESS_UNEQUAL_OPER:
-		return value.i != assess->xpct_val.member.i;
-
-	case CUTE_ASSESS_GREATER_OPER:
-		return value.i > assess->xpct_val.member.i;
-
-	case CUTE_ASSESS_GREATER_EQUAL_OPER:
-		return value.i >= assess->xpct_val.member.i;
-
-	case CUTE_ASSESS_LOWER_OPER:
-		return value.i < assess->xpct_val.member.i;
-
-	case CUTE_ASSESS_LOWER_EQUAL_OPER:
-		return value.i <= assess->xpct_val.member.i;
-
-	default:
-		__cute_unreachable();
-	}
+	return value.i == assess->xpct_val.member.i;
 }
 
-static void
-cute_assess_desc_int_chk(const struct cute_assess * assess,
-                         FILE *                     stdio)
+#if 0
+static bool
+cute_assess_cmp_sint_unequal(const struct cute_assess * assess,
+                             union cute_assess_member   value)
 {
 	cute_assess_assert_intern(assess);
-	cute_assert_intern(stdio);
 
-	fprintf(stdio,
-	        "%s equals [%PRIdMAX]",
-	        assess->chk_expr,
-	        assess->chk_val.member.i);
+	return value.i != assess->xpct_val.member.i;
 }
 
-static void
-cute_assess_desc_int_member(const struct cute_assess * assess,
-                            enum cute_assess_desc      desc,
-                            FILE *                     stdio)
+static bool
+cute_assess_cmp_sint_greater(const struct cute_assess * assess,
+                             union cute_assess_member   value)
+{
+	cute_assess_assert_intern(assess);
+
+	return value.i > assess->xpct_val.member.i;
+}
+
+static bool
+cute_assess_cmp_sint_greater_or_equal(const struct cute_assess * assess,
+                                      union cute_assess_member   value)
+{
+	cute_assess_assert_intern(assess);
+
+	return value.i >= assess->xpct_val.member.i;
+}
+
+static bool
+cute_assess_cmp_sint_lower(const struct cute_assess * assess,
+                           union cute_assess_member   value)
+{
+	cute_assess_assert_intern(assess);
+
+	return value.i < assess->xpct_val.member.i;
+}
+
+static bool
+cute_assess_cmp_sint_lower_or_equal(const struct cute_assess * assess,
+                                    union cute_assess_member   value)
+{
+	cute_assess_assert_intern(assess);
+
+	return value.i <= assess->xpct_val.member.i;
+}
+#endif
+
+static char *
+cute_assess_desc_sint_xpct_member(const struct cute_assess * assess,
+                                  const char *               oper)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+
+	return cute_asprintf("%s %s %s [%" PRIdMAX "]",
+	                     assess->chk_expr,
+	                     oper,
+	                     assess->xpct_expr,
+	                     assess->xpct_val.member.i);
+}
+
+static char *
+cute_assess_desc_sint_chk(const struct cute_assess * assess)
+{
+	cute_assess_assert_intern(assess);
+
+	return cute_asprintf("%s == [%" PRIdMAX "]",
+	                     assess->chk_expr,
+	                     assess->chk_val.i);
+}
+
+static char *
+cute_assess_desc_sint_equal(const struct cute_assess * assess,
+                            enum cute_assess_desc      desc)
 {
 	cute_assess_assert_intern(assess);
 	cute_assess_assert_desc_intern(desc);
-	cute_assert_intern(stdio);
-
-	const char * oper;
-
-	oper = cute_assess_oper_label(assess->oper);
 
 	switch (desc) {
 	case CUTE_ASSESS_EXPECT_DESC:
-		fprintf(stdio,
-		        "%s %s %s [%PRIdMAX]",
-		        assess->chk_expr,
-		        oper,
-		        assess->xpct_expr,
-		        assess->xpct_val.member.i);
-		break;
+		return cute_assess_desc_sint_xpct_member(assess, "==");
 
 	case CUTE_ASSESS_FOUND_DESC:
-		cute_assess_desc_int_chk(assess, stdio);
-		break;
+		return cute_assess_desc_sint_chk(assess);
 
 	default:
 		__cute_unreachable();
 	}
 }
 
-const struct cute_assess_ops cute_assess_int_ops = {
-	.cmp  = cute_assess_cmp_int_member,
-	.desc = cute_assess_desc_int_member
-};
-
-void
-cute_assess_build_int_member(struct cute_assess * assess,
-                             enum cute_oper       oper,
+static void
+cute_assess_build_sint_equal(struct cute_assess * assess,
                              const char *         chk_expr,
                              const char *         xpct_expr,
                              intmax_t             xpct_val)
 {
-	assess->ops = &cute_assess_int_ops;
-	assess->oper = oper;
+	cute_assert_intern(assess);
+	cute_assert_intern(chk_expr);
+	cute_assert_intern(chk_expr[0]);
+	cute_assert_intern(xpct_expr);
+	cute_assert_intern(xpct_expr[0]);
+
+	assess->cmp = &cute_assess_cmp_sint_equal;
+	assess->desc = &cute_assess_desc_sint_equal;
 	assess->chk_expr = chk_expr;
 	assess->xpct_expr = xpct_expr;
 	assess->xpct_val.member.i = xpct_val;
 }
 
-void
-cute_assess_int_member(struct cute_assess * assess,
+bool
+cute_assess_sint_equal(struct cute_assess * assess,
                        const char *         chk_expr,
                        intmax_t             chk_val,
-                       enum cute_oper       oper,
                        const char *         xpct_expr,
                        intmax_t             xpct_val)
 {
+	cute_assert_intern(assess);
+	cute_assert_intern(chk_expr);
+	cute_assert_intern(chk_expr[0]);
+	cute_assert_intern(xpct_expr);
+	cute_assert_intern(xpct_expr[0]);
+
 	union cute_assess_member val = { .i = chk_val };
 
-	cute_assess_build_int_member(assess,
-	                             oper,
-	                             chk_expr,
-	                             xpct_expr,
-	                             xpct_val);
+	cute_assess_build_sint_equal(assess, chk_expr, xpct_expr, xpct_val);
 
-	cute_assess_check(assess, val);
+	return cute_assess_check(assess, val);
 }
-
-#define cute_ensure_int_member(_a, _op, _b) \
-	cute_assess_int_member(&cute_curr_run->assess, \
-	                       # _chk_expr, \
-	                       _a, \
-	                       _oper, \
-	                       # _xpct_expr, \
-	                       _b)
-
-cute_ensure_signed(a, greater_than, 2)
-
-
-
-
-
 
 #if 0
 static bool

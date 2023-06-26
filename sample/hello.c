@@ -1,10 +1,10 @@
-#include <cute/cute.h>
+#include <cute/ensure.h>
 #include <stdlib.h>
 
 static void
 test_skipped(void)
 {
-	cute_skip();
+	cute_skip("requested explicit skip");
 }
 
 static CUTE_TEST_DEFINE(skipped,
@@ -16,7 +16,7 @@ static CUTE_TEST_DEFINE(skipped,
 static void
 test_failed(void)
 {
-	cute_fail();
+	cute_fail("requested explicit fail");
 }
 
 static CUTE_TEST_DEFINE(failed,

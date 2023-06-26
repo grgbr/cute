@@ -2,7 +2,8 @@ config-in   := Config.in
 config-h    := $(PACKAGE)/config.h
 
 HEADERDIR   := $(CURDIR)/include
-headers      = $(PACKAGE)/cute.h
+headers     += $(PACKAGE)/cute.h
+headers     += $(PACKAGE)/ensure.h
 
 subdirs     := src
 

@@ -38,6 +38,16 @@ enum cute_state {
 const char *
 cute_state_label(enum cute_state state);
 
+enum cute_issue {
+	CUTE_UNK_ISSUE  = 0,
+	CUTE_PASS_ISSUE,
+	CUTE_SKIP_ISSUE,
+	CUTE_FAIL_ISSUE,
+	CUTE_EXCP_ISSUE,
+	CUTE_OFF_ISSUE,
+	CUTE_ISSUE_NR
+};
+
 #define cute_issue_assert(_issue) \
 	cute_assert((_issue) < CUTE_ISSUE_NR)
 

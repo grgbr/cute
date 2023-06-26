@@ -130,42 +130,23 @@ struct cute_test {
 	                 CUTE_NULL_TEARDOWN, \
 	                 CUTE_DFLT_TMOUT)
 
-enum cute_issue {
-	CUTE_UNK_ISSUE  = 0,
-	CUTE_PASS_ISSUE,
-	CUTE_SKIP_ISSUE,
-	CUTE_FAIL_ISSUE,
-	CUTE_EXCP_ISSUE,
-	CUTE_OFF_ISSUE,
-	CUTE_ISSUE_NR,
-};
+extern void
+_cute_skip(const char * reason,
+           const char * file,
+           int          line,
+           const char * function) __cute_export;
+
+#define cute_skip(_reason) \
+	_cute_skip(_reason, __FILE__, __LINE__, __func__)
 
 extern void
-cute_break(enum cute_issue issue,
-           const char *    file,
-           int             line,
-           const char *    reason) __cute_noreturn __cute_export;
+_cute_fail(const char * reason,
+           const char * file,
+           int          line,
+           const char * function) __cute_export;
 
-#define cute_skip(void) \
-	cute_break(CUTE_SKIP_ISSUE, \
-	           __FILE__, \
-	           __LINE__, \
-	           "explicit skipping requested")
-
-#define cute_fail(void) \
-	cute_break(CUTE_FAIL_ISSUE, \
-	           __FILE__, \
-	           __LINE__, \
-	           "explicit failure requested")
-
-#define cute_ensure(_expr) \
-	({ \
-		if (!(_expr)) \
-			cute_break(CUTE_FAIL_ISSUE, \
-			           __FILE__, \
-			           __LINE__, \
-			           # _expr); \
-	 })
+#define cute_fail(_reason) \
+	_cute_fail(_reason, __FILE__, __LINE__, __func__)
 
 extern const struct cute_ops cute_suite_ops __cute_export;
 

@@ -1,6 +1,7 @@
 #ifndef _CUTE_RUN_H
 #define _CUTE_RUN_H
 
+#include "assess.h"
 #include "report.h"
 #include "util.h"
 
@@ -80,10 +81,12 @@ struct cute_run {
 	struct timespec             end;
 	const char *                file;
 	int                         line;
+	const char *                func;
 	const char *                what;
 	const char *                why;
-	cute_run_desc_fn *          desc;
-	struct cute_expect *        xpct;
+	struct cute_assess          assess;
+	//cute_run_desc_fn *          desc;
+	//struct cute_expect *        xpct;
 };
 
 #define cute_run_assert(_run) \

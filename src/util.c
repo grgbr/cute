@@ -163,6 +163,21 @@ err:
 	return res;
 }
 
+char *
+cute_dup(const char * string)
+{
+	cute_assert_intern(string);
+
+	size_t len;
+	char * str;
+
+	len = strlen(string);
+	str = malloc(len + 1);
+	memcpy(str, string, len + 1);
+
+	return str;
+}
+
 /******************************************************************************
  * POSIX extended regular expressions
  ******************************************************************************/

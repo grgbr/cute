@@ -1,16 +1,127 @@
 #include "run.h"
+#include "cute/ensure.h"
 #include "report.h"
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
 
-static volatile struct cute_run * volatile cute_curr_run;
+static struct cute_run * volatile cute_curr_run;
+
+static void __cute_noreturn
+cute_break(enum cute_issue issue,
+           const char *    file,
+           int             line,
+           const char *    func,
+           const char *    why)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(why);
+	cute_assert(why[0]);
+	cute_run_assert_intern(cute_curr_run);
+
+	volatile struct cute_run * run = cute_curr_run;
+
+	switch (run->state) {
+	case CUTE_SETUP_STATE:
+		cute_assert((issue == CUTE_FAIL_ISSUE) ||
+		            (issue == CUTE_EXCP_ISSUE) ||
+		            (issue == CUTE_SKIP_ISSUE));
+		cute_assert_intern(!run->file);
+		cute_assert_intern(run->line == -1);
+		cute_assert_intern(!run->func);
+		cute_assert_intern(!run->what);
+		cute_assert_intern(!run->why);
+
+		run->file = file;
+		run->line = line;
+		run->func = func;
+
+		switch (issue) {
+		case CUTE_SKIP_ISSUE:
+			run->what = "setup skipped";
+			break;
+
+		case CUTE_FAIL_ISSUE:
+			run->what = "setup failed";
+			break;
+
+		case CUTE_EXCP_ISSUE:
+			run->what = "setup crashed";
+			break;
+
+		default:
+			__cute_unreachable();
+		}
+
+		run->why = why;
+
+		break;
+
+	case CUTE_EXEC_STATE:
+		cute_assert_intern(!run->file);
+		cute_assert_intern(run->line == -1);
+		cute_assert_intern(!run->func);
+		cute_assert_intern(!run->what);
+		cute_assert_intern(!run->why);
+
+		run->file = file;
+		run->line = line;
+		run->func = func;
+
+		switch (issue) {
+		case CUTE_SKIP_ISSUE:
+			run->what = "exec skipped";
+			break;
+
+		case CUTE_FAIL_ISSUE:
+			run->what = "exec failed";
+			break;
+
+		case CUTE_EXCP_ISSUE:
+			run->what = "exec crashed";
+			break;
+
+		default:
+			__cute_unreachable();
+		}
+
+		run->why = why;
+
+		break;
+
+	case CUTE_TEARDOWN_STATE:
+		/* Cannot skip from within teardown fixture. */
+		cute_assert((issue == CUTE_FAIL_ISSUE) ||
+		            (issue == CUTE_EXCP_ISSUE));
+
+		if (!run->file &&
+		    (run->line < 0) &&
+		    !run->func &&
+		    !run->what &&
+		    !run->why) {
+			run->file = file;
+			run->line = line;
+			run->func = func;
+			run->what = (issue == CUTE_FAIL_ISSUE) ?
+			            "teardown failed" : "teardown crashed";
+			run->why = why;
+		}
+
+		break;
+
+	default:
+		__cute_unreachable();
+	}
+
+	siglongjmp(cute_jmp_env, issue);
+}
 
 static struct {
 	int          no;
 	const char * desc;
 } const cute_run_sigs[] = {
-	{ SIGALRM, "timer expired" },
 	{ SIGFPE,  "floating point exception (SIGFPE) raised" },
 	{ SIGILL,  "illegal instruction (SIGILL) raised" },
 	{ SIGSEGV, "segmentation fault (SIGSEGV) raised" },
@@ -18,8 +129,22 @@ static struct {
 	{ SIGSYS,  "bad system call (SIGSYS) raised" }
 };
 
+static sighandler_t cute_run_saved_alrm;
 static sighandler_t cute_run_saved_sigs[sizeof(cute_run_sigs) /
                                         sizeof(cute_run_sigs[0])];
+
+static void
+cute_run_handle_tmout(int sig)
+{
+	cute_assert_intern(sig == SIGALRM);
+	cute_run_assert_intern(cute_curr_run);
+
+	cute_break(CUTE_FAIL_ISSUE,
+	           cute_curr_run->base->file,
+	           cute_curr_run->base->line,
+	           NULL,
+	           "timer expired");
+}
 
 static void
 cute_run_handle_sig(int sig)
@@ -40,9 +165,10 @@ cute_run_handle_sig(int sig)
 
 	cute_assert_intern(desc);
 
-	cute_break((sig != SIGALRM) ? CUTE_EXCP_ISSUE : CUTE_FAIL_ISSUE,
+	cute_break(CUTE_EXCP_ISSUE,
 	           cute_curr_run->base->file,
 	           cute_curr_run->base->line,
+	           NULL,
 	           desc);
 }
 
@@ -66,8 +192,12 @@ cute_run_settle(const struct cute_run * run)
 	 * On GNU system, it is safe to use sleep and SIGALRM in the same
 	 * program, because sleep does not work by means of SIGALRM.
 	 */
-	if (run->base->tmout > 0)
+	if (run->base->tmout > 0) {
+		cute_run_saved_alrm = signal(SIGALRM, cute_run_handle_tmout);
+		cute_assert_intern(cute_run_saved_alrm != SIG_ERR);
+
 		alarm(run->base->tmout);
+	}
 }
 
 void
@@ -75,16 +205,18 @@ cute_run_unsettle(const struct cute_run * run)
 {
 	cute_run_assert_intern(run);
 
+	sighandler_t err __cute_unused;
 	unsigned int s;
 
-	if (run->base->tmout > 0)
+	if (run->base->tmout > 0) {
 		alarm(0);
+		err = signal(SIGALRM, cute_run_saved_alrm);
+		cute_assert_intern(err != SIG_ERR);
+	}
 
 	for (s = 0;
 	     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
 	     s++) {
-		sighandler_t err;
-
 		err = signal(cute_run_sigs[s].no, cute_run_saved_sigs[s]);
 		cute_assert_intern(err != SIG_ERR);
 	}
@@ -152,6 +284,7 @@ cute_run_setup(struct cute_run * run)
 	cute_assert_intern(run->issue == CUTE_UNK_ISSUE);
 	cute_assert_intern(!run->file);
 	cute_assert_intern(run->line == -1);
+	cute_assert_intern(!run->func);
 	cute_assert_intern(!run->what);
 	cute_assert_intern(!run->why);
 
@@ -338,8 +471,10 @@ cute_run_init(struct cute_run *           run,
 	run->end.tv_sec = run->end.tv_nsec = 0;
 	run->file = NULL;
 	run->line = -1;
+	run->func = NULL;
 	run->what = NULL;
 	run->why = NULL;
+	cute_assess_build_null(&run->assess);
 
 	if (parent) {
 		cute_run_assert_intern(parent);
@@ -436,103 +571,102 @@ cute_run_foreach(struct cute_run *     run,
 	cute_stack_fini(&stk);
 }
 
-void __cute_noreturn
-cute_break(enum cute_issue issue,
-           const char *    file,
-           int             line,
-           const char *    why)
+void
+_cute_skip(const char * reason,
+           const char * file,
+           int          line,
+           const char * function)
 {
+	cute_assert(reason);
+	cute_assert(reason[0]);
 	cute_assert(file);
 	cute_assert(file[0]);
 	cute_assert(line >= 0);
-	cute_assert(why);
-	cute_assert(why[0]);
+	cute_assert(function);
+	cute_assert(function[0]);
+
+	cute_break(CUTE_SKIP_ISSUE,
+	           file,
+	           line,
+	           function,
+	           reason);
+}
+
+void
+_cute_fail(const char * reason,
+           const char * file,
+           int          line,
+           const char * function)
+{
+	cute_assert(reason);
+	cute_assert(reason[0]);
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+
+	cute_break(CUTE_FAIL_ISSUE,
+	           file,
+	           line,
+	           function,
+	           reason);
+}
+
+void
+_cute_ensure(bool         fail,
+             const char * reason,
+             const char * file,
+             int          line,
+             const char * function)
+{
+	cute_assert(reason);
+	cute_assert(reason[0]);
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+
+	if (fail) {
+		cute_assess_build_assert(&cute_curr_run->assess, reason);
+
+		cute_break(CUTE_FAIL_ISSUE,
+		           file,
+		           line,
+		           function,
+		           "assertion check failed");
+	}
+}
+
+void
+cute_ensure_sint_equal(const char * chk_expr,
+                       intmax_t     chk_val,
+                       const char * xpct_expr,
+                       intmax_t     xpct_val,
+                       const char * file,
+                       int          line,
+                       const char * function)
+{
+	cute_assert(chk_expr);
+	cute_assert(chk_expr[0]);
+	cute_assert(xpct_expr);
+	cute_assert(xpct_expr[0]);
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
 	cute_run_assert_intern(cute_curr_run);
 
-	volatile struct cute_run * run = cute_curr_run;
-
-	switch (run->state) {
-	case CUTE_SETUP_STATE:
-		cute_assert((issue == CUTE_FAIL_ISSUE) ||
-		            (issue == CUTE_EXCP_ISSUE) ||
-		            (issue == CUTE_SKIP_ISSUE));
-		cute_assert_intern(!run->file);
-		cute_assert_intern(run->line == -1);
-		cute_assert_intern(!run->what);
-		cute_assert_intern(!run->why);
-
-		run->file = file;
-		run->line = line;
-
-		switch (issue) {
-		case CUTE_SKIP_ISSUE:
-			run->what = "setup skipped";
-			break;
-
-		case CUTE_FAIL_ISSUE:
-			run->what = "setup failed";
-			break;
-
-		case CUTE_EXCP_ISSUE:
-			run->what = "setup crashed";
-			break;
-
-		default:
-			__cute_unreachable();
-		}
-
-		run->why = why;
-
-		break;
-
-	case CUTE_EXEC_STATE:
-		cute_assert_intern(!run->file);
-		cute_assert_intern(run->line == -1);
-		cute_assert_intern(!run->what);
-		cute_assert_intern(!run->why);
-
-		run->file = file;
-		run->line = line;
-
-		switch (issue) {
-		case CUTE_SKIP_ISSUE:
-			run->what = "exec skipped";
-			break;
-
-		case CUTE_FAIL_ISSUE:
-			run->what = "exec failed";
-			break;
-
-		case CUTE_EXCP_ISSUE:
-			run->what = "exec crashed";
-			break;
-
-		default:
-			__cute_unreachable();
-		}
-
-		run->why = why;
-
-		break;
-
-	case CUTE_TEARDOWN_STATE:
-		/* Cannot skip from within teardown fixture. */
-		cute_assert((issue == CUTE_FAIL_ISSUE) ||
-		            (issue == CUTE_EXCP_ISSUE));
-
-		if (!run->file && (run->line < 0) && !run->what && !run->why) {
-			run->file = file;
-			run->line = line;
-			run->what = (issue == CUTE_FAIL_ISSUE) ?
-			            "teardown failed" : "teardown crashed";
-			run->why = why;
-		}
-
-		break;
-
-	default:
-		__cute_unreachable();
-	}
-
-	siglongjmp(cute_jmp_env, issue);
+	if (!cute_assess_sint_equal(&cute_curr_run->assess,
+	                            chk_expr,
+	                            chk_val,
+	                            xpct_expr,
+	                            xpct_val))
+		cute_break(CUTE_FAIL_ISSUE,
+		           file,
+		           line,
+		           function,
+		           "signed integer check failed");
 }

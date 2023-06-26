@@ -1,4 +1,4 @@
-#include <cute/cute.h>
+#include <cute/ensure.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -13,7 +13,7 @@ static void
 skip(void)
 {
 	usleep(250000);
-	cute_skip();
+	cute_skip("requested explicit skip");
 }
 
 static void
@@ -29,7 +29,7 @@ static void
 request_fail(void)
 {
 	usleep(250000);
-	cute_fail();
+	cute_fail("requested explicit fail");
 }
 
 static CUTE_TEST_DEFINE(pass_1,

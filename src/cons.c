@@ -97,20 +97,34 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 		cute_assert_intern(run->what);
 		cute_assert_intern(run->why);
 
-		fprintf(report->stdio,
-		        "%s@ %s:%d%s\n",
-		        report->term.gray,
-		        run->file,
-		        run->line,
-		        report->term.fore);
+		char * desc;
 
 		fprintf(report->stdio,
-		        "%s%s: %s%s%s\n",
+		        "%s"
+		        "issue:  %s\n"
+		        "reason: %s\n"
+		        "source: %s:%d\n",
 		        report->term.gray,
 		        run->what,
-		        report->term.bold,
 		        run->why,
-		        report->term.regular);
+		        run->file, run->line);
+
+		if (run->func)
+			fprintf(report->stdio, "caller: %s()\n", run->func);
+
+		desc = cute_assess_desc(&run->assess, CUTE_ASSESS_EXPECT_DESC);
+		if (desc) {
+			fprintf(report->stdio, "wanted: %s\n", desc);
+			free(desc);
+		}
+
+		desc = cute_assess_desc(&run->assess, CUTE_ASSESS_FOUND_DESC);
+		if (desc) {
+			fprintf(report->stdio, "found:  %s\n", desc);
+			free(desc);
+		}
+
+		fputs(report->term.regular, report->stdio);
 	}
 }
 
