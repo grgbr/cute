@@ -82,6 +82,8 @@ struct cute_run {
 	int                         line;
 	const char *                what;
 	const char *                why;
+	cute_run_desc_fn *          desc;
+	struct cute_expect *        xpct;
 };
 
 #define cute_run_assert(_run) \
