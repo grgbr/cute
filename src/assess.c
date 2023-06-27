@@ -217,100 +217,31 @@ cute_assess_desc(const struct cute_assess * assess,
 	return assess->desc(assess, desc);
 }
 
-static bool
-cute_assess_cmp_sint_equal(const struct cute_assess * assess,
-                           union cute_assess_member   value)
-{
-	cute_assess_assert_intern(assess);
-
-	return value.i == assess->xpct_val.member.i;
-}
-
-#if 0
-static bool
-cute_assess_cmp_sint_unequal(const struct cute_assess * assess,
-                             union cute_assess_member   value)
-{
-	cute_assess_assert_intern(assess);
-
-	return value.i != assess->xpct_val.member.i;
-}
-
-static bool
-cute_assess_cmp_sint_greater(const struct cute_assess * assess,
-                             union cute_assess_member   value)
-{
-	cute_assess_assert_intern(assess);
-
-	return value.i > assess->xpct_val.member.i;
-}
-
-static bool
-cute_assess_cmp_sint_greater_or_equal(const struct cute_assess * assess,
-                                      union cute_assess_member   value)
-{
-	cute_assess_assert_intern(assess);
-
-	return value.i >= assess->xpct_val.member.i;
-}
-
-static bool
-cute_assess_cmp_sint_lower(const struct cute_assess * assess,
-                           union cute_assess_member   value)
-{
-	cute_assess_assert_intern(assess);
-
-	return value.i < assess->xpct_val.member.i;
-}
-
-static bool
-cute_assess_cmp_sint_lower_or_equal(const struct cute_assess * assess,
-                                    union cute_assess_member   value)
-{
-	cute_assess_assert_intern(assess);
-
-	return value.i <= assess->xpct_val.member.i;
-}
-#endif
-
 static char *
-cute_assess_desc_sint_xpct_member(const struct cute_assess * assess,
-                                  const char *               oper)
-{
-	cute_assess_assert_intern(assess);
-	cute_assert_intern(oper);
-	cute_assert_intern(oper[0]);
-
-	return cute_asprintf("%s %s %s [%" PRIdMAX "]",
-	                     assess->chk_expr,
-	                     oper,
-	                     assess->xpct_expr,
-	                     assess->xpct_val.member.i);
-}
-
-static char *
-cute_assess_desc_sint_chk(const struct cute_assess * assess)
-{
-	cute_assess_assert_intern(assess);
-
-	return cute_asprintf("%s == [%" PRIdMAX "]",
-	                     assess->chk_expr,
-	                     assess->chk_val.i);
-}
-
-static char *
-cute_assess_desc_sint_equal(const struct cute_assess * assess,
-                            enum cute_assess_desc      desc)
+cute_assess_desc_sint_member(const struct cute_assess * assess,
+                             enum cute_assess_desc      desc,
+                             const char *               oper,
+                             const char *               inv)
 {
 	cute_assess_assert_intern(assess);
 	cute_assess_assert_desc_intern(desc);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
 
 	switch (desc) {
 	case CUTE_ASSESS_EXPECT_DESC:
-		return cute_assess_desc_sint_xpct_member(assess, "==");
+		return cute_asprintf("%s %s %s",
+		                     assess->chk_expr,
+		                     oper,
+		                     assess->xpct_expr);
 
 	case CUTE_ASSESS_FOUND_DESC:
-		return cute_assess_desc_sint_chk(assess);
+		return cute_asprintf("[%" PRIdMAX "] %s [%" PRIdMAX "]",
+		                     assess->chk_val.i,
+		                     inv,
+		                     assess->xpct_val.member.i);
 
 	default:
 		__cute_unreachable();
@@ -318,22 +249,73 @@ cute_assess_desc_sint_equal(const struct cute_assess * assess,
 }
 
 static void
-cute_assess_build_sint_equal(struct cute_assess * assess,
-                             const char *         chk_expr,
-                             const char *         xpct_expr,
-                             intmax_t             xpct_val)
+cute_assess_build_sint_member(struct cute_assess *  assess,
+                              cute_assess_cmp_fn *  cmp,
+                              cute_assess_desc_fn * desc,
+                              const char *          chk_expr,
+                              const char *          xpct_expr,
+                              intmax_t              xpct_val)
 {
 	cute_assert_intern(assess);
+	cute_assert_intern(cmp);
+	cute_assert_intern(desc);
 	cute_assert_intern(chk_expr);
 	cute_assert_intern(chk_expr[0]);
 	cute_assert_intern(xpct_expr);
 	cute_assert_intern(xpct_expr[0]);
 
-	assess->cmp = &cute_assess_cmp_sint_equal;
-	assess->desc = &cute_assess_desc_sint_equal;
+	assess->cmp = cmp;
+	assess->desc = desc;
 	assess->chk_expr = chk_expr;
 	assess->xpct_expr = xpct_expr;
 	assess->xpct_val.member.i = xpct_val;
+}
+
+static bool
+cute_assess_sint_member(struct cute_assess *  assess,
+                        cute_assess_cmp_fn *  cmp,
+                        cute_assess_desc_fn * desc,
+                        const char *          chk_expr,
+                        intmax_t              chk_val,
+                        const char *          xpct_expr,
+                        intmax_t              xpct_val)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(cmp);
+	cute_assert_intern(desc);
+	cute_assert_intern(chk_expr);
+	cute_assert_intern(chk_expr[0]);
+	cute_assert_intern(xpct_expr);
+	cute_assert_intern(xpct_expr[0]);
+
+	union cute_assess_member val = { .i = chk_val };
+
+	cute_assess_build_sint_member(assess,
+	                              cmp,
+	                              desc,
+	                              chk_expr,
+	                              xpct_expr,
+	                              xpct_val);
+
+	return cute_assess_check(assess, val);
+}
+
+/******************************************************************************
+ * Signed integer equality handling
+ ******************************************************************************/
+
+static bool
+cute_assess_cmp_sint_equal(const struct cute_assess * assess,
+                           union cute_assess_member   value)
+{
+	return value.i == assess->xpct_val.member.i;
+}
+
+static char *
+cute_assess_desc_sint_equal(const struct cute_assess * assess,
+                            enum cute_assess_desc      desc)
+{
+	return cute_assess_desc_sint_member(assess, desc, "==", "!=");
 }
 
 bool
@@ -343,17 +325,183 @@ cute_assess_sint_equal(struct cute_assess * assess,
                        const char *         xpct_expr,
                        intmax_t             xpct_val)
 {
-	cute_assert_intern(assess);
-	cute_assert_intern(chk_expr);
-	cute_assert_intern(chk_expr[0]);
-	cute_assert_intern(xpct_expr);
-	cute_assert_intern(xpct_expr[0]);
+	return cute_assess_sint_member(assess,
+	                               cute_assess_cmp_sint_equal,
+	                               cute_assess_desc_sint_equal,
+	                               chk_expr,
+	                               chk_val,
+	                               xpct_expr,
+	                               xpct_val);
+}
 
-	union cute_assess_member val = { .i = chk_val };
+/******************************************************************************
+ * Signed integer unequality handling
+ ******************************************************************************/
 
-	cute_assess_build_sint_equal(assess, chk_expr, xpct_expr, xpct_val);
+static bool
+cute_assess_cmp_sint_unequal(const struct cute_assess * assess,
+                             union cute_assess_member   value)
+{
+	return value.i != assess->xpct_val.member.i;
+}
 
-	return cute_assess_check(assess, val);
+static char *
+cute_assess_desc_sint_unequal(const struct cute_assess * assess,
+                              enum cute_assess_desc      desc)
+{
+	return cute_assess_desc_sint_member(assess, desc, "!=", "==");
+}
+
+bool
+cute_assess_sint_unequal(struct cute_assess * assess,
+                         const char *         chk_expr,
+                         intmax_t             chk_val,
+                         const char *         xpct_expr,
+                         intmax_t             xpct_val)
+{
+	return cute_assess_sint_member(assess,
+	                               cute_assess_cmp_sint_unequal,
+	                               cute_assess_desc_sint_unequal,
+	                               chk_expr,
+	                               chk_val,
+	                               xpct_expr,
+	                               xpct_val);
+}
+
+/******************************************************************************
+ * Signed integer greater than operation handling
+ ******************************************************************************/
+
+static bool
+cute_assess_cmp_sint_greater(const struct cute_assess * assess,
+                             union cute_assess_member   value)
+{
+	return value.i > assess->xpct_val.member.i;
+}
+
+static char *
+cute_assess_desc_sint_greater(const struct cute_assess * assess,
+                              enum cute_assess_desc      desc)
+{
+	return cute_assess_desc_sint_member(assess, desc, ">", "<=");
+}
+
+bool
+cute_assess_sint_greater(struct cute_assess * assess,
+                         const char *         chk_expr,
+                         intmax_t             chk_val,
+                         const char *         xpct_expr,
+                         intmax_t             xpct_val)
+{
+	return cute_assess_sint_member(assess,
+	                               cute_assess_cmp_sint_greater,
+	                               cute_assess_desc_sint_greater,
+	                               chk_expr,
+	                               chk_val,
+	                               xpct_expr,
+	                               xpct_val);
+}
+
+/******************************************************************************
+ * Signed integer greater than or equal to operation handling
+ ******************************************************************************/
+
+static bool
+cute_assess_cmp_sint_greater_or_equal(const struct cute_assess * assess,
+                                      union cute_assess_member   value)
+{
+	return value.i >= assess->xpct_val.member.i;
+}
+
+static char *
+cute_assess_desc_sint_greater_or_equal(const struct cute_assess * assess,
+                                       enum cute_assess_desc      desc)
+{
+	return cute_assess_desc_sint_member(assess, desc, ">=", "<");
+}
+
+bool
+cute_assess_sint_greater_or_equal(struct cute_assess * assess,
+                                  const char *         chk_expr,
+                                  intmax_t             chk_val,
+                                  const char *         xpct_expr,
+                                  intmax_t             xpct_val)
+{
+	return cute_assess_sint_member(assess,
+	                               cute_assess_cmp_sint_greater_or_equal,
+	                               cute_assess_desc_sint_greater_or_equal,
+	                               chk_expr,
+	                               chk_val,
+	                               xpct_expr,
+	                               xpct_val);
+}
+
+/******************************************************************************
+ * Signed integer lower than operation handling
+ ******************************************************************************/
+
+static bool
+cute_assess_cmp_sint_lower(const struct cute_assess * assess,
+                           union cute_assess_member   value)
+{
+	return value.i < assess->xpct_val.member.i;
+}
+
+static char *
+cute_assess_desc_sint_lower(const struct cute_assess * assess,
+                            enum cute_assess_desc      desc)
+{
+	return cute_assess_desc_sint_member(assess, desc, "<", ">=");
+}
+
+bool
+cute_assess_sint_lower(struct cute_assess * assess,
+                       const char *         chk_expr,
+                       intmax_t             chk_val,
+                       const char *         xpct_expr,
+                       intmax_t             xpct_val)
+{
+	return cute_assess_sint_member(assess,
+	                               cute_assess_cmp_sint_lower,
+	                               cute_assess_desc_sint_lower,
+	                               chk_expr,
+	                               chk_val,
+	                               xpct_expr,
+	                               xpct_val);
+}
+
+/******************************************************************************
+ * Signed integer lower than or equal to operation handling
+ ******************************************************************************/
+
+static bool
+cute_assess_cmp_sint_lower_or_equal(const struct cute_assess * assess,
+                                    union cute_assess_member   value)
+{
+	return value.i <= assess->xpct_val.member.i;
+}
+
+static char *
+cute_assess_desc_sint_lower_or_equal(const struct cute_assess * assess,
+                                     enum cute_assess_desc      desc)
+{
+	return cute_assess_desc_sint_member(assess, desc, "<=", ">");
+}
+
+bool
+cute_assess_sint_lower_or_equal(struct cute_assess * assess,
+                                const char *         chk_expr,
+                                intmax_t             chk_val,
+                                const char *         xpct_expr,
+                                intmax_t             xpct_val)
+{
+	return cute_assess_sint_member(assess,
+	                               cute_assess_cmp_sint_lower_or_equal,
+	                               cute_assess_desc_sint_lower_or_equal,
+	                               chk_expr,
+	                               chk_val,
+	                               xpct_expr,
+	                               xpct_val);
 }
 
 #if 0
@@ -405,14 +553,6 @@ cute_assess_cmp_int_set(const struct cute_assess * assess,
 		__cute_unreachable();
 	}
 }
-
-
-
-
-
-
-
-
 
 void
 cute_check_ptr(const void * a, enum cute_oper oper, const void * b)

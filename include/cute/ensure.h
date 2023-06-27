@@ -23,6 +23,51 @@ cute_ensure_sint_equal(const char * chk_expr,
                        int          line,
                        const char * function) __cute_export;
 
+extern void
+cute_ensure_sint_unequal(const char * chk_expr,
+                         intmax_t     chk_val,
+                         const char * xpct_expr,
+                         intmax_t     xpct_val,
+                         const char * file,
+                         int          line,
+                         const char * function) __cute_export;
+
+extern void
+cute_ensure_sint_greater(const char * chk_expr,
+                         intmax_t     chk_val,
+                         const char * xpct_expr,
+                         intmax_t     xpct_val,
+                         const char * file,
+                         int          line,
+                         const char * function) __cute_export;
+
+extern void
+cute_ensure_sint_greater_or_equal(const char * chk_expr,
+                                  intmax_t     chk_val,
+                                  const char * xpct_expr,
+                                  intmax_t     xpct_val,
+                                  const char * file,
+                                  int          line,
+                                  const char * function) __cute_export;
+
+extern void
+cute_ensure_sint_lower(const char * chk_expr,
+                       intmax_t     chk_val,
+                       const char * xpct_expr,
+                       intmax_t     xpct_val,
+                       const char * file,
+                       int          line,
+                       const char * function) __cute_export;
+
+extern void
+cute_ensure_sint_lower_or_equal(const char * chk_expr,
+                                intmax_t     chk_val,
+                                const char * xpct_expr,
+                                intmax_t     xpct_val,
+                                const char * file,
+                                int          line,
+                                const char * function) __cute_export;
+
 #define cute_ensure_sint(_a, _op, _b) \
 	cute_ensure_sint_ ## _op (# _a, \
 	                          _a, \

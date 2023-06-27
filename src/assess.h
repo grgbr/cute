@@ -74,4 +74,39 @@ cute_assess_sint_equal(struct cute_assess * assess,
                        const char *         xpct_expr,
                        intmax_t             xpct_val);
 
+extern bool
+cute_assess_sint_unequal(struct cute_assess * assess,
+                         const char *         chk_expr,
+                         intmax_t             chk_val,
+                         const char *         xpct_expr,
+                         intmax_t             xpct_val);
+
+extern bool
+cute_assess_sint_greater(struct cute_assess * assess,
+                         const char *         chk_expr,
+                         intmax_t             chk_val,
+                         const char *         xpct_expr,
+                         intmax_t             xpct_val);
+
+extern bool
+cute_assess_sint_greater_or_equal(struct cute_assess * assess,
+                                  const char *         chk_expr,
+                                  intmax_t             chk_val,
+                                  const char *         xpct_expr,
+                                  intmax_t             xpct_val);
+
+extern bool
+cute_assess_sint_lower(struct cute_assess * assess,
+                       const char *         chk_expr,
+                       intmax_t             chk_val,
+                       const char *         xpct_expr,
+                       intmax_t             xpct_val);
+
+extern bool
+cute_assess_sint_lower_or_equal(struct cute_assess * assess,
+                                const char *         chk_expr,
+                                intmax_t             chk_val,
+                                const char *         xpct_expr,
+                                intmax_t             xpct_val);
+
 #endif /* _CUTE_ASSESS_H */
