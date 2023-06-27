@@ -13,7 +13,7 @@ static void
 skip(void)
 {
 	usleep(250000);
-	cute_skip("requested explicit skip");
+	cute_skip(NULL);
 }
 
 static void
@@ -29,7 +29,7 @@ static void
 request_fail(void)
 {
 	usleep(250000);
-	cute_fail("requested explicit fail");
+	cute_fail("example of an explicit fail request");
 }
 
 static CUTE_TEST_DEFINE(pass_1,

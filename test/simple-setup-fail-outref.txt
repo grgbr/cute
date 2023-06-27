@@ -2,18 +2,22 @@
 ##############################  Running CUTe test(s)  ##############################
 
 simple_setup_fail_suite::simple_setup_fail_test ............................... fail
-@ /home/grb/dev/proto/icsw/src/cute/test/simple_setup_fail.c:6
-setup failed: explicit failure requested
+issue:  setup failed
+reason: explicit fail requested
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_setup_fail.c:6
+caller: simple_setup_fail()
+found:  explicit setup failure
 
 simple_setup_fail_suite ....................................................... fail
-@ /home/grb/dev/proto/icsw/src/cute/test/simple_setup_fail.c:24
-exec failed: descendant(s) failed
+issue:  exec failed
+reason: descendant(s) failed
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_setup_fail.c:24
 
 NAME                      STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-simple_setup_fail_suite   fail    0.000110      0      0      1      0      1      1
+simple_setup_fail_suite   fail    0.000180      0      0      1      0      1      1
                                                0%     0%   100%     0%   100%
 ------------------------------------------------------------------------------------
-Total                     fail    0.000110      0      0      1      0      1      1
+Total                     fail    0.000180      0      0      1      0      1      1
                                                0%     0%   100%     0%   100%
 
                         ###           SUMMARY           ###

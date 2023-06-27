@@ -2,26 +2,33 @@
 ################################  Running CUTe test(s)  #################################
 
 simple_exec_error_suite::simple_exec_error_segv_test ............................... excp
-@ /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:3
-exec crashed: segmentation fault (SIGSEGV) raised
+issue:  exec crashed
+reason: exception raised
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:3
+found:  Segmentation fault (11)
 
 simple_exec_error_suite::simple_exec_error_ill_test ................................ excp
-@ /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:10
-exec crashed: illegal instruction (SIGILL) raised
+issue:  exec crashed
+reason: exception raised
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:10
+found:  Illegal instruction (4)
 
 simple_exec_error_suite::simple_exec_error_fpe_test ................................ excp
-@ /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:15
-exec crashed: floating point exception (SIGFPE) raised
+issue:  exec crashed
+reason: exception raised
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:15
+found:  Floating point exception (8)
 
 simple_exec_error_suite ............................................................ fail
-@ /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:35
-exec failed: descendant(s) failed
+issue:  exec failed
+reason: descendant(s) failed
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:35
 
 NAME                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-simple_exec_error_suite        fail    0.036470      0      0      0      3      3      3
+simple_exec_error_suite        fail    0.040657      0      0      0      3      3      3
                                                     0%     0%     0%   100%   100%
 -----------------------------------------------------------------------------------------
-Total                          fail    0.036470      0      0      0      3      3      3
+Total                          fail    0.040657      0      0      0      3      3      3
                                                     0%     0%     0%   100%   100%
 
                            ###           SUMMARY           ###

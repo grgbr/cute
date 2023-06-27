@@ -3,7 +3,9 @@
 static void
 simple_fail_setup()
 {
-	cute_fail();
+	int * data = NULL;
+
+	*data = 2;
 }
 
 CUTE_STATIC_TEST(simple_fail_setup_test,

@@ -118,15 +118,12 @@ cute_break(enum cute_issue issue,
 	siglongjmp(cute_jmp_env, issue);
 }
 
-static struct {
-	int          no;
-	const char * desc;
-} const cute_run_sigs[] = {
-	{ SIGFPE,  "floating point exception (SIGFPE) raised" },
-	{ SIGILL,  "illegal instruction (SIGILL) raised" },
-	{ SIGSEGV, "segmentation fault (SIGSEGV) raised" },
-	{ SIGBUS,  "bus error / bad memory access (SIGBUS) raised" },
-	{ SIGSYS,  "bad system call (SIGSYS) raised" }
+static int const    cute_run_sigs[] = {
+	SIGFPE,
+	SIGILL,
+	SIGSEGV,
+	SIGBUS,
+	SIGSYS
 };
 
 static sighandler_t cute_run_saved_alrm;
@@ -151,25 +148,13 @@ cute_run_handle_sig(int sig)
 {
 	cute_run_assert_intern(cute_curr_run);
 
-	unsigned int s;
-	const char * desc = NULL;
-
-	for (s = 0;
-	     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
-	     s++) {
-		if (sig == cute_run_sigs[s].no) {
-			desc = cute_run_sigs[s].desc;
-			break;
-		}
-	}
-
-	cute_assert_intern(desc);
+	cute_assess_build_excp(&cute_curr_run->assess, sig);
 
 	cute_break(CUTE_EXCP_ISSUE,
 	           cute_curr_run->base->file,
 	           cute_curr_run->base->line,
 	           NULL,
-	           desc);
+	           "exception raised");
 }
 
 void
@@ -182,7 +167,7 @@ cute_run_settle(const struct cute_run * run)
 	for (s = 0;
 	     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
 	     s++) {
-		cute_run_saved_sigs[s] = signal(cute_run_sigs[s].no,
+		cute_run_saved_sigs[s] = signal(cute_run_sigs[s],
 		                                cute_run_handle_sig);
 		cute_assert_intern(cute_run_saved_sigs[s] != SIG_ERR);
 	}
@@ -217,7 +202,7 @@ cute_run_unsettle(const struct cute_run * run)
 	for (s = 0;
 	     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
 	     s++) {
-		err = signal(cute_run_sigs[s].no, cute_run_saved_sigs[s]);
+		err = signal(cute_run_sigs[s], cute_run_saved_sigs[s]);
 		cute_assert_intern(err != SIG_ERR);
 	}
 }
@@ -577,19 +562,20 @@ _cute_skip(const char * reason,
            int          line,
            const char * function)
 {
-	cute_assert(reason);
-	cute_assert(reason[0]);
+	cute_assert(!reason || reason[0]);
 	cute_assert(file);
 	cute_assert(file[0]);
 	cute_assert(line >= 0);
 	cute_assert(function);
 	cute_assert(function[0]);
 
+	cute_assess_build_expr(&cute_curr_run->assess, reason, NULL);
+
 	cute_break(CUTE_SKIP_ISSUE,
 	           file,
 	           line,
 	           function,
-	           reason);
+	           "explicit skip requested");
 }
 
 void
@@ -598,19 +584,20 @@ _cute_fail(const char * reason,
            int          line,
            const char * function)
 {
-	cute_assert(reason);
-	cute_assert(reason[0]);
+	cute_assert(!reason || reason[0]);
 	cute_assert(file);
 	cute_assert(file[0]);
 	cute_assert(line >= 0);
 	cute_assert(function);
 	cute_assert(function[0]);
 
+	cute_assess_build_expr(&cute_curr_run->assess, reason, NULL);
+
 	cute_break(CUTE_FAIL_ISSUE,
 	           file,
 	           line,
 	           function,
-	           reason);
+	           "explicit fail requested");
 }
 
 void
@@ -629,7 +616,7 @@ _cute_ensure(bool         fail,
 	cute_assert(function[0]);
 
 	if (fail) {
-		cute_assess_build_assert(&cute_curr_run->assess, reason);
+		cute_assess_build_expr(&cute_curr_run->assess, NULL, reason);
 
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,

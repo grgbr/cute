@@ -3,7 +3,7 @@
 static void
 simple_teardown_fail()
 {
-	cute_fail();
+	cute_fail("explicit teardown failure");
 }
 
 CUTE_STATIC_TEST(simple_teardown_fail_test,

@@ -3,7 +3,7 @@
 static void
 simple_setup_fail()
 {
-	cute_fail();
+	cute_fail("explicit setup failure");
 }
 
 CUTE_STATIC_TEST(simple_setup_fail_test,

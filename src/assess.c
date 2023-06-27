@@ -2,6 +2,8 @@
 #include "cute/ensure.h"
 #include "run.h"
 #include <inttypes.h>
+#include <string.h>
+#include <signal.h>
 
 /*
 int / float:
@@ -113,21 +115,23 @@ cute_assess_build_null(struct cute_assess * assess)
 }
 
 static char *
-cute_assess_desc_assert(const struct cute_assess * assess,
-                        enum cute_assess_desc      desc)
+cute_assess_desc_expr(const struct cute_assess * assess,
+                      enum cute_assess_desc      desc)
 {
 	cute_assert_intern(assess);
 	cute_assert_intern(assess->desc);
-	cute_assert_intern(assess->xpct_expr);
-	cute_assert_intern(assess->xpct_expr[0]);
 	cute_assess_assert_desc_intern(desc);
 
 	switch (desc) {
 	case CUTE_ASSESS_EXPECT_DESC:
+		if (!assess->xpct_expr)
+			return NULL;
 		return cute_dup(assess->xpct_expr);
 
 	case CUTE_ASSESS_FOUND_DESC:
-		return NULL;
+		if (!assess->chk_expr)
+			return NULL;
+		return cute_dup(assess->chk_expr);
 
 	default:
 		__cute_unreachable();
@@ -135,14 +139,58 @@ cute_assess_desc_assert(const struct cute_assess * assess,
 }
 
 void
-cute_assess_build_assert(struct cute_assess * assess, const char * expr)
+cute_assess_build_expr(struct cute_assess * assess,
+                       const char *         chk_expr,
+                       const char *         xpct_expr)
 {
 	cute_assert_intern(assess);
-	cute_assert_intern(expr);
-	cute_assert_intern(expr[0]);
+	cute_assert_intern(!chk_expr || chk_expr[0]);
+	cute_assert_intern(!xpct_expr || xpct_expr[0]);
 
-	assess->desc = &cute_assess_desc_assert;
-	assess->xpct_expr = expr;
+	assess->desc = &cute_assess_desc_expr;
+	assess->chk_expr = chk_expr;
+	assess->xpct_expr = xpct_expr;
+}
+
+static char *
+cute_assess_desc_excp(const struct cute_assess * assess,
+                      enum cute_assess_desc      desc)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(assess->desc);
+	cute_assess_assert_desc_intern(desc);
+	cute_assert_intern((int)assess->chk_val.i);
+	cute_assert_intern((int)assess->chk_val.i != SIGKILL);
+	cute_assert_intern((int)assess->chk_val.i != SIGSTOP);
+	cute_assert_intern((int)assess->chk_val.i <= NSIG ||
+	                   ((int)assess->chk_val.i >= SIGRTMIN &&
+	                    (int)assess->chk_val.i <= SIGRTMAX));
+
+	switch (desc) {
+	case CUTE_ASSESS_EXPECT_DESC:
+		return NULL;
+
+	case CUTE_ASSESS_FOUND_DESC:
+		return cute_asprintf("%s (%d)",
+		                     strsignal((int)assess->chk_val.i),
+		                     (int)assess->chk_val.i);
+
+	default:
+		__cute_unreachable();
+	}
+}
+
+void
+cute_assess_build_excp(struct cute_assess * assess, int sig)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(sig);
+	cute_assert_intern(sig != SIGKILL);
+	cute_assert_intern(sig != SIGSTOP);
+	cute_assert_intern(sig <= NSIG || (sig >= SIGRTMIN && sig <= SIGRTMAX));
+
+	assess->desc = &cute_assess_desc_excp;
+	assess->chk_val.i = sig;
 }
 
 bool

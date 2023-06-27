@@ -1,4 +1,4 @@
-#include "cute/cute.h"
+#include "cute/ensure.h"
 
 static int setup = 0;
 

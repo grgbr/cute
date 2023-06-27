@@ -2,18 +2,22 @@
 #################################  Running CUTe test(s)  ##################################
 
 simple_fixture_fail_suite::simple_fixture_fail_fail_test ............................. fail
-@ /home/grb/dev/proto/icsw/src/cute/test/simple_fixture_fail.c:31
-exec failed: 0 == 1
+issue:  exec failed
+reason: assertion check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_fixture_fail.c:31
+caller: simple_fixture_fail_fail_test__cute_exec()
+wanted: 0 == 1
 
 simple_fixture_fail_suite ............................................................ fail
-@ /home/grb/dev/proto/icsw/src/cute/test/simple_fixture_fail.c:43
-exec failed: descendant(s) failed
+issue:  exec failed
+reason: descendant(s) failed
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_fixture_fail.c:43
 
 NAME                             STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-simple_fixture_fail_suite        fail    0.009966      1      0      1      0      2      2
+simple_fixture_fail_suite        fail    0.035230      1      0      1      0      2      2
                                                      50%     0%    50%     0%   100%
 -------------------------------------------------------------------------------------------
-Total                            fail    0.009966      1      0      1      0      2      2
+Total                            fail    0.035230      1      0      1      0      2      2
                                                      50%     0%    50%     0%   100%
 
                             ###          SUMMARY           ###

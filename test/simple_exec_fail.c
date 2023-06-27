@@ -1,4 +1,4 @@
-#include "cute/cute.h"
+#include "cute/ensure.h"
 
 CUTE_TEST(simple_exec_fail_test)
 {
@@ -6,7 +6,7 @@ CUTE_TEST(simple_exec_fail_test)
 }
 
 static CUTE_SUITE_DEFINE_TESTS(simple_exec_fail_tests) = {
-	CUTE_REF(simple_exec_fail_test),
+	CUTE_REF(simple_exec_fail_test)
 };
 
 static CUTE_SUITE_DEFINE(simple_exec_fail_suite,

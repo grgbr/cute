@@ -54,7 +54,12 @@ extern void
 cute_assess_build_null(struct cute_assess * assess);
 
 extern void
-cute_assess_build_assert(struct cute_assess * assess, const char * expr);
+cute_assess_build_expr(struct cute_assess * assess,
+                       const char *         chk_expr,
+                       const char *         xpct_expr);
+
+extern void
+cute_assess_build_excp(struct cute_assess * assess, int sig);
 
 extern bool
 cute_assess_check(struct cute_assess * assess, union cute_assess_member value);
