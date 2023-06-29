@@ -68,6 +68,16 @@ cute_ensure_sint_lower_or_equal(const char * chk_expr,
                                 int          line,
                                 const char * function) __cute_export;
 
+extern void
+cute_ensure_sint_in_range(const char * chk_expr,
+                          intmax_t     chk_val,
+                          const char * xpct_expr,
+                          intmax_t     xpct_min,
+                          intmax_t     xpct_max,
+                          const char * file,
+                          int          line,
+                          const char * function) __cute_export;
+
 #define cute_ensure_sint(_a, _op, _b) \
 	cute_ensure_sint_ ## _op (# _a, \
 	                          _a, \
@@ -76,5 +86,15 @@ cute_ensure_sint_lower_or_equal(const char * chk_expr,
 	                          __FILE__, \
 	                          __LINE__, \
 	                          __func__)
+
+#define cute_ensure_sint_range(_a, _op, _min, _max) \
+	cute_ensure_sint_ ## _op _range (# _a, \
+	                                 _a, \
+	                                 "{" # _min " ... " # _max "}", \
+	                                 _min, \
+	                                 _max, \
+	                                 __FILE__, \
+	                                 __LINE__, \
+	                                 __func__)
 
 #endif /* _CUTE_ENSURE_H */

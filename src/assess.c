@@ -504,6 +504,134 @@ cute_assess_sint_lower_or_equal(struct cute_assess * assess,
 	                               xpct_val);
 }
 
+/******************************************************************************
+ * Signed integer range handling
+ ******************************************************************************/
+
+static char *
+cute_assess_desc_sint_range(const struct cute_assess * assess,
+                            enum cute_assess_desc      desc,
+                            const char *               oper,
+                            const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assess_assert_desc_intern(desc);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+
+	switch (desc) {
+	case CUTE_ASSESS_EXPECT_DESC:
+		return cute_asprintf("%s %s range {%s}",
+		                     assess->chk_expr,
+		                     oper,
+		                     assess->xpct_expr);
+
+	case CUTE_ASSESS_FOUND_DESC:
+		return cute_asprintf("[%" PRIdMAX "] %s "
+		                     "range {%" PRIdMAX " ... %" PRIdMAX "}",
+		                     assess->chk_val.i,
+		                     inv,
+		                     assess->xpct_val.range.min.i,
+		                     assess->xpct_val.range.max.i);
+
+	default:
+		__cute_unreachable();
+	}
+}
+
+static void
+cute_assess_build_sint_range(struct cute_assess *  assess,
+                             cute_assess_cmp_fn *  cmp,
+                             cute_assess_desc_fn * desc,
+                             const char *          chk_expr,
+                             const char *          xpct_expr,
+                             intmax_t              xpct_min,
+                             intmax_t              xpct_max)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(cmp);
+	cute_assert_intern(desc);
+	cute_assert_intern(chk_expr);
+	cute_assert_intern(chk_expr[0]);
+	cute_assert_intern(xpct_expr);
+	cute_assert_intern(xpct_expr[0]);
+	cute_assert_intern(xpct_min < xpct_max);
+
+	assess->cmp = cmp;
+	assess->desc = desc;
+	assess->chk_expr = chk_expr;
+	assess->xpct_expr = xpct_expr;
+	assess->xpct_val.range.min.i = xpct_min;
+	assess->xpct_val.range.max.i = xpct_max;
+}
+
+static bool
+cute_assess_sint_range(struct cute_assess *  assess,
+                       cute_assess_cmp_fn *  cmp,
+                       cute_assess_desc_fn * desc,
+                       const char *          chk_expr,
+                       intmax_t              chk_val,
+                       const char *          xpct_expr,
+                       intmax_t              xpct_min,
+                       intmax_t              xpct_max)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(cmp);
+	cute_assert_intern(desc);
+	cute_assert_intern(chk_expr);
+	cute_assert_intern(chk_expr[0]);
+	cute_assert_intern(xpct_expr);
+	cute_assert_intern(xpct_expr[0]);
+	cute_assert_intern(xpct_min < xpct_max);
+
+	union cute_assess_member val = { .i = chk_val };
+
+	cute_assess_build_sint_range(assess,
+	                             cmp,
+	                             desc,
+	                             chk_expr,
+	                             xpct_expr,
+	                             xpct_min,
+	                             xpct_max);
+
+	return cute_assess_check(assess, val);
+}
+
+/******************************************************************************/
+
+static bool
+cute_assess_cmp_sint_inrange(const struct cute_assess * assess,
+                             union cute_assess_member   value)
+{
+	return (value.i >= assess->xpct_val.range.min.i) &&
+	       (value.i <= assess->xpct_val.range.max.i);
+}
+
+static char *
+cute_assess_desc_sint_inrange(const struct cute_assess * assess,
+                              enum cute_assess_desc      desc)
+{
+	return cute_assess_desc_sint_range(assess, desc, "in", "not in");
+}
+
+bool
+cute_assess_sint_in_range(struct cute_assess * assess,
+                          const char *         chk_expr,
+                          intmax_t             chk_val,
+                          const char *         xpct_expr,
+                          intmax_t             xpct_min,
+                          intmax_t             xpct_max)
+{
+	return cute_assess_sint_range(assess,
+	                              cute_assess_cmp_sint_inrange,
+	                              cute_assess_desc_sint_inrange,
+	                              chk_expr,
+	                              chk_val,
+	                              xpct_expr,
+	                              xpct_min,
+	                              xpct_max);
+}
+
 #if 0
 static bool
 cute_assess_cmp_int_range(const struct cute_assess * assess,

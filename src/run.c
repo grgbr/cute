@@ -777,3 +777,65 @@ cute_ensure_sint_lower_or_equal(const char * chk_expr,
 	                        line,
 	                        function);
 }
+
+static void
+cute_ensure_sint_range(bool      (* assess)(struct cute_assess *,
+                                            const char *,
+                                            intmax_t,
+                                            const char *,
+                                            intmax_t,
+                                            intmax_t),
+                       const char * chk_expr,
+                       intmax_t     chk_val,
+                       const char * xpct_expr,
+                       intmax_t     xpct_min,
+                       intmax_t     xpct_max,
+                       const char * file,
+                       int          line,
+                       const char * function)
+{
+	cute_assert(assess);
+	cute_assert(chk_expr);
+	cute_assert(chk_expr[0]);
+	cute_assert(xpct_expr);
+	cute_assert(xpct_expr[0]);
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_run_assert_intern(cute_curr_run);
+
+	if (!assess(&cute_curr_run->assess,
+	            chk_expr,
+	            chk_val,
+	            xpct_expr,
+	            xpct_min,
+	            xpct_max))
+		cute_break(CUTE_FAIL_ISSUE,
+		           file,
+		           line,
+		           function,
+		           "signed integer check failed");
+}
+
+void
+cute_ensure_sint_in_range(const char * chk_expr,
+                          intmax_t     chk_val,
+                          const char * xpct_expr,
+                          intmax_t     xpct_min,
+                          intmax_t     xpct_max,
+                          const char * file,
+                          int          line,
+                          const char * function)
+{
+	cute_ensure_sint_range(cute_assess_sint_in_range,
+	                       chk_expr,
+	                       chk_val,
+	                       xpct_expr,
+	                       xpct_min,
+	                       xpct_max,
+	                       file,
+	                       line,
+	                       function);
+}
