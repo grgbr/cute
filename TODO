@@ -1,3 +1,6 @@
+* complete number check API support (uint, float, range, set) as well as test
+  (in addition to sint range and set)
+* implement str/ptr/mem support
 * mocking
 * get stdout / stderr output
 * tests

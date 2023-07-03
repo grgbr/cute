@@ -212,6 +212,22 @@ cute_assess_uint_not_in_range(struct cute_assess *           assess,
                               const struct cute_uint_range * expect);
 
 /******************************************************************************
+ * Unsigned integer set handling
+ ******************************************************************************/
+
+struct cute_uint_set;
+
+extern bool
+cute_assess_uint_in_set(struct cute_assess *         assess,
+                        const struct cute_uint *     check,
+                        const struct cute_uint_set * expect);
+
+extern bool
+cute_assess_uint_not_in_set(struct cute_assess *         assess,
+                            const struct cute_uint *     check,
+                            const struct cute_uint_set * expect);
+
+/******************************************************************************
  * Floating point value handling
  ******************************************************************************/
 
@@ -247,7 +263,7 @@ cute_assess_flt_lower_equal(struct cute_assess *    assess,
                             const struct cute_flt * expect);
 
 /******************************************************************************
- * Floating point range handling
+ * Floating point number range handling
  ******************************************************************************/
 
 struct cute_flt_range;
@@ -261,6 +277,22 @@ extern bool
 cute_assess_flt_not_in_range(struct cute_assess *          assess,
                              const struct cute_flt *       check,
                              const struct cute_flt_range * expect);
+
+/******************************************************************************
+ * Floating point number set handling
+ ******************************************************************************/
+
+struct cute_flt_set;
+
+extern bool
+cute_assess_flt_in_set(struct cute_assess *        assess,
+                       const struct cute_flt *     check,
+                       const struct cute_flt_set * expect);
+
+extern bool
+cute_assess_flt_not_in_set(struct cute_assess *        assess,
+                           const struct cute_flt *     check,
+                           const struct cute_flt_set * expect);
 
 /******************************************************************************
  * Top-level generic assess handling

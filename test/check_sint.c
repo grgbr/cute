@@ -281,6 +281,11 @@ CUTE_TEST(check_sint_in_set_pass_test)
 	cute_check_sint_set(chk, in, set);
 }
 
+CUTE_TEST(check_sint_literal_in_set_fail_test)
+{
+	cute_check_sint_set(-1, in, CUTE_SINT_SET(0, 1, 2, 3, 5, 8));
+}
+
 CUTE_TEST(check_sint_not_in_set_pass_test)
 {
 	int                        chk = 13;
@@ -294,6 +299,11 @@ CUTE_TEST(check_sint_not_in_set_pass_test)
 	cute_check_sint_set(chk, not_in, CUTE_SINT_SET(zero, 1, 2, 3, five, 8));
 	cute_check_sint_set(-2, not_in, set);
 	cute_check_sint_set(chk, not_in, set);
+}
+
+CUTE_TEST(check_sint_literal_not_in_set_fail_test)
+{
+	cute_check_sint_set(1, not_in, CUTE_SINT_SET(0, 1, 2, 3, 5, 8));
 }
 
 static CUTE_SUITE_DEFINE_TESTS(check_sint_tests) = {
@@ -338,8 +348,10 @@ static CUTE_SUITE_DEFINE_TESTS(check_sint_tests) = {
 	CUTE_REF(check_sint_not_in_range_pass_test),
 
 	CUTE_REF(check_sint_in_set_pass_test),
+	CUTE_REF(check_sint_literal_in_set_fail_test),
 
 	CUTE_REF(check_sint_not_in_set_pass_test),
+	CUTE_REF(check_sint_literal_not_in_set_fail_test),
 };
 
 static CUTE_SUITE_DEFINE(check_sint_suite,

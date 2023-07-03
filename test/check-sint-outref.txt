@@ -193,18 +193,34 @@ caller: check_sint_var_lower_equal_ref_fail_test__cute_exec()
 wanted: chk <= ref
 found:  [0] > [-1]
 
+check_sint_suite::check_sint_literal_in_set_fail_test ............................................. fail
+issue:  exec failed
+reason: signed integer set check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:286
+caller: check_sint_literal_in_set_fail_test__cute_exec()
+wanted: -1 in set {0, 1, 2, 3, 5, 8}
+found:  [-1] not in set {0, 1, 2, 3, 5, 8}
+
+check_sint_suite::check_sint_literal_not_in_set_fail_test ......................................... fail
+issue:  exec failed
+reason: signed integer set check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:306
+caller: check_sint_literal_not_in_set_fail_test__cute_exec()
+wanted: 1 not in set {0, 1, 2, 3, 5, 8}
+found:  [1] in set {0, 1, 2, 3, 5, 8}
+
 check_sint_suite .................................................................................. fail
 issue:  exec failed
 reason: descendant(s) failed
-source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:349
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:361
 
 NAME                                          STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-check_sint_suite                              fail    0.409679     10      0     24      0     34     34
-                                                                  29%     0%    70%     0%   100%
+check_sint_suite                              fail    0.488053     10      0     26      0     36     36
+                                                                  27%     0%    72%     0%   100%
 --------------------------------------------------------------------------------------------------------
-Total                                         fail    0.409679     10      0     24      0     34     34
-                                                                  29%     0%    70%     0%   100%
+Total                                         fail    0.488053     10      0     26      0     36     36
+                                                                  27%     0%    72%     0%   100%
 
                                   ###           SUMMARY            ###
-                                  ###  24/34 (70%) test(s) FAILED  ###
+                                  ###  26/36 (72%) test(s) FAILED  ###
 

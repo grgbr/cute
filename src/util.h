@@ -7,6 +7,12 @@
 #include <regex.h>
 #include <errno.h>
 
+#define __CUTE_STRING(__str) \
+	# __str
+
+#define CUTE_STRING(_str) \
+	__CUTE_STRING(_str)
+
 #define __cute_unused \
 	__attribute__((unused))
 
