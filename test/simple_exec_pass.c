@@ -1,8 +1,8 @@
-#include "cute/ensure.h"
+#include "cute/check.h"
 
 CUTE_TEST(simple_exec_pass_test)
 {
-	cute_ensure(0 == 0);
+	cute_check_assert(0 == 0);
 }
 
 static CUTE_SUITE_DEFINE_TESTS(simple_exec_pass_tests) = {

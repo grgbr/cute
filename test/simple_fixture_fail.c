@@ -1,4 +1,4 @@
-#include "cute/ensure.h"
+#include "cute/check.h"
 
 static int setup = 0;
 
@@ -19,7 +19,7 @@ CUTE_STATIC_TEST(simple_fixture_fail_pass_test,
                  simple_fixture_fail_teardown,
                  CUTE_DFLT_TMOUT)
 {
-	cute_ensure(setup == 1);
+	cute_check_assert(setup == 1);
 }
 
 CUTE_STATIC_TEST(simple_fixture_fail_fail_test,
@@ -27,8 +27,8 @@ CUTE_STATIC_TEST(simple_fixture_fail_fail_test,
                  simple_fixture_fail_teardown,
                  CUTE_DFLT_TMOUT)
 {
-	cute_ensure(setup == 3);
-	cute_ensure(0 == 1);
+	cute_check_assert(setup == 3);
+	cute_check_assert(0 == 1);
 }
 
 static CUTE_SUITE_DEFINE_TESTS(simple_fixture_fail_tests) = {

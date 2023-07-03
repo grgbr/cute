@@ -57,11 +57,11 @@ simple-fixture-fail-utest-cflags   := $(sample-cflags)
 simple-fixture-fail-utest-ldflags  := $(sample-ldflags) -lcute
 simple-fixture-fail-utest-path     := $(LIBEXECDIR)/cute/simple-fixture-fail-utest
 
-bins                               += ensure-sint-utest
-ensure-sint-utest-objs             := ensure_sint.o
-ensure-sint-utest-cflags           := $(sample-cflags)
-ensure-sint-utest-ldflags          := $(sample-ldflags) -lcute
-ensure-sint-utest-path             := $(LIBEXECDIR)/cute/ensure-sint-utest
+bins                               += check-sint-utest
+check-sint-utest-objs             := check_sint.o
+check-sint-utest-cflags           := $(sample-cflags)
+check-sint-utest-ldflags          := $(sample-ldflags) -lcute
+check-sint-utest-path             := $(LIBEXECDIR)/cute/check-sint-utest
 
 build: $(BUILDDIR)/cute-utest.sh
 

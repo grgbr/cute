@@ -1,0 +1,210 @@
+
+########################################  Running CUTe test(s)  ########################################
+
+check_sint_suite::check_sint_literal_equal_fail_test .............................................. fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:17
+caller: check_sint_literal_equal_fail_test__cute_exec()
+wanted: 0 == 1
+found:  [0] != [1]
+
+check_sint_suite::check_sint_var_equal_fail_test .................................................. fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:24
+caller: check_sint_var_equal_fail_test__cute_exec()
+wanted: chk == -1
+found:  [2] != [-1]
+
+check_sint_suite::check_sint_equal_ref_fail_test .................................................. fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:31
+caller: check_sint_equal_ref_fail_test__cute_exec()
+wanted: -1 == ref
+found:  [-1] != [2]
+
+check_sint_suite::check_sint_var_equal_ref_fail_test .............................................. fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:39
+caller: check_sint_var_equal_ref_fail_test__cute_exec()
+wanted: chk == ref
+found:  [2] != [3]
+
+check_sint_suite::check_sint_literal_unequal_fail_test ............................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:56
+caller: check_sint_literal_unequal_fail_test__cute_exec()
+wanted: 1 != 1
+found:  [1] == [1]
+
+check_sint_suite::check_sint_var_unequal_fail_test ................................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:63
+caller: check_sint_var_unequal_fail_test__cute_exec()
+wanted: chk != 2
+found:  [2] == [2]
+
+check_sint_suite::check_sint_unequal_ref_fail_test ................................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:70
+caller: check_sint_unequal_ref_fail_test__cute_exec()
+wanted: 2 != ref
+found:  [2] == [2]
+
+check_sint_suite::check_sint_var_unequal_ref_fail_test ............................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:78
+caller: check_sint_var_unequal_ref_fail_test__cute_exec()
+wanted: chk != ref
+found:  [2] == [2]
+
+check_sint_suite::check_sint_literal_greater_fail_test ............................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:94
+caller: check_sint_literal_greater_fail_test__cute_exec()
+wanted: 1 > 1
+found:  [1] <= [1]
+
+check_sint_suite::check_sint_var_greater_fail_test ................................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:101
+caller: check_sint_var_greater_fail_test__cute_exec()
+wanted: chk > 1
+found:  [-1] <= [1]
+
+check_sint_suite::check_sint_greater_ref_fail_test ................................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:108
+caller: check_sint_greater_ref_fail_test__cute_exec()
+wanted: -1 > ref
+found:  [-1] <= [1]
+
+check_sint_suite::check_sint_var_greater_ref_fail_test ............................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:116
+caller: check_sint_var_greater_ref_fail_test__cute_exec()
+wanted: chk > ref
+found:  [-1] <= [-1]
+
+check_sint_suite::check_sint_literal_greater_equal_fail_test ...................................... fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:135
+caller: check_sint_literal_greater_equal_fail_test__cute_exec()
+wanted: 0 >= 1
+found:  [0] < [1]
+
+check_sint_suite::check_sint_var_greater_equal_fail_test .......................................... fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:142
+caller: check_sint_var_greater_equal_fail_test__cute_exec()
+wanted: chk >= 1
+found:  [-1] < [1]
+
+check_sint_suite::check_sint_greater_equal_ref_fail_test .......................................... fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:149
+caller: check_sint_greater_equal_ref_fail_test__cute_exec()
+wanted: -1 >= ref
+found:  [-1] < [1]
+
+check_sint_suite::check_sint_var_greater_equal_ref_fail_test ...................................... fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:157
+caller: check_sint_var_greater_equal_ref_fail_test__cute_exec()
+wanted: chk >= ref
+found:  [-1] < [0]
+
+check_sint_suite::check_sint_literal_lower_fail_test .............................................. fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:173
+caller: check_sint_literal_lower_fail_test__cute_exec()
+wanted: 0 < 0
+found:  [0] >= [0]
+
+check_sint_suite::check_sint_var_lower_fail_test .................................................. fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:180
+caller: check_sint_var_lower_fail_test__cute_exec()
+wanted: chk < -1
+found:  [1] >= [-1]
+
+check_sint_suite::check_sint_lower_ref_fail_test .................................................. fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:187
+caller: check_sint_lower_ref_fail_test__cute_exec()
+wanted: -1 < ref
+found:  [-1] >= [-1]
+
+check_sint_suite::check_sint_var_lower_ref_fail_test .............................................. fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:195
+caller: check_sint_var_lower_ref_fail_test__cute_exec()
+wanted: chk < ref
+found:  [0] >= [-1]
+
+check_sint_suite::check_sint_literal_lower_equal_fail_test ........................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:214
+caller: check_sint_literal_lower_equal_fail_test__cute_exec()
+wanted: 1 <= 0
+found:  [1] > [0]
+
+check_sint_suite::check_sint_var_lower_equal_fail_test ............................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:221
+caller: check_sint_var_lower_equal_fail_test__cute_exec()
+wanted: chk <= -1
+found:  [1] > [-1]
+
+check_sint_suite::check_sint_lower_equal_ref_fail_test ............................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:228
+caller: check_sint_lower_equal_ref_fail_test__cute_exec()
+wanted: 0 <= ref
+found:  [0] > [-1]
+
+check_sint_suite::check_sint_var_lower_equal_ref_fail_test ........................................ fail
+issue:  exec failed
+reason: signed integer value check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:236
+caller: check_sint_var_lower_equal_ref_fail_test__cute_exec()
+wanted: chk <= ref
+found:  [0] > [-1]
+
+check_sint_suite .................................................................................. fail
+issue:  exec failed
+reason: descendant(s) failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:349
+
+NAME                                          STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+check_sint_suite                              fail    0.409679     10      0     24      0     34     34
+                                                                  29%     0%    70%     0%   100%
+--------------------------------------------------------------------------------------------------------
+Total                                         fail    0.409679     10      0     24      0     34     34
+                                                                  29%     0%    70%     0%   100%
+
+                                  ###           SUMMARY            ###
+                                  ###  24/34 (70%) test(s) FAILED  ###
+
