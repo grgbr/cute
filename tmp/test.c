@@ -44,8 +44,80 @@ cute_check_sint_in_set(const char *                 file,
 		printf("    %" PRIdMAX "\n", expect->items[i]);
 }
 
+void
+cute_check_float_greater(const char *              file,
+                         int                       line,
+                         const char *              function,
+                         const struct cute_float * check,
+                         const struct cute_float * expect)
+{
+	printf("check: %s: %Lf | ", check->expr, check->value);
+	printf("expect: %s: %Lf \n", expect->expr, expect->value);
+}
+
+void
+cute_check_str_equal(const char *            file,
+                     int                     line,
+                     const char *            function,
+                     const struct cute_str * check,
+                     const struct cute_str * expect)
+{
+	printf("check: %s: \"%s\" | ", check->expr, check->value);
+	printf("expect: %s: \"%s\" \n", expect->expr, expect->value);
+}
+
+void
+cute_check_str_in_set(const char *                file,
+                      int                         line,
+                      const char *                function,
+                      const struct cute_str *     check,
+                      const struct cute_str_set * expect)
+{
+	unsigned int i;
+
+	printf("check: %s: \"%s\" | ", check->expr, check->value);
+	printf("expect: %s:\n", expect->expr);
+
+	for (i = 0; i < expect->count;i++)
+		printf("    \"%s\"\n", expect->items[i]);
+}
+
+void
+cute_check_mem_equal(const char *             file,
+                     int                      line,
+                     const char *             function,
+                     const struct cute_ptr  * check,
+                     const struct cute_mem  * expect)
+{
+	printf("check: %s: %p | ", check->expr, check->value);
+	printf("expect: %s: @%p/%zu\n",
+	       kxpect->expr, expect->value, expect->size);
+}
+
+void
+cute_check_ptr_equal(const char *             file,
+                     int                      line,
+                     const char *             function,
+                     const struct cute_ptr  * check,
+                     const struct cute_ptr  * expect)
+{
+	printf("check: %s: %p | ", check->expr, check->value);
+	printf("expect: %s: %p | ", expect->expr, expect->value);
+}
+
+struct test {
+	struct cute_sint_set set;
+};
+
+void build(struct test * t)
+{
+	t->set = CUTE_SINT_SET(-1, -2, -3);
+}
+
 int main(void)
 {
+	float                        flt_val = 2.5;
+	float                        flt_ref = 7.003222;
 	int                          val = 2;
 	int                          ref = 3;
 	int                          min = -1;
@@ -53,10 +125,29 @@ int main(void)
 	const struct cute_sint_range range = CUTE_SINT_RANGE(min, 6);
 	const struct cute_sint_set   set = CUTE_SINT_SET(ref, -1, -2, -3);
 
+	const char * str_val = "value";
+	const char * str_ref = "reference";
+
+	struct test t;
+
+	build(&t);
+	cute_check_sint_set(2, in, t.set);
+
+	cute_check_mem("abo", equal, "tot", 4);
+	cute_check_ptr(&val, equal, &flt_ref);
+
+	cute_check_str("a", equal, "b");
+	cute_check_str(str_val, equal, "b");
+	cute_check_str("a", equal, str_ref);
+	cute_check_str_set("a", in, CUTE_STR_SET(str_val, "toto", str_ref));
+
 	cute_check_sint(2, greater, 3);
 	cute_check_sint(val, greater, -1);
 	cute_check_sint(2, greater, ref);
 	cute_check_sint(val, greater, ref);
+
+	cute_check_float(2, greater, 3.5);
+	cute_check_float(flt_val, greater, flt_ref);
 
 	cute_check_sint_range(2, in, CUTE_SINT_RANGE(3, 5));
 	cute_check_sint_range(val, in, CUTE_SINT_RANGE(3, 5));

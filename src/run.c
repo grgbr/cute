@@ -1,13 +1,12 @@
 #include "run.h"
-#include "cute/ensure.h"
 #include "report.h"
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
 
-static struct cute_run * volatile cute_curr_run;
+struct cute_run * volatile cute_curr_run;
 
-static void __cute_noreturn
+void __cute_noreturn
 cute_break(enum cute_issue issue,
            const char *    file,
            int             line,
@@ -131,10 +130,12 @@ static sighandler_t cute_run_saved_sigs[sizeof(cute_run_sigs) /
                                         sizeof(cute_run_sigs[0])];
 
 static void
-cute_run_handle_tmout(int sig)
+cute_run_handle_tmout(int sig __cute_unused)
 {
 	cute_assert_intern(sig == SIGALRM);
 	cute_run_assert_intern(cute_curr_run);
+
+	cute_assess_build_null(&cute_curr_run->assess);
 
 	cute_break(CUTE_FAIL_ISSUE,
 	           cute_curr_run->base->file,
@@ -162,26 +163,29 @@ cute_run_settle(const struct cute_run * run)
 {
 	cute_run_assert_intern(run);
 
-	unsigned int s;
+	if (!cute_the_config->debug) {
+		unsigned int s;
 
-	for (s = 0;
-	     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
-	     s++) {
-		cute_run_saved_sigs[s] = signal(cute_run_sigs[s],
-		                                cute_run_handle_sig);
-		cute_assert_intern(cute_run_saved_sigs[s] != SIG_ERR);
-	}
+		for (s = 0;
+		     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
+		     s++) {
+			cute_run_saved_sigs[s] = signal(cute_run_sigs[s],
+			                                cute_run_handle_sig);
+			cute_assert_intern(cute_run_saved_sigs[s] != SIG_ERR);
+		}
 
-	/*
-	 * As stated into section "Sleeping" of the glibc manual:
-	 * On GNU system, it is safe to use sleep and SIGALRM in the same
-	 * program, because sleep does not work by means of SIGALRM.
-	 */
-	if (run->base->tmout > 0) {
-		cute_run_saved_alrm = signal(SIGALRM, cute_run_handle_tmout);
-		cute_assert_intern(cute_run_saved_alrm != SIG_ERR);
+		/*
+		 * As stated into section "Sleeping" of the glibc manual:
+		 * On GNU system, it is safe to use sleep and SIGALRM in the same
+		 * program, because sleep does not work by means of SIGALRM.
+		 */
+		if (run->base->tmout > 0) {
+			cute_run_saved_alrm = signal(SIGALRM,
+			                             cute_run_handle_tmout);
+			cute_assert_intern(cute_run_saved_alrm != SIG_ERR);
 
-		alarm(run->base->tmout);
+			alarm(run->base->tmout);
+		}
 	}
 }
 
@@ -190,20 +194,22 @@ cute_run_unsettle(const struct cute_run * run)
 {
 	cute_run_assert_intern(run);
 
-	sighandler_t err __cute_unused;
-	unsigned int s;
+	if (!cute_the_config->debug) {
+		sighandler_t err __cute_unused;
+		unsigned int s;
 
-	if (run->base->tmout > 0) {
-		alarm(0);
-		err = signal(SIGALRM, cute_run_saved_alrm);
-		cute_assert_intern(err != SIG_ERR);
-	}
+		if (run->base->tmout > 0) {
+			alarm(0);
+			err = signal(SIGALRM, cute_run_saved_alrm);
+			cute_assert_intern(err != SIG_ERR);
+		}
 
-	for (s = 0;
-	     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
-	     s++) {
-		err = signal(cute_run_sigs[s], cute_run_saved_sigs[s]);
-		cute_assert_intern(err != SIG_ERR);
+		for (s = 0;
+		     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
+		     s++) {
+			err = signal(cute_run_sigs[s], cute_run_saved_sigs[s]);
+			cute_assert_intern(err != SIG_ERR);
+		}
 	}
 }
 
@@ -353,7 +359,6 @@ cute_run_done(struct cute_run * run)
 	cute_run_report(run, CUTE_DONE_EVT);
 
 	switch (run->issue) {
-	case CUTE_UNK_ISSUE:
 	case CUTE_PASS_ISSUE:
 	case CUTE_SKIP_ISSUE:
 	case CUTE_OFF_ISSUE:
@@ -365,6 +370,7 @@ cute_run_done(struct cute_run * run)
 		ret = -EPERM;
 		break;
 
+	case CUTE_UNK_ISSUE:
 	default:
 		__cute_unreachable();
 	}
@@ -489,6 +495,7 @@ cute_run_fini(struct cute_run * run)
 	run->ops->fini(run);
 	run->state = CUTE_FINI_STATE;
 	cute_run_report(run, CUTE_FINI_EVT);
+	cute_assess_release(&run->assess);
 	cute_free(run->name);
 }
 
@@ -598,244 +605,4 @@ _cute_fail(const char * reason,
 	           line,
 	           function,
 	           "explicit fail requested");
-}
-
-void
-_cute_ensure(bool         fail,
-             const char * reason,
-             const char * file,
-             int          line,
-             const char * function)
-{
-	cute_assert(reason);
-	cute_assert(reason[0]);
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-
-	if (fail) {
-		cute_assess_build_expr(&cute_curr_run->assess, NULL, reason);
-
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "assertion check failed");
-	}
-}
-
-static void
-cute_ensure_sint_member(bool      (* assess)(struct cute_assess *,
-                                             const char *,
-                                             intmax_t,
-                                             const char *,
-                                             intmax_t),
-                        const char * chk_expr,
-                        intmax_t     chk_val,
-                        const char * xpct_expr,
-                        intmax_t     xpct_val,
-                        const char * file,
-                        int          line,
-                        const char * function)
-{
-	cute_assert(assess);
-	cute_assert(chk_expr);
-	cute_assert(chk_expr[0]);
-	cute_assert(xpct_expr);
-	cute_assert(xpct_expr[0]);
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_run_assert_intern(cute_curr_run);
-
-	if (!assess(&cute_curr_run->assess,
-	            chk_expr,
-	            chk_val,
-	            xpct_expr,
-	            xpct_val))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "signed integer check failed");
-}
-
-void
-cute_ensure_sint_equal(const char * chk_expr,
-                       intmax_t     chk_val,
-                       const char * xpct_expr,
-                       intmax_t     xpct_val,
-                       const char * file,
-                       int          line,
-                       const char * function)
-{
-	cute_ensure_sint_member(cute_assess_sint_equal,
-	                        chk_expr,
-	                        chk_val,
-	                        xpct_expr,
-	                        xpct_val,
-	                        file,
-	                        line,
-	                        function);
-}
-
-void
-cute_ensure_sint_unequal(const char * chk_expr,
-                         intmax_t     chk_val,
-                         const char * xpct_expr,
-                         intmax_t     xpct_val,
-                         const char * file,
-                         int          line,
-                         const char * function)
-{
-	cute_ensure_sint_member(cute_assess_sint_unequal,
-	                        chk_expr,
-	                        chk_val,
-	                        xpct_expr,
-	                        xpct_val,
-	                        file,
-	                        line,
-	                        function);
-}
-
-void
-cute_ensure_sint_greater(const char * chk_expr,
-                         intmax_t     chk_val,
-                         const char * xpct_expr,
-                         intmax_t     xpct_val,
-                         const char * file,
-                         int          line,
-                         const char * function)
-{
-	cute_ensure_sint_member(cute_assess_sint_greater,
-	                        chk_expr,
-	                        chk_val,
-	                        xpct_expr,
-	                        xpct_val,
-	                        file,
-	                        line,
-	                        function);
-}
-
-void
-cute_ensure_sint_greater_or_equal(const char * chk_expr,
-                                  intmax_t     chk_val,
-                                  const char * xpct_expr,
-                                  intmax_t     xpct_val,
-                                  const char * file,
-                                  int          line,
-                                  const char * function)
-{
-	cute_ensure_sint_member(cute_assess_sint_greater_or_equal,
-	                        chk_expr,
-	                        chk_val,
-	                        xpct_expr,
-	                        xpct_val,
-	                        file,
-	                        line,
-	                        function);
-}
-
-void
-cute_ensure_sint_lower(const char * chk_expr,
-                       intmax_t     chk_val,
-                       const char * xpct_expr,
-                       intmax_t     xpct_val,
-                       const char * file,
-                       int          line,
-                       const char * function)
-{
-	cute_ensure_sint_member(cute_assess_sint_lower,
-	                        chk_expr,
-	                        chk_val,
-	                        xpct_expr,
-	                        xpct_val,
-	                        file,
-	                        line,
-	                        function);
-}
-
-void
-cute_ensure_sint_lower_or_equal(const char * chk_expr,
-                                intmax_t     chk_val,
-                                const char * xpct_expr,
-                                intmax_t     xpct_val,
-                                const char * file,
-                                int          line,
-                                const char * function)
-{
-	cute_ensure_sint_member(cute_assess_sint_lower_or_equal,
-	                        chk_expr,
-	                        chk_val,
-	                        xpct_expr,
-	                        xpct_val,
-	                        file,
-	                        line,
-	                        function);
-}
-
-static void
-cute_ensure_sint_range(bool      (* assess)(struct cute_assess *,
-                                            const char *,
-                                            intmax_t,
-                                            const char *,
-                                            intmax_t,
-                                            intmax_t),
-                       const char * chk_expr,
-                       intmax_t     chk_val,
-                       const char * xpct_expr,
-                       intmax_t     xpct_min,
-                       intmax_t     xpct_max,
-                       const char * file,
-                       int          line,
-                       const char * function)
-{
-	cute_assert(assess);
-	cute_assert(chk_expr);
-	cute_assert(chk_expr[0]);
-	cute_assert(xpct_expr);
-	cute_assert(xpct_expr[0]);
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_run_assert_intern(cute_curr_run);
-
-	if (!assess(&cute_curr_run->assess,
-	            chk_expr,
-	            chk_val,
-	            xpct_expr,
-	            xpct_min,
-	            xpct_max))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "signed integer check failed");
-}
-
-void
-cute_ensure_sint_in_range(const char * chk_expr,
-                          intmax_t     chk_val,
-                          const char * xpct_expr,
-                          intmax_t     xpct_min,
-                          intmax_t     xpct_max,
-                          const char * file,
-                          int          line,
-                          const char * function)
-{
-	cute_ensure_sint_range(cute_assess_sint_in_range,
-	                       chk_expr,
-	                       chk_val,
-	                       xpct_expr,
-	                       xpct_min,
-	                       xpct_max,
-	                       file,
-	                       line,
-	                       function);
 }

@@ -27,6 +27,7 @@ enum cute_config_tty {
 
 struct cute_config {
 	const char *         match;
+	bool                 debug;
 	bool                 icase;
 	unsigned int         reports;
 	enum cute_config_tty tty;
@@ -37,6 +38,7 @@ struct cute_config {
 #define CUTE_CONFIG_INIT \
 	{ \
 		.match    = NULL, \
+		.debug    = false, \
 		.icase    = false, \
 		.reports  = 0, \
 		.tty      = CUTE_CONFIG_PROBE_TTY, \

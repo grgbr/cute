@@ -26,6 +26,7 @@ libcute.so-objs    += \
 	shared/verb.o \
 	shared/report.o \
 	shared/cons.o \
+	shared/check.o \
 	shared/run.o \
 	shared/assess.o \
 	shared/common.o \
@@ -53,6 +54,7 @@ libcute.a-objs     += \
 	static/verb.o \
 	static/report.o \
 	static/cons.o \
+	static/check.o \
 	static/run.o \
 	static/assess.o \
 	static/common.o \

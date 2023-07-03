@@ -1,4 +1,4 @@
-#include <cute/ensure.h>
+#include <cute/check.h>
 #include <stdlib.h>
 
 static void
@@ -28,9 +28,9 @@ static CUTE_TEST_DEFINE(failed,
 static void
 test_failed_ensure(void)
 {
-	cute_ensure(0 == 0);
-	cute_ensure(0 == 1);
-	cute_ensure(1 == 1);
+	cute_check_assert(0 == 0);
+	cute_check_assert(0 == 1);
+	cute_check_assert(1 == 1);
 }
 
 static CUTE_TEST_DEFINE(failed_ensure,
@@ -42,7 +42,7 @@ static CUTE_TEST_DEFINE(failed_ensure,
 static void
 test_passed(void)
 {
-	cute_ensure(0 == 0);
+	cute_check_assert(0 == 0);
 }
 
 static CUTE_TEST_DEFINE(passed,

@@ -57,12 +57,6 @@ cute_suite_complete_run(struct cute_suite_run * run)
 	cute_assert_intern(!run->stats.excp);
 	cute_assert_intern(!run->stats.exec);
 	cute_assert_intern(run->stats.total);
-	cute_assert_intern(!run->sums.pass);
-	cute_assert_intern(!run->sums.skip);
-	cute_assert_intern(!run->sums.fail);
-	cute_assert_intern(!run->sums.excp);
-	cute_assert_intern(!run->sums.exec);
-	cute_assert_intern(!run->sums.total);
 
 	unsigned int s;
 	unsigned int nr = run->stats.total;
@@ -152,12 +146,6 @@ cute_suite_oper_run(struct cute_run * run, enum cute_oper oper)
 	cute_assert_intern(!((struct cute_suite_run *)run)->stats.excp);
 	cute_assert_intern(!((struct cute_suite_run *)run)->stats.exec);
 	cute_assert_intern(((struct cute_suite_run *)run)->stats.total);
-	cute_assert_intern(!((struct cute_suite_run *)run)->sums.pass);
-	cute_assert_intern(!((struct cute_suite_run *)run)->sums.skip);
-	cute_assert_intern(!((struct cute_suite_run *)run)->sums.fail);
-	cute_assert_intern(!((struct cute_suite_run *)run)->sums.excp);
-	cute_assert_intern(!((struct cute_suite_run *)run)->sums.exec);
-	cute_assert_intern(!((struct cute_suite_run *)run)->sums.total);
 
 	switch (oper) {
 	case CUTE_SPAWN_OPER:
@@ -204,7 +192,8 @@ cute_suite_join_run(struct cute_run * run, struct cute_run * sub)
 	cute_run_assert_intern(run);
 
 	struct cute_suite_run *   srun = (struct cute_suite_run *)run;
-	const struct cute_suite * suite = (const struct cute_suite *)run->base;
+	const struct cute_suite * suite __cute_unused = \
+		(const struct cute_suite *)run->base;
 
 	cute_suite_assert_intern(suite);
 	cute_assert_intern(suite->nr);
@@ -215,12 +204,6 @@ cute_suite_join_run(struct cute_run * run, struct cute_run * sub)
 	cute_assert_intern(!srun->stats.fail);
 	cute_assert_intern(!srun->stats.excp);
 	cute_assert_intern(!srun->stats.exec);
-	cute_assert_intern(!srun->sums.pass);
-	cute_assert_intern(!srun->sums.skip);
-	cute_assert_intern(!srun->sums.fail);
-	cute_assert_intern(!srun->sums.excp);
-	cute_assert_intern(!srun->sums.exec);
-	cute_assert_intern(!srun->sums.total);
 	cute_assert_intern(srun->count < suite->nr);
 
 	sub->id = (int)srun->count;

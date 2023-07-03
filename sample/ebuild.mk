@@ -26,9 +26,9 @@ cute-full-sample-objs     := full.o
 cute-full-sample-cflags   := $(sample-cflags)
 cute-full-sample-ldflags  := $(sample-ldflags) -lcute
 
-#bins                       += cute-ensure-sample
-#cute-ensure-sample-objs    := ensure.o
-#cute-ensure-sample-cflags  := $(sample-cflags)
-#cute-ensure-sample-ldflags := $(sample-ldflags) -lcute
+bins                       += cute-check-sample
+cute-check-sample-objs    := check.o
+cute-check-sample-cflags  := $(sample-cflags)
+cute-check-sample-ldflags := $(sample-ldflags) -lcute
 
 # vim: filetype=make :

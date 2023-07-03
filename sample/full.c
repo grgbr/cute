@@ -1,4 +1,4 @@
-#include <cute/ensure.h>
+#include <cute/check.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -6,7 +6,7 @@ static void
 pass(void)
 {
 	usleep(250000);
-	cute_ensure(0 == 0);
+	cute_check_assert(0 == 0);
 }
 
 static void
@@ -20,9 +20,9 @@ static void
 fail(void)
 {
 	usleep(250000);
-	cute_ensure(0 == 0);
-	cute_ensure(0 == 1);
-	cute_ensure(1 == 1);
+	cute_check_assert(0 == 0);
+	cute_check_assert(0 == 1);
+	cute_check_assert(1 == 1);
 }
 
 static void

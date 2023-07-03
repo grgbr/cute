@@ -18,6 +18,14 @@ struct cute_config * cute_the_config;
 static regex_t       cute_config_regex;
 
 static void
+cute_config_enable_debug(struct cute_config * config)
+{
+	cute_assert_intern(config);
+
+	config->debug = true;
+}
+
+static void
 cute_config_enable_icase(struct cute_config * config)
 {
 	cute_assert_intern(config);
@@ -310,6 +318,8 @@ cute_fini(void)
 "       This help message.\n" \
 "\n" \
 "With OPTIONS:\n" \
+"    -d|--debug                      -- Run in debug mode without neither\n" \
+"                                       exception handling nor timeouts.\n" \
 "    -i|--icase                      -- Ignore case when matching against\n" \
 "                                       <PATTERN>.\n" \
 "    -s[<COLOR>]|--silent[=<COLOR>]  -- Silence all suites and tests console\n" \
@@ -354,23 +364,28 @@ cute_main(int                        argc,
 	while (true) {
 		int                        o;
 		static const struct option opts[] = {
+			{ "debug",   no_argument,       NULL, 'd' },
 			{ "icase",   no_argument,       NULL, 'i' },
 			{ "silent",  no_argument,       NULL, 's' },
 			{ "tap",     optional_argument, NULL, 'a' },
 			{ "terse",   optional_argument, NULL, 't' },
 			{ "verbose", optional_argument, NULL, 'v' },
 			{ "xml",     optional_argument, NULL, 'x' },
-			{ "help",    no_argument, NULL,       'h' },
-			{ NULL,      0,           NULL,       0 }
+			{ "help",    no_argument,       NULL, 'h' },
+			{ NULL,      0,                 NULL, 0 }
 		};
 
-		o = getopt_long(argc, argv, ":a::st::v::x::h", opts, NULL);
+		o = getopt_long(argc, argv, ":a::dist::v::x::h", opts, NULL);
 		if (o < 0)
 			break;
 
 		switch (o) {
 		case 'a':
 			ret = cute_config_enable_tap(&conf, optarg);
+			break;
+
+		case 'd':
+			cute_config_enable_debug(&conf);
 			break;
 
 		case 'i':

@@ -3,7 +3,7 @@ config-h    := $(PACKAGE)/config.h
 
 HEADERDIR   := $(CURDIR)/include
 headers     += $(PACKAGE)/cute.h
-headers     += $(PACKAGE)/ensure.h
+headers     += $(PACKAGE)/check.h
 
 subdirs     := src
 

@@ -182,4 +182,13 @@ cute_run_foreach(struct cute_run *     run,
                  cute_run_process_fn * process,
                  void *                data);
 
+extern struct cute_run * volatile cute_curr_run;
+
+extern void __cute_noreturn
+cute_break(enum cute_issue issue,
+           const char *    file,
+           int             line,
+           const char *    func,
+           const char *    why);
+
 #endif /* _CUTE_RUN_H */
