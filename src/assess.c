@@ -350,7 +350,7 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
 		cute_assert_intern(assess->check._type.expr[0]); \
 		cute_assert_intern(assess->expect._type.range.expr); \
 		cute_assert_intern(assess->expect._type.range.expr[0]); \
-		cute_assert_intern(assess->expect._type.range.min < \
+		cute_assert_intern(assess->expect._type.range.min <= \
 		                   assess->expect._type.range.max); \
 		cute_assess_assert_desc_intern(desc); \
 		cute_assert_intern(oper); \
@@ -389,7 +389,7 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
 		cute_assess_assert_ops_intern(ops); \
 		cute_assert_intern(expect->expr); \
 		cute_assert_intern(expect->expr[0]); \
-		cute_assert_intern(expect->min < expect->max); \
+		cute_assert_intern(expect->min <= expect->max); \
 		\
 		assess->ops = ops; \
 		assess->expect._type.range = *expect; \
@@ -408,7 +408,7 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
 		cute_assert_intern(check->expr[0]); \
 		cute_assert_intern(expect->expr); \
 		cute_assert_intern(expect->expr[0]); \
-		cute_assert_intern(expect->min < expect->max); \
+		cute_assert_intern(expect->min <= expect->max); \
 		\
 		const union cute_assess_value chk = { ._type = *check }; \
 		\

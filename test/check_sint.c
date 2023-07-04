@@ -251,6 +251,37 @@ CUTE_TEST(check_sint_in_range_pass_test)
 	cute_check_sint_range(chk, in, range);
 }
 
+CUTE_TEST(check_sint_literal_in_range_fail_test)
+{
+	cute_check_sint_range(0, in, CUTE_SINT_RANGE(1, 10));
+}
+
+CUTE_TEST(check_sint_var_in_range_fail_test)
+{
+	int chk = 11;
+	cute_check_sint_range(chk, in, CUTE_SINT_RANGE(1, 10));
+}
+
+CUTE_TEST(check_sint_in_range_ref_fail_test)
+{
+	int min_ref = 5;
+	int max_ref = 5;
+
+	cute_check_sint_range(5, in, CUTE_SINT_RANGE(min_ref, max_ref));
+	cute_check_sint_range(0, in, CUTE_SINT_RANGE(min_ref, max_ref));
+}
+
+CUTE_TEST(check_sint_var_in_range_ref_fail_test)
+{
+	int chk = 5;
+	int min_ref = 5;
+	int max_ref = 5;
+
+	cute_check_sint_range(chk, in, CUTE_SINT_RANGE(min_ref, max_ref));
+	chk = 6;
+	cute_check_sint_range(chk, in, CUTE_SINT_RANGE(min_ref, max_ref));
+}
+
 CUTE_TEST(check_sint_not_in_range_pass_test)
 {
 	int                          chk = -1000;
@@ -264,6 +295,37 @@ CUTE_TEST(check_sint_not_in_range_pass_test)
 	cute_check_sint_range(chk, not_in, CUTE_SINT_RANGE(min_ref, max_ref));
 	cute_check_sint_range(1000, not_in, range);
 	cute_check_sint_range(chk, not_in, range);
+}
+
+CUTE_TEST(check_sint_literal_not_in_range_fail_test)
+{
+	cute_check_sint_range(1, not_in, CUTE_SINT_RANGE(1, 10));
+}
+
+CUTE_TEST(check_sint_var_not_in_range_fail_test)
+{
+	int chk = 10;
+	cute_check_sint_range(chk, not_in, CUTE_SINT_RANGE(1, 10));
+}
+
+CUTE_TEST(check_sint_not_in_range_ref_fail_test)
+{
+	int min_ref = 1;
+	int max_ref = 10;
+
+	cute_check_sint_range(0, not_in, CUTE_SINT_RANGE(min_ref, max_ref));
+	cute_check_sint_range(5, not_in, CUTE_SINT_RANGE(min_ref, max_ref));
+}
+
+CUTE_TEST(check_sint_var_not_in_range_ref_fail_test)
+{
+	int chk = 5;
+	int min_ref = 5;
+	int max_ref = 5;
+
+	cute_check_sint_range(0, not_in, CUTE_SINT_RANGE(min_ref, max_ref));
+	chk = 5;
+	cute_check_sint_range(chk, not_in, CUTE_SINT_RANGE(min_ref, max_ref));
 }
 
 CUTE_TEST(check_sint_in_set_pass_test)
@@ -286,6 +348,35 @@ CUTE_TEST(check_sint_literal_in_set_fail_test)
 	cute_check_sint_set(-1, in, CUTE_SINT_SET(0, 1, 2, 3, 5, 8));
 }
 
+CUTE_TEST(check_sint_var_in_set_fail_test)
+{
+	int chk = 4;
+
+	cute_check_sint_set(chk, in, CUTE_SINT_SET(0, 1, 2, 3, 5, 8));
+}
+
+CUTE_TEST(check_sint_in_set_ref_fail_test)
+{
+	int ref0 = 0;
+	int ref5 = 5;
+	struct cute_sint_set set = CUTE_SINT_SET(ref0, 1, 2, 3, ref5, 8);
+
+	cute_check_sint_set(5, in, set);
+	cute_check_sint_set(4, in, set);
+}
+
+CUTE_TEST(check_sint_var_in_set_ref_fail_test)
+{
+	int chk = 0;
+	int ref0 = 0;
+	int ref5 = 5;
+	struct cute_sint_set set = CUTE_SINT_SET(ref0, 1, 2, 3, ref5, 8);
+
+	cute_check_sint_set(chk, in, set);
+	chk = 10;
+	cute_check_sint_set(chk, in, set);
+}
+
 CUTE_TEST(check_sint_not_in_set_pass_test)
 {
 	int                        chk = 13;
@@ -304,6 +395,35 @@ CUTE_TEST(check_sint_not_in_set_pass_test)
 CUTE_TEST(check_sint_literal_not_in_set_fail_test)
 {
 	cute_check_sint_set(1, not_in, CUTE_SINT_SET(0, 1, 2, 3, 5, 8));
+}
+
+CUTE_TEST(check_sint_var_not_in_set_fail_test)
+{
+	int chk = 8;
+
+	cute_check_sint_set(chk, not_in, CUTE_SINT_SET(0, 1, 2, 3, 5, 8));
+}
+
+CUTE_TEST(check_sint_not_in_set_ref_fail_test)
+{
+	int ref0 = 0;
+	int ref5 = 5;
+	struct cute_sint_set set = CUTE_SINT_SET(ref0, 1, 2, 3, ref5, 8);
+
+	cute_check_sint_set(-1, not_in, set);
+	cute_check_sint_set(0, not_in, set);
+}
+
+CUTE_TEST(check_sint_var_not_in_set_ref_fail_test)
+{
+	int chk = 10;
+	int ref0 = 0;
+	int ref5 = 5;
+	struct cute_sint_set set = CUTE_SINT_SET(ref0, 1, 2, 3, ref5, 8);
+
+	cute_check_sint_set(chk, not_in, set);
+	chk = 5;
+	cute_check_sint_set(chk, not_in, set);
 }
 
 static CUTE_SUITE_DEFINE_TESTS(check_sint_tests) = {
@@ -344,14 +464,28 @@ static CUTE_SUITE_DEFINE_TESTS(check_sint_tests) = {
 	CUTE_REF(check_sint_var_lower_equal_ref_fail_test),
 
 	CUTE_REF(check_sint_in_range_pass_test),
+	CUTE_REF(check_sint_literal_in_range_fail_test),
+	CUTE_REF(check_sint_var_in_range_fail_test),
+	CUTE_REF(check_sint_in_range_ref_fail_test),
+	CUTE_REF(check_sint_var_in_range_ref_fail_test),
 
 	CUTE_REF(check_sint_not_in_range_pass_test),
+	CUTE_REF(check_sint_literal_not_in_range_fail_test),
+	CUTE_REF(check_sint_var_not_in_range_fail_test),
+	CUTE_REF(check_sint_not_in_range_ref_fail_test),
+	CUTE_REF(check_sint_var_not_in_range_ref_fail_test),
 
 	CUTE_REF(check_sint_in_set_pass_test),
 	CUTE_REF(check_sint_literal_in_set_fail_test),
+	CUTE_REF(check_sint_var_in_set_fail_test),
+	CUTE_REF(check_sint_in_set_ref_fail_test),
+	CUTE_REF(check_sint_var_in_set_ref_fail_test),
 
 	CUTE_REF(check_sint_not_in_set_pass_test),
 	CUTE_REF(check_sint_literal_not_in_set_fail_test),
+	CUTE_REF(check_sint_var_not_in_set_fail_test),
+	CUTE_REF(check_sint_not_in_set_ref_fail_test),
+	CUTE_REF(check_sint_var_not_in_set_ref_fail_test)
 };
 
 static CUTE_SUITE_DEFINE(check_sint_suite,
