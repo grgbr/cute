@@ -5,14 +5,22 @@ testdir="${TMPDIR:-/tmp}/cute-utest"
 
 hrule='..........................................................................'
 
-replace_time='
-/^@ / {
-	sub("^@ [^[:blank:]]+/test/", "@ test/", $0);
-	print $0;
+adjust='
+BEGIN {
+	stat=0
+}
+
+/^source: .*/ {
+	sub("^source: [^[:blank:]]+/test/", "source: test/", $0);
+}
+
+/^NAME[[:blank:]]+[#[:blank:](.A-Z]+/ {
+	stat=1
 }
 
 {
-	gsub("[ ]{0,3}[0-9]+.[0-9]{6}", "????.??????", $0);
+	if (stat == 1)
+		gsub("[ ]{0,3}[0-9]+.[0-9]{6}", "????.??????", $0);
 	print $0;
 }
 '
@@ -57,7 +65,7 @@ run_testcase()
 
 	trap "clean_testcase \"$case\"" HUP INT QUIT TERM
 
-	if ! awk "$replace_time" \
+	if ! awk "$adjust" \
 	          $libexecdir/$case-outref.txt \
 	          > $testdir/$case-outref.txt; then
 		fail "$case" "cannot generate output reference."
@@ -74,7 +82,7 @@ run_testcase()
 		return 1
 	fi
 
-	if ! awk "$replace_time" $testdir/$case-stdout.txt.tmp \
+	if ! awk "$adjust" $testdir/$case-stdout.txt.tmp \
 	     > $testdir/$case-stdout.txt; then
 		fail "$case" "cannot generate test case output."
 		return 1
@@ -110,5 +118,6 @@ run_testcase "simple-fixture-fail-utest" 1 || ret=1
 run_testcase "check-sint-utest" 1 || ret=1
 run_testcase "check-uint-utest" 1 || ret=1
 run_testcase "check-flt-utest" 1 || ret=1
+run_testcase "check-dbl-utest" 1 || ret=1
 
 exit $ret

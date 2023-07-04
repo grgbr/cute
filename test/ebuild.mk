@@ -75,6 +75,12 @@ check-flt-utest-cflags            := $(test-cflags)
 check-flt-utest-ldflags           := $(test-ldflags) -lcute
 check-flt-utest-path              := $(LIBEXECDIR)/cute/check-flt-utest
 
+bins                              += check-dbl-utest
+check-dbl-utest-objs              := check_dbl.o
+check-dbl-utest-cflags            := $(test-cflags)
+check-dbl-utest-ldflags           := $(test-ldflags) -lcute
+check-dbl-utest-path              := $(LIBEXECDIR)/cute/check-dbl-utest
+
 build: $(BUILDDIR)/cute-utest.sh
 
 $(BUILDDIR)/cute-utest.sh: $(SRCDIR)/cute-utest.sh | $(BUILDDIR)

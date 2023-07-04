@@ -1,4 +1,3 @@
-* test floats check API
 * implement str/ptr/mem support
 * refine tap and xml support to include complete detailed failure messages
 * mocking
@@ -10,3 +9,4 @@
 * sigaltstack
 * block signals upon malloc ? other calls ?
 * refine setup/teardown responsibilities (suite vs test) ?
+* refine stringification of check API arguments (prevent from expanding args)
