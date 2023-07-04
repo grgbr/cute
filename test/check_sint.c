@@ -259,6 +259,7 @@ CUTE_TEST(check_sint_literal_in_range_fail_test)
 CUTE_TEST(check_sint_var_in_range_fail_test)
 {
 	int chk = 11;
+
 	cute_check_sint_range(chk, in, CUTE_SINT_RANGE(1, 10));
 }
 
@@ -357,8 +358,8 @@ CUTE_TEST(check_sint_var_in_set_fail_test)
 
 CUTE_TEST(check_sint_in_set_ref_fail_test)
 {
-	int ref0 = 0;
-	int ref5 = 5;
+	int                  ref0 = 0;
+	int                  ref5 = 5;
 	struct cute_sint_set set = CUTE_SINT_SET(ref0, 1, 2, 3, ref5, 8);
 
 	cute_check_sint_set(5, in, set);
@@ -367,9 +368,9 @@ CUTE_TEST(check_sint_in_set_ref_fail_test)
 
 CUTE_TEST(check_sint_var_in_set_ref_fail_test)
 {
-	int chk = 0;
-	int ref0 = 0;
-	int ref5 = 5;
+	int                  chk = 0;
+	int                  ref0 = 0;
+	int                  ref5 = 5;
 	struct cute_sint_set set = CUTE_SINT_SET(ref0, 1, 2, 3, ref5, 8);
 
 	cute_check_sint_set(chk, in, set);
@@ -406,8 +407,8 @@ CUTE_TEST(check_sint_var_not_in_set_fail_test)
 
 CUTE_TEST(check_sint_not_in_set_ref_fail_test)
 {
-	int ref0 = 0;
-	int ref5 = 5;
+	int                  ref0 = 0;
+	int                  ref5 = 5;
 	struct cute_sint_set set = CUTE_SINT_SET(ref0, 1, 2, 3, ref5, 8);
 
 	cute_check_sint_set(-1, not_in, set);
@@ -416,9 +417,9 @@ CUTE_TEST(check_sint_not_in_set_ref_fail_test)
 
 CUTE_TEST(check_sint_var_not_in_set_ref_fail_test)
 {
-	int chk = 10;
-	int ref0 = 0;
-	int ref5 = 5;
+	int                  chk = 10;
+	int                  ref0 = 0;
+	int                  ref5 = 5;
 	struct cute_sint_set set = CUTE_SINT_SET(ref0, 1, 2, 3, ref5, 8);
 
 	cute_check_sint_set(chk, not_in, set);

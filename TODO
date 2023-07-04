@@ -1,5 +1,6 @@
-* complete number check API support (uint, float, range, set) as well as tests
+* test floats check API
 * implement str/ptr/mem support
+* refine tap and xml support to include complete detailed failure messages
 * mocking
 * get stdout / stderr output
 * tests

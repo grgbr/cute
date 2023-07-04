@@ -63,6 +63,12 @@ check-sint-utest-cflags           := $(sample-cflags)
 check-sint-utest-ldflags          := $(sample-ldflags) -lcute
 check-sint-utest-path             := $(LIBEXECDIR)/cute/check-sint-utest
 
+bins                              += check-uint-utest
+check-uint-utest-objs             := check_uint.o
+check-uint-utest-cflags           := $(sample-cflags)
+check-uint-utest-ldflags          := $(sample-ldflags) -lcute
+check-uint-utest-path             := $(LIBEXECDIR)/cute/check-uint-utest
+
 build: $(BUILDDIR)/cute-utest.sh
 
 $(BUILDDIR)/cute-utest.sh: $(SRCDIR)/cute-utest.sh | $(BUILDDIR)

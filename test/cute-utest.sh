@@ -108,5 +108,6 @@ run_testcase "simple-setup-error-utest" 1 || ret=1
 run_testcase "simple-teardown-fail-utest" 1 || ret=1
 run_testcase "simple-fixture-fail-utest" 1 || ret=1
 run_testcase "check-sint-utest" 1 || ret=1
+run_testcase "check-uint-utest" 1 || ret=1
 
 exit $ret

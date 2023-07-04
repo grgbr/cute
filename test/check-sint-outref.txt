@@ -193,34 +193,146 @@ caller: check_sint_var_lower_equal_ref_fail_test__cute_exec()
 wanted: chk <= ref
 found:  [0] > [-1]
 
+check_sint_suite::check_sint_literal_in_range_fail_test ........................................... fail
+issue:  exec failed
+reason: signed integer range check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:256
+caller: check_sint_literal_in_range_fail_test__cute_exec()
+wanted: 0 in range {1 ... 10}
+found:  [0] not in range {1 ... 10}
+
+check_sint_suite::check_sint_var_in_range_fail_test ............................................... fail
+issue:  exec failed
+reason: signed integer range check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:263
+caller: check_sint_var_in_range_fail_test__cute_exec()
+wanted: chk in range {1 ... 10}
+found:  [11] not in range {1 ... 10}
+
+check_sint_suite::check_sint_in_range_ref_fail_test ............................................... fail
+issue:  exec failed
+reason: signed integer range check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:272
+caller: check_sint_in_range_ref_fail_test__cute_exec()
+wanted: 0 in range {min_ref ... max_ref}
+found:  [0] not in range {5 ... 5}
+
+check_sint_suite::check_sint_var_in_range_ref_fail_test ........................................... fail
+issue:  exec failed
+reason: signed integer range check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:283
+caller: check_sint_var_in_range_ref_fail_test__cute_exec()
+wanted: chk in range {min_ref ... max_ref}
+found:  [6] not in range {5 ... 5}
+
+check_sint_suite::check_sint_literal_not_in_range_fail_test ....................................... fail
+issue:  exec failed
+reason: signed integer range check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:303
+caller: check_sint_literal_not_in_range_fail_test__cute_exec()
+wanted: 1 not in range {1 ... 10}
+found:  [1] in range {1 ... 10}
+
+check_sint_suite::check_sint_var_not_in_range_fail_test ........................................... fail
+issue:  exec failed
+reason: signed integer range check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:309
+caller: check_sint_var_not_in_range_fail_test__cute_exec()
+wanted: chk not in range {1 ... 10}
+found:  [10] in range {1 ... 10}
+
+check_sint_suite::check_sint_not_in_range_ref_fail_test ........................................... fail
+issue:  exec failed
+reason: signed integer range check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:318
+caller: check_sint_not_in_range_ref_fail_test__cute_exec()
+wanted: 5 not in range {min_ref ... max_ref}
+found:  [5] in range {1 ... 10}
+
+check_sint_suite::check_sint_var_not_in_range_ref_fail_test ....................................... fail
+issue:  exec failed
+reason: signed integer range check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:329
+caller: check_sint_var_not_in_range_ref_fail_test__cute_exec()
+wanted: chk not in range {min_ref ... max_ref}
+found:  [5] in range {5 ... 5}
+
 check_sint_suite::check_sint_literal_in_set_fail_test ............................................. fail
 issue:  exec failed
 reason: signed integer set check failed
-source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:286
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:349
 caller: check_sint_literal_in_set_fail_test__cute_exec()
 wanted: -1 in set {0, 1, 2, 3, 5, 8}
 found:  [-1] not in set {0, 1, 2, 3, 5, 8}
 
+check_sint_suite::check_sint_var_in_set_fail_test ................................................. fail
+issue:  exec failed
+reason: signed integer set check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:356
+caller: check_sint_var_in_set_fail_test__cute_exec()
+wanted: chk in set {0, 1, 2, 3, 5, 8}
+found:  [4] not in set {0, 1, 2, 3, 5, 8}
+
+check_sint_suite::check_sint_in_set_ref_fail_test ................................................. fail
+issue:  exec failed
+reason: signed integer set check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:366
+caller: check_sint_in_set_ref_fail_test__cute_exec()
+wanted: 4 in set {ref0, 1, 2, 3, ref5, 8}
+found:  [4] not in set {0, 1, 2, 3, 5, 8}
+
+check_sint_suite::check_sint_var_in_set_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: signed integer set check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:378
+caller: check_sint_var_in_set_ref_fail_test__cute_exec()
+wanted: chk in set {ref0, 1, 2, 3, ref5, 8}
+found:  [10] not in set {0, 1, 2, 3, 5, 8}
+
 check_sint_suite::check_sint_literal_not_in_set_fail_test ......................................... fail
 issue:  exec failed
 reason: signed integer set check failed
-source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:306
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:398
 caller: check_sint_literal_not_in_set_fail_test__cute_exec()
 wanted: 1 not in set {0, 1, 2, 3, 5, 8}
 found:  [1] in set {0, 1, 2, 3, 5, 8}
 
+check_sint_suite::check_sint_var_not_in_set_fail_test ............................................. fail
+issue:  exec failed
+reason: signed integer set check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:405
+caller: check_sint_var_not_in_set_fail_test__cute_exec()
+wanted: chk not in set {0, 1, 2, 3, 5, 8}
+found:  [8] in set {0, 1, 2, 3, 5, 8}
+
+check_sint_suite::check_sint_not_in_set_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: signed integer set check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:415
+caller: check_sint_not_in_set_ref_fail_test__cute_exec()
+wanted: 0 not in set {ref0, 1, 2, 3, ref5, 8}
+found:  [0] in set {0, 1, 2, 3, 5, 8}
+
+check_sint_suite::check_sint_var_not_in_set_ref_fail_test ......................................... fail
+issue:  exec failed
+reason: signed integer set check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:427
+caller: check_sint_var_not_in_set_ref_fail_test__cute_exec()
+wanted: chk not in set {ref0, 1, 2, 3, ref5, 8}
+found:  [5] in set {0, 1, 2, 3, 5, 8}
+
 check_sint_suite .................................................................................. fail
 issue:  exec failed
 reason: descendant(s) failed
-source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:361
+source: /home/grb/dev/proto/icsw/src/cute/test/check_sint.c:496
 
 NAME                                          STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-check_sint_suite                              fail    0.488053     10      0     26      0     36     36
-                                                                  27%     0%    72%     0%   100%
+check_sint_suite                              fail    1.505749     10      0     40      0     50     50
+                                                                  20%     0%    80%     0%   100%
 --------------------------------------------------------------------------------------------------------
-Total                                         fail    0.488053     10      0     26      0     36     36
-                                                                  27%     0%    72%     0%   100%
+Total                                         fail    1.505749     10      0     40      0     50     50
+                                                                  20%     0%    80%     0%   100%
 
                                   ###           SUMMARY            ###
-                                  ###  26/36 (72%) test(s) FAILED  ###
+                                  ###  40/50 (80%) test(s) FAILED  ###
 
