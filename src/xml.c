@@ -36,6 +36,47 @@ cute_xml_report_prolog(const struct cute_xml_report * report)
 }
 
 static void
+cute_xml_report_testcase_details(FILE *                  stdio,
+                                 int                     depth,
+                                 const char *            label,
+                                 const struct cute_run * run)
+{
+	cute_assert_intern(stdio);
+	cute_assert_intern(label);
+	cute_assert_intern(label[0]);
+	cute_assert_intern(run->what);
+	cute_assert_intern(run->why);
+
+	char * desc;
+
+	fprintf(stdio,
+	        ">\n"
+	        "%2$*1$s    <%3$s message=\"%4$s\">\n"
+	        "%2$*1$s        reason: %5$s\n",
+	        depth, "", label, run->what,
+	        run->why);
+
+	if (run->func)
+		fprintf(stdio,
+		        "%*s        caller: %s()\n",
+		        depth, "", run->func);
+
+	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_EXPECT_DESC);
+	if (desc) {
+		fprintf(stdio, "%*s        wanted: %s\n", depth, "", desc);
+		free(desc);
+	}
+
+	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_FOUND_DESC);
+	if (desc) {
+		fprintf(stdio, "%*s        found:  %s\n", depth, "", desc);
+		free(desc);
+	}
+
+	fprintf(stdio, "%*s    </%s>\n", depth, "", label);
+}
+
+static void
 cute_xml_report_testcase(const struct cute_xml_report * report,
                          const struct cute_run *        run)
 {
@@ -113,30 +154,12 @@ cute_xml_report_testcase(const struct cute_xml_report * report,
 		return;
 
 	case CUTE_SKIP_ISSUE:
-		fprintf(report->stdio,
-		        ">\n"
-		        "%2$*1$s    <skipped message=\"%3$s\">\n"
-		        "%2$*1$s        %4$s\n"
-		        "%2$*1$s    </skipped>\n",
-		        depth, "", run->what, run->why);
-		break;
-
 	case CUTE_FAIL_ISSUE:
-		fprintf(report->stdio,
-		        ">\n"
-		        "%2$*1$s    <failure message=\"%3$s\">\n"
-		        "%2$*1$s        %4$s\n"
-		        "%2$*1$s    </failure>\n",
-		        depth, "", run->what, run->why);
-		break;
-
 	case CUTE_EXCP_ISSUE:
-		fprintf(report->stdio,
-		        ">\n"
-		        "%2$*1$s    <error message=\"%3$s\">\n"
-		        "%2$*1$s        %4$s\n"
-		        "%2$*1$s    </error>\n",
-		        depth, "", run->what, run->why);
+		cute_xml_report_testcase_details(report->stdio,
+		                                 depth,
+		                                 status,
+		                                 run);
 		break;
 
 	default:

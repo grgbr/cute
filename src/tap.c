@@ -25,6 +25,123 @@ struct cute_tap_report {
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
 static void
+cute_tap_report_source_details(FILE *                  stdio,
+                               int                     depth,
+                               const struct cute_run * run)
+{
+	cute_assert_intern(stdio);
+	cute_assert_intern(run);
+	cute_assert_intern(run->file);
+	cute_assert_intern(run->line >= 0);
+
+	fprintf(stdio,
+	        "%2$*1$s  at:\n"
+	        "%2$*1$s    file: '%3$s'\n"
+	        "%2$*1$s    line: %4$d\n",
+	        depth, "",
+	        run->file,
+	        run->line);
+
+	if (run->func)
+		fprintf(stdio, "%*s    caller: '%s()'\n", depth, "", run->func);
+}
+
+static void
+cute_tap_report_realize_details(FILE *                  stdio,
+                                int                     depth,
+                                const struct cute_run * run)
+{
+	cute_assert_intern(stdio);
+	cute_assert_intern(run);
+
+	struct timespec diff;
+	ldiv_t          elapse;
+
+	/*
+	 * milliseconds: (diff.tv_sec * 1000L) + (diff.tv_nsec / 1000000L)
+	 * nanoseconds:  diff.tv_nsec % 1000000L
+	 */
+	cute_diff_tspec(&diff, &run->begin, &run->end);
+	elapse = ldiv(diff.tv_nsec, 1000000L);
+
+	fprintf(stdio,
+	        "%2$*1$s  duration_ms: %3$ld.%4$06ld\n"
+	        "%2$*1$s  ...\n",
+	        depth, "", (diff.tv_sec * 1000L) + elapse.quot, elapse.rem);
+}
+
+static void
+cute_tap_report_skip_test(FILE *                  stdio,
+                          int                     depth,
+                          const struct cute_run * run)
+{
+	cute_assert_intern(stdio);
+	cute_assert_intern(run);
+	cute_assert_intern(run->what);
+	cute_assert_intern(run->why);
+
+	char * desc;
+
+	fprintf(stdio,
+	        "%2$*1$sok %3$d - %4$s # SKIP %5$s: %6$s\n"
+	        "%2$*1$s  ---\n",
+	        depth, "", run->id + 1, run->base->name, run->what, run->why);
+
+	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_FOUND_DESC);
+	if (desc) {
+		fprintf(stdio, "%*s  message: '%s'\n", depth, "", desc);
+		free(desc);
+	}
+
+	cute_tap_report_source_details(stdio, depth, run);
+
+	cute_tap_report_realize_details(stdio, depth, run);
+}
+
+static void
+cute_tap_report_test_details(FILE *                  stdio,
+                             int                     depth,
+                             const char *            label,
+                             const struct cute_run * run)
+{
+	cute_assert_intern(stdio);
+	cute_assert_intern(label);
+	cute_assert_intern(label[0]);
+	cute_assert_intern(run);
+	cute_assert_intern(run->what);
+	cute_assert_intern(run->why);
+
+	char * desc;
+
+	fprintf(stdio,
+	        "%2$*1$snot ok %3$d - %4$s\n"
+	        "%2$*1$s  ---\n"
+	        "%2$*1$s  severity: %5$s\n"
+	        "%2$*1$s  message: '%6$s'\n"
+	        "%2$*1$s  reason: '%7$s'\n",
+	        depth, "", run->id + 1, run->base->name,
+	        label,
+	        run->what,
+	        run->why);
+
+	cute_tap_report_source_details(stdio, depth, run);
+
+	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_EXPECT_DESC);
+	if (desc) {
+		fprintf(stdio, "%*s  wanted: '%s'\n", depth, "", desc);
+		free(desc);
+	}
+
+	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_FOUND_DESC);
+	if (desc) {
+		fprintf(stdio, "%*s  found: '%s'\n", depth, "", desc);
+		free(desc);
+	}
+
+	cute_tap_report_realize_details(stdio, depth, run);
+}
+
+static void
 cute_tap_report_test_done(const struct cute_tap_report * report,
                           const struct cute_run *        run)
 {
@@ -33,50 +150,28 @@ cute_tap_report_test_done(const struct cute_tap_report * report,
 	switch (run->issue) {
 	case CUTE_PASS_ISSUE:
 		fprintf(report->stdio,
-		        "%*sok %d - %s\n",
-		        depth, "",
-		        run->id + 1,
-		        run->base->name);
+		        "%2$*1$sok %3$d - %4$s\n"
+		        "%2$*1$s  ---\n",
+		        depth, "", run->id + 1, run->base->name);
+		cute_tap_report_realize_details(report->stdio, depth, run);
 		break;
 
 	case CUTE_SKIP_ISSUE:
-		cute_assert_intern(run->what);
-		cute_assert_intern(run->why);
-
-		fprintf(report->stdio,
-		        "%2$*1$sok %3$d - %4$s # SKIP %5$s: %6$s\n"
-		        "%2$*1$s  ---\n"
-		        "%2$*1$s  at:\n"
-		        "%2$*1$s    file: %7$s\n"
-		        "%2$*1$s    line: %8$d\n"
-		        "%2$*1$s  ...\n",
-		        depth, "",
-		        run->id + 1, run->base->name, run->what, run->why,
-		        run->file,
-		        run->line);
+		cute_tap_report_skip_test(report->stdio, depth, run);
 		break;
 
 	case CUTE_FAIL_ISSUE:
-	case CUTE_EXCP_ISSUE:
-		cute_assert_intern(run->what);
-		cute_assert_intern(run->why);
+		cute_tap_report_test_details(report->stdio,
+		                             depth,
+		                             "failure",
+		                             run);
+		break;
 
-		fprintf(report->stdio,
-		        "%2$*1$snot ok %3$d - %4$s\n"
-		        "%2$*1$s  ---\n"
-		        "%2$*1$s  severity: fail\n"
-		        "%2$*1$s  message: \"%5$s\"\n"
-		        "%2$*1$s  reason: \"%6$s\"\n"
-		        "%2$*1$s  at:\n"
-		        "%2$*1$s    file: %7$s\n"
-		        "%2$*1$s    line: %8$d\n"
-		        "%2$*1$s  ...\n",
-		        depth, "",
-		        run->id + 1, run->base->name,
-		        run->what,
-		        run->why,
-		        run->file,
-		        run->line);
+	case CUTE_EXCP_ISSUE:
+		cute_tap_report_test_details(report->stdio,
+		                             depth,
+		                             "error",
+		                             run);
 		break;
 
 	case CUTE_OFF_ISSUE:
@@ -90,7 +185,6 @@ cute_tap_report_test_done(const struct cute_tap_report * report,
 	default:
 		__cute_unreachable();
 	}
-
 }
 
 static void
