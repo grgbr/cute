@@ -111,7 +111,6 @@ cute_assess_desc_expr(const struct cute_assess * assess,
 {
 	cute_assess_assert_intern(assess);
 	cute_assess_assert_desc_intern(desc);
-	cute_assert_intern(assess->check.expr || assess->expect.expr);
 
 	switch (desc) {
 	case CUTE_ASSESS_EXPECT_DESC:
