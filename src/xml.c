@@ -56,10 +56,10 @@ cute_xml_report_testcase_details(FILE *                  stdio,
 	        depth, "", label, run->what,
 	        run->why);
 
-	if (run->func)
+	if (run->assess.func)
 		fprintf(stdio,
 		        "%*s        caller: %s()\n",
-		        depth, "", run->func);
+		        depth, "", run->assess.func);
 
 	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_EXPECT_DESC);
 	if (desc) {
@@ -85,8 +85,8 @@ cute_xml_report_testcase(const struct cute_xml_report * report,
 	struct timespec diff;
 	char            str[CUTE_TIME_STRING_SZ];
 	const char *    tstamp;
-	const char *    file = run->file;
-	int             line = run->line;
+	const char *    file = run->assess.file;
+	int             line = run->assess.line;
 
 	cute_diff_tspec(&diff, &run->begin, &run->end);
 	tstamp = cute_time_string(str, &run->begin);

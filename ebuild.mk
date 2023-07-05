@@ -4,6 +4,7 @@ config-h    := $(PACKAGE)/config.h
 HEADERDIR   := $(CURDIR)/include
 headers     += $(PACKAGE)/cute.h
 headers     += $(PACKAGE)/check.h
+headers     += $(PACKAGE)/expect.h
 
 subdirs     := src
 

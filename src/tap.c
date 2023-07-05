@@ -31,19 +31,21 @@ cute_tap_report_source_details(FILE *                  stdio,
 {
 	cute_assert_intern(stdio);
 	cute_assert_intern(run);
-	cute_assert_intern(run->file);
-	cute_assert_intern(run->line >= 0);
+	cute_assert_intern(run->assess.file);
+	cute_assert_intern(run->assess.line >= 0);
 
 	fprintf(stdio,
 	        "%2$*1$s  at:\n"
 	        "%2$*1$s    file: '%3$s'\n"
 	        "%2$*1$s    line: %4$d\n",
 	        depth, "",
-	        run->file,
-	        run->line);
+	        run->assess.file,
+	        run->assess.line);
 
-	if (run->func)
-		fprintf(stdio, "%*s    caller: '%s()'\n", depth, "", run->func);
+	if (run->assess.func)
+		fprintf(stdio,
+		        "%*s    caller: '%s()'\n",
+		        depth, "", run->assess.func);
 }
 
 static void

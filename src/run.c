@@ -20,22 +20,15 @@ cute_break(enum cute_issue issue,
 	cute_assert(why[0]);
 	cute_run_assert_intern(cute_curr_run);
 
-	volatile struct cute_run * run = cute_curr_run;
+	struct cute_run * run = cute_curr_run;
 
 	switch (run->state) {
 	case CUTE_SETUP_STATE:
 		cute_assert((issue == CUTE_FAIL_ISSUE) ||
 		            (issue == CUTE_EXCP_ISSUE) ||
 		            (issue == CUTE_SKIP_ISSUE));
-		cute_assert_intern(!run->file);
-		cute_assert_intern(run->line == -1);
-		cute_assert_intern(!run->func);
 		cute_assert_intern(!run->what);
 		cute_assert_intern(!run->why);
-
-		run->file = file;
-		run->line = line;
-		run->func = func;
 
 		switch (issue) {
 		case CUTE_SKIP_ISSUE:
@@ -56,18 +49,13 @@ cute_break(enum cute_issue issue,
 
 		run->why = why;
 
+		cute_assess_update_source(&run->assess, file, line, func);
+
 		break;
 
 	case CUTE_EXEC_STATE:
-		cute_assert_intern(!run->file);
-		cute_assert_intern(run->line == -1);
-		cute_assert_intern(!run->func);
 		cute_assert_intern(!run->what);
 		cute_assert_intern(!run->why);
-
-		run->file = file;
-		run->line = line;
-		run->func = func;
 
 		switch (issue) {
 		case CUTE_SKIP_ISSUE:
@@ -88,6 +76,8 @@ cute_break(enum cute_issue issue,
 
 		run->why = why;
 
+		cute_assess_update_source(&run->assess, file, line, func);
+
 		break;
 
 	case CUTE_TEARDOWN_STATE:
@@ -95,17 +85,17 @@ cute_break(enum cute_issue issue,
 		cute_assert((issue == CUTE_FAIL_ISSUE) ||
 		            (issue == CUTE_EXCP_ISSUE));
 
-		if (!run->file &&
-		    (run->line < 0) &&
-		    !run->func &&
+		if (!cute_assess_has_source(&run->assess) &&
 		    !run->what &&
 		    !run->why) {
-			run->file = file;
-			run->line = line;
-			run->func = func;
 			run->what = (issue == CUTE_FAIL_ISSUE) ?
 			            "teardown failed" : "teardown crashed";
 			run->why = why;
+
+			cute_assess_update_source(&run->assess,
+			                          file,
+			                          line,
+			                          func);
 		}
 
 		break;
@@ -256,9 +246,11 @@ cute_run_active(struct cute_run * run)
 		}
 
 		run->issue = issue;
-		run->file = run->base->file;
-		run->line = run->base->line;
 		run->what = "cannot run setup";
+		cute_assess_update_source(&run->assess,
+		                          run->base->file,
+		                          run->base->line,
+		                          NULL);
 
 		return false;
 	}
@@ -273,9 +265,6 @@ cute_run_setup(struct cute_run * run)
 	cute_assert_intern((run->state == CUTE_INIT_STATE) ||
 	                   (run->state == CUTE_OFF_STATE));
 	cute_assert_intern(run->issue == CUTE_UNK_ISSUE);
-	cute_assert_intern(!run->file);
-	cute_assert_intern(run->line == -1);
-	cute_assert_intern(!run->func);
 	cute_assert_intern(!run->what);
 	cute_assert_intern(!run->why);
 
@@ -356,6 +345,8 @@ cute_run_done(struct cute_run * run)
 		run->issue = CUTE_PASS_ISSUE;
 
 	run->state = CUTE_DONE_STATE;
+	cute_expect_release();
+
 	cute_run_report(run, CUTE_DONE_EVT);
 
 	switch (run->issue) {
@@ -460,9 +451,6 @@ cute_run_init(struct cute_run *           run,
 	run->issue = CUTE_UNK_ISSUE;
 	run->begin.tv_sec = run->begin.tv_nsec = 0;
 	run->end.tv_sec = run->end.tv_nsec = 0;
-	run->file = NULL;
-	run->line = -1;
-	run->func = NULL;
 	run->what = NULL;
 	run->why = NULL;
 	cute_assess_build_null(&run->assess);

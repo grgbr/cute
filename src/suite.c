@@ -106,27 +106,26 @@ cute_suite_complete_run(struct cute_suite_run * run)
 	}
 
 	if (run->super.issue == CUTE_UNK_ISSUE) {
-		cute_assert_intern(!run->super.file);
-		cute_assert_intern(run->super.line == -1);
-		cute_assert_intern(!run->super.what);
-		cute_assert_intern(!run->super.why);
-
 		if (run->stats.skip == run->stats.exec) {
 			cute_assert_intern(!run->stats.fail);
 			cute_assert_intern(!run->stats.excp);
 
 			run->super.issue = CUTE_SKIP_ISSUE;
-			run->super.file = run->super.base->file;
-			run->super.line = run->super.base->line;
 			run->super.what = "exec skipped";
 			run->super.why = "all descendants skipped";
+			cute_assess_update_source(&run->super.assess,
+			                          run->super.base->file,
+			                          run->super.base->line,
+			                          NULL);
 		}
 		else if (run->stats.fail || run->stats.excp) {
 			run->super.issue = CUTE_FAIL_ISSUE;
-			run->super.file = run->super.base->file;
-			run->super.line = run->super.base->line;
 			run->super.what = "exec failed";
 			run->super.why = "descendant(s) failed";
+			cute_assess_update_source(&run->super.assess,
+			                          run->super.base->file,
+			                          run->super.base->line,
+			                          NULL);
 		}
 		else
 			run->super.issue = CUTE_PASS_ISSUE;

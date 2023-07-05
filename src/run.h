@@ -1,7 +1,7 @@
 #ifndef _CUTE_RUN_H
 #define _CUTE_RUN_H
 
-#include "assess.h"
+#include "expect.h"
 #include "report.h"
 #include "util.h"
 
@@ -69,24 +69,24 @@ struct cute_run_ops {
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
 struct cute_run {
-	const struct cute_run_ops * ops;
-	char *                      name;
-	struct cute_run *           parent;
-	int                         depth;
-	int                         id;
-	const struct cute_base *    base;
-	enum cute_state             state;
-	enum cute_issue             issue;
-	struct timespec             begin;
-	struct timespec             end;
-	const char *                file;
-	int                         line;
-	const char *                func;
-	const char *                what;
-	const char *                why;
-	struct cute_assess          assess;
-	//cute_run_desc_fn *          desc;
-	//struct cute_expect *        xpct;
+	const struct cute_run_ops *       ops;
+	char *                            name;
+	struct cute_run *                 parent;
+	int                               depth;
+	int                               id;
+	const struct cute_base *          base;
+	enum cute_state                   state;
+	enum cute_issue                   issue;
+	struct timespec                   begin;
+	struct timespec                   end;
+	const char *                      what;
+	const char *                      why;
+	union {
+		struct cute_assess        assess;
+		struct cute_expect        call;
+		struct cute_expect_parm   parm;
+		struct cute_expect_retval retval;
+	};
 };
 
 #define cute_run_assert(_run) \

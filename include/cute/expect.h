@@ -1,16 +1,18 @@
 #ifndef _CUTE_EXPECT_H
 #define _CUTE_EXPECT_H
 
+#include <cute/cute.h>
+
 /******************************************************************************
  * Mock call expectation handling
  ******************************************************************************/
 
 extern void
-cute_expect_push_call(const char * file, int line, const char * function)
+cute_expect_sched_call(const char * file, int line, const char * function)
 	__cute_export;
 
 #define cute_expect_call(_func) \
-	cute_expect_push_call(__FILE__, __LINE__, # _func)
+	cute_expect_sched_call(__FILE__, __LINE__, # _func)
 
 extern void
 cute_expect_check_call(const char * file, int line, const char * function)
@@ -19,24 +21,25 @@ cute_expect_check_call(const char * file, int line, const char * function)
 #define cute_mock_call() \
 	cute_expect_check_call(__FILE__, __LINE__, __func__)
 
+#if 0
 /******************************************************************************
  * Mock parameter expectation handling
  ******************************************************************************/
 
 extern void
-cute_expect_push_parm(const char * file,
-                      int          line,
-                      const char * function,
-                      const char * parameter,
-                      uintmax_t    value)
+cute_expect_sched_parm(const char * file,
+                       int          line,
+                       const char * function,
+                       const char * parameter,
+                       uintmax_t    value)
 	__cute_export;
 
 #define cute_expect_parm(_func, _parm) \
-	cute_expect_push_parm(__FILE__, \
-	                      __LINE__, \
-	                      # _func, \
-	                      # _parm, \
-	                      (uintmax_t)(_parm))
+	cute_expect_sched_parm(__FILE__, \
+	                       __LINE__, \
+	                       # _func, \
+	                       # _parm, \
+	                       (uintmax_t)(_parm))
 
 extern void
 cute_expect_check_parm(const char * file,
@@ -58,17 +61,17 @@ cute_expect_check_parm(const char * file,
  ******************************************************************************/
 
 extern void
-cute_expect_push_retval(const char * file,
-                        int          line,
-                        const char * function,
-                        uintmax_t    retval)
+cute_expect_sched_retval(const char * file,
+                         int          line,
+                         const char * function,
+                         uintmax_t    retval)
 	__cute_export;
 
 #define cute_expect_retval(_func, _retval) \
-	cute_expect_push_retval(__FILE__, \
-	                        __LINE__, \
-	                        # _func, \
-	                        (uintmax_t)(_retval))
+	cute_expect_sched_retval(__FILE__, \
+	                         __LINE__, \
+	                         # _func, \
+	                         (uintmax_t)(_retval))
 
 extern uintmax_t
 cute_expect_check_retval(const char * file, int line, const char * function)
@@ -76,5 +79,5 @@ cute_expect_check_retval(const char * file, int line, const char * function)
 
 #define cute_mock_retval() \
 	cute_expect_check_retval(__FILE__, __LINE__, __func__)
-
+#endif
 #endif /* _CUTE_EXPECT_H */

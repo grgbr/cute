@@ -26,17 +26,12 @@ libcute.so-objs    += \
 	shared/verb.o \
 	shared/report.o \
 	shared/cons.o \
+	shared/expect.o \
 	shared/check.o \
 	shared/run.o \
 	shared/assess.o \
 	shared/common.o \
 	shared/util.o
-#libcute.so-objs    += \
-#                      shared/report.o \
-#                      shared/suite.o \
-#                      shared/test.o \
-#                      shared/common.o \
-#                      shared/util.o
 libcute.so-cflags  := $(filter-out -fpie -fPIE,$(common-cflags)) -fpic
 libcute.so-ldflags := $(filter-out -fpie -fPIE,$(common-cflags)) \
                       -shared -fpic -Bsymbolic -Wl,-soname,libcute.so
@@ -54,17 +49,12 @@ libcute.a-objs     += \
 	static/verb.o \
 	static/report.o \
 	static/cons.o \
+	static/expect.o \
 	static/check.o \
 	static/run.o \
 	static/assess.o \
 	static/common.o \
 	static/util.o
-#libcute.a-objs     += \
-#                      static/report.o \
-#                      static/suite.o \
-#                      static/test.o \
-#                      static/common.o \
-#                      static/util.o
 libcute.a-cflags   := $(common-cflags)
 
 -include $(BUILDDIR)/static/*.d

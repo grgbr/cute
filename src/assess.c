@@ -23,60 +23,6 @@
  */
 #define BASE16_DIGITS(_bits) ((_bits + 3U) / 4U)
 
-#define cute_assess_assert_desc(_desc) \
-	cute_assert((_desc) >= 0); \
-	cute_assert((_desc) < CUTE_ASSESS_DESC_NR)
-
-#if defined(CONFIG_CUTE_INTERN_ASSERT)
-
-#define cute_assess_assert_desc_intern(_desc) \
-	cute_assess_assert_desc(_desc)
-
-#else  /* !defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-#define cute_assess_assert_desc_intern(_desc)
-
-#endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-#define cute_assess_assert_ops(_ops) \
-	cute_assert(_ops); \
-	cute_assert((_ops)->cmp); \
-	cute_assert((_ops)->desc); \
-	cute_assert((_ops)->release)
-
-#if defined(CONFIG_CUTE_INTERN_ASSERT)
-
-#define cute_assess_assert_ops_intern(_assess) \
-	cute_assess_assert_ops(_assess)
-
-#else  /* !defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-#define cute_assess_assert_ops_intern(_assess)
-
-#endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-#define cute_assess_assert(_assess) \
-	cute_assert(_assess); \
-	cute_assess_assert_ops((_assess)->ops)
-
-#if defined(CONFIG_CUTE_INTERN_ASSERT)
-
-#define cute_assess_assert_intern(_assess) \
-	cute_assess_assert(_assess)
-
-#else  /* !defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-#define cute_assess_assert_intern(_assess)
-
-#endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-static bool
-cute_assess_cmp_null(const struct cute_assess *      assess __cute_unused,
-                     const union cute_assess_value * check __cute_unused)
-{
-	return true;
-}
-
 static char *
 cute_assess_desc_null(const struct cute_assess * assess __cute_unused,
                       enum cute_assess_desc      desc __cute_unused)
@@ -84,11 +30,6 @@ cute_assess_desc_null(const struct cute_assess * assess __cute_unused,
 	cute_assess_assert_desc_intern(desc);
 
 	return NULL;
-}
-
-static void
-cute_assess_release_null(struct cute_assess * assess __cute_unused)
-{
 }
 
 static const struct cute_assess_ops cute_assess_null_ops = {
@@ -103,6 +44,9 @@ cute_assess_build_null(struct cute_assess * assess)
 	cute_assert_intern(assess);
 
 	assess->ops = &cute_assess_null_ops;
+	assess->file = NULL;
+	assess->line = -1;
+	assess->func = NULL;
 }
 
 static char *
@@ -1094,6 +1038,26 @@ CUTE_ASSESS_DEFINE_SET(flt,
 /******************************************************************************
  * Top-level generic assess handling
  ******************************************************************************/
+
+void
+cute_assess_update_source(struct cute_assess * assess,
+                          const char *         file,
+                          int                  line,
+                          const char *         function)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(file);
+	cute_assert_intern(file[0]);
+	cute_assert_intern(line >= 0);
+	cute_assert_intern(!function || function[0]);
+	cute_assert_intern(!assess->file);
+	cute_assert_intern(assess->line < 0);
+	cute_assert_intern(!assess->func);
+
+	assess->file = file;
+	assess->line = line;
+	assess->func = function;
+}
 
 bool
 cute_assess_check(struct cute_assess *            assess,

@@ -44,8 +44,6 @@ cute_test_exec_run(struct cute_run * run, const struct cute_test * test)
 	cute_test_assert_intern(test);
 	cute_assert_intern(run->state == CUTE_SETUP_STATE);
 	cute_assert_intern(run->issue == CUTE_UNK_ISSUE);
-	cute_assert_intern(!run->file);
-	cute_assert_intern(run->line == -1);
 	cute_assert_intern(!run->what);
 	cute_assert_intern(!run->why);
 
@@ -85,8 +83,6 @@ cute_test_oper_run(struct cute_run * run, enum cute_oper oper __cute_unused)
 	cute_assert_intern((run->state == CUTE_INIT_STATE) ||
 	                   (run->state == CUTE_OFF_STATE));
 	cute_assert_intern(run->issue == CUTE_UNK_ISSUE);
-	cute_assert_intern(!run->file);
-	cute_assert_intern(run->line == -1);
 	cute_assert_intern(!run->what);
 	cute_assert_intern(!run->why);
 	cute_assert_intern(oper == CUTE_COMPLETE_OPER);

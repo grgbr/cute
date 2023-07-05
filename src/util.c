@@ -12,7 +12,7 @@ cute_fail_assert(const char * message,
                  const char * func)
 {
 	fprintf(stderr,
-	        "%s: assertion failed @ %s:%d in %s(): '%s'.\n",
+	        "\n%s: assertion failed @ %s:%d in %s(): '%s'.\n",
 	        program_invocation_short_name,
 	        file,
 	        line,
