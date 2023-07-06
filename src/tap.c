@@ -34,18 +34,13 @@ cute_tap_report_source_details(FILE *                  stdio,
 	cute_assert_intern(run->assess.file);
 	cute_assert_intern(run->assess.line >= 0);
 
-	fprintf(stdio,
-	        "%2$*1$s  at:\n"
-	        "%2$*1$s    file: '%3$s'\n"
-	        "%2$*1$s    line: %4$d\n",
-	        depth, "",
-	        run->assess.file,
-	        run->assess.line);
+	struct cute_text_block * blk;
 
-	if (run->assess.func)
-		fprintf(stdio,
-		        "%*s    caller: '%s()'\n",
-		        depth, "", run->assess.func);
+	blk = cute_assess_desc(&run->assess);
+	if (blk) {
+		cute_report_printf_block(blk, depth + 2, stdio);
+		cute_text_destroy(blk);
+	}
 }
 
 static void
@@ -82,18 +77,10 @@ cute_tap_report_skip_test(FILE *                  stdio,
 	cute_assert_intern(run->what);
 	cute_assert_intern(run->why);
 
-	char * desc;
-
 	fprintf(stdio,
 	        "%2$*1$sok %3$d - %4$s # SKIP %5$s: %6$s\n"
 	        "%2$*1$s  ---\n",
 	        depth, "", run->id + 1, run->base->name, run->what, run->why);
-
-	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_FOUND_DESC);
-	if (desc) {
-		fprintf(stdio, "%*s  message: '%s'\n", depth, "", desc);
-		free(desc);
-	}
 
 	cute_tap_report_source_details(stdio, depth, run);
 
@@ -113,32 +100,18 @@ cute_tap_report_test_details(FILE *                  stdio,
 	cute_assert_intern(run->what);
 	cute_assert_intern(run->why);
 
-	char * desc;
-
 	fprintf(stdio,
 	        "%2$*1$snot ok %3$d - %4$s\n"
 	        "%2$*1$s  ---\n"
 	        "%2$*1$s  severity: %5$s\n"
-	        "%2$*1$s  message: '%6$s'\n"
-	        "%2$*1$s  reason: '%7$s'\n",
+	        "%2$*1$s  message: %6$s\n"
+	        "%2$*1$s  reason: %7$s\n",
 	        depth, "", run->id + 1, run->base->name,
 	        label,
 	        run->what,
 	        run->why);
 
 	cute_tap_report_source_details(stdio, depth, run);
-
-	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_EXPECT_DESC);
-	if (desc) {
-		fprintf(stdio, "%*s  wanted: '%s'\n", depth, "", desc);
-		free(desc);
-	}
-
-	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_FOUND_DESC);
-	if (desc) {
-		fprintf(stdio, "%*s  found: '%s'\n", depth, "", desc);
-		free(desc);
-	}
 
 	cute_tap_report_realize_details(stdio, depth, run);
 }

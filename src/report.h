@@ -150,6 +150,11 @@ struct cute_report {
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
+extern void
+cute_report_printf_block(const struct cute_text_block * block,
+                         int                            indent,
+                         FILE *                         stdio);
+
 extern unsigned int
 cute_report_progress(void);
 

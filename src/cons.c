@@ -96,45 +96,8 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 	    (run->issue == CUTE_EXCP_ISSUE)) {
 		cute_assert_intern(run->what);
 		cute_assert_intern(run->why);
+		struct cute_text_block * blk;
 
-		char * desc;
-
-#error FIXME: save error at cute_expect_release() time \
-              make sure expectations are not released twice at \
-              cute_expect_claim_inval_type(), cute_expect_claim_inval_call() \
-              and cute_expect_claim_missing() time \
-              make cute_assess_desc() function return a single block of text \
-              (remove CUTE_ASSESS_EXPECT_DESC and CUTE_ASSESS_FOUND_DESC \
-               distinctions...)
-
-#if 0
-		fprintf(report->stdio,
-		        "%s"
-		        "issue:  %s\n"
-		        "reason: %s\n"
-		        "source: %s:%d\n",
-		        report->term.gray,
-		        run->what,
-		        run->why,
-		        run->assess.file, run->assess.line);
-
-		if (run->assess.func)
-			fprintf(report->stdio,
-			        "caller: %s()\n",
-			        run->assess.func);
-
-		desc = cute_assess_desc(&run->assess, CUTE_ASSESS_EXPECT_DESC);
-		if (desc) {
-			fprintf(report->stdio, "wanted: %s\n", desc);
-			free(desc);
-		}
-
-		desc = cute_assess_desc(&run->assess, CUTE_ASSESS_FOUND_DESC);
-		if (desc) {
-			fprintf(report->stdio, "found:  %s\n", desc);
-			free(desc);
-		}
-#else
 		fprintf(report->stdio,
 		        "%s"
 		        "issue:  %s\n"
@@ -143,18 +106,11 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 		        run->what,
 		        run->why);
 
-		desc = cute_assess_desc(&run->assess, CUTE_ASSESS_EXPECT_DESC);
-		if (desc) {
-			fprintf(report->stdio, "%s\n", desc);
-			free(desc);
+		blk = cute_assess_desc(&run->assess);
+		if (blk) {
+			cute_report_printf_block(blk, 0, report->stdio);
+			cute_text_destroy(blk);
 		}
-
-		desc = cute_assess_desc(&run->assess, CUTE_ASSESS_FOUND_DESC);
-		if (desc) {
-			fprintf(report->stdio, "%s\n", desc);
-			free(desc);
-		}
-#endif
 
 		fputs(report->term.regular, report->stdio);
 	}

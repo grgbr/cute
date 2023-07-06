@@ -47,33 +47,22 @@ cute_xml_report_testcase_details(FILE *                  stdio,
 	cute_assert_intern(run->what);
 	cute_assert_intern(run->why);
 
-	char * desc;
+	struct cute_text_block * blk;
 
 	fprintf(stdio,
 	        ">\n"
-	        "%2$*1$s    <%3$s message=\"%4$s\">\n"
-	        "%2$*1$s        reason: %5$s\n",
-	        depth, "", label, run->what,
+	        "%2$*1$s<%3$s message=\"%4$s\">\n"
+	        "%2$*1$s    reason: %5$s\n",
+	        depth + 4, "", label, run->what,
 	        run->why);
 
-	if (run->assess.func)
-		fprintf(stdio,
-		        "%*s        caller: %s()\n",
-		        depth, "", run->assess.func);
-
-	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_EXPECT_DESC);
-	if (desc) {
-		fprintf(stdio, "%*s        wanted: %s\n", depth, "", desc);
-		free(desc);
+	blk = cute_assess_desc(&run->assess);
+	if (blk) {
+		cute_report_printf_block(blk, depth + 8, stdio);
+		cute_text_destroy(blk);
 	}
 
-	desc = cute_assess_desc(&run->assess, CUTE_ASSESS_FOUND_DESC);
-	if (desc) {
-		fprintf(stdio, "%*s        found:  %s\n", depth, "", desc);
-		free(desc);
-	}
-
-	fprintf(stdio, "%*s    </%s>\n", depth, "", label);
+	fprintf(stdio, "%*s</%s>\n", depth + 4, "", label);
 }
 
 static void
@@ -85,16 +74,12 @@ cute_xml_report_testcase(const struct cute_xml_report * report,
 	struct timespec diff;
 	char            str[CUTE_TIME_STRING_SZ];
 	const char *    tstamp;
-	const char *    file = run->assess.file;
-	int             line = run->assess.line;
 
 	cute_diff_tspec(&diff, &run->begin, &run->end);
 	tstamp = cute_time_string(str, &run->begin);
 
 	switch (run->issue) {
 	case CUTE_PASS_ISSUE:
-		file = run->base->file;
-		line = run->base->line;
 		break;
 
 	case CUTE_SKIP_ISSUE:
@@ -140,12 +125,13 @@ cute_xml_report_testcase(const struct cute_xml_report * report,
 		        "%*s          timestamp=\"%s+00:00\"\n",
 		        depth, "",
 		        tstamp);
+
 	fprintf(report->stdio,
 	        "%2$*1$s          file=\"%3$s\"\n"
 	        "%2$*1$s          line=\"%4$d\"",
 	        depth, "",
-	        file,
-	        line);
+	        run->base->file,
+	        run->base->line);
 
 	switch (run->issue) {
 	case CUTE_PASS_ISSUE:
@@ -220,9 +206,13 @@ cute_xml_report_begin_testsuite(const struct cute_xml_report * report,
 		        tstamp);
 
 	fprintf(report->stdio,
-	        "%*s           hostname=\"%s\">\n",
+	        "%2$*1$s           hostname=\"%3$s\"\n"
+	        "%2$*1$s           file=\"%4$s\"\n"
+	        "%2$*1$s           line=\"%5$d\">\n",
 	        depth, "",
-	        cute_hostname);
+	        cute_hostname,
+	        suite->super.base->file,
+	        suite->super.base->line);
 }
 
 static void

@@ -81,6 +81,42 @@ extern char *
 cute_asprintf(const char * format, ...) __attribute__((format(printf, 1, 2)));
 
 /******************************************************************************
+ * Text block utility
+ ******************************************************************************/
+
+struct cute_text_atom {
+	char * str;
+	bool   own;
+};
+
+struct cute_text_block {
+	unsigned int          count;
+	unsigned int          nr;
+	struct cute_text_atom atoms[];
+};
+
+#define cute_text_foreach(_blk, _indx, _str) \
+	for (_indx = 0, _str = (_blk)->atoms[_indx].str; \
+	     _indx < (_blk)->count; \
+	     _str = (_blk)->atoms[++_indx].str)
+
+#define CUTE_TEXT_YIELD (true)
+#define CUTE_TEXT_LEASE (false)
+
+extern void
+cute_text_enroll(struct cute_text_block * block, char * string, bool own);
+
+extern void
+cute_text_asprintf(struct cute_text_block * block, const char * format, ...)
+	__attribute__((format(printf, 2, 3)));
+
+extern struct cute_text_block *
+cute_text_create(unsigned int nr);
+
+extern void
+cute_text_destroy(struct cute_text_block * block);
+
+/******************************************************************************
  * POSIX extended regular expressions
  ******************************************************************************/
 

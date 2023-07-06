@@ -9,32 +9,11 @@
 struct cute_assess;
 union cute_assess_value;
 
-enum cute_assess_desc {
-	CUTE_ASSESS_EXPECT_DESC = 0,
-	CUTE_ASSESS_FOUND_DESC,
-	CUTE_ASSESS_DESC_NR
-};
-
-#define cute_assess_assert_desc(_desc) \
-	cute_assert((_desc) >= 0); \
-	cute_assert((_desc) < CUTE_ASSESS_DESC_NR)
-
-#if defined(CONFIG_CUTE_INTERN_ASSERT)
-
-#define cute_assess_assert_desc_intern(_desc) \
-	cute_assess_assert_desc(_desc)
-
-#else  /* !defined(CONFIG_CUTE_INTERN_ASSERT) */
-
-#define cute_assess_assert_desc_intern(_desc)
-
-#endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
-
 typedef bool (cute_assess_cmp_fn)(const struct cute_assess *      assess,
                                   const union cute_assess_value * value);
 
-typedef char * (cute_assess_desc_fn)(const struct cute_assess * assess,
-                                     enum cute_assess_desc      desc);
+typedef struct cute_text_block * (cute_assess_desc_fn)
+                                 (const struct cute_assess * assess);
 
 typedef void (cute_assess_release_fn)(struct cute_assess * assess);
 
@@ -382,8 +361,8 @@ extern bool
 cute_assess_check(struct cute_assess *            assess,
                   const union cute_assess_value * value);
 
-extern char *
-cute_assess_desc(const struct cute_assess * assess, enum cute_assess_desc desc);
+extern struct cute_text_block *
+cute_assess_desc(const struct cute_assess * assess);
 
 extern void
 cute_assess_release(struct cute_assess * assess);

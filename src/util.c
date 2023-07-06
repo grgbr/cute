@@ -124,43 +124,53 @@ cute_toupper(const char * string, size_t max_size)
 	return up;
 }
 
-char *
-cute_asprintf(const char * format, ...)
+static char * __attribute__((format(printf, 1, 0)))
+cute_vasprintf(const char * format, va_list args)
 {
-	va_list args;
-	char *  res;
+	va_list tmp;
+	char *  str;
 	int     len;
 
+	va_copy(tmp, args);
+
 #define CUTE_ASPRINTF_ERROR_MSG  "cannot create formatted string"
+	str = cute_malloc(sizeof(CUTE_ASPRINTF_ERROR_MSG));
 
-	res = cute_malloc(sizeof(CUTE_ASPRINTF_ERROR_MSG));
-
-	va_start(args, format);
-	len = vsnprintf(res, sizeof(CUTE_ASPRINTF_ERROR_MSG), format, args);
-	va_end(args);
+	len = vsnprintf(str, sizeof(CUTE_ASPRINTF_ERROR_MSG), format, tmp);
 	if (len < 0)
 		goto err;
 
 	if (len < (int)sizeof(CUTE_ASPRINTF_ERROR_MSG))
-		return res;
+		return str;
 
-	cute_free(res);
-	res = cute_malloc((size_t)len + 1);
+	cute_free(str);
+	str = cute_malloc((size_t)len + 1);
 
-	va_start(args, format);
-	len = vsnprintf(res, (size_t)len + 1, format, args);
-	va_end(args);
+	len = vsnprintf(str, (size_t)len + 1, format, args);
 	if (len < 0)
 		goto err;
 
-	return res;
+	return str;
 
 err:
-	memcpy(res,
+	memcpy(str,
 	       CUTE_ASPRINTF_ERROR_MSG,
 	       sizeof(CUTE_ASPRINTF_ERROR_MSG));
 
-	return res;
+	return str;
+}
+
+char *
+cute_asprintf(const char * format, ...)
+{
+	va_list args;
+	char *  str;
+
+	va_start(args, format);
+	str = cute_vasprintf(format, args);
+	va_end(args);
+
+	return str;
 }
 
 char *
@@ -176,6 +186,80 @@ cute_dup(const char * string)
 	memcpy(str, string, len + 1);
 
 	return str;
+}
+
+/******************************************************************************
+ * Text block utility
+ ******************************************************************************/
+
+void
+cute_text_enroll(struct cute_text_block * block, char * string, bool own)
+{
+	cute_assert_intern(block);
+	cute_assert_intern(block->nr);
+	cute_assert_intern(block->count < block->nr);
+	cute_assert_intern(string);
+	cute_assert_intern(string[0]);
+
+	struct cute_text_atom * atom = &block->atoms[block->count++];
+
+	atom->str = string;
+	atom->own = own;
+}
+
+void
+cute_text_asprintf(struct cute_text_block * block, const char * format, ...)
+{
+	cute_assert_intern(block);
+	cute_assert_intern(block->nr);
+	cute_assert_intern(block->count < block->nr);
+	cute_assert_intern(format);
+	cute_assert_intern(format[0]);
+
+	struct cute_text_atom * atom = &block->atoms[block->count++];
+	va_list                 args;
+	char *                  str;
+
+	va_start(args, format);
+	str = cute_vasprintf(format, args);
+	va_end(args);
+
+	atom->str = str;
+	atom->own = true;
+}
+
+struct cute_text_block *
+cute_text_create(unsigned int nr)
+{
+	cute_assert_intern(nr);
+
+	struct cute_text_block * blk;
+
+	blk = cute_malloc(sizeof(*blk) + (nr * sizeof(blk->atoms[0])));
+	blk->count = 0;
+	blk->nr = nr;
+
+	return blk;
+}
+
+void
+cute_text_destroy(struct cute_text_block * block)
+{
+	cute_assert_intern(block);
+	cute_assert_intern(block);
+	cute_assert_intern(block->nr);
+	cute_assert_intern(block->count <= block->nr);
+
+	unsigned int cnt;
+
+	for (cnt = 0; cnt < block->nr; cnt++) {
+		const struct cute_text_atom * atom = &block->atoms[cnt];
+
+		if (atom->own)
+			cute_free(atom->str);
+	}
+
+	cute_free(block);
 }
 
 /******************************************************************************

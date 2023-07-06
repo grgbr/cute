@@ -23,12 +23,9 @@
  */
 #define BASE16_DIGITS(_bits) ((_bits + 3U) / 4U)
 
-static char *
-cute_assess_desc_null(const struct cute_assess * assess __cute_unused,
-                      enum cute_assess_desc      desc __cute_unused)
+static struct cute_text_block *
+cute_assess_desc_null(const struct cute_assess * assess __cute_unused)
 {
-	cute_assess_assert_desc_intern(desc);
-
 	return NULL;
 }
 
@@ -49,25 +46,47 @@ cute_assess_build_null(struct cute_assess * assess)
 	assess->func = NULL;
 }
 
-static char *
-cute_assess_desc_expr(const struct cute_assess * assess,
-                      enum cute_assess_desc      desc)
+static struct cute_text_block *
+cute_assess_desc_source(const struct cute_assess * assess, unsigned int nr)
 {
 	cute_assess_assert_intern(assess);
-	cute_assess_assert_desc_intern(desc);
+	cute_assert_intern(assess->file);
+	cute_assert_intern(assess->file[0]);
+	cute_assert_intern(assess->line >= 0);
+	cute_assert_intern(!assess->func || assess->func[0]);
+	cute_assert_intern(nr >= 2);
 
-	switch (desc) {
-	case CUTE_ASSESS_EXPECT_DESC:
-		return assess->expect.expr ? cute_dup(assess->expect.expr)
-		                           : NULL;
+	struct cute_text_block * blk;
 
-	case CUTE_ASSESS_FOUND_DESC:
-		return assess->check.expr ? cute_dup(assess->check.expr)
-		                          : NULL;
+	blk = cute_text_create(nr);
 
-	default:
-		__cute_unreachable();
-	}
+	cute_text_asprintf(blk,         "source: %s:%d", assess->file,
+	                                                 assess->line);
+
+	if (assess->func)
+		cute_text_asprintf(blk, "caller: %s()", assess->func);
+
+	return blk;
+}
+
+static struct cute_text_block *
+cute_assess_desc_expr(const struct cute_assess * assess)
+{
+	cute_assess_assert_intern(assess);
+
+	unsigned int             nr = (unsigned int)!!assess->expect.expr +
+	                              (unsigned int)!!assess->check.expr +
+	                              (unsigned int)!!assess->func;
+	struct cute_text_block * blk;
+
+	blk = cute_assess_desc_source(assess, 1 + nr);
+
+	if (assess->expect.expr)
+		cute_text_asprintf(blk, "detail: %s", assess->expect.expr);
+	else if (assess->check.expr)
+		cute_text_asprintf(blk, "detail: %s", assess->check.expr);
+
+	return blk;
 }
 
 static const struct cute_assess_ops cute_assess_expr_ops = {
@@ -90,12 +109,15 @@ cute_assess_build_expr(struct cute_assess * assess,
 	assess->expect.expr = expect;
 }
 
-static char *
-cute_assess_desc_excp(const struct cute_assess * assess,
-                      enum cute_assess_desc      desc)
+static struct cute_text_block *
+cute_assess_desc_excp(const struct cute_assess * assess)
 {
 	cute_assess_assert_intern(assess);
-	cute_assess_assert_desc_intern(desc);
+	cute_assert_intern(assess->file);
+	cute_assert_intern(assess->file[0]);
+	cute_assert_intern(assess->line >= 0);
+	cute_assert_intern(!assess->func || assess->func[0]);
+	cute_assert_intern((int)assess->check.sint.value);
 	cute_assert_intern((int)assess->check.sint.value);
 	cute_assert_intern((int)assess->check.sint.value != SIGKILL);
 	cute_assert_intern((int)assess->check.sint.value != SIGSTOP);
@@ -103,18 +125,15 @@ cute_assess_desc_excp(const struct cute_assess * assess,
 	                   ((int)assess->check.sint.value >= SIGRTMIN &&
 	                    (int)assess->check.sint.value <= SIGRTMAX));
 
-	switch (desc) {
-	case CUTE_ASSESS_EXPECT_DESC:
-		return NULL;
+	struct cute_text_block * blk;
+	int                      sig = (int)assess->check.sint.value;
 
-	case CUTE_ASSESS_FOUND_DESC:
-		return cute_asprintf("%s (%d)",
-		                     strsignal((int)assess->check.sint.value),
-		                     (int)assess->check.sint.value);
+	blk = cute_text_create(2);
 
-	default:
-		__cute_unreachable();
-	}
+	cute_text_asprintf(blk, "source: %s:%d", assess->file, assess->line);
+	cute_text_asprintf(blk, "except: %s (%d)", strsignal(sig), sig);
+
+	return blk;
 }
 
 static const struct cute_assess_ops cute_assess_excp_ops = {
@@ -141,9 +160,8 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
  ******************************************************************************/
 
 #define CUTE_ASSESS_DESC_TYPED_VALUE(_name, _type, _format) \
-	static char * \
+	static struct cute_text_block * \
 	_name(const struct cute_assess * assess, \
-	      enum cute_assess_desc      desc, \
 	      const char *               oper, \
 	      const char *               inv) \
 	{ \
@@ -152,30 +170,30 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
 		cute_assert_intern(assess->check._type.expr[0]); \
 		cute_assert_intern(assess->expect._type.scal.expr); \
 		cute_assert_intern(assess->expect._type.scal.expr[0]); \
-		cute_assess_assert_desc_intern(desc); \
 		cute_assert_intern(oper); \
 		cute_assert_intern(oper[0]); \
 		cute_assert_intern(inv); \
 		cute_assert_intern(inv[0]); \
 		\
-		switch (desc) { \
-		case CUTE_ASSESS_EXPECT_DESC: \
-			return cute_asprintf( \
-				"%s %s %s", \
-				assess->check._type.expr, \
-				oper, \
-				assess->expect._type.scal.expr); \
+		struct cute_text_block * blk; \
 		\
-		case CUTE_ASSESS_FOUND_DESC: \
-			return cute_asprintf( \
-				"[" _format "] %s [" _format "]", \
-				assess->check._type.value, \
-				inv, \
-				assess->expect._type.scal.value); \
+		blk = cute_assess_desc_source(assess, \
+		                              3 + \
+		                              (unsigned int)!!assess->func); \
 		\
-		default: \
-			__cute_unreachable(); \
-		} \
+		cute_text_asprintf(blk, \
+		                   "wanted: %s %s %s", \
+		                   assess->check._type.expr, \
+		                   oper, \
+		                   assess->expect._type.scal.expr); \
+		\
+		cute_text_asprintf(blk, \
+		                   "found:  [" _format "] %s [" _format "]", \
+		                   assess->check._type.value, \
+		                   inv, \
+		                   assess->expect._type.scal.value); \
+		\
+		return blk; \
 	}
 
 #define CUTE_ASSESS_BUILD_TYPED_VALUE(_name, _type) \
@@ -232,12 +250,10 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
 	}
 
 #define CUTE_ASSESS_DESC_VALUE(_name, _type, _op, _inv) \
-	static char * \
-	_name(const struct cute_assess * assess, \
-	      enum cute_assess_desc      desc) \
+	static struct cute_text_block * \
+	_name(const struct cute_assess * assess) \
 	{ \
 		return cute_assess_desc_ ## _type ## _value(assess, \
-		                                            desc, \
 		                                            # _op, \
 		                                            # _inv); \
 	}
@@ -282,9 +298,8 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
  ******************************************************************************/
 
 #define CUTE_ASSESS_DESC_TYPED_RANGE(_name, _type, _format) \
-	static char * \
+	static struct cute_text_block * \
 	_name(const struct cute_assess * assess, \
-	      enum cute_assess_desc      desc, \
 	      const char *               oper, \
 	      const char *               inv) \
 	{ \
@@ -295,31 +310,33 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
 		cute_assert_intern(assess->expect._type.range.expr[0]); \
 		cute_assert_intern(assess->expect._type.range.min <= \
 		                   assess->expect._type.range.max); \
-		cute_assess_assert_desc_intern(desc); \
 		cute_assert_intern(oper); \
 		cute_assert_intern(oper[0]); \
 		cute_assert_intern(inv); \
 		cute_assert_intern(inv[0]); \
 		\
-		switch (desc) { \
-		case CUTE_ASSESS_EXPECT_DESC: \
-			return cute_asprintf("%s %s range %s", \
-			                     assess->check._type.expr, \
-			                     oper, \
-			                     assess->expect._type.range.expr); \
+		struct cute_text_block * blk; \
 		\
-		case CUTE_ASSESS_FOUND_DESC: \
-			return cute_asprintf("[" _format "] %s " \
-			                     "range {" _format \
-			                     " ... " _format "}", \
-			                     assess->check._type.value, \
-			                     inv, \
-			                     assess->expect._type.range.min, \
-			                     assess->expect._type.range.max); \
+		blk = cute_assess_desc_source(assess, \
+		                              3 + \
+		                              (unsigned int)!!assess->func); \
 		\
-		default: \
-			__cute_unreachable(); \
-		} \
+		cute_text_asprintf(blk, \
+		                   "wanted: %s %s range %s", \
+		                   assess->check._type.expr, \
+		                   oper, \
+		                   assess->expect._type.range.expr); \
+		\
+		cute_text_asprintf(blk, \
+		                   "found:  [" _format "] %s " \
+		                   "range {" _format \
+		                   " ... " _format "}", \
+		                   assess->check._type.value, \
+		                   inv, \
+		                   assess->expect._type.range.min, \
+		                   assess->expect._type.range.max); \
+		\
+		return blk; \
 	}
 
 #define CUTE_ASSESS_BUILD_TYPED_RANGE(_name, _type) \
@@ -370,12 +387,10 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
 	                        _type)
 
 #define CUTE_ASSESS_DESC_RANGE(_name, _type, _op, _inv) \
-	static char * \
-	_name(const struct cute_assess * assess, \
-	      enum cute_assess_desc      desc) \
+	static struct cute_text_block * \
+	_name(const struct cute_assess * assess) \
 	{ \
 		return cute_assess_desc_ ## _type ## _range(assess, \
-		                                            desc, \
 		                                            _op, \
 		                                            _inv); \
 	}
@@ -411,9 +426,8 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
  ******************************************************************************/
 
 #define CUTE_ASSESS_DESC_TYPED_SET(_name, _type, _build_desc) \
-	static char * \
+	static struct cute_text_block * \
 	_name(const struct cute_assess * assess, \
-	      enum cute_assess_desc      desc, \
 	      const char *               oper, \
 	      const char *               inv) \
 	{ \
@@ -422,27 +436,27 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
 		cute_assert_intern(assess->check._type.expr[0]); \
 		cute_assert_intern(assess->expect._type.set.expr); \
 		cute_assert_intern(assess->expect._type.set.expr[0]); \
-		cute_assess_assert_desc_intern(desc); \
 		cute_assert_intern(oper); \
 		cute_assert_intern(oper[0]); \
 		cute_assert_intern(inv); \
 		cute_assert_intern(inv[0]); \
 		\
-		switch (desc) { \
-		case CUTE_ASSESS_EXPECT_DESC: \
-			return cute_asprintf("%s %s set %s", \
-			                     assess->check._type.expr, \
-			                     oper, \
-			                     assess->expect._type.set.expr); \
+		struct cute_text_block * blk; \
 		\
-		case CUTE_ASSESS_FOUND_DESC: \
-			return _build_desc(assess->check._type.value, \
-			                   inv, \
-			                   &assess->expect._type.set); \
+		blk = cute_assess_desc_source(assess, \
+		                              3 + \
+		                              (unsigned int)!!assess->func); \
 		\
-		default: \
-			__cute_unreachable(); \
-		} \
+		cute_text_asprintf(blk, \
+		                   "wanted: %s %s set %s", \
+		                   assess->check._type.expr, \
+		                   oper, \
+		                   assess->expect._type.set.expr); \
+		\
+		return _build_desc(blk, \
+		                   assess->check._type.value, \
+		                   inv, \
+		                   &assess->expect._type.set); \
 	}
 
 #define CUTE_ASSESS_RELEASE_TYPED_SET(_name, _type) \
@@ -522,12 +536,10 @@ _Pragma("GCC diagnostic pop") \
 	CUTE_ASSESS_TYPED_SET(cute_assess_ ## _type ## _set, _type)
 
 #define CUTE_ASSESS_DESC_SET(_name, _type, _op_str, _inv_str) \
-	static char * \
-	_name(const struct cute_assess * assess, \
-	      enum cute_assess_desc      desc) \
+	static struct cute_text_block * \
+	_name(const struct cute_assess * assess) \
 	{ \
 		return cute_assess_desc_ ## _type ## _set(assess, \
-		                                          desc, \
 		                                          _op_str, \
 		                                          _inv_str); \
 	}
@@ -645,26 +657,30 @@ cute_assess_build_sint_item_str(const intmax_t * items, unsigned int count)
 	return str;
 }
 
-static char *
-cute_assess_build_sint_set_desc(intmax_t                     value,
+static struct cute_text_block *
+cute_assess_build_sint_set_desc(struct cute_text_block *     block,
+                                intmax_t                     value,
                                 const char *                 inv,
                                 const struct cute_sint_set * set)
 {
 	if (set->count) {
 		char * items;
-		char * str;
 
 		items = cute_assess_build_sint_item_str(set->items, set->count);
-		str = cute_asprintf("[%" PRIdMAX "] %s set {%s}",
-		                    value,
-		                    inv,
-		                    items);
+		cute_text_asprintf(block,
+		                   "found:  [%" PRIdMAX "] %s set {%s}",
+		                   value,
+		                   inv,
+		                   items);
 		cute_free(items);
-
-		return str;
 	}
 	else
-		return cute_asprintf("[%" PRIdMAX "] %s set {}", value, inv);
+		cute_text_asprintf(block,
+		                   "found:  [%" PRIdMAX "] %s set {}",
+		                   value,
+		                   inv);
+
+	return block;
 }
 
 CUTE_ASSESS_DEFINE_TYPED_SET(sint, cute_assess_build_sint_set_desc)
@@ -790,26 +806,30 @@ cute_assess_build_uint_item_str(const uintmax_t * items, unsigned int count)
 	return str;
 }
 
-static char *
-cute_assess_build_uint_set_desc(uintmax_t                    value,
+static struct cute_text_block *
+cute_assess_build_uint_set_desc(struct cute_text_block *     block,
+                                uintmax_t                    value,
                                 const char *                 inv,
                                 const struct cute_uint_set * set)
 {
 	if (set->count) {
 		char * items;
-		char * str;
 
 		items = cute_assess_build_uint_item_str(set->items, set->count);
-		str = cute_asprintf("[%" PRIuMAX "] %s set {%s}",
-		                    value,
-		                    inv,
-		                    items);
+		cute_text_asprintf(block,
+		                   "found:  [%" PRIuMAX "] %s set {%s}",
+		                   value,
+		                   inv,
+		                   items);
 		cute_free(items);
-
-		return str;
 	}
 	else
-		return cute_asprintf("[%" PRIuMAX "] %s set {}", value, inv);
+		cute_text_asprintf(block,
+		                   "found:  [%" PRIuMAX "] %s set {}",
+		                   value,
+		                   inv);
+
+	return block;
 }
 
 CUTE_ASSESS_DEFINE_TYPED_SET(uint, cute_assess_build_uint_set_desc)
@@ -974,28 +994,32 @@ cute_assess_build_flt_item_str(const long double * items, unsigned int count)
 	return str;
 }
 
-static char *
-cute_assess_build_flt_set_desc(long double                 value,
+static struct cute_text_block *
+cute_assess_build_flt_set_desc(struct cute_text_block *    block,
+                               long double                 value,
                                const char *                inv,
                                const struct cute_flt_set * set)
 {
 	if (set->count) {
 		char * items;
-		char * str;
 
 		items = cute_assess_build_flt_item_str(set->items, set->count);
-		str = cute_asprintf("[" CUTE_FLT_FORMAT_STR "] %s set {%s}",
-		                    value,
-		                    inv,
-		                    items);
+		cute_text_asprintf(block,
+		                   "found:  [" CUTE_FLT_FORMAT_STR "] %s " \
+		                   "set {%s}",
+		                   value,
+		                   inv,
+		                   items);
 		cute_free(items);
-
-		return str;
 	}
 	else
-		return cute_asprintf("[" CUTE_FLT_FORMAT_STR "] %s set {}",
-		                     value,
-		                     inv);
+		cute_text_asprintf(block,
+		                   "found:  [" CUTE_FLT_FORMAT_STR "] %s " \
+		                   "set {}",
+		                   value,
+		                   inv);
+
+	return block;
 }
 
 CUTE_ASSESS_DEFINE_TYPED_SET(flt, cute_assess_build_flt_set_desc)
@@ -1085,14 +1109,12 @@ cute_assess_check(struct cute_assess *            assess,
 	return false;
 }
 
-char *
-cute_assess_desc(const struct cute_assess * assess,
-                 enum cute_assess_desc      desc)
+struct cute_text_block *
+cute_assess_desc(const struct cute_assess * assess)
 {
 	cute_assess_assert_intern(assess);
-	cute_assess_assert_desc_intern(desc);
 
-	return assess->ops->desc(assess, desc);
+	return assess->ops->desc(assess);
 }
 
 void

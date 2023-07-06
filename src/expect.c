@@ -115,35 +115,32 @@ cute_expect_type_label(enum cute_expect_type type)
 	return labels[type];
 }
 
-static char *
-cute_expect_desc_inval_type(const struct cute_assess * assess,
-                            enum cute_assess_desc      desc)
+static struct cute_text_block *
+cute_expect_desc_inval_type(const struct cute_assess * assess)
 {
 	cute_expect_assert_intern((const struct cute_expect *)assess);
-	cute_assess_assert_desc_intern(desc);
 
+	struct cute_text_block *   blk;
+	const char *               type;
 	const struct cute_expect * xpct = (const struct cute_expect *)assess;
 
-	switch (desc) {
-	case CUTE_ASSESS_EXPECT_DESC:
-		return cute_asprintf("source: %s:%d\n"
-		                     "caller: %s()\n"
-		                     "expect: %s",
-		                     xpct->xpct_file, xpct->xpct_line,
-		                     xpct->xpct_func,
-		                     cute_expect_type_label(xpct->xpct_type));
+	blk = cute_text_create(8);
 
-	case CUTE_ASSESS_FOUND_DESC:
-		return cute_asprintf("source: %s:%d\n"
-		                     "caller: %s()\n"
-		                     "actual: %s",
-		                     xpct->super.file, xpct->super.line,
-		                     xpct->super.func,
-		                     cute_expect_type_label(xpct->got_type));
+	type = cute_expect_type_label(xpct->xpct_type);
+	cute_text_enroll(blk,   "wanted:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk, "    source: %s:%d", xpct->xpct_file,
+	                                             xpct->xpct_line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
+	cute_text_asprintf(blk, "    expect: %s",    type);
 
-	default:
-		__cute_unreachable();
-	}
+	type = cute_expect_type_label(xpct->got_type);
+	cute_text_enroll(blk,   "found:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk, "    source: %s:%d", xpct->super.file,
+	                                             xpct->super.line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->super.func);
+	cute_text_asprintf(blk, "    found:  %s",    type);
+
+	return blk;
 }
 
 static const struct cute_assess_ops cute_expect_inval_type_ops = {
@@ -163,33 +160,27 @@ cute_expect_claim_inval_type(struct cute_expect *  expect,
 	expect->got_type = type;
 }
 
-static char *
-cute_expect_desc_inval_call(const struct cute_assess * assess,
-                            enum cute_assess_desc      desc)
+static struct cute_text_block *
+cute_expect_desc_inval_call(const struct cute_assess * assess)
 {
 	cute_expect_assert_intern((const struct cute_expect *)assess);
-	cute_assess_assert_desc_intern(desc);
 
+	struct cute_text_block *   blk;
 	const struct cute_expect * xpct = (const struct cute_expect *)assess;
 
-	switch (desc) {
-	case CUTE_ASSESS_EXPECT_DESC:
-		return cute_asprintf("wanted:\n"
-		                     "    source: %s:%d\n"
-		                     "    caller: %s()",
-		                     xpct->xpct_file, xpct->xpct_line,
-		                     xpct->xpct_func);
+	blk = cute_text_create(6);
 
-	case CUTE_ASSESS_FOUND_DESC:
-		return cute_asprintf("found:\n"
-		                     "    source: %s:%d\n"
-		                     "    caller: %s()",
-		                     xpct->super.file, xpct->super.line,
-		                     xpct->super.func);
+	cute_text_enroll(blk,   "wanted:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk, "    source: %s:%d", xpct->xpct_file,
+	                                             xpct->xpct_line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
 
-	default:
-		__cute_unreachable();
-	}
+	cute_text_enroll(blk,   "found:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk, "    source: %s:%d", xpct->super.file,
+	                                             xpct->super.line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->super.func);
+
+	return blk;
 }
 
 static const struct cute_assess_ops cute_expect_inval_call_ops = {
@@ -216,27 +207,25 @@ cute_expect_claim_inval_call(struct cute_expect *       expect,
 	expect->got_type = type;
 }
 
-static char *
-cute_expect_desc_missing(const struct cute_assess * assess,
-                         enum cute_assess_desc      desc)
+static struct cute_text_block *
+cute_expect_desc_missing(const struct cute_assess * assess)
 {
 	cute_assess_assert_intern(assess);
-	cute_assess_assert_desc_intern(desc);
 
-	switch (desc) {
-	case CUTE_ASSESS_EXPECT_DESC:
-		return cute_asprintf("source: ??\n"
-		                     "caller: ??");
+	struct cute_text_block * blk;
 
-	case CUTE_ASSESS_FOUND_DESC:
-		return cute_asprintf("source: %s:%d\n"
-		                     "caller: %s()",
-		                     assess->file, assess->line,
-		                     assess->func);
+	blk = cute_text_create(6);
 
-	default:
-		__cute_unreachable();
-	}
+	cute_text_enroll(blk,   "wanted:", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk,   "    source: ??", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk,   "    caller: ??", CUTE_TEXT_LEASE);
+
+	cute_text_enroll(blk,   "found:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk, "    source: %s:%d", assess->file,
+	                                             assess->line);
+	cute_text_asprintf(blk, "    caller: %s()",  assess->func);
+
+	return blk;
 }
 
 static const struct cute_assess_ops cute_expect_missing_ops = {
@@ -341,6 +330,11 @@ cute_expect_destroy(struct cute_expect * expect)
 	cute_assess_release(&expect->super);
 	cute_free(expect);
 }
+
+#warning FIXME: save error at cute_expect_release() time; \
+                make sure expectations are not released twice at \
+                cute_expect_claim_inval_type(), cute_expect_claim_inval_call() \
+                and cute_expect_claim_missing() time
 
 void
 cute_expect_release(void)

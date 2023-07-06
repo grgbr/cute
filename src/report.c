@@ -162,6 +162,18 @@ static unsigned int          cute_report_count;
 static struct cute_report ** cute_report_table;
 static unsigned int          cute_report_done;
 
+void
+cute_report_printf_block(const struct cute_text_block * block,
+                         int                            indent,
+                         FILE *                         stdio)
+{
+	unsigned int s;
+	const char * str;
+
+	cute_text_foreach(block, s, str)
+		fprintf(stdio, "%*s%s\n", indent, "", str);
+}
+
 unsigned int
 cute_report_progress(void)
 {
