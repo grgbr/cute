@@ -344,8 +344,42 @@ cute_run_done(struct cute_run * run)
 	    (run->state == CUTE_TEARDOWN_STATE))
 		run->issue = CUTE_PASS_ISSUE;
 
+	if (cute_expect_release(&run->assess)) {
+
+#error make sure we do not override previous error !!!!
+		switch (run->state) {
+		case CUTE_SETUP_STATE:
+			cute_assert_intern(!run->what);
+			cute_assert_intern(!run->why);
+
+			run->what = "setup failed";
+			break;
+
+		case CUTE_EXEC_STATE:
+			cute_assert_intern(!run->what);
+			cute_assert_intern(!run->why);
+
+			run->what = "exec failed";
+			break;
+
+		case CUTE_TEARDOWN_STATE:
+
+			if (!cute_assess_has_source(&run->assess) &&
+			    !run->what &&
+			    !run->why)
+				run->what = "teardown failed";
+
+			break;
+
+		default:
+			__cute_unreachable();
+		}
+
+		run->why = ;
+		run->issue = CUTE_FAIL_ISSUE;
+	}
+
 	run->state = CUTE_DONE_STATE;
-	cute_expect_release();
 
 	cute_run_report(run, CUTE_DONE_EVT);
 

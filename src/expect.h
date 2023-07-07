@@ -31,11 +31,10 @@ struct cute_expect_parm {
 
 struct cute_expect_retval {
 	struct cute_expect super;
-	uintmax_t          code;
+	intmax_t           code;
 };
 
-
-extern void
-cute_expect_release(void);
+extern int
+cute_expect_release(struct cute_assess * assess);
 
 #endif /* _CUTE_INTERN_EXPECT_H */

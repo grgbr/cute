@@ -101,6 +101,44 @@ cute_expect_dqueue(struct cute_expect_queue * queue)
 	return xpct;
 }
 
+static void
+cute_expect_join_queue(struct cute_expect_queue * before,
+                       struct cute_expect_queue * after)
+{
+	if (before->head) {
+		cute_assert_intern(before->tail);
+		cute_assert_intern(!before->tail->next);
+
+		if (!after->head) {
+			cute_assert_intern(!after->tail);
+			return;
+		}
+
+		cute_assert_intern(after->tail);
+		cute_assert_intern(!after->tail->next);
+
+		before->tail->next = after->head;
+		before->tail = after->tail;
+
+	}
+	else {
+		cute_assert_intern(!before->tail);
+
+		if (!after->head) {
+			cute_assert_intern(!after->tail);
+			return;
+		}
+
+		cute_assert_intern(after->tail);
+		cute_assert_intern(!after->tail->next);
+
+		before->head = after->head;
+		before->tail = after->tail;
+	}
+
+	after->head = after->tail = NULL;
+}
+
 static const char *
 cute_expect_type_label(enum cute_expect_type type)
 {
@@ -331,25 +369,84 @@ cute_expect_destroy(struct cute_expect * expect)
 	cute_free(expect);
 }
 
-#warning FIXME: save error at cute_expect_release() time; \
-                make sure expectations are not released twice at \
-                cute_expect_claim_inval_type(), cute_expect_claim_inval_call() \
-                and cute_expect_claim_missing() time
+static struct cute_text_block *
+cute_expect_desc_xcess(const struct cute_assess * assess)
+{
+	cute_expect_assert_intern((const struct cute_expect *)assess);
 
-void
-cute_expect_release(void)
+	struct cute_text_block *   blk;
+	const struct cute_expect * xpct = (const struct cute_expect *)assess;
+	const char *               type;
+
+	blk = cute_text_create(5);
+
+	type = cute_expect_type_label(xpct->xpct_type);
+	cute_text_enroll(blk,   "wanted:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk, "    source: %s:%d", xpct->xpct_file,
+	                                             xpct->xpct_line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
+	cute_text_asprintf(blk, "    expect: %s",    type);
+
+	cute_text_enroll(blk,   "found: none", CUTE_TEXT_LEASE);
+
+	return blk;
+}
+
+static const struct cute_assess_ops cute_expect_xcess_ops = {
+	.cmp     = cute_assess_cmp_null,
+	.desc    = cute_expect_desc_xcess,
+	.release = cute_assess_release_null
+};
+
+static void
+cute_expect_claim_xcess(struct cute_assess *       assess,
+                        const struct cute_expect * orig)
+{
+	/*
+	 * FIXME: save error at cute_expect_release() time
+	 * make sure expectations are not released twice at
+	 * cute_expect_claim_inval_type(), cute_expect_claim_inval_call()
+	 * and cute_expect_claim_missing() time
+	 *
+	 * Also, make sure that we do not override any previous error!!!!!
+	 */
+
+#error IMPLEMENT ME!
+	cute_assess_assert_intern(assess);
+	cute_expect_assert_intern(orig);
+
+	expect->super.ops = &cute_expect_xcess_ops;
+	expect->next = NULL;
+	expect->xpct_type = orig->xpct_type;
+	expect->xpct_file = orig->xpct_file;
+	expect->xpct_line = orig->xpct_line;
+	expect->xpct_func = orig->xpct_func;
+	expect->got_type = type;
+}
+
+int
+cute_expect_release(struct cute_assess * assess)
 {
 	struct cute_expect * xpct;
+	int                  ret = 0;
+
+	if (!cute_expect_empty(&cute_expect_sched)) {
+		xpct = cute_expect_dqueue(&cute_expect_sched);
+
+		cute_expect_claim_xcess(assess, xpct);
+
+		cute_expect_nqueue(&cute_expect_done, xpct);
+		cute_expect_join_queue(&cute_expect_done, &cute_expect_sched);
+
+		ret = -EBUSY;
+	}
 
 	while (!cute_expect_empty(&cute_expect_done)) {
 		xpct = cute_expect_dqueue(&cute_expect_done);
 		cute_expect_destroy(xpct);
 	}
 
-	while (!cute_expect_empty(&cute_expect_sched)) {
-		xpct = cute_expect_dqueue(&cute_expect_sched);
-		cute_expect_destroy(xpct);
-	}
+	return ret;
 }
 
 /******************************************************************************

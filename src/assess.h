@@ -127,6 +127,8 @@ cute_assess_release_null(struct cute_assess * assess __cute_unused)
 	cute_assess_assert_intern(assess);
 }
 
+extern const struct cute_assess_ops cute_assess_null_ops;
+
 extern void
 cute_assess_build_null(struct cute_assess * assess);
 

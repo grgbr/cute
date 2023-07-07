@@ -29,7 +29,7 @@ cute_assess_desc_null(const struct cute_assess * assess __cute_unused)
 	return NULL;
 }
 
-static const struct cute_assess_ops cute_assess_null_ops = {
+const struct cute_assess_ops cute_assess_null_ops = {
 	.cmp     = cute_assess_cmp_null,
 	.desc    = cute_assess_desc_null,
 	.release = cute_assess_release_null
