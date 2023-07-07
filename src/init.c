@@ -386,6 +386,7 @@ cute_main(int                        argc,
 
 		case 'd':
 			cute_config_enable_debug(&conf);
+			ret = 0;
 			break;
 
 		case 'i':

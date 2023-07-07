@@ -564,7 +564,7 @@ _cute_skip(const char * reason,
 	cute_assert(function);
 	cute_assert(function[0]);
 
-	cute_assess_build_expr(&cute_curr_run->assess, reason, NULL);
+	cute_assess_build_expr(&cute_curr_run->assess, reason);
 
 	cute_break(CUTE_SKIP_ISSUE,
 	           file,
@@ -586,7 +586,7 @@ _cute_fail(const char * reason,
 	cute_assert(function);
 	cute_assert(function[0]);
 
-	cute_assess_build_expr(&cute_curr_run->assess, reason, NULL);
+	cute_assess_build_expr(&cute_curr_run->assess, reason);
 
 	cute_break(CUTE_FAIL_ISSUE,
 	           file,

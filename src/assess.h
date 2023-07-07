@@ -131,9 +131,10 @@ extern void
 cute_assess_build_null(struct cute_assess * assess);
 
 extern void
-cute_assess_build_expr(struct cute_assess * assess,
-                       const char *         check,
-                       const char *         expect);
+cute_assess_build_expr(struct cute_assess * assess, const char * expr);
+
+extern void
+cute_assess_build_assert(struct cute_assess * assess, const char * expr);
 
 extern void
 cute_assess_build_excp(struct cute_assess * assess, int sig);

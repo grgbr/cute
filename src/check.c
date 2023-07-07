@@ -20,7 +20,7 @@ __cute_check_assert(bool         fail,
 	if (!fail)
 		return;
 
-	cute_assess_build_expr(&cute_curr_run->assess, NULL, expr);
+	cute_assess_build_assert(&cute_curr_run->assess, expr);
 
 	cute_break(CUTE_FAIL_ISSUE,
 	           file,

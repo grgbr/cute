@@ -117,15 +117,17 @@ cute_suite_complete_run(struct cute_suite_run * run)
 			                          run->super.base->file,
 			                          run->super.base->line,
 			                          NULL);
+			cute_assess_build_expr(&run->super.assess, NULL);
 		}
 		else if (run->stats.fail || run->stats.excp) {
 			run->super.issue = CUTE_FAIL_ISSUE;
 			run->super.what = "exec failed";
-			run->super.why = "descendant(s) failed";
+			run->super.why = "descendants failed";
 			cute_assess_update_source(&run->super.assess,
 			                          run->super.base->file,
 			                          run->super.base->line,
 			                          NULL);
+			cute_assess_build_expr(&run->super.assess, NULL);
 		}
 		else
 			run->super.issue = CUTE_PASS_ISSUE;

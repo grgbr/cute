@@ -54,7 +54,7 @@ cute_assess_desc_source(const struct cute_assess * assess, unsigned int nr)
 	cute_assert_intern(assess->file[0]);
 	cute_assert_intern(assess->line >= 0);
 	cute_assert_intern(!assess->func || assess->func[0]);
-	cute_assert_intern(nr >= 2);
+	cute_assert_intern(nr >= 1);
 
 	struct cute_text_block * blk;
 
@@ -74,16 +74,13 @@ cute_assess_desc_expr(const struct cute_assess * assess)
 {
 	cute_assess_assert_intern(assess);
 
-	unsigned int             nr = (unsigned int)!!assess->expect.expr +
-	                              (unsigned int)!!assess->check.expr +
+	unsigned int             nr = (unsigned int)!!assess->check.expr +
 	                              (unsigned int)!!assess->func;
 	struct cute_text_block * blk;
 
 	blk = cute_assess_desc_source(assess, 1 + nr);
 
-	if (assess->expect.expr)
-		cute_text_asprintf(blk, "detail: %s", assess->expect.expr);
-	else if (assess->check.expr)
+	if (assess->check.expr)
 		cute_text_asprintf(blk, "detail: %s", assess->check.expr);
 
 	return blk;
@@ -96,17 +93,46 @@ static const struct cute_assess_ops cute_assess_expr_ops = {
 };
 
 void
-cute_assess_build_expr(struct cute_assess * assess,
-                       const char *         check,
-                       const char *         expect)
+cute_assess_build_expr(struct cute_assess * assess, const char * expr)
 {
 	cute_assert_intern(assess);
-	cute_assert_intern(!check || check[0]);
-	cute_assert_intern(!expect || expect[0]);
+	cute_assert_intern(!expr || expr[0]);
 
 	assess->ops = &cute_assess_expr_ops;
-	assess->check.expr = check;
-	assess->expect.expr = expect;
+	assess->check.expr = expr;
+}
+
+static struct cute_text_block *
+cute_assess_desc_assert(const struct cute_assess * assess)
+{
+	cute_assess_assert_intern(assess);
+
+	unsigned int             nr = (unsigned int)!!assess->expect.expr +
+	                              (unsigned int)!!assess->func;
+	struct cute_text_block * blk;
+
+	blk = cute_assess_desc_source(assess, 1 + nr);
+
+	if (assess->expect.expr)
+		cute_text_asprintf(blk, "assert: %s", assess->expect.expr);
+
+	return blk;
+}
+
+static const struct cute_assess_ops cute_assess_assert_ops = {
+	.cmp     = cute_assess_cmp_null,
+	.desc    = cute_assess_desc_assert,
+	.release = cute_assess_release_null
+};
+
+void
+cute_assess_build_assert(struct cute_assess * assess, const char * expr)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(!expr || expr[0]);
+
+	assess->ops = &cute_assess_assert_ops;
+	assess->expect.expr = expr;
 }
 
 static struct cute_text_block *
