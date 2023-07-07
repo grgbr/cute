@@ -4,31 +4,31 @@
 simple_exec_error_suite::simple_exec_error_segv_test ............................... excp
 issue:  exec crashed
 reason: exception raised
-source: /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:3
+source: /mnt/devel/greg/tidor/cute/test/simple_exec_error.c:3
 except: Segmentation fault (11)
 
 simple_exec_error_suite::simple_exec_error_ill_test ................................ excp
 issue:  exec crashed
 reason: exception raised
-source: /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:10
+source: /mnt/devel/greg/tidor/cute/test/simple_exec_error.c:10
 except: Illegal instruction (4)
 
 simple_exec_error_suite::simple_exec_error_fpe_test ................................ excp
 issue:  exec crashed
 reason: exception raised
-source: /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:15
+source: /mnt/devel/greg/tidor/cute/test/simple_exec_error.c:15
 except: Floating point exception (8)
 
 simple_exec_error_suite ............................................................ fail
 issue:  exec failed
 reason: descendants failed
-source: /home/grb/dev/proto/icsw/src/cute/test/simple_exec_error.c:35
+source: /mnt/devel/greg/tidor/cute/test/simple_exec_error.c:31
 
 NAME                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-simple_exec_error_suite        fail    0.055227      0      0      0      3      3      3
+simple_exec_error_suite        fail    0.060103      0      0      0      3      3      3
                                                     0%     0%     0%   100%   100%
 -----------------------------------------------------------------------------------------
-Total                          fail    0.055227      0      0      0      3      3      3
+Total                          fail    0.060103      0      0      0      3      3      3
                                                     0%     0%     0%   100%   100%
 
                            ###           SUMMARY           ###

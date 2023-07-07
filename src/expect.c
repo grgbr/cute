@@ -145,9 +145,9 @@ cute_expect_type_label(enum cute_expect_type type)
 	cute_expect_assert_type_intern(type);
 
 	static const char * labels[] = {
-		[CUTE_EXPECT_CALL_TYPE] = "mocked function call",
-		[CUTE_EXPECT_PARM_TYPE] = "mocked function parameter",
-		[CUTE_EXPECT_RET_TYPE]  = "mocked return value"
+		[CUTE_EXPECT_CALL_TYPE] = "mock function call",
+		[CUTE_EXPECT_PARM_TYPE] = "mock function parameter",
+		[CUTE_EXPECT_RET_TYPE]  = "mock function return value"
 	};
 
 	return labels[type];
@@ -252,11 +252,9 @@ cute_expect_desc_missing(const struct cute_assess * assess)
 
 	struct cute_text_block * blk;
 
-	blk = cute_text_create(6);
+	blk = cute_text_create(4);
 
-	cute_text_enroll(blk,   "wanted:", CUTE_TEXT_LEASE);
-	cute_text_enroll(blk,   "    source: ??", CUTE_TEXT_LEASE);
-	cute_text_enroll(blk,   "    caller: ??", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk,   "wanted: none", CUTE_TEXT_LEASE);
 
 	cute_text_enroll(blk,   "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk, "    source: %s:%d", assess->file,
@@ -387,7 +385,7 @@ cute_expect_desc_xcess(const struct cute_assess * assess)
 	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
 	cute_text_asprintf(blk, "    expect: %s",    type);
 
-	cute_text_enroll(blk,   "found: none", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk,   "found:  none", CUTE_TEXT_LEASE);
 
 	return blk;
 }
@@ -399,20 +397,10 @@ static const struct cute_assess_ops cute_expect_xcess_ops = {
 };
 
 static void
-cute_expect_claim_xcess(struct cute_assess *       assess,
+cute_expect_claim_xcess(struct cute_expect *       expect,
                         const struct cute_expect * orig)
 {
-	/*
-	 * FIXME: save error at cute_expect_release() time
-	 * make sure expectations are not released twice at
-	 * cute_expect_claim_inval_type(), cute_expect_claim_inval_call()
-	 * and cute_expect_claim_missing() time
-	 *
-	 * Also, make sure that we do not override any previous error!!!!!
-	 */
-
-#error IMPLEMENT ME!
-	cute_assess_assert_intern(assess);
+	cute_assert_intern(expect);
 	cute_expect_assert_intern(orig);
 
 	expect->super.ops = &cute_expect_xcess_ops;
@@ -421,25 +409,25 @@ cute_expect_claim_xcess(struct cute_assess *       assess,
 	expect->xpct_file = orig->xpct_file;
 	expect->xpct_line = orig->xpct_line;
 	expect->xpct_func = orig->xpct_func;
-	expect->got_type = type;
 }
 
 int
-cute_expect_release(struct cute_assess * assess)
+cute_expect_release(struct cute_expect * expect, bool check)
 {
 	struct cute_expect * xpct;
 	int                  ret = 0;
 
-	if (!cute_expect_empty(&cute_expect_sched)) {
+	if (check && !cute_expect_empty(&cute_expect_sched)) {
 		xpct = cute_expect_dqueue(&cute_expect_sched);
 
-		cute_expect_claim_xcess(assess, xpct);
+		cute_expect_claim_xcess(expect, xpct);
 
 		cute_expect_nqueue(&cute_expect_done, xpct);
-		cute_expect_join_queue(&cute_expect_done, &cute_expect_sched);
 
 		ret = -EBUSY;
 	}
+
+	cute_expect_join_queue(&cute_expect_done, &cute_expect_sched);
 
 	while (!cute_expect_empty(&cute_expect_done)) {
 		xpct = cute_expect_dqueue(&cute_expect_done);

@@ -95,10 +95,10 @@ struct cute_text_block {
 	struct cute_text_atom atoms[];
 };
 
-#define cute_text_foreach(_blk, _indx, _str) \
-	for (_indx = 0, _str = (_blk)->atoms[_indx].str; \
+#define cute_text_foreach(_blk, _indx, _atom) \
+	for ((_indx) = 0, (_atom) = &(_blk)->atoms[_indx]; \
 	     _indx < (_blk)->count; \
-	     _str = (_blk)->atoms[++_indx].str)
+	     (_atom) = &(_blk)->atoms[++_indx])
 
 #define CUTE_TEXT_YIELD (true)
 #define CUTE_TEXT_LEASE (false)

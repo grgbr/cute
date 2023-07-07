@@ -167,11 +167,11 @@ cute_report_printf_block(const struct cute_text_block * block,
                          int                            indent,
                          FILE *                         stdio)
 {
-	unsigned int s;
-	const char * str;
+	unsigned int                  a;
+	const struct cute_text_atom * atom;
 
-	cute_text_foreach(block, s, str)
-		fprintf(stdio, "%*s%s\n", indent, "", str);
+	cute_text_foreach(block, a, atom)
+		fprintf(stdio, "%*s%s\n", indent, "", atom->str);
 }
 
 unsigned int

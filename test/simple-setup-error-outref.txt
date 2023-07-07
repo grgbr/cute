@@ -4,19 +4,19 @@
 simple_fail_setup_suite::simple_fail_setup_test ............................... excp
 issue:  setup crashed
 reason: exception raised
-source: /home/grb/dev/proto/icsw/src/cute/test/simple_setup_error.c:14
+source: /mnt/devel/greg/tidor/cute/test/simple_setup_error.c:11
 except: Segmentation fault (11)
 
 simple_fail_setup_suite ....................................................... fail
 issue:  exec failed
 reason: descendants failed
-source: /home/grb/dev/proto/icsw/src/cute/test/simple_setup_error.c:26
+source: /mnt/devel/greg/tidor/cute/test/simple_setup_error.c:22
 
 NAME                      STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-simple_fail_setup_suite   fail    0.000474      0      0      0      1      1      1
+simple_fail_setup_suite   fail    0.000274      0      0      0      1      1      1
                                                0%     0%     0%   100%   100%
 ------------------------------------------------------------------------------------
-Total                     fail    0.000474      0      0      0      1      1      1
+Total                     fail    0.000274      0      0      0      1      1      1
                                                0%     0%     0%   100%   100%
 
                         ###           SUMMARY           ###

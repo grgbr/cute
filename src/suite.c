@@ -129,8 +129,6 @@ cute_suite_complete_run(struct cute_suite_run * run)
 			                          NULL);
 			cute_assess_build_expr(&run->super.assess, NULL);
 		}
-		else
-			run->super.issue = CUTE_PASS_ISSUE;
 	}
 
 	cute_run_done(&run->super);

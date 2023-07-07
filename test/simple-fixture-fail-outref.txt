@@ -4,20 +4,20 @@
 simple_fixture_fail_suite::simple_fixture_fail_fail_test ............................. fail
 issue:  exec failed
 reason: assertion check failed
-source: /home/grb/dev/proto/icsw/src/cute/test/simple_fixture_fail.c:31
+source: /mnt/devel/greg/tidor/cute/test/simple_fixture_fail.c:31
 caller: simple_fixture_fail_fail_test__cute_exec()
 assert: 0 == 1
 
 simple_fixture_fail_suite ............................................................ fail
 issue:  exec failed
 reason: descendants failed
-source: /home/grb/dev/proto/icsw/src/cute/test/simple_fixture_fail.c:43
+source: /mnt/devel/greg/tidor/cute/test/simple_fixture_fail.c:39
 
 NAME                             STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-simple_fixture_fail_suite        fail    0.013489      1      0      1      0      2      2
+simple_fixture_fail_suite        fail    0.020587      1      0      1      0      2      2
                                                      50%     0%    50%     0%   100%
 -------------------------------------------------------------------------------------------
-Total                            fail    0.013489      1      0      1      0      2      2
+Total                            fail    0.020587      1      0      1      0      2      2
                                                      50%     0%    50%     0%   100%
 
                             ###          SUMMARY           ###

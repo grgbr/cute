@@ -35,6 +35,6 @@ struct cute_expect_retval {
 };
 
 extern int
-cute_expect_release(struct cute_assess * assess);
+cute_expect_release(struct cute_expect * expect, bool check);
 
 #endif /* _CUTE_INTERN_EXPECT_H */

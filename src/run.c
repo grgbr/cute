@@ -6,6 +6,53 @@
 
 struct cute_run * volatile cute_curr_run;
 
+static const char *
+cute_run_what(const struct cute_run * run, enum cute_issue issue)
+{
+	cute_run_assert_intern(run);
+
+	switch (run->state) {
+	case CUTE_SETUP_STATE:
+		switch (issue) {
+		case CUTE_SKIP_ISSUE:
+			return "setup skipped";
+
+		case CUTE_FAIL_ISSUE:
+			return "setup failed";
+
+		case CUTE_EXCP_ISSUE:
+			return "setup crashed";
+
+		default:
+			__cute_unreachable();
+		}
+
+		break;
+
+	case CUTE_EXEC_STATE:
+		switch (issue) {
+		case CUTE_SKIP_ISSUE:
+			return "exec skipped";
+
+		case CUTE_FAIL_ISSUE:
+			return "exec failed";
+
+		case CUTE_EXCP_ISSUE:
+			return "exec crashed";
+
+		default:
+			__cute_unreachable();
+		}
+
+	case CUTE_TEARDOWN_STATE:
+		return (issue == CUTE_FAIL_ISSUE) ? "teardown failed"
+		                                  : "teardown crashed";
+
+	default:
+		__cute_unreachable();
+	}
+}
+
 void __cute_noreturn
 cute_break(enum cute_issue issue,
            const char *    file,
@@ -13,69 +60,30 @@ cute_break(enum cute_issue issue,
            const char *    func,
            const char *    why)
 {
+	cute_run_assert(cute_curr_run);
 	cute_assert(file);
 	cute_assert(file[0]);
 	cute_assert(line >= 0);
-	cute_assert(why);
+	cute_assert(line >= 0);
+	cute_assert(!func || func[0]);
 	cute_assert(why[0]);
-	cute_run_assert_intern(cute_curr_run);
 
 	struct cute_run * run = cute_curr_run;
 
 	switch (run->state) {
 	case CUTE_SETUP_STATE:
-		cute_assert((issue == CUTE_FAIL_ISSUE) ||
-		            (issue == CUTE_EXCP_ISSUE) ||
-		            (issue == CUTE_SKIP_ISSUE));
-		cute_assert_intern(!run->what);
-		cute_assert_intern(!run->why);
-
-		switch (issue) {
-		case CUTE_SKIP_ISSUE:
-			run->what = "setup skipped";
-			break;
-
-		case CUTE_FAIL_ISSUE:
-			run->what = "setup failed";
-			break;
-
-		case CUTE_EXCP_ISSUE:
-			run->what = "setup crashed";
-			break;
-
-		default:
-			__cute_unreachable();
-		}
-
-		run->why = why;
-
-		cute_assess_update_source(&run->assess, file, line, func);
-
-		break;
-
 	case CUTE_EXEC_STATE:
+		cute_assert_intern((issue == CUTE_FAIL_ISSUE) ||
+		                   (issue == CUTE_EXCP_ISSUE) ||
+		                   (issue == CUTE_SKIP_ISSUE));
 		cute_assert_intern(!run->what);
 		cute_assert_intern(!run->why);
+		cute_assert_intern(!run->assess.file);
+		cute_assert_intern(run->assess.line < 0);
+		cute_assert_intern(!run->assess.func);
 
-		switch (issue) {
-		case CUTE_SKIP_ISSUE:
-			run->what = "exec skipped";
-			break;
-
-		case CUTE_FAIL_ISSUE:
-			run->what = "exec failed";
-			break;
-
-		case CUTE_EXCP_ISSUE:
-			run->what = "exec crashed";
-			break;
-
-		default:
-			__cute_unreachable();
-		}
-
+		run->what = cute_run_what(run, issue);
 		run->why = why;
-
 		cute_assess_update_source(&run->assess, file, line, func);
 
 		break;
@@ -88,10 +96,8 @@ cute_break(enum cute_issue issue,
 		if (!cute_assess_has_source(&run->assess) &&
 		    !run->what &&
 		    !run->why) {
-			run->what = (issue == CUTE_FAIL_ISSUE) ?
-			            "teardown failed" : "teardown crashed";
+			run->what = cute_run_what(run, issue);
 			run->why = why;
-
 			cute_assess_update_source(&run->assess,
 			                          file,
 			                          line,
@@ -340,43 +346,32 @@ cute_run_done(struct cute_run * run)
 
 	int ret;
 
-	if ((run->issue == CUTE_UNK_ISSUE) &&
-	    (run->state == CUTE_TEARDOWN_STATE))
-		run->issue = CUTE_PASS_ISSUE;
+	if (run->issue == CUTE_UNK_ISSUE) {
+		cute_assert_intern(run->state == CUTE_TEARDOWN_STATE);
+		cute_assert_intern(!run->what);
+		cute_assert_intern(!run->why);
+		cute_assert_intern(!run->assess.file);
+		cute_assert_intern(run->assess.line < 0);
+		cute_assert_intern(!run->assess.func);
 
-	if (cute_expect_release(&run->assess)) {
-
-#error make sure we do not override previous error !!!!
-		switch (run->state) {
-		case CUTE_SETUP_STATE:
-			cute_assert_intern(!run->what);
-			cute_assert_intern(!run->why);
-
-			run->what = "setup failed";
-			break;
-
-		case CUTE_EXEC_STATE:
-			cute_assert_intern(!run->what);
-			cute_assert_intern(!run->why);
-
-			run->what = "exec failed";
-			break;
-
-		case CUTE_TEARDOWN_STATE:
-
-			if (!cute_assess_has_source(&run->assess) &&
-			    !run->what &&
-			    !run->why)
-				run->what = "teardown failed";
-
-			break;
-
-		default:
-			__cute_unreachable();
+		if (cute_expect_release(&run->call, true)) {
+			run->issue = CUTE_FAIL_ISSUE;
+			run->what = cute_run_what(run, CUTE_FAIL_ISSUE);
+			run->why = "extra mock expectation left";
 		}
+		else
+			run->issue = CUTE_PASS_ISSUE;
 
-		run->why = ;
-		run->issue = CUTE_FAIL_ISSUE;
+	}
+	else if (run->issue != CUTE_OFF_ISSUE) {
+		cute_assert_intern(run->what);
+		cute_assert_intern(run->why);
+		cute_assert_intern(run->assess.file);
+		cute_assert_intern(run->assess.file[0]);
+		cute_assert_intern(run->assess.line >= 0);
+		cute_assert_intern(!run->assess.func || run->assess.func[0]);
+
+		cute_expect_release(&run->call, false);
 	}
 
 	run->state = CUTE_DONE_STATE;
