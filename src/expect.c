@@ -2,6 +2,7 @@
 #include "cute/expect.h"
 #include "run.h"
 #include <string.h>
+#include <inttypes.h>
 
 /******************************************************************************
  * Mock expectation generic handling
@@ -453,8 +454,9 @@ cute_expect_check_call(const char * file, int line, const char * function)
 	struct cute_expect * xpct;
 
 	xpct = cute_expect_check(CUTE_EXPECT_CALL_TYPE, file, line, function);
-	if (xpct)
-		cute_expect_nqueue(&cute_expect_done, xpct);
+	cute_assert_intern(xpct);
+
+	cute_expect_nqueue(&cute_expect_done, xpct);
 }
 
 void
@@ -471,152 +473,312 @@ cute_expect_sched_call(const char * file, int line, const char * function)
 	cute_expect_nqueue(&cute_expect_sched, xpct);
 }
 
-#if 0
 /******************************************************************************
- * Mock parameter expectation handling
+ * Signed integer mock parameter expectation handling
  ******************************************************************************/
 
-static void
-cute_expect_desc_inval_parm(const struct cute_run * run,
-                            FILE *                  stdio,
-                            int                     indent,
-                            const char *            normal,
-                            const char *            emphasis,
-                            const char *            regular)
+static struct cute_text_block *
+cute_expect_desc_sint_parm_value(const struct cute_assess * assess,
+                                 const char *               op,
+                                 const char *               inv)
 {
-	const struct cute_expect * xpct = run->xpct;
+	cute_assert_intern(assess);
+	cute_assert_intern(op);
+	cute_assert_intern(op[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
 
-	fprintf(stdio,
-	        "%1$s"
-	        "%3$*2$sreason: %4$s\n"
-	        "%3$*2$swanted:\n"
-	        "%3$*2$s    source: %5$s:%6$s\n"
-	        "%3$*2$s    caller: %7$s\n"
-	        "%3$*2$s    expect: %8$s\n"
-	        "%3$*2$sfound:\n"
-	        "%3$*2$s    source: %9$s:%10$s\n"
-	        "%3$*2$s    caller: %11$s\n"
-	        "%3$*2$s    actual: %12$s%13$s\n"
-	        "%14$s",
-	        normal,
-	        indent, "",
-	        run->why,
-	        xpct->xpct_file, xpct->xpct_line,
-	        xpct->xpct_func,
-	        ((struct cute_expect_parm *)xpct)->xpct_parm,
-	        run->file, run->line,
-	        run->func,
-	        emphasis, ((struct cute_expect_parm *)xpct)->chk_parm,
-	        regular);
+	struct cute_text_block *   blk;
+	const struct cute_expect * xpct = (const struct cute_expect *)assess;
+	const char *               parm = ((const struct cute_expect_parm *)
+	                                   assess)->xpct_parm;
+	const struct cute_sint *   chk = &assess->check.sint;
+	const struct cute_sint *   ref = &assess->expect.sint.scal;
+
+	cute_expect_assert_intern(xpct);
+	cute_assert_intern(parm);
+	cute_assert_intern(parm[0]);
+	cute_assert_intern(chk->expr);
+	cute_assert_intern(chk->expr[0]);
+	cute_assert_intern(ref->expr);
+	cute_assert_intern(ref->expr[0]);
+
+	blk = cute_text_create(9);
+
+	cute_text_enroll(blk,   "wanted:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   xpct->xpct_file, xpct->xpct_line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
+	cute_text_asprintf(blk, "    expect: %s %s %s", parm, op, ref->expr);
+
+	cute_text_enroll(blk,   "found: ", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk, "    source: %s:%d", assess->file,
+	                                             assess->line);
+	cute_text_asprintf(blk, "    caller: %s()",  assess->func);
+	cute_text_asprintf(blk,
+	                   "    expect: %s %s %s",
+	                   chk->expr, op, ref->expr);
+	cute_text_asprintf(blk,
+	                   "    actual: [%" PRIdMAX "] %s [%" PRIdMAX "]",
+	                   chk->value, inv, ref->value);
+
+	return blk;
 }
 
 static void
-cute_expect_desc_inval_parm_val(const struct cute_run * run,
-                                FILE *                  stdio,
-                                int                     indent,
-                                const char *            normal,
-                                const char *            emphasis,
-                                const char *            regular)
+cute_expect_sched_sint_parm_value(const char *                   file,
+                                  int                            line,
+                                  const char *                   function,
+                                  const struct cute_assess_ops * ops,
+                                  const char *                   parm,
+                                  const struct cute_sint *       reference)
 {
-	const struct cute_expect * xpct = run->xpct;
-
-	fprintf(stdio,
-	        "%1$s"
-	        "%3$*2$sreason: %4$s\n"
-	        "%3$*2$swanted:\n"
-	        "%3$*2$s    source: %5$s:%6$s\n"
-	        "%3$*2$s    caller: %7$s\n"
-	        "%3$*2$s    expect: %8$s\n"
-	        "%3$*2$sfound:\n"
-	        "%3$*2$s    source: %9$s:%10$s\n"
-	        "%3$*2$s    caller: %11$s\n"
-	        "%3$*2$s    actual: %12$s%13$s\n"
-	        "%14$s",
-	        normal,
-	        indent, "",
-	        run->why,
-	        xpct->xpct_file, xpct->xpct_line,
-	        xpct->xpct_func,
-	        ((struct cute_expect_parm *)xpct)->xpct_parm,
-	        run->file, run->line,
-	        run->func,
-	        emphasis, ((struct cute_expect_parm *)xpct)->chk_parm,
-	        regular);
-}
-
-void
-cute_expect_check_parm(const char * file,
-                       int          line,
-                       const char * function,
-                       const char * parameter,
-                       uintmax_t    value)
-{
-	cute_assert_intern(parameter);
-	cute_assert_intern(parameter[0]);
-
-	struct cute_expect_parm * xpct = (struct cute_expect_parm *)
-	                                 cute_expect_check(CUTE_EXPECT_PARM_TYPE,
-	                                                   file,
-	                                                   line,
-	                                                   function);
-	cute_run_desc_fn *        desc;
-	const char *              why;
-
-
-	cute_assert_intern(xpct->xpct_parm);
-	cute_assert_intern(xpct->xpct_parm[0]);
-	cute_assert_intern(xpct->chk_parm);
-	cute_assert_intern(xpct->chk_parm[0]);
-
-	if (strcmp(parameter, xpct->xpct_parm)) {
-		desc = cute_expect_desc_inval_parm;
-		why = "erroneous mock expectation parameter name";
-		goto break;
-	}
-
-	if (value != parm->xpct_val) {
-		xpct->chk_val = value;
-		desc = cute_expect_desc_inval_parm_val;
-		why = "erroneous mock expectation parameter value";
-		goto break;
-	}
-
-	cute_expect_destroy(xpct);
-
-	return;
-
-break:
-	xpct->got_type = type;
-	xpct->chk_parm = parameter;
-	cute_curr_run->xpct = &xpct->super;
-
-	/* Does not return !! */
-	cute_break(CUTE_FAIL_ISSUE, file, line, function, desc, why);
-}
-
-void
-cute_expect_push_parm(const char * file,
-                      int          line,
-                      const char * function,
-                      const char * parameter,
-                      uintmax_t    value)
-{
-	cute_assert_intern(parameter);
-	cute_assert_intern(parameter[0]);
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(parm);
+	cute_assert(parm[0]);
+	cute_assert(reference);
+	cute_assert(reference->expr);
+	cute_assert(reference->expr[0]);
 
 	struct cute_expect_parm * xpct;
+	struct cute_assess *      assess;
 
-	xpct = cute_expect_create(CUTE_EXPECT_PARM_TYPE;
+	xpct = (struct cute_expect_parm *)
+	       cute_expect_create(CUTE_EXPECT_PARM_TYPE,
 	                          file,
 	                          line,
 	                          function,
 	                          sizeof(*xpct));
-	xpct->xpct_parm = parameter;
-	xpct->xpct_val = value;
 
-	cute_expect_nqueue(&xpct->super);
+	assess = &xpct->super.super;
+	assess->ops = ops;
+	assess->expect.sint.scal = *reference;
+	xpct->xpct_parm = parm;
+
+	cute_expect_nqueue(&cute_expect_sched, &xpct->super);
 }
 
+void
+cute_expect_check_sint_parm_value(const char *             file,
+                                  int                      line,
+                                  const char *             function,
+                                  const struct cute_sint * check)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assert(check);
+	cute_assert(check->expr);
+	cute_assert(check->expr[0]);
+
+	struct cute_expect *          xpct;
+	const char *                  parm;
+	struct cute_assess *          assess;
+	const char *                  why;
+	const union cute_assess_value chk = { .sint = *check };
+
+	xpct = cute_expect_check(CUTE_EXPECT_PARM_TYPE, file, line, function);
+	cute_expect_assert_intern(xpct);
+
+	parm = ((struct cute_expect_parm *)xpct)->xpct_parm;
+	cute_assert_intern(parm);
+	cute_assert_intern(parm[0]);
+
+	cute_expect_nqueue(&cute_expect_done, xpct);
+
+	assess = &xpct->super;
+	if (strcmp(check->expr, parm)) {
+		why = "signed integer mock parameter name mismatch";
+		goto fail;
+	}
+
+	if (!assess->ops->cmp(assess, &chk)) {
+		why = "signed integer mock parameter check failed";
+		goto fail;
+	}
+
+	return;
+
+fail:
+	assess->check.sint = *check;
+	cute_curr_run->parm = *(struct cute_expect_parm *)xpct;
+
+	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+}
+
+static struct cute_text_block *
+cute_expect_desc_sint_parm_equal(const struct cute_assess * assess)
+{
+	return cute_expect_desc_sint_parm_value(assess, "==", "!=");
+}
+
+static const struct cute_assess_ops cute_expect_sint_parm_equal_ops = {
+	.cmp     = cute_assess_cmp_sint_equal,
+	.desc    = cute_expect_desc_sint_parm_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_sint_parm_equal(const char *             file,
+                                  int                      line,
+                                  const char *             function,
+                                  const char *             parm,
+                                  const struct cute_sint * expect)
+{
+	cute_expect_sched_sint_parm_value(file,
+	                                  line,
+	                                  function,
+	                                  &cute_expect_sint_parm_equal_ops,
+	                                  parm,
+	                                  expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_sint_parm_unequal(const struct cute_assess * assess)
+{
+	return cute_expect_desc_sint_parm_value(assess, "!=", "==");
+}
+
+static const struct cute_assess_ops cute_expect_sint_parm_unequal_ops = {
+	.cmp     = cute_assess_cmp_sint_unequal,
+	.desc    = cute_expect_desc_sint_parm_unequal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_sint_parm_unequal(const char *             file,
+                                    int                      line,
+                                    const char *             function,
+                                    const char *             parm,
+                                    const struct cute_sint * expect)
+{
+	cute_expect_sched_sint_parm_value(file,
+	                                  line,
+	                                  function,
+	                                  &cute_expect_sint_parm_unequal_ops,
+	                                  parm,
+	                                  expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_sint_parm_greater(const struct cute_assess * assess)
+{
+	return cute_expect_desc_sint_parm_value(assess, ">", "<=");
+}
+
+static const struct cute_assess_ops cute_expect_sint_parm_greater_ops = {
+	.cmp     = cute_assess_cmp_sint_greater,
+	.desc    = cute_expect_desc_sint_parm_greater,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_sint_parm_greater(const char *             file,
+                                    int                      line,
+                                    const char *             function,
+                                    const char *             parm,
+                                    const struct cute_sint * expect)
+{
+	cute_expect_sched_sint_parm_value(file,
+	                                  line,
+	                                  function,
+	                                  &cute_expect_sint_parm_greater_ops,
+	                                  parm,
+	                                  expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_sint_parm_greater_equal(const struct cute_assess * assess)
+{
+	return cute_expect_desc_sint_parm_value(assess, ">=", "<");
+}
+
+static const struct cute_assess_ops cute_expect_sint_parm_greater_equal_ops = {
+	.cmp     = cute_assess_cmp_sint_greater_equal,
+	.desc    = cute_expect_desc_sint_parm_greater_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_sint_parm_greater_equal(const char *             file,
+                                          int                      line,
+                                          const char *             function,
+                                          const char *             parm,
+                                          const struct cute_sint * expect)
+{
+	cute_expect_sched_sint_parm_value(
+		file,
+		line,
+		function,
+		&cute_expect_sint_parm_greater_equal_ops,
+		parm,
+		expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_sint_parm_lower(const struct cute_assess * assess)
+{
+	return cute_expect_desc_sint_parm_value(assess, "<", ">=");
+}
+
+static const struct cute_assess_ops cute_expect_sint_parm_lower_ops = {
+	.cmp     = cute_assess_cmp_sint_lower,
+	.desc    = cute_expect_desc_sint_parm_lower,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_sint_parm_lower(const char *             file,
+                                  int                      line,
+                                  const char *             function,
+                                  const char *             parm,
+                                  const struct cute_sint * expect)
+{
+	cute_expect_sched_sint_parm_value(file,
+	                                  line,
+	                                  function,
+	                                  &cute_expect_sint_parm_lower_ops,
+	                                  parm,
+	                                  expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_sint_parm_lower_equal(const struct cute_assess * assess)
+{
+	return cute_expect_desc_sint_parm_value(assess, "<=", ">");
+}
+
+static const struct cute_assess_ops cute_expect_sint_parm_lower_equal_ops = {
+	.cmp     = cute_assess_cmp_sint_lower_equal,
+	.desc    = cute_expect_desc_sint_parm_lower_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_sint_parm_lower_equal(const char *             file,
+                                        int                      line,
+                                        const char *             function,
+                                        const char *             parm,
+                                        const struct cute_sint * expect)
+{
+	cute_expect_sched_sint_parm_value(
+		file,
+		line,
+		function,
+		&cute_expect_sint_parm_lower_equal_ops,
+		parm,
+		expect);
+}
+
+#if 0
 /******************************************************************************
  * Mock return expectation handling
  ******************************************************************************/

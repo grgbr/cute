@@ -24,9 +24,6 @@ struct cute_expect {
 struct cute_expect_parm {
 	struct cute_expect super;
 	const char *       xpct_parm;
-	uintmax_t          xpct_val;
-	const char *       chk_parm;
-	uintmax_t          chk_val;
 };
 
 struct cute_expect_retval {
