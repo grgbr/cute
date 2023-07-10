@@ -341,6 +341,53 @@ CUTE_TEST(expect_sint_var_not_in_range_fail_test)
 	expect_sint_value_caller(10, -1, 2, -3);
 }
 
+CUTE_TEST(expect_sint_in_set_pass_test)
+{
+	const struct cute_sint_set set = CUTE_SINT_SET(-3, -1, 1, 3);
+
+	cute_expect_sint_set(expect_sint_value_callee, byte,
+	                     in,
+	                     CUTE_SINT_SET(-3, -1, 1, 3));
+	cute_expect_sint_set(expect_sint_value_callee, hword,
+	                     in,
+	                     CUTE_SINT_SET(-3, -1, 1, 3));
+	cute_expect_sint_set(expect_sint_value_callee, word,
+	                     in,
+	                     CUTE_SINT_SET(-3, -1, 1, 3));
+	cute_expect_sint_set(expect_sint_value_callee, dword,
+	                     in,
+	                     CUTE_SINT_SET(-3, -1, 1, 3));
+
+	cute_expect_sint_set(expect_sint_value_callee, byte,  in, set);
+	cute_expect_sint_set(expect_sint_value_callee, hword, in, set);
+	cute_expect_sint_set(expect_sint_value_callee, word,  in, set);
+	cute_expect_sint_set(expect_sint_value_callee, dword, in, set);
+
+	expect_sint_value_caller(-3, -1, 1, -3);
+
+	expect_sint_value_caller(-3, -1, 1, -3);
+}
+
+CUTE_TEST(expect_sint_literal_in_set_fail_test)
+{
+	cute_expect_sint_set(expect_sint_value_callee, byte,
+	                     in,
+	                     CUTE_SINT_SET(-3, -1, 1, 3));
+
+	expect_sint_value_caller(0, -1, 1, -3);
+}
+
+CUTE_TEST(expect_sint_var_in_set_fail_test)
+{
+	int                        ref0 = -3;
+	int                        ref2 = 1;
+	const struct cute_sint_set set = CUTE_SINT_SET(ref0, -1, ref2, 3);
+
+	cute_expect_sint_set(expect_sint_value_callee, byte, in, set);
+
+	expect_sint_value_caller(0, -1, 1, -3);
+}
+
 static CUTE_SUITE_DEFINE_TESTS(expect_sint_tests) = {
 	CUTE_REF(expect_sint_caller_fail_test),
 	CUTE_REF(expect_sint_parm_fail_test),
@@ -376,6 +423,10 @@ static CUTE_SUITE_DEFINE_TESTS(expect_sint_tests) = {
 	CUTE_REF(expect_sint_not_in_range_pass_test),
 	CUTE_REF(expect_sint_literal_not_in_range_fail_test),
 	CUTE_REF(expect_sint_var_not_in_range_fail_test),
+
+	CUTE_REF(expect_sint_in_set_pass_test),
+	CUTE_REF(expect_sint_literal_in_set_fail_test),
+	CUTE_REF(expect_sint_var_in_set_fail_test)
 };
 
 static CUTE_SUITE_DEFINE(expect_sint_suite,

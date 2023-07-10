@@ -637,6 +637,7 @@ cute_expect_check_sint_parm(const char *             file,
 fail:
 	assess->check.sint = *check;
 	cute_curr_run->parm = *(struct cute_expect_parm *)xpct;
+	assess->ops = &cute_assess_null_ops;
 
 	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
 }
@@ -963,6 +964,192 @@ cute_expect_sched_sint_parm_not_in_range(
 		line,
 		function,
 		&cute_expect_sint_parm_not_in_range,
+		parm,
+		expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_sint_parm_set(const struct cute_assess * assess,
+                               const char *               op,
+                               const char *               inv)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(op);
+	cute_assert_intern(op[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block *       blk;
+	const struct cute_expect *     xpct = (const struct cute_expect *)
+	                                      assess;
+	const char *                   parm = ((const struct cute_expect_parm *)
+	                                       assess)->xpct_parm;
+	const struct cute_sint *       chk = &assess->check.sint;
+	const struct cute_sint_set *   ref = &assess->expect.sint.set;
+
+	cute_expect_assert_intern(xpct);
+	cute_assert_intern(parm);
+	cute_assert_intern(parm[0]);
+	cute_assert_intern(chk->expr);
+	cute_assert_intern(chk->expr[0]);
+	cute_assert_intern(ref->expr);
+	cute_assert_intern(ref->expr[0]);
+
+	blk = cute_text_create(8);
+
+	cute_text_enroll(blk, "wanted:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   xpct->xpct_file, xpct->xpct_line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
+	cute_text_asprintf(blk,
+	                   "    expect: %s %s set %s",
+	                   parm, op, ref->expr);
+
+	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   assess->file, assess->line);
+	cute_text_asprintf(blk, "    caller: %s()",  assess->func);
+
+	if (!strcmp(parm, chk->expr)) {
+		/* Unexpected parameter value. */
+		if (ref->count) {
+			char * items;
+
+			items = cute_assess_sint_set_str(ref->items,
+			                                 ref->count);
+			cute_text_asprintf(blk,
+			                   "    actual: [%" PRIdMAX "] "
+			                   "%s "
+			                   "set {%s}",
+			                   assess->check.sint.value,
+			                   inv,
+			                   items);
+			cute_free(items);
+		}
+		else
+			cute_text_asprintf(blk,
+			                   "    actual: [%" PRIdMAX "] "
+			                   "%s "
+			                   "set {}",
+			                   chk->value,
+			                   inv);
+	}
+	else
+		/*
+		 * Parameter name checked using cute_mock_...() does not match
+		 * parameter name scheduled using cute_expect_...().
+		 */
+		cute_text_asprintf(blk,
+		                   "    expect: %s %s set %s",
+		                   chk->expr, op, ref->expr);
+
+	return blk;
+}
+
+static void
+cute_expect_sched_sint_parm_set(const char *                   file,
+                                int                            line,
+                                const char *                   function,
+                                const struct cute_assess_ops * ops,
+                                const char *                   parm,
+                                const struct cute_sint_set *   reference)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(parm);
+	cute_assert(parm[0]);
+	cute_assert(reference);
+	cute_assert(reference->expr);
+	cute_assert(reference->expr[0]);
+
+	intmax_t *                items;
+	struct cute_expect_parm * xpct;
+	struct cute_assess *      assess;
+
+	if (reference->count) {
+		unsigned int i;
+
+		items = cute_malloc(reference->count * sizeof(items[0]));
+		for (i = 0; i < reference->count; i++)
+			items[i] = reference->items[i];
+	}
+	else
+		items = NULL;
+
+	xpct = (struct cute_expect_parm *)
+	       cute_expect_create(CUTE_EXPECT_PARM_TYPE,
+	                          file,
+	                          line,
+	                          function,
+	                          sizeof(*xpct));
+
+	assess = &xpct->super.super;
+	assess->ops = ops;
+	assess->expect.sint.set = *reference;
+	assess->expect.sint.set.items = items;
+	xpct->xpct_parm = parm;
+
+	cute_expect_nqueue(&cute_expect_sched, &xpct->super);
+}
+
+static struct cute_text_block *
+cute_expect_desc_sint_parm_in_set(const struct cute_assess * assess)
+{
+	return cute_expect_desc_sint_parm_set(assess, "in", "not in");
+}
+
+static const struct cute_assess_ops cute_expect_sint_parm_in_set = {
+	.cmp     = cute_assess_cmp_sint_in_set,
+	.desc    = cute_expect_desc_sint_parm_in_set,
+	.release = cute_assess_release_sint_set
+};
+
+void
+cute_expect_sched_sint_parm_in_set(const char *                 file,
+                                   int                          line,
+                                   const char *                 function,
+                                   const char *                 parm,
+                                   const struct cute_sint_set * expect)
+{
+	cute_expect_sched_sint_parm_set(
+		file,
+		line,
+		function,
+		&cute_expect_sint_parm_in_set,
+		parm,
+		expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_sint_parm_not_in_set(const struct cute_assess * assess)
+{
+	return cute_expect_desc_sint_parm_set(assess, "not in", "in");
+}
+
+static const struct cute_assess_ops cute_expect_sint_parm_not_in_set = {
+	.cmp     = cute_assess_cmp_sint_not_in_set,
+	.desc    = cute_expect_desc_sint_parm_not_in_set,
+	.release = cute_assess_release_sint_set
+};
+
+void
+cute_expect_sched_sint_parm_not_in_set(const char *                 file,
+                                       int                          line,
+                                       const char *                 function,
+                                       const char *                 parm,
+                                       const struct cute_sint_set * expect)
+{
+	cute_expect_sched_sint_parm_set(
+		file,
+		line,
+		function,
+		&cute_expect_sint_parm_not_in_set,
 		parm,
 		expect);
 }

@@ -215,18 +215,42 @@ found:
     caller: expect_sint_value_callee()
     actual: [10] in range {0 ... 10}
 
+expect_sint_suite::expect_sint_literal_in_set_fail_test ............................................ fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:375
+    caller: expect_sint_value_callee()
+    expect: byte in set {-3, -1, 1, 3}
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [0] not in set {-3, -1, 1, 3}
+
+expect_sint_suite::expect_sint_var_in_set_fail_test ................................................ fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:386
+    caller: expect_sint_value_callee()
+    expect: byte in set {ref0, -1, ref2, 3}
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [0] not in set {-3, -1, 1, 3}
+
 expect_sint_suite .................................................................................. fail
 issue:  exec failed
 reason: descendants failed
-source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:385
+source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:436
 
 NAME                                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-expect_sint_suite                              fail    0.363498      8      0     18      0     26     26
-                                                                   30%     0%    69%     0%   100%
+expect_sint_suite                              fail    0.405899      9      0     20      0     29     29
+                                                                   31%     0%    68%     0%   100%
 ---------------------------------------------------------------------------------------------------------
-Total                                          fail    0.363498      8      0     18      0     26     26
-                                                                   30%     0%    69%     0%   100%
+Total                                          fail    0.405899      9      0     20      0     29     29
+                                                                   31%     0%    68%     0%   100%
 
                                   ###           SUMMARY            ###
-                                  ###  18/26 (69%) test(s) FAILED  ###
+                                  ###  20/29 (68%) test(s) FAILED  ###
 

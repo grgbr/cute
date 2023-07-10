@@ -6,25 +6,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-/*
- * Number of digits required to show an integral number encoded over _bits bits
- * in base 8.
- * This is _bits / log2(8), i.e., _bits / 3 rounded to the upper integer.
- */
-#define BASE8_DIGITS(_bits)  ((_bits + 2U) / 3U)
-/*
- * Number of digits required to show an integral number encoded over _bits bits
- * in base 10.
- * This is _bits / log2(10), i.e., _bits / 3.32 rounded to the upper integer.
- */
-#define BASE10_DIGITS(_bits) (((_bits * 100U) + 331U) / 332U)
-/*
- * Number of digits required to show an integral number encoded over _bits bits
- * in base 16.
- * This is _bits / log2(16), i.e., _bits / 4 rounded to the upper integer.
- */
-#define BASE16_DIGITS(_bits) ((_bits + 3U) / 4U)
-
 struct cute_assess;
 union cute_assess_value;
 
@@ -210,6 +191,12 @@ extern bool
 cute_assess_cmp_sint_not_in_set(const struct cute_assess *      assess,
                                 const union cute_assess_value * value);
 
+extern char *
+cute_assess_sint_set_str(const intmax_t * items, unsigned int count);
+
+extern void
+cute_assess_release_sint_set(struct cute_assess * assess);
+
 /******************************************************************************
  * Unsigned integer value handling
  ******************************************************************************/
@@ -260,6 +247,12 @@ extern bool
 cute_assess_cmp_uint_not_in_set(const struct cute_assess *      assess,
                                 const union cute_assess_value * value);
 
+extern char *
+cute_assess_uint_set_str(const uintmax_t * items, unsigned int count);
+
+extern void
+cute_assess_release_uint_set(struct cute_assess * assess);
+
 /******************************************************************************
  * Floating point numbers handling
  ******************************************************************************/
@@ -309,6 +302,21 @@ cute_assess_cmp_flt_in_set(const struct cute_assess *      assess,
 extern bool
 cute_assess_cmp_flt_not_in_set(const struct cute_assess *      assess,
                                const union cute_assess_value * value);
+
+/*
+ * The number of digits used to express a floating point number's mantissa as
+ * text (without the fractional dot '.').
+ */
+#define CUTE_FLT_MANT_DIGITS 10
+
+#define CUTE_FLT_FORMAT_STR \
+	"%." CUTE_STRING(CUTE_FLT_MANT_DIGITS) "Lg"
+
+extern char *
+cute_assess_flt_set_str(const long double * items, unsigned int count);
+
+extern void
+cute_assess_release_flt_set(struct cute_assess * assess);
 
 /******************************************************************************
  * Top-level generic assess handling

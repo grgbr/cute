@@ -118,6 +118,29 @@ cute_expect_sched_sint_parm_not_in_range(
 	const struct cute_sint_range * expect)
 	__cute_export;
 
+#define cute_expect_sint_set(_func, _parm, _op, _xpct) \
+	cute_expect_sched_sint_parm_ ##  _op ## _set(__FILE__, \
+	                                             __LINE__, \
+	                                             # _func, \
+	                                             # _parm, \
+	                                             &(_xpct))
+
+extern void
+cute_expect_sched_sint_parm_in_set(const char *                 file,
+                                   int                          line,
+                                   const char *                 function,
+                                   const char *                 parm,
+                                   const struct cute_sint_set * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_sint_parm_not_in_set(const char *                   file,
+                                       int                            line,
+                                       const char *                   function,
+                                       const char *                   parm,
+                                       const struct cute_sint_set * expect)
+	__cute_export;
+
 #if 0
 /******************************************************************************
  * Mock return expectation handling
