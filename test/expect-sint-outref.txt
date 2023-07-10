@@ -167,18 +167,66 @@ found:
     caller: expect_sint_value_callee()
     actual: [1] > [0]
 
+expect_sint_suite::expect_sint_literal_in_range_fail_test .......................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:284
+    caller: expect_sint_value_callee()
+    expect: byte in range {1 ... 10}
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [0] not in range {1 ... 10}
+
+expect_sint_suite::expect_sint_var_in_range_fail_test .............................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:294
+    caller: expect_sint_value_callee()
+    expect: byte in range {rmin ... rmax}
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [0] not in range {1 ... 10}
+
+expect_sint_suite::expect_sint_literal_not_in_range_fail_test ...................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:330
+    caller: expect_sint_value_callee()
+    expect: byte not in range {0 ... 10}
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [0] in range {0 ... 10}
+
+expect_sint_suite::expect_sint_var_not_in_range_fail_test .......................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:340
+    caller: expect_sint_value_callee()
+    expect: byte not in range {rmin ... rmax}
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [10] in range {0 ... 10}
+
 expect_sint_suite .................................................................................. fail
 issue:  exec failed
 reason: descendants failed
-source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:286
+source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:385
 
 NAME                                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-expect_sint_suite                              fail    0.294330      6      0     14      0     20     20
-                                                                   30%     0%    70%     0%   100%
+expect_sint_suite                              fail    0.363498      8      0     18      0     26     26
+                                                                   30%     0%    69%     0%   100%
 ---------------------------------------------------------------------------------------------------------
-Total                                          fail    0.294330      6      0     14      0     20     20
-                                                                   30%     0%    70%     0%   100%
+Total                                          fail    0.363498      8      0     18      0     26     26
+                                                                   30%     0%    69%     0%   100%
 
                                   ###           SUMMARY            ###
-                                  ###  14/20 (70%) test(s) FAILED  ###
+                                  ###  18/26 (69%) test(s) FAILED  ###
 
