@@ -10,15 +10,17 @@ BEGIN {
 	stat=0
 }
 
-/^source: .*/ {
-	sub("^source: [^[:blank:]]+/test/", "source: test/", $0);
+/^[[:blank:]]*source: .*/ {
+	print gensub("source: [^[:blank:]]+/(test/[^:]+):[0-9]+", "source: \\1",
+	             1,
+	             $0);
 }
 
 /^NAME[[:blank:]]+[#[:blank:](.A-Z]+/ {
 	stat=1
 }
 
-{
+! /^[[:blank:]]*source: .*/ {
 	if (stat == 1)
 		gsub("[ ]{0,3}[0-9]+.[0-9]{6}", "????.??????", $0);
 	print $0;
@@ -119,5 +121,6 @@ run_testcase "check-sint-utest" 1 || ret=1
 run_testcase "check-uint-utest" 1 || ret=1
 run_testcase "check-flt-utest" 1 || ret=1
 run_testcase "check-dbl-utest" 1 || ret=1
+run_testcase "expect-sint-utest" 1 || ret=1
 
 exit $ret

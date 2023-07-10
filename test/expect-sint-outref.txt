@@ -1,0 +1,184 @@
+
+########################################  Running CUTe test(s)  #########################################
+
+expect_sint_suite::expect_sint_caller_fail_test .................................................... fail
+issue:  exec failed
+reason: mock expectation caller mismatch
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:21
+    caller: nonexistent_callee()
+found:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+
+expect_sint_suite::expect_sint_parm_fail_test ...................................................... fail
+issue:  exec failed
+reason: signed integer mock parameter name mismatch
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:32
+    caller: expect_sint_value_callee()
+    expect: nonexistent_parm == 2
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:9
+    caller: expect_sint_value_callee()
+    expect: word == 2
+
+expect_sint_suite::expect_sint_literal_equal_fail_test ............................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:61
+    caller: expect_sint_value_callee()
+    expect: byte == 1
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [0] != [1]
+
+expect_sint_suite::expect_sint_var_equal_fail_test ................................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:69
+    caller: expect_sint_value_callee()
+    expect: byte == bref
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [0] != [-1]
+
+expect_sint_suite::expect_sint_literal_unequal_fail_test ........................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:97
+    caller: expect_sint_value_callee()
+    expect: byte != 0
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [0] == [0]
+
+expect_sint_suite::expect_sint_var_unequal_fail_test ............................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:105
+    caller: expect_sint_value_callee()
+    expect: byte != bref
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [0] == [0]
+
+expect_sint_suite::expect_sint_literal_greater_fail_test ........................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:133
+    caller: expect_sint_value_callee()
+    expect: byte > 0
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [-1] <= [0]
+
+expect_sint_suite::expect_sint_var_greater_fail_test ............................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:141
+    caller: expect_sint_value_callee()
+    expect: byte > bref
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [-1] <= [0]
+
+expect_sint_suite::expect_sint_literal_greater_equal_fail_test ..................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:169
+    caller: expect_sint_value_callee()
+    expect: byte >= 0
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [-1] < [0]
+
+expect_sint_suite::expect_sint_var_greater_equal_fail_test ......................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:177
+    caller: expect_sint_value_callee()
+    expect: byte > bref
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [-1] <= [0]
+
+expect_sint_suite::expect_sint_literal_lower_fail_test ............................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:205
+    caller: expect_sint_value_callee()
+    expect: byte < 0
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [1] >= [0]
+
+expect_sint_suite::expect_sint_var_lower_fail_test ................................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:213
+    caller: expect_sint_value_callee()
+    expect: byte < bref
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [1] >= [0]
+
+expect_sint_suite::expect_sint_literal_lower_equal_fail_test ....................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:241
+    caller: expect_sint_value_callee()
+    expect: byte <= 0
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [1] > [0]
+
+expect_sint_suite::expect_sint_var_lower_equal_fail_test ........................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:249
+    caller: expect_sint_value_callee()
+    expect: byte <= bref
+found: 
+    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    caller: expect_sint_value_callee()
+    actual: [1] > [0]
+
+expect_sint_suite .................................................................................. fail
+issue:  exec failed
+reason: descendants failed
+source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:286
+
+NAME                                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+expect_sint_suite                              fail    0.294330      6      0     14      0     20     20
+                                                                   30%     0%    70%     0%   100%
+---------------------------------------------------------------------------------------------------------
+Total                                          fail    0.294330      6      0     14      0     20     20
+                                                                   30%     0%    70%     0%   100%
+
+                                  ###           SUMMARY            ###
+                                  ###  14/20 (70%) test(s) FAILED  ###
+

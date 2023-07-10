@@ -81,6 +81,13 @@ check-dbl-utest-cflags            := $(test-cflags)
 check-dbl-utest-ldflags           := $(test-ldflags) -lcute
 check-dbl-utest-path              := $(LIBEXECDIR)/cute/check-dbl-utest
 
+bins                              += expect-sint-utest
+expect-sint-utest-objs            := expect_sint.o
+expect-sint-utest-cflags          := $(test-cflags)
+expect-sint-utest-ldflags         := $(test-ldflags) -lcute
+expect-sint-utest-path            := $(LIBEXECDIR)/cute/expect-sint-utest
+
+
 build: $(BUILDDIR)/cute-utest.sh
 
 $(BUILDDIR)/cute-utest.sh: $(SRCDIR)/cute-utest.sh | $(BUILDDIR)

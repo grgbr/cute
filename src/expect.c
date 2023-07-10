@@ -154,6 +154,26 @@ cute_expect_type_label(enum cute_expect_type type)
 	return labels[type];
 }
 
+static void
+cute_expect_claim_inval(struct cute_expect *           expect,
+                        const struct cute_assess_ops * ops,
+                        const struct cute_expect *     orig,
+                        enum cute_expect_type          type)
+{
+	cute_assess_assert_intern(&expect->super);
+	cute_assess_assert_ops_intern(ops);
+	cute_expect_assert_intern(orig);
+	cute_expect_assert_type_intern(type);
+
+	expect->super.ops = ops;
+	expect->next = NULL;
+	expect->xpct_type = orig->xpct_type;
+	expect->xpct_file = orig->xpct_file;
+	expect->xpct_line = orig->xpct_line;
+	expect->xpct_func = orig->xpct_func;
+	expect->got_type = type;
+}
+
 static struct cute_text_block *
 cute_expect_desc_inval_type(const struct cute_assess * assess)
 {
@@ -189,14 +209,14 @@ static const struct cute_assess_ops cute_expect_inval_type_ops = {
 };
 
 static void
-cute_expect_claim_inval_type(struct cute_expect *  expect,
-                             enum cute_expect_type type)
+cute_expect_claim_inval_type(struct cute_expect *       expect,
+                             const struct cute_expect * orig,
+                             enum cute_expect_type      type)
 {
-	cute_expect_assert_intern(expect);
-	cute_expect_assert_type_intern(type);
-
-	expect->super.ops = &cute_expect_inval_type_ops;
-	expect->got_type = type;
+	cute_expect_claim_inval(expect,
+	                        &cute_expect_inval_type_ops,
+	                        orig,
+	                        type);
 }
 
 static struct cute_text_block *
@@ -233,17 +253,10 @@ cute_expect_claim_inval_call(struct cute_expect *       expect,
                              const struct cute_expect * orig,
                              enum cute_expect_type      type)
 {
-	cute_assess_assert_intern(&expect->super);
-	cute_expect_assert_intern(orig);
-	cute_expect_assert_type_intern(type);
-
-	expect->super.ops = &cute_expect_inval_call_ops;
-	expect->next = NULL;
-	expect->xpct_type = orig->xpct_type;
-	expect->xpct_file = orig->xpct_file;
-	expect->xpct_line = orig->xpct_line;
-	expect->xpct_func = orig->xpct_func;
-	expect->got_type = type;
+	cute_expect_claim_inval(expect,
+	                        &cute_expect_inval_call_ops,
+	                        orig,
+	                        type);
 }
 
 static struct cute_text_block *
@@ -302,8 +315,9 @@ cute_expect_check(enum cute_expect_type type,
 
 		if (type != xpct->xpct_type) {
 			cute_expect_claim_inval_type(&cute_curr_run->call,
+			                             xpct,
 			                             type);
-			why = "erroneous mock expectation type";
+			why = "mock expectation type mismatch";
 			goto fail;
 		}
 
@@ -311,7 +325,7 @@ cute_expect_check(enum cute_expect_type type,
 			cute_expect_claim_inval_call(&cute_curr_run->call,
 			                             xpct,
 			                             type);
-			why = "erroneous mock expectation caller";
+			why = "mock expectation caller mismatch";
 			goto fail;
 		}
 
@@ -503,7 +517,7 @@ cute_expect_desc_sint_parm_value(const struct cute_assess * assess,
 	cute_assert_intern(ref->expr);
 	cute_assert_intern(ref->expr[0]);
 
-	blk = cute_text_create(9);
+	blk = cute_text_create(8);
 
 	cute_text_enroll(blk,   "wanted:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
@@ -516,12 +530,24 @@ cute_expect_desc_sint_parm_value(const struct cute_assess * assess,
 	cute_text_asprintf(blk, "    source: %s:%d", assess->file,
 	                                             assess->line);
 	cute_text_asprintf(blk, "    caller: %s()",  assess->func);
-	cute_text_asprintf(blk,
-	                   "    expect: %s %s %s",
-	                   chk->expr, op, ref->expr);
-	cute_text_asprintf(blk,
-	                   "    actual: [%" PRIdMAX "] %s [%" PRIdMAX "]",
-	                   chk->value, inv, ref->value);
+
+	if (strcmp(parm, chk->expr))
+		/*
+		 * Parameter name checked using cute_mock_...() does not match
+		 * parameter name scheduled using cute_expect_...().
+		 */
+		cute_text_asprintf(blk,
+		                   "    expect: %s %s %s",
+		                   chk->expr, op, ref->expr);
+	else
+		/* Unexpected parameter value. */
+		cute_text_asprintf(blk,
+		                   "    actual: [%" PRIdMAX "] "
+		                   "%s "
+		                   "[%" PRIdMAX "]",
+		                   chk->value,
+		                   inv,
+		                   ref->value);
 
 	return blk;
 }
