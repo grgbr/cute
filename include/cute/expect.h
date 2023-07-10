@@ -34,16 +34,16 @@ cute_expect_check_call(const char * file, int line, const char * function)
 		&__CUTE_VALUE(sint, _xpct))
 
 #define cute_mock_sint(_parm) \
-	cute_expect_check_sint_parm_value(__FILE__, \
-	                                  __LINE__, \
-	                                  __func__, \
-	                                  &__CUTE_VALUE(sint, _parm))
+	cute_expect_check_sint_parm(__FILE__, \
+	                            __LINE__, \
+	                            __func__, \
+	                            &__CUTE_VALUE(sint, _parm))
 
 extern void
-cute_expect_check_sint_parm_value(const char *             file,
-                                  int                      line,
-                                  const char *             function,
-                                  const struct cute_sint * check)
+cute_expect_check_sint_parm(const char *             file,
+                            int                      line,
+                            const char *             function,
+                            const struct cute_sint * check)
 	__cute_export;
 
 extern void
@@ -92,6 +92,30 @@ cute_expect_sched_sint_parm_lower_equal(const char *             file,
                                         const char *             function,
                                         const char *             parm,
                                         const struct cute_sint * expect)
+	__cute_export;
+
+#define cute_expect_sint_range(_func, _parm, _op, _xpct) \
+	cute_expect_sched_sint_parm_ ##  _op ## _range(__FILE__, \
+	                                               __LINE__, \
+	                                               # _func, \
+	                                               # _parm, \
+	                                               &(_xpct))
+
+extern void
+cute_expect_sched_sint_parm_in_range(const char *                   file,
+                                     int                            line,
+                                     const char *                   function,
+                                     const char *                   parm,
+                                     const struct cute_sint_range * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_sint_parm_not_in_range(
+	const char *                   file,
+	int                            line,
+	const char *                   function,
+	const char *                   parm,
+	const struct cute_sint_range * expect)
 	__cute_export;
 
 #if 0

@@ -33,10 +33,10 @@
 
 #define __CUTE_CHECK_RANGE(_type, _chk, _op, _xpct) \
 	cute_check_ ## _type ## _ ## _op ## _range(__FILE__, \
-	                                    __LINE__, \
-	                                    __func__, \
-	                                    &__CUTE_VALUE(_type, _chk), \
-	                                    &(_xpct))
+	                                           __LINE__, \
+	                                           __func__, \
+	                                           &__CUTE_VALUE(_type, _chk), \
+	                                           &(_xpct))
 
 #define __CUTE_SET_STR(...) \
 	"{" # __VA_ARGS__ "}"

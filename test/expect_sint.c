@@ -250,6 +250,97 @@ CUTE_TEST(expect_sint_var_lower_equal_fail_test)
 	expect_sint_value_caller(1, -1, 2, -3);
 }
 
+CUTE_TEST(expect_sint_in_range_pass_test)
+{
+	const struct cute_sint_range range = CUTE_SINT_RANGE(-3, 2);
+
+	cute_expect_sint_range(expect_sint_value_callee, byte,
+	                       in,
+	                       CUTE_SINT_RANGE(-10, 10));
+	cute_expect_sint_range(expect_sint_value_callee, hword,
+	                       in,
+	                       CUTE_SINT_RANGE(-10, 10));
+	cute_expect_sint_range(expect_sint_value_callee, word,
+	                       in,
+	                       CUTE_SINT_RANGE(-10, 10));
+	cute_expect_sint_range(expect_sint_value_callee, dword,
+	                       in,
+	                       CUTE_SINT_RANGE(-10, 10));
+
+	cute_expect_sint_range(expect_sint_value_callee, byte,  in, range);
+	cute_expect_sint_range(expect_sint_value_callee, hword, in, range);
+	cute_expect_sint_range(expect_sint_value_callee, word,  in, range);
+	cute_expect_sint_range(expect_sint_value_callee, dword, in, range);
+
+	expect_sint_value_caller(0, -1, 2, -3);
+
+	expect_sint_value_caller(0, -1, 2, -3);
+}
+
+CUTE_TEST(expect_sint_literal_in_range_fail_test)
+{
+	cute_expect_sint_range(expect_sint_value_callee, byte,
+	                       in,
+	                       CUTE_SINT_RANGE(1, 10));
+	expect_sint_value_caller(0, -1, 2, -3);
+}
+
+CUTE_TEST(expect_sint_var_in_range_fail_test)
+{
+	int                          rmin = 1;
+	int                          rmax = 10;
+	const struct cute_sint_range range = CUTE_SINT_RANGE(rmin, rmax);
+
+	cute_expect_sint_range(expect_sint_value_callee, byte, in, range);
+	expect_sint_value_caller(0, -1, 2, -3);
+}
+
+CUTE_TEST(expect_sint_not_in_range_pass_test)
+{
+	int                          rmin = -3;
+	const struct cute_sint_range range = CUTE_SINT_RANGE(rmin, 2);
+
+	cute_expect_sint_range(expect_sint_value_callee, byte,
+	                       not_in,
+	                       CUTE_SINT_RANGE(-10, 10));
+	cute_expect_sint_range(expect_sint_value_callee, hword,
+	                       not_in,
+	                       CUTE_SINT_RANGE(-10, 10));
+	cute_expect_sint_range(expect_sint_value_callee, word,
+	                       not_in,
+	                       CUTE_SINT_RANGE(-10, 10));
+	cute_expect_sint_range(expect_sint_value_callee, dword,
+	                       not_in,
+	                       CUTE_SINT_RANGE(-10, 10));
+
+	cute_expect_sint_range(expect_sint_value_callee, byte,  not_in, range);
+	cute_expect_sint_range(expect_sint_value_callee, hword, not_in, range);
+	cute_expect_sint_range(expect_sint_value_callee, word,  not_in, range);
+	cute_expect_sint_range(expect_sint_value_callee, dword, not_in, range);
+
+	expect_sint_value_caller(11, -11, 20, -20);
+
+	expect_sint_value_caller(11, -11, 20, -20);
+}
+
+CUTE_TEST(expect_sint_literal_not_in_range_fail_test)
+{
+	cute_expect_sint_range(expect_sint_value_callee, byte,
+	                       not_in,
+	                       CUTE_SINT_RANGE(0, 10));
+	expect_sint_value_caller(0, -1, 2, -3);
+}
+
+CUTE_TEST(expect_sint_var_not_in_range_fail_test)
+{
+	int                          rmin = 0;
+	int                          rmax = 10;
+	const struct cute_sint_range range = CUTE_SINT_RANGE(rmin, rmax);
+
+	cute_expect_sint_range(expect_sint_value_callee, byte, not_in, range);
+	expect_sint_value_caller(10, -1, 2, -3);
+}
+
 static CUTE_SUITE_DEFINE_TESTS(expect_sint_tests) = {
 	CUTE_REF(expect_sint_caller_fail_test),
 	CUTE_REF(expect_sint_parm_fail_test),
@@ -277,6 +368,14 @@ static CUTE_SUITE_DEFINE_TESTS(expect_sint_tests) = {
 	CUTE_REF(expect_sint_lower_equal_pass_test),
 	CUTE_REF(expect_sint_literal_lower_equal_fail_test),
 	CUTE_REF(expect_sint_var_lower_equal_fail_test),
+
+	CUTE_REF(expect_sint_in_range_pass_test),
+	CUTE_REF(expect_sint_literal_in_range_fail_test),
+	CUTE_REF(expect_sint_var_in_range_fail_test),
+
+	CUTE_REF(expect_sint_not_in_range_pass_test),
+	CUTE_REF(expect_sint_literal_not_in_range_fail_test),
+	CUTE_REF(expect_sint_var_not_in_range_fail_test),
 };
 
 static CUTE_SUITE_DEFINE(expect_sint_suite,
