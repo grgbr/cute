@@ -51,7 +51,7 @@ cute_expect_check_sint_retval(const char * file,
  * Mock parameter expectation handling
  ******************************************************************************/
 
-#define cute_expect_sint(_func, _parm, _op, _xpct) \
+#define cute_expect_sint_parm(_func, _parm, _op, _xpct) \
 	cute_expect_sched_sint_parm_ ##  _op( \
 		__FILE__, \
 		__LINE__, \
@@ -59,7 +59,7 @@ cute_expect_check_sint_retval(const char * file,
 	        # _parm, \
 		&__CUTE_VALUE(sint, _xpct))
 
-#define cute_mock_sint(_parm) \
+#define cute_mock_sint_parm(_parm) \
 	cute_expect_check_sint_parm(__FILE__, \
 	                            __LINE__, \
 	                            __func__, \

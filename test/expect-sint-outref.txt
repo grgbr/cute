@@ -5,21 +5,21 @@ expect_sint_suite::expect_sint_caller_fail_test ................................
 issue:  exec failed
 reason: mock expectation caller mismatch
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:21
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:21
     caller: nonexistent_callee()
 found:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
 
 expect_sint_suite::expect_sint_parm_fail_test ...................................................... fail
 issue:  exec failed
 reason: signed integer mock parameter name mismatch
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:32
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:32
     caller: expect_sint_value_callee()
     expect: nonexistent_parm == 2
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:9
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:9
     caller: expect_sint_value_callee()
     expect: word == 2
 
@@ -27,11 +27,11 @@ expect_sint_suite::expect_sint_literal_equal_fail_test .........................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:61
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:64
     caller: expect_sint_value_callee()
     expect: byte == 1
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [0] != [1]
 
@@ -39,11 +39,11 @@ expect_sint_suite::expect_sint_var_equal_fail_test .............................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:69
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:72
     caller: expect_sint_value_callee()
     expect: byte == bref
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [0] != [-1]
 
@@ -51,11 +51,11 @@ expect_sint_suite::expect_sint_literal_unequal_fail_test .......................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:97
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:100
     caller: expect_sint_value_callee()
     expect: byte != 0
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [0] == [0]
 
@@ -63,11 +63,11 @@ expect_sint_suite::expect_sint_var_unequal_fail_test ...........................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:105
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:108
     caller: expect_sint_value_callee()
     expect: byte != bref
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [0] == [0]
 
@@ -75,11 +75,11 @@ expect_sint_suite::expect_sint_literal_greater_fail_test .......................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:133
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:148
     caller: expect_sint_value_callee()
     expect: byte > 0
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [-1] <= [0]
 
@@ -87,11 +87,11 @@ expect_sint_suite::expect_sint_var_greater_fail_test ...........................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:141
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:156
     caller: expect_sint_value_callee()
     expect: byte > bref
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [-1] <= [0]
 
@@ -99,11 +99,11 @@ expect_sint_suite::expect_sint_literal_greater_equal_fail_test .................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:169
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:208
     caller: expect_sint_value_callee()
     expect: byte >= 0
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [-1] < [0]
 
@@ -111,11 +111,11 @@ expect_sint_suite::expect_sint_var_greater_equal_fail_test .....................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:177
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:216
     caller: expect_sint_value_callee()
     expect: byte > bref
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [-1] <= [0]
 
@@ -123,11 +123,11 @@ expect_sint_suite::expect_sint_literal_lower_fail_test .........................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:205
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:244
     caller: expect_sint_value_callee()
     expect: byte < 0
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [1] >= [0]
 
@@ -135,11 +135,11 @@ expect_sint_suite::expect_sint_var_lower_fail_test .............................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:213
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:252
     caller: expect_sint_value_callee()
     expect: byte < bref
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [1] >= [0]
 
@@ -147,11 +147,11 @@ expect_sint_suite::expect_sint_literal_lower_equal_fail_test ...................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:241
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:292
     caller: expect_sint_value_callee()
     expect: byte <= 0
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [1] > [0]
 
@@ -159,11 +159,11 @@ expect_sint_suite::expect_sint_var_lower_equal_fail_test .......................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:249
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:300
     caller: expect_sint_value_callee()
     expect: byte <= bref
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [1] > [0]
 
@@ -171,11 +171,11 @@ expect_sint_suite::expect_sint_literal_in_range_fail_test ......................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:284
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:336
     caller: expect_sint_value_callee()
     expect: byte in range {1 ... 10}
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [0] not in range {1 ... 10}
 
@@ -183,11 +183,11 @@ expect_sint_suite::expect_sint_var_in_range_fail_test ..........................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:294
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:348
     caller: expect_sint_value_callee()
     expect: byte in range {rmin ... rmax}
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [0] not in range {1 ... 10}
 
@@ -195,11 +195,11 @@ expect_sint_suite::expect_sint_literal_not_in_range_fail_test ..................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:330
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:382
     caller: expect_sint_value_callee()
     expect: byte not in range {0 ... 10}
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [0] in range {0 ... 10}
 
@@ -207,11 +207,11 @@ expect_sint_suite::expect_sint_var_not_in_range_fail_test ......................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:340
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:394
     caller: expect_sint_value_callee()
     expect: byte not in range {rmin ... rmax}
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [10] in range {0 ... 10}
 
@@ -219,11 +219,11 @@ expect_sint_suite::expect_sint_literal_in_set_fail_test ........................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:375
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:427
     caller: expect_sint_value_callee()
     expect: byte in set {-3, -1, 1, 3}
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [0] not in set {-3, -1, 1, 3}
 
@@ -231,26 +231,57 @@ expect_sint_suite::expect_sint_var_in_set_fail_test ............................
 issue:  exec failed
 reason: signed integer mock parameter check failed
 wanted:
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:386
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:440
     caller: expect_sint_value_callee()
     expect: byte in set {ref0, -1, ref2, 3}
 found: 
-    source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:7
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:7
     caller: expect_sint_value_callee()
     actual: [0] not in set {-3, -1, 1, 3}
+
+expect_sint_suite::expect_sint_retval_caller_fail_test ............................................. fail
+issue:  exec failed
+reason: mock expectation caller mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:479
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:448
+    caller: expect_sint_retval_callee()
+
+expect_sint_suite::expect_xcess_sint_retval_fail_test .............................................. fail
+issue:  teardown failed
+reason: extra mock expectation left
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:493
+    caller: expect_sint_retval_callee()
+    expect: mock function return value
+found:  none
+
+expect_sint_suite::expect_sint_inval_retval_fail_test .............................................. fail
+issue:  exec failed
+reason: mock expectation type mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:504
+    caller: expect_sint_retval_callee()
+    expect: mock function parameter
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:448
+    caller: expect_sint_retval_callee()
+    found:  mock function return value
 
 expect_sint_suite .................................................................................. fail
 issue:  exec failed
 reason: descendants failed
-source: /home/grb/dev/proto/icsw/src/cute/test/expect_sint.c:436
+source: /mnt/devel/greg/tidor/cute/test/expect_sint.c:557
 
 NAME                                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-expect_sint_suite                              fail    0.405899      9      0     20      0     29     29
-                                                                   31%     0%    68%     0%   100%
+expect_sint_suite                              fail    0.571753     10      0     23      0     33     33
+                                                                   30%     0%    69%     0%   100%
 ---------------------------------------------------------------------------------------------------------
-Total                                          fail    0.405899      9      0     20      0     29     29
-                                                                   31%     0%    68%     0%   100%
+Total                                          fail    0.571753     10      0     23      0     33     33
+                                                                   30%     0%    69%     0%   100%
 
                                   ###           SUMMARY            ###
-                                  ###  20/29 (68%) test(s) FAILED  ###
+                                  ###  23/33 (69%) test(s) FAILED  ###
 

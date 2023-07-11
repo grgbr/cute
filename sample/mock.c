@@ -39,7 +39,7 @@ typedef void (parm_callee_fn)(int);
 static void
 mocked_parm_callee(int parm)
 {
-	cute_mock_sint(parm);
+	cute_mock_sint_parm(parm);
 }
 
 static void
@@ -50,32 +50,32 @@ parm_caller(parm_callee_fn * callee, int parm)
 
 CUTE_TEST(mock_parm_pass_test)
 {
-	cute_expect_sint(mocked_parm_callee, parm, equal, 2);
+	cute_expect_sint_parm(mocked_parm_callee, parm, equal, 2);
 	parm_caller(mocked_parm_callee, 2);
 }
 
 CUTE_TEST(mock_parm_value_fail_test)
 {
-	cute_expect_sint(mocked_parm_callee, parm, equal, 3);
+	cute_expect_sint_parm(mocked_parm_callee, parm, equal, 3);
 	parm_caller(mocked_parm_callee, 2);
 }
 
 CUTE_TEST(mock_parm_name_fail_test)
 {
-	cute_expect_sint(mocked_parm_callee, nonexistent, equal, 3);
+	cute_expect_sint_parm(mocked_parm_callee, nonexistent, equal, 3);
 	parm_caller(mocked_parm_callee, 2);
 }
 
 CUTE_TEST(mock_parm_xcess_fail_test)
 {
-	cute_expect_sint(mocked_parm_callee, parm, equal, 3);
-	cute_expect_sint(mocked_parm_callee, parm, equal, 3);
+	cute_expect_sint_parm(mocked_parm_callee, parm, equal, 3);
+	cute_expect_sint_parm(mocked_parm_callee, parm, equal, 3);
 	parm_caller(mocked_parm_callee, 3);
 }
 
 CUTE_TEST(mock_inval_parm_fail_test)
 {
-	cute_expect_sint(mocked_parm_callee, parm, equal, 3);
+	cute_expect_sint_parm(mocked_parm_callee, parm, equal, 3);
 	caller(mocked_callee);
 }
 
