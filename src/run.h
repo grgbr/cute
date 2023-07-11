@@ -69,23 +69,23 @@ struct cute_run_ops {
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
 struct cute_run {
-	const struct cute_run_ops *       ops;
-	char *                            name;
-	struct cute_run *                 parent;
-	int                               depth;
-	int                               id;
-	const struct cute_base *          base;
-	enum cute_state                   state;
-	enum cute_issue                   issue;
-	struct timespec                   begin;
-	struct timespec                   end;
-	const char *                      what;
-	const char *                      why;
+	const struct cute_run_ops *     ops;
+	char *                          name;
+	struct cute_run *               parent;
+	int                             depth;
+	int                             id;
+	const struct cute_base *        base;
+	enum cute_state                 state;
+	enum cute_issue                 issue;
+	struct timespec                 begin;
+	struct timespec                 end;
+	const char *                    what;
+	const char *                    why;
 	union {
-		struct cute_assess        assess;
-		struct cute_expect        call;
-		struct cute_expect_parm   parm;
-		struct cute_expect_retval retval;
+		struct cute_assess      assess;
+		struct cute_expect      call;
+		struct cute_expect_parm parm;
+		struct cute_expect      retval;
 	};
 };
 

@@ -22,6 +22,32 @@ cute_expect_check_call(const char * file, int line, const char * function)
 	cute_expect_check_call(__FILE__, __LINE__, __func__)
 
 /******************************************************************************
+ * Mock return expectation handling
+ ******************************************************************************/
+
+extern void
+cute_expect_sched_sint_retval(const char *             file,
+                              int                      line,
+                              const char *             function,
+                              const struct cute_sint * retval)
+	__cute_export;
+
+#define cute_expect_sint_retval(_func, _retval) \
+	cute_expect_sched_sint_retval(__FILE__, \
+	                              __LINE__, \
+	                              # _func, \
+	                              &__CUTE_VALUE(sint, _retval))
+
+extern intmax_t
+cute_expect_check_sint_retval(const char * file,
+                              int          line,
+                              const char * function)
+	__cute_export;
+
+#define cute_mock_sint_retval() \
+	cute_expect_check_sint_retval(__FILE__, __LINE__, __func__)
+
+/******************************************************************************
  * Mock parameter expectation handling
  ******************************************************************************/
 
@@ -141,29 +167,4 @@ cute_expect_sched_sint_parm_not_in_set(const char *                   file,
                                        const struct cute_sint_set * expect)
 	__cute_export;
 
-#if 0
-/******************************************************************************
- * Mock return expectation handling
- ******************************************************************************/
-
-extern void
-cute_expect_sched_retval(const char * file,
-                         int          line,
-                         const char * function,
-                         uintmax_t    retval)
-	__cute_export;
-
-#define cute_expect_retval(_func, _retval) \
-	cute_expect_sched_retval(__FILE__, \
-	                         __LINE__, \
-	                         # _func, \
-	                         (uintmax_t)(_retval))
-
-extern uintmax_t
-cute_expect_check_retval(const char * file, int line, const char * function)
-	__cute_export;
-
-#define cute_mock_retval() \
-	cute_expect_check_retval(__FILE__, __LINE__, __func__)
-#endif
 #endif /* _CUTE_EXPECT_H */

@@ -388,6 +388,48 @@ CUTE_TEST(expect_sint_var_in_set_fail_test)
 	expect_sint_value_caller(0, -1, 1, -3);
 }
 
+static int
+expect_sint_retval_callee(void)
+{
+	return (int)cute_mock_sint_retval();
+}
+
+static void
+expect_sint_retval_caller(char * result, size_t size)
+{
+	unsigned int c;
+
+	for (c = 0; c < (size - 1); c++)
+		result[c] = (char)expect_sint_retval_callee();
+	
+	result[c] = '\0';
+}
+
+CUTE_TEST(expect_sint_retval_pass_test)
+{
+	char res[3] = { 0, };
+
+	cute_expect_sint_retval(expect_sint_retval_callee, 'a');
+	cute_expect_sint_retval(expect_sint_retval_callee, 'b');
+	expect_sint_retval_caller(res, sizeof(res));
+
+	cute_check_sint(res[0], equal, 'a');
+	cute_check_sint(res[1], equal, 'b');
+	cute_check_sint(res[2], equal, '\0');
+}
+
+CUTE_TEST(expect_xcess_sint_retval_fail_test)
+{
+	char res[2] = { 0, };
+
+	cute_expect_sint_retval(expect_sint_retval_callee, 'a');
+	cute_expect_sint_retval(expect_sint_retval_callee, 'b');
+	expect_sint_retval_caller(res, sizeof(res));
+
+	cute_check_sint(res[0], equal, 'a');
+	cute_check_sint(res[1], equal, '\0');
+}
+
 static CUTE_SUITE_DEFINE_TESTS(expect_sint_tests) = {
 	CUTE_REF(expect_sint_caller_fail_test),
 	CUTE_REF(expect_sint_parm_fail_test),
@@ -426,7 +468,10 @@ static CUTE_SUITE_DEFINE_TESTS(expect_sint_tests) = {
 
 	CUTE_REF(expect_sint_in_set_pass_test),
 	CUTE_REF(expect_sint_literal_in_set_fail_test),
-	CUTE_REF(expect_sint_var_in_set_fail_test)
+	CUTE_REF(expect_sint_var_in_set_fail_test),
+
+	CUTE_REF(expect_sint_retval_pass_test),
+	CUTE_REF(expect_xcess_sint_retval_fail_test)
 };
 
 static CUTE_SUITE_DEFINE(expect_sint_suite,

@@ -1154,39 +1154,58 @@ cute_expect_sched_sint_parm_not_in_set(const char *                 file,
 		expect);
 }
 
-#if 0
 /******************************************************************************
- * Mock return expectation handling
+ * Signed integer return value expectation handling
  ******************************************************************************/
 
-uintmax_t
-cute_expect_check_retval(const char * file, int line, const char * function)
+intmax_t
+cute_expect_check_sint_retval(const char * file,
+                              int          line,
+                              const char * function)
 {
-	struct cute_expect_retval * xpct =
-		(struct cute_expect_retval *)
-		cute_expect_check(CUTE_EXPECT_RET_TYPE, file, line, function);
-	int                         ret = xpct->code;
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
 
-	cute_expect_destroy(&xpct->super);
+	struct cute_expect * xpct;
 
-	return xpct->code;
+	xpct = cute_expect_check(CUTE_EXPECT_RET_TYPE, file, line, function);
+	cute_expect_assert_intern(xpct);
+
+	cute_expect_nqueue(&cute_expect_done, xpct);
+
+	return xpct->super.expect.sint.scal.value;
 }
 
 void
-cute_expect_push_retval(const char * file,
-                        int          line,
-                        const char * function,
-                        uintmax_t    retval)
+cute_expect_sched_sint_retval(const char *             file,
+                              int                      line,
+                              const char *             function,
+                              const struct cute_sint * retval)
 {
-	struct cute_expect_retval * xpct;
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assert(retval);
+	cute_assert(retval->expr);
+	cute_assert(retval->expr[0]);
+
+	struct cute_expect * xpct;
+	struct cute_assess * assess;
 
 	xpct = cute_expect_create(CUTE_EXPECT_RET_TYPE,
 	                          file,
 	                          line,
 	                          function,
 	                          sizeof(*xpct));
-	xpct->code = retval;
 
-	cute_expect_nqueue(xpct);
+	assess = &xpct->super;
+	assess->ops = &cute_assess_null_ops;
+	assess->expect.sint.scal = *retval;
+
+	cute_expect_nqueue(&cute_expect_sched, xpct);
 }
-#endif

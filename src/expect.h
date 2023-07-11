@@ -26,11 +26,6 @@ struct cute_expect_parm {
 	const char *       xpct_parm;
 };
 
-struct cute_expect_retval {
-	struct cute_expect super;
-	intmax_t           code;
-};
-
 extern int
 cute_expect_release(struct cute_expect * expect, bool check);
 
