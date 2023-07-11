@@ -1,0 +1,287 @@
+
+########################################  Running CUTe test(s)  #########################################
+
+expect_uint_suite::expect_uint_caller_fail_test .................................................... fail
+issue:  exec failed
+reason: mock expectation caller mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:27
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+
+expect_uint_suite::expect_uint_parm_fail_test ...................................................... fail
+issue:  exec failed
+reason: signed integer mock parameter name mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:38
+    caller: expect_uint_value_callee()
+    expect: nonexistent_parm == 2
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:12
+    caller: expect_uint_value_callee()
+    expect: word == 2
+
+expect_uint_suite::expect_uint_literal_equal_fail_test ............................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:70
+    caller: expect_uint_value_callee()
+    expect: byte == 1
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] != [1]
+
+expect_uint_suite::expect_uint_var_equal_fail_test ................................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:78
+    caller: expect_uint_value_callee()
+    expect: byte == bref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] != [1]
+
+expect_uint_suite::expect_uint_literal_unequal_fail_test ........................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:106
+    caller: expect_uint_value_callee()
+    expect: byte != 0
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] == [0]
+
+expect_uint_suite::expect_uint_var_unequal_fail_test ............................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:114
+    caller: expect_uint_value_callee()
+    expect: byte != bref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] == [0]
+
+expect_uint_suite::expect_uint_literal_greater_fail_test ........................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:154
+    caller: expect_uint_value_callee()
+    expect: byte > 1
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] <= [1]
+
+expect_uint_suite::expect_uint_var_greater_fail_test ............................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:162
+    caller: expect_uint_value_callee()
+    expect: byte > bref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] <= [1]
+
+expect_uint_suite::expect_uint_literal_greater_equal_fail_test ..................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:214
+    caller: expect_uint_value_callee()
+    expect: byte >= 1
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] < [1]
+
+expect_uint_suite::expect_uint_var_greater_equal_fail_test ......................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:222
+    caller: expect_uint_value_callee()
+    expect: byte > bref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] <= [1]
+
+expect_uint_suite::expect_uint_literal_lower_fail_test ............................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:250
+    caller: expect_uint_value_callee()
+    expect: byte < 0
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] >= [0]
+
+expect_uint_suite::expect_uint_var_lower_fail_test ................................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:258
+    caller: expect_uint_value_callee()
+    expect: byte < bref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [1] >= [0]
+
+expect_uint_suite::expect_uint_literal_lower_equal_fail_test ....................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:298
+    caller: expect_uint_value_callee()
+    expect: byte <= 0
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [1] > [0]
+
+expect_uint_suite::expect_uint_var_lower_equal_fail_test ........................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:306
+    caller: expect_uint_value_callee()
+    expect: byte <= bref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [1] > [0]
+
+expect_uint_suite::expect_uint_literal_in_range_fail_test .......................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:342
+    caller: expect_uint_value_callee()
+    expect: byte in range {1 ... 10}
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] not in range {1 ... 10}
+
+expect_uint_suite::expect_uint_var_in_range_fail_test .............................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:354
+    caller: expect_uint_value_callee()
+    expect: byte in range {rmin ... rmax}
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] not in range {1 ... 10}
+
+expect_uint_suite::expect_uint_literal_not_in_range_fail_test ...................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:388
+    caller: expect_uint_value_callee()
+    expect: byte not in range {5 ... 9}
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [5] in range {5 ... 9}
+
+expect_uint_suite::expect_uint_var_not_in_range_fail_test .......................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:400
+    caller: expect_uint_value_callee()
+    expect: byte not in range {rmin ... rmax}
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [5] in range {5 ... 9}
+
+expect_uint_suite::expect_uint_literal_in_set_fail_test ............................................ fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:433
+    caller: expect_uint_value_callee()
+    expect: byte in set {1, 5, 10, 15}
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] not in set {1, 5, 10, 15}
+
+expect_uint_suite::expect_uint_var_in_set_fail_test ................................................ fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:446
+    caller: expect_uint_value_callee()
+    expect: byte in set {ref0, 5, ref2, 15}
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [0] not in set {1, 5, 10, 15}
+
+expect_uint_suite::expect_uint_retval_caller_fail_test ............................................. fail
+issue:  exec failed
+reason: mock expectation caller mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:482
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:454
+    caller: expect_uint_retval_callee()
+
+expect_uint_suite::expect_xcess_uint_retval_fail_test .............................................. fail
+issue:  teardown failed
+reason: extra mock expectation left
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:495
+    caller: expect_uint_retval_callee()
+    expect: mock function return value
+found:  none
+
+expect_uint_suite::expect_uint_inval_retval_fail_test .............................................. fail
+issue:  exec failed
+reason: mock expectation type mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:505
+    caller: expect_uint_retval_callee()
+    expect: mock function parameter
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:454
+    caller: expect_uint_retval_callee()
+    found:  mock function return value
+
+expect_uint_suite .................................................................................. fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:558
+
+NAME                                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+expect_uint_suite                              fail    0.524050     10      0     23      0     33     33
+                                                                   30%     0%    69%     0%   100%
+---------------------------------------------------------------------------------------------------------
+Total                                          fail    0.524050     10      0     23      0     33     33
+                                                                   30%     0%    69%     0%   100%
+
+                                  ###           SUMMARY            ###
+                                  ###  23/33 (69%) test(s) FAILED  ###
+

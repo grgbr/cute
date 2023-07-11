@@ -22,33 +22,7 @@ cute_expect_check_call(const char * file, int line, const char * function)
 	cute_expect_check_call(__FILE__, __LINE__, __func__)
 
 /******************************************************************************
- * Mock return expectation handling
- ******************************************************************************/
-
-extern void
-cute_expect_sched_sint_retval(const char *             file,
-                              int                      line,
-                              const char *             function,
-                              const struct cute_sint * retval)
-	__cute_export;
-
-#define cute_expect_sint_retval(_func, _retval) \
-	cute_expect_sched_sint_retval(__FILE__, \
-	                              __LINE__, \
-	                              # _func, \
-	                              &__CUTE_VALUE(sint, _retval))
-
-extern intmax_t
-cute_expect_check_sint_retval(const char * file,
-                              int          line,
-                              const char * function)
-	__cute_export;
-
-#define cute_mock_sint_retval() \
-	cute_expect_check_sint_retval(__FILE__, __LINE__, __func__)
-
-/******************************************************************************
- * Mock parameter expectation handling
+ * Signed integer mock parameter expectation handling
  ******************************************************************************/
 
 #define cute_expect_sint_parm(_func, _parm, _op, _xpct) \
@@ -160,11 +134,183 @@ cute_expect_sched_sint_parm_in_set(const char *                 file,
 	__cute_export;
 
 extern void
-cute_expect_sched_sint_parm_not_in_set(const char *                   file,
-                                       int                            line,
-                                       const char *                   function,
-                                       const char *                   parm,
+cute_expect_sched_sint_parm_not_in_set(const char *                 file,
+                                       int                          line,
+                                       const char *                 function,
+                                       const char *                 parm,
                                        const struct cute_sint_set * expect)
 	__cute_export;
+
+/******************************************************************************
+ * Signed integer return value expectation handling
+ ******************************************************************************/
+
+extern void
+cute_expect_sched_sint_retval(const char *             file,
+                              int                      line,
+                              const char *             function,
+                              const struct cute_sint * retval)
+	__cute_export;
+
+#define cute_expect_sint_retval(_func, _retval) \
+	cute_expect_sched_sint_retval(__FILE__, \
+	                              __LINE__, \
+	                              # _func, \
+	                              &__CUTE_VALUE(sint, _retval))
+
+extern intmax_t
+cute_expect_check_sint_retval(const char * file,
+                              int          line,
+                              const char * function)
+	__cute_export;
+
+#define cute_mock_sint_retval() \
+	cute_expect_check_sint_retval(__FILE__, __LINE__, __func__)
+
+/******************************************************************************
+ * Unsigned integer mock parameter expectation handling
+ ******************************************************************************/
+
+#define cute_expect_uint_parm(_func, _parm, _op, _xpct) \
+	cute_expect_sched_uint_parm_ ##  _op( \
+		__FILE__, \
+		__LINE__, \
+	        # _func, \
+	        # _parm, \
+		&__CUTE_VALUE(uint, _xpct))
+
+#define cute_mock_uint_parm(_parm) \
+	cute_expect_check_uint_parm(__FILE__, \
+	                            __LINE__, \
+	                            __func__, \
+	                            &__CUTE_VALUE(uint, _parm))
+
+extern void
+cute_expect_check_uint_parm(const char *             file,
+                            int                      line,
+                            const char *             function,
+                            const struct cute_uint * check)
+	__cute_export;
+
+extern void
+cute_expect_sched_uint_parm_equal(const char *             file,
+                                  int                      line,
+                                  const char *             function,
+                                  const char *             parm,
+                                  const struct cute_uint * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_uint_parm_unequal(const char *             file,
+                                    int                      line,
+                                    const char *             function,
+                                    const char *             parm,
+                                    const struct cute_uint * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_uint_parm_greater(const char *             file,
+                                    int                      line,
+                                    const char *             function,
+                                    const char *             parm,
+                                    const struct cute_uint * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_uint_parm_greater_equal(const char *             file,
+                                          int                      line,
+                                          const char *             function,
+                                          const char *             parm,
+                                          const struct cute_uint * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_uint_parm_lower(const char *             file,
+                                  int                      line,
+                                  const char *             function,
+                                  const char *             parm,
+                                  const struct cute_uint * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_uint_parm_lower_equal(const char *             file,
+                                        int                      line,
+                                        const char *             function,
+                                        const char *             parm,
+                                        const struct cute_uint * expect)
+	__cute_export;
+
+#define cute_expect_uint_range(_func, _parm, _op, _xpct) \
+	cute_expect_sched_uint_parm_ ##  _op ## _range(__FILE__, \
+	                                               __LINE__, \
+	                                               # _func, \
+	                                               # _parm, \
+	                                               &(_xpct))
+
+extern void
+cute_expect_sched_uint_parm_in_range(const char *                   file,
+                                     int                            line,
+                                     const char *                   function,
+                                     const char *                   parm,
+                                     const struct cute_uint_range * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_uint_parm_not_in_range(
+	const char *                   file,
+	int                            line,
+	const char *                   function,
+	const char *                   parm,
+	const struct cute_uint_range * expect)
+	__cute_export;
+
+#define cute_expect_uint_set(_func, _parm, _op, _xpct) \
+	cute_expect_sched_uint_parm_ ##  _op ## _set(__FILE__, \
+	                                             __LINE__, \
+	                                             # _func, \
+	                                             # _parm, \
+	                                             &(_xpct))
+
+extern void
+cute_expect_sched_uint_parm_in_set(const char *                 file,
+                                   int                          line,
+                                   const char *                 function,
+                                   const char *                 parm,
+                                   const struct cute_uint_set * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_uint_parm_not_in_set(const char *                 file,
+                                       int                          line,
+                                       const char *                 function,
+                                       const char *                 parm,
+                                       const struct cute_uint_set * expect)
+	__cute_export;
+
+/******************************************************************************
+ * Unsigned integer return value expectation handling
+ ******************************************************************************/
+
+extern void
+cute_expect_sched_uint_retval(const char *             file,
+                              int                      line,
+                              const char *             function,
+                              const struct cute_uint * retval)
+	__cute_export;
+
+#define cute_expect_uint_retval(_func, _retval) \
+	cute_expect_sched_uint_retval(__FILE__, \
+	                              __LINE__, \
+	                              # _func, \
+	                              &__CUTE_VALUE(uint, _retval))
+
+extern uintmax_t
+cute_expect_check_uint_retval(const char * file,
+                              int          line,
+                              const char * function)
+	__cute_export;
+
+#define cute_mock_uint_retval() \
+	cute_expect_check_uint_retval(__FILE__, __LINE__, __func__)
 
 #endif /* _CUTE_EXPECT_H */

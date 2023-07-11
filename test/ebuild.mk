@@ -87,6 +87,11 @@ expect-sint-utest-cflags          := $(test-cflags)
 expect-sint-utest-ldflags         := $(test-ldflags) -lcute
 expect-sint-utest-path            := $(LIBEXECDIR)/cute/expect-sint-utest
 
+bins                              += expect-uint-utest
+expect-uint-utest-objs            := expect_uint.o
+expect-uint-utest-cflags          := $(test-cflags)
+expect-uint-utest-ldflags         := $(test-ldflags) -lcute
+expect-uint-utest-path            := $(LIBEXECDIR)/cute/expect-uint-utest
 
 build: $(BUILDDIR)/cute-utest.sh
 

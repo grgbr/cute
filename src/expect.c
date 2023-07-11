@@ -264,11 +264,14 @@ cute_expect_desc_missing(const struct cute_assess * assess)
 {
 	cute_assess_assert_intern(assess);
 
-	struct cute_text_block * blk;
+	struct cute_text_block *   blk;
+	const struct cute_expect * xpct = (const struct cute_expect *)assess;
 
 	blk = cute_text_create(4);
 
-	cute_text_enroll(blk,   "wanted: none", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk,   "wanted:     ", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk, "    source: %s:%d", xpct->xpct_file,
+	                                             xpct->xpct_line);
 
 	cute_text_enroll(blk,   "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk, "    source: %s:%d", assess->file,
@@ -285,11 +288,20 @@ static const struct cute_assess_ops cute_expect_missing_ops = {
 };
 
 static void
-cute_expect_claim_missing(struct cute_assess * assess)
+cute_expect_claim_missing(struct cute_expect * expect,
+                          const char *         file,
+                          int                  line)
 {
-	cute_assess_assert_intern(assess);
+	cute_assert_intern(expect);
+	cute_assess_assert_intern(&expect->super);
+	cute_assert_intern(file);
+	cute_assert_intern(file[0]);
+	cute_assert_intern(line >= 0);
 
-	assess->ops = &cute_expect_missing_ops;
+	expect->super.ops = &cute_expect_missing_ops;
+	expect->xpct_file = file;
+	expect->xpct_line = line;
+	expect->xpct_func = NULL;
 }
 
 static struct cute_expect *
@@ -332,7 +344,9 @@ cute_expect_check(enum cute_expect_type type,
 		return xpct;
 	}
 
-	cute_expect_claim_missing(&cute_curr_run->assess);
+	cute_expect_claim_missing(&cute_curr_run->call,
+	                          cute_curr_run->base->file,
+	                          cute_curr_run->base->line);
 	why = "missing mock expectation";
 
 fail:
@@ -1206,6 +1220,729 @@ cute_expect_sched_sint_retval(const char *             file,
 	assess = &xpct->super;
 	assess->ops = &cute_assess_null_ops;
 	assess->expect.sint.scal = *retval;
+
+	cute_expect_nqueue(&cute_expect_sched, xpct);
+}
+
+/******************************************************************************
+ * Unsigned integer mock parameter expectation handling
+ ******************************************************************************/
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_value(const struct cute_assess * assess,
+                                 const char *               op,
+                                 const char *               inv)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(op);
+	cute_assert_intern(op[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block *   blk;
+	const struct cute_expect * xpct = (const struct cute_expect *)assess;
+	const char *               parm = ((const struct cute_expect_parm *)
+	                                   assess)->xpct_parm;
+	const struct cute_uint *   chk = &assess->check.uint;
+	const struct cute_uint *   ref = &assess->expect.uint.scal;
+
+	cute_expect_assert_intern(xpct);
+	cute_assert_intern(parm);
+	cute_assert_intern(parm[0]);
+	cute_assert_intern(chk->expr);
+	cute_assert_intern(chk->expr[0]);
+	cute_assert_intern(ref->expr);
+	cute_assert_intern(ref->expr[0]);
+
+	blk = cute_text_create(8);
+
+	cute_text_enroll(blk, "wanted:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   xpct->xpct_file, xpct->xpct_line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
+	cute_text_asprintf(blk, "    expect: %s %s %s", parm, op, ref->expr);
+
+	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   assess->file, assess->line);
+	cute_text_asprintf(blk, "    caller: %s()",  assess->func);
+
+	if (strcmp(parm, chk->expr))
+		/*
+		 * Parameter name checked using cute_mock_...() does not match
+		 * parameter name scheduled using cute_expect_...().
+		 */
+		cute_text_asprintf(blk,
+		                   "    expect: %s %s %s",
+		                   chk->expr, op, ref->expr);
+	else
+		/* Unexpected parameter value. */
+		cute_text_asprintf(blk,
+		                   "    actual: [%" PRIuMAX "] "
+		                   "%s "
+		                   "[%" PRIuMAX "]",
+		                   chk->value,
+		                   inv,
+		                   ref->value);
+
+	return blk;
+}
+
+static void
+cute_expect_sched_uint_parm_value(const char *                   file,
+                                  int                            line,
+                                  const char *                   function,
+                                  const struct cute_assess_ops * ops,
+                                  const char *                   parm,
+                                  const struct cute_uint *       reference)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(parm);
+	cute_assert(parm[0]);
+	cute_assert(reference);
+	cute_assert(reference->expr);
+	cute_assert(reference->expr[0]);
+
+	struct cute_expect_parm * xpct;
+	struct cute_assess *      assess;
+
+	xpct = (struct cute_expect_parm *)
+	       cute_expect_create(CUTE_EXPECT_PARM_TYPE,
+	                          file,
+	                          line,
+	                          function,
+	                          sizeof(*xpct));
+
+	assess = &xpct->super.super;
+	assess->ops = ops;
+	assess->expect.uint.scal = *reference;
+	xpct->xpct_parm = parm;
+
+	cute_expect_nqueue(&cute_expect_sched, &xpct->super);
+}
+
+void
+cute_expect_check_uint_parm(const char *             file,
+                            int                      line,
+                            const char *             function,
+                            const struct cute_uint * check)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assert(check);
+	cute_assert(check->expr);
+	cute_assert(check->expr[0]);
+
+	struct cute_expect *          xpct;
+	const char *                  parm;
+	struct cute_assess *          assess;
+	const char *                  why;
+	const union cute_assess_value chk = { .uint = *check };
+
+	xpct = cute_expect_check(CUTE_EXPECT_PARM_TYPE, file, line, function);
+	cute_expect_assert_intern(xpct);
+
+	parm = ((struct cute_expect_parm *)xpct)->xpct_parm;
+	cute_assert_intern(parm);
+	cute_assert_intern(parm[0]);
+
+	cute_expect_nqueue(&cute_expect_done, xpct);
+
+	assess = &xpct->super;
+	if (strcmp(check->expr, parm)) {
+		why = "signed integer mock parameter name mismatch";
+		goto fail;
+	}
+
+	if (!assess->ops->cmp(assess, &chk)) {
+		why = "signed integer mock parameter check failed";
+		goto fail;
+	}
+
+	return;
+
+fail:
+	assess->check.uint = *check;
+	cute_curr_run->parm = *(struct cute_expect_parm *)xpct;
+	assess->ops = &cute_assess_null_ops;
+
+	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_equal(const struct cute_assess * assess)
+{
+	return cute_expect_desc_uint_parm_value(assess, "==", "!=");
+}
+
+static const struct cute_assess_ops cute_expect_uint_parm_equal_ops = {
+	.cmp     = cute_assess_cmp_uint_equal,
+	.desc    = cute_expect_desc_uint_parm_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_uint_parm_equal(const char *             file,
+                                  int                      line,
+                                  const char *             function,
+                                  const char *             parm,
+                                  const struct cute_uint * expect)
+{
+	cute_expect_sched_uint_parm_value(file,
+	                                  line,
+	                                  function,
+	                                  &cute_expect_uint_parm_equal_ops,
+	                                  parm,
+	                                  expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_unequal(const struct cute_assess * assess)
+{
+	return cute_expect_desc_uint_parm_value(assess, "!=", "==");
+}
+
+static const struct cute_assess_ops cute_expect_uint_parm_unequal_ops = {
+	.cmp     = cute_assess_cmp_uint_unequal,
+	.desc    = cute_expect_desc_uint_parm_unequal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_uint_parm_unequal(const char *             file,
+                                    int                      line,
+                                    const char *             function,
+                                    const char *             parm,
+                                    const struct cute_uint * expect)
+{
+	cute_expect_sched_uint_parm_value(file,
+	                                  line,
+	                                  function,
+	                                  &cute_expect_uint_parm_unequal_ops,
+	                                  parm,
+	                                  expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_greater(const struct cute_assess * assess)
+{
+	return cute_expect_desc_uint_parm_value(assess, ">", "<=");
+}
+
+static const struct cute_assess_ops cute_expect_uint_parm_greater_ops = {
+	.cmp     = cute_assess_cmp_uint_greater,
+	.desc    = cute_expect_desc_uint_parm_greater,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_uint_parm_greater(const char *             file,
+                                    int                      line,
+                                    const char *             function,
+                                    const char *             parm,
+                                    const struct cute_uint * expect)
+{
+	cute_expect_sched_uint_parm_value(file,
+	                                  line,
+	                                  function,
+	                                  &cute_expect_uint_parm_greater_ops,
+	                                  parm,
+	                                  expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_greater_equal(const struct cute_assess * assess)
+{
+	return cute_expect_desc_uint_parm_value(assess, ">=", "<");
+}
+
+static const struct cute_assess_ops cute_expect_uint_parm_greater_equal_ops = {
+	.cmp     = cute_assess_cmp_uint_greater_equal,
+	.desc    = cute_expect_desc_uint_parm_greater_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_uint_parm_greater_equal(const char *             file,
+                                          int                      line,
+                                          const char *             function,
+                                          const char *             parm,
+                                          const struct cute_uint * expect)
+{
+	cute_expect_sched_uint_parm_value(
+		file,
+		line,
+		function,
+		&cute_expect_uint_parm_greater_equal_ops,
+		parm,
+		expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_lower(const struct cute_assess * assess)
+{
+	return cute_expect_desc_uint_parm_value(assess, "<", ">=");
+}
+
+static const struct cute_assess_ops cute_expect_uint_parm_lower_ops = {
+	.cmp     = cute_assess_cmp_uint_lower,
+	.desc    = cute_expect_desc_uint_parm_lower,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_uint_parm_lower(const char *             file,
+                                  int                      line,
+                                  const char *             function,
+                                  const char *             parm,
+                                  const struct cute_uint * expect)
+{
+	cute_expect_sched_uint_parm_value(file,
+	                                  line,
+	                                  function,
+	                                  &cute_expect_uint_parm_lower_ops,
+	                                  parm,
+	                                  expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_lower_equal(const struct cute_assess * assess)
+{
+	return cute_expect_desc_uint_parm_value(assess, "<=", ">");
+}
+
+static const struct cute_assess_ops cute_expect_uint_parm_lower_equal_ops = {
+	.cmp     = cute_assess_cmp_uint_lower_equal,
+	.desc    = cute_expect_desc_uint_parm_lower_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_uint_parm_lower_equal(const char *             file,
+                                        int                      line,
+                                        const char *             function,
+                                        const char *             parm,
+                                        const struct cute_uint * expect)
+{
+	cute_expect_sched_uint_parm_value(
+		file,
+		line,
+		function,
+		&cute_expect_uint_parm_lower_equal_ops,
+		parm,
+		expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_range(const struct cute_assess * assess,
+                                 const char *               op,
+                                 const char *               inv)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(op);
+	cute_assert_intern(op[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block *       blk;
+	const struct cute_expect *     xpct = (const struct cute_expect *)
+	                                      assess;
+	const char *                   parm = ((const struct cute_expect_parm *)
+	                                       assess)->xpct_parm;
+	const struct cute_uint *       chk = &assess->check.uint;
+	const struct cute_uint_range * ref = &assess->expect.uint.range;
+
+	cute_expect_assert_intern(xpct);
+	cute_assert_intern(parm);
+	cute_assert_intern(parm[0]);
+	cute_assert_intern(chk->expr);
+	cute_assert_intern(chk->expr[0]);
+	cute_assert_intern(ref->expr);
+	cute_assert_intern(ref->expr[0]);
+	cute_assert_intern(ref->min <= ref->max);
+
+	blk = cute_text_create(8);
+
+	cute_text_enroll(blk, "wanted:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   xpct->xpct_file, xpct->xpct_line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
+	cute_text_asprintf(blk,
+	                   "    expect: %s %s range %s",
+	                   parm, op, ref->expr);
+
+	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   assess->file, assess->line);
+	cute_text_asprintf(blk, "    caller: %s()",  assess->func);
+
+	if (strcmp(parm, chk->expr))
+		/*
+		 * Parameter name checked using cute_mock_...() does not match
+		 * parameter name scheduled using cute_expect_...().
+		 */
+		cute_text_asprintf(blk,
+		                   "    expect: %s %s range %s",
+		                   chk->expr, op, ref->expr);
+	else
+		/* Unexpected parameter value. */
+		cute_text_asprintf(blk,
+		                   "    actual: [%" PRIuMAX "] "
+		                   "%s "
+		                   "range {%" PRIuMAX " ... %" PRIuMAX "}",
+		                   chk->value,
+		                   inv,
+		                   ref->min, ref->max);
+
+	return blk;
+}
+
+static void
+cute_expect_sched_uint_parm_range(const char *                   file,
+                                  int                            line,
+                                  const char *                   function,
+                                  const struct cute_assess_ops * ops,
+                                  const char *                   parm,
+                                  const struct cute_uint_range * reference)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(parm);
+	cute_assert(parm[0]);
+	cute_assert(reference);
+	cute_assert(reference->expr);
+	cute_assert(reference->expr[0]);
+	cute_assert(reference->min <= reference->max);
+
+	struct cute_expect_parm * xpct;
+	struct cute_assess *      assess;
+
+	xpct = (struct cute_expect_parm *)
+	       cute_expect_create(CUTE_EXPECT_PARM_TYPE,
+	                          file,
+	                          line,
+	                          function,
+	                          sizeof(*xpct));
+
+	assess = &xpct->super.super;
+	assess->ops = ops;
+	assess->expect.uint.range = *reference;
+	xpct->xpct_parm = parm;
+
+	cute_expect_nqueue(&cute_expect_sched, &xpct->super);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_in_range(const struct cute_assess * assess)
+{
+	return cute_expect_desc_uint_parm_range(assess, "in", "not in");
+}
+
+static const struct cute_assess_ops cute_expect_uint_parm_in_range = {
+	.cmp     = cute_assess_cmp_uint_in_range,
+	.desc    = cute_expect_desc_uint_parm_in_range,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_uint_parm_in_range(const char *                   file,
+                                     int                            line,
+                                     const char *                   function,
+                                     const char *                   parm,
+                                     const struct cute_uint_range * expect)
+{
+	cute_expect_sched_uint_parm_range(
+		file,
+		line,
+		function,
+		&cute_expect_uint_parm_in_range,
+		parm,
+		expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_not_in_range(const struct cute_assess * assess)
+{
+	return cute_expect_desc_uint_parm_range(assess, "not in", "in");
+}
+
+static const struct cute_assess_ops cute_expect_uint_parm_not_in_range = {
+	.cmp     = cute_assess_cmp_uint_not_in_range,
+	.desc    = cute_expect_desc_uint_parm_not_in_range,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_uint_parm_not_in_range(
+	const char *                   file,
+	int                            line,
+	const char *                   function,
+	const char *                   parm,
+	const struct cute_uint_range * expect)
+{
+	cute_expect_sched_uint_parm_range(
+		file,
+		line,
+		function,
+		&cute_expect_uint_parm_not_in_range,
+		parm,
+		expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_set(const struct cute_assess * assess,
+                               const char *               op,
+                               const char *               inv)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(op);
+	cute_assert_intern(op[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block *       blk;
+	const struct cute_expect *     xpct = (const struct cute_expect *)
+	                                      assess;
+	const char *                   parm = ((const struct cute_expect_parm *)
+	                                       assess)->xpct_parm;
+	const struct cute_uint *       chk = &assess->check.uint;
+	const struct cute_uint_set *   ref = &assess->expect.uint.set;
+
+	cute_expect_assert_intern(xpct);
+	cute_assert_intern(parm);
+	cute_assert_intern(parm[0]);
+	cute_assert_intern(chk->expr);
+	cute_assert_intern(chk->expr[0]);
+	cute_assert_intern(ref->expr);
+	cute_assert_intern(ref->expr[0]);
+
+	blk = cute_text_create(8);
+
+	cute_text_enroll(blk, "wanted:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   xpct->xpct_file, xpct->xpct_line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
+	cute_text_asprintf(blk,
+	                   "    expect: %s %s set %s",
+	                   parm, op, ref->expr);
+
+	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   assess->file, assess->line);
+	cute_text_asprintf(blk, "    caller: %s()",  assess->func);
+
+	if (!strcmp(parm, chk->expr)) {
+		/* Unexpected parameter value. */
+		if (ref->count) {
+			char * items;
+
+			items = cute_assess_uint_set_str(ref->items,
+			                                 ref->count);
+			cute_text_asprintf(blk,
+			                   "    actual: [%" PRIuMAX "] "
+			                   "%s "
+			                   "set {%s}",
+			                   assess->check.uint.value,
+			                   inv,
+			                   items);
+			cute_free(items);
+		}
+		else
+			cute_text_asprintf(blk,
+			                   "    actual: [%" PRIuMAX "] "
+			                   "%s "
+			                   "set {}",
+			                   chk->value,
+			                   inv);
+	}
+	else
+		/*
+		 * Parameter name checked using cute_mock_...() does not match
+		 * parameter name scheduled using cute_expect_...().
+		 */
+		cute_text_asprintf(blk,
+		                   "    expect: %s %s set %s",
+		                   chk->expr, op, ref->expr);
+
+	return blk;
+}
+
+static void
+cute_expect_sched_uint_parm_set(const char *                   file,
+                                int                            line,
+                                const char *                   function,
+                                const struct cute_assess_ops * ops,
+                                const char *                   parm,
+                                const struct cute_uint_set *   reference)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(parm);
+	cute_assert(parm[0]);
+	cute_assert(reference);
+	cute_assert(reference->expr);
+	cute_assert(reference->expr[0]);
+
+	uintmax_t *               items;
+	struct cute_expect_parm * xpct;
+	struct cute_assess *      assess;
+
+	if (reference->count) {
+		unsigned int i;
+
+		items = cute_malloc(reference->count * sizeof(items[0]));
+		for (i = 0; i < reference->count; i++)
+			items[i] = reference->items[i];
+	}
+	else
+		items = NULL;
+
+	xpct = (struct cute_expect_parm *)
+	       cute_expect_create(CUTE_EXPECT_PARM_TYPE,
+	                          file,
+	                          line,
+	                          function,
+	                          sizeof(*xpct));
+
+	assess = &xpct->super.super;
+	assess->ops = ops;
+	assess->expect.uint.set = *reference;
+	assess->expect.uint.set.items = items;
+	xpct->xpct_parm = parm;
+
+	cute_expect_nqueue(&cute_expect_sched, &xpct->super);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_in_set(const struct cute_assess * assess)
+{
+	return cute_expect_desc_uint_parm_set(assess, "in", "not in");
+}
+
+static const struct cute_assess_ops cute_expect_uint_parm_in_set = {
+	.cmp     = cute_assess_cmp_uint_in_set,
+	.desc    = cute_expect_desc_uint_parm_in_set,
+	.release = cute_assess_release_uint_set
+};
+
+void
+cute_expect_sched_uint_parm_in_set(const char *                 file,
+                                   int                          line,
+                                   const char *                 function,
+                                   const char *                 parm,
+                                   const struct cute_uint_set * expect)
+{
+	cute_expect_sched_uint_parm_set(
+		file,
+		line,
+		function,
+		&cute_expect_uint_parm_in_set,
+		parm,
+		expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_uint_parm_not_in_set(const struct cute_assess * assess)
+{
+	return cute_expect_desc_uint_parm_set(assess, "not in", "in");
+}
+
+static const struct cute_assess_ops cute_expect_uint_parm_not_in_set = {
+	.cmp     = cute_assess_cmp_uint_not_in_set,
+	.desc    = cute_expect_desc_uint_parm_not_in_set,
+	.release = cute_assess_release_uint_set
+};
+
+void
+cute_expect_sched_uint_parm_not_in_set(const char *                 file,
+                                       int                          line,
+                                       const char *                 function,
+                                       const char *                 parm,
+                                       const struct cute_uint_set * expect)
+{
+	cute_expect_sched_uint_parm_set(
+		file,
+		line,
+		function,
+		&cute_expect_uint_parm_not_in_set,
+		parm,
+		expect);
+}
+
+/******************************************************************************
+ * Unsigned integer return value expectation handling
+ ******************************************************************************/
+
+uintmax_t
+cute_expect_check_uint_retval(const char * file,
+                              int          line,
+                              const char * function)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+
+	struct cute_expect * xpct;
+
+	xpct = cute_expect_check(CUTE_EXPECT_RET_TYPE, file, line, function);
+	cute_expect_assert_intern(xpct);
+
+	cute_expect_nqueue(&cute_expect_done, xpct);
+
+	return xpct->super.expect.uint.scal.value;
+}
+
+void
+cute_expect_sched_uint_retval(const char *             file,
+                              int                      line,
+                              const char *             function,
+                              const struct cute_uint * retval)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assert(retval);
+	cute_assert(retval->expr);
+	cute_assert(retval->expr[0]);
+
+	struct cute_expect * xpct;
+	struct cute_assess * assess;
+
+	xpct = cute_expect_create(CUTE_EXPECT_RET_TYPE,
+	                          file,
+	                          line,
+	                          function,
+	                          sizeof(*xpct));
+
+	assess = &xpct->super;
+	assess->ops = &cute_assess_null_ops;
+	assess->expect.uint.scal = *retval;
 
 	cute_expect_nqueue(&cute_expect_sched, xpct);
 }
