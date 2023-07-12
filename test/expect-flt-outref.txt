@@ -239,21 +239,45 @@ found:
     caller: expect_flt_value_callee()
     actual: [0.05000000075] not in set {-3, -1.2345, 1.2345, 3}
 
+expect_flt_suite::expect_flt_literal_not_in_set_fail_test ......................................... fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:479
+    caller: expect_flt_value_callee()
+    expect: sfloat not in set {-3.0f, -1.2345, 1.2345L, 3.5f}
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
+    caller: expect_flt_value_callee()
+    actual: [-3] in set {-3, -1.2345, 1.2345, 3.5}
+
+expect_flt_suite::expect_flt_var_not_in_set_fail_test ............................................. fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:493
+    caller: expect_flt_value_callee()
+    expect: sfloat not in set {ref0, -1.2345, ref2, 3.5f}
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
+    caller: expect_flt_value_callee()
+    actual: [-3] in set {-3, -1.2345, 1.2345, 3.5}
+
 expect_flt_suite::expect_flt_retval_caller_fail_test .............................................. fail
 issue:  exec failed
 reason: mock expectation caller mismatch
 wanted:
-    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:479
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:529
     caller: nonexistent_callee()
 found:
-    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:451
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:501
     caller: expect_flt_retval_callee()
 
 expect_flt_suite::expect_xcess_flt_retval_fail_test ............................................... fail
 issue:  teardown failed
 reason: extra mock expectation left
 wanted:
-    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:492
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:542
     caller: expect_flt_retval_callee()
     expect: mock function return value
 found:  none
@@ -262,26 +286,26 @@ expect_flt_suite::expect_flt_inval_retval_fail_test ............................
 issue:  exec failed
 reason: mock expectation type mismatch
 wanted:
-    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:502
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:552
     caller: expect_flt_retval_callee()
     expect: mock function parameter
 found:
-    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:451
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:501
     caller: expect_flt_retval_callee()
     found:  mock function return value
 
 expect_flt_suite .................................................................................. fail
 issue:  exec failed
 reason: descendants failed
-source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:555
+source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:609
 
 NAME                                          STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-expect_flt_suite                              fail    0.505492     10      0     23      0     33     33
+expect_flt_suite                              fail    0.541214     11      0     25      0     36     36
                                                                   30%     0%    69%     0%   100%
 --------------------------------------------------------------------------------------------------------
-Total                                         fail    0.505492     10      0     23      0     33     33
+Total                                         fail    0.541214     11      0     25      0     36     36
                                                                   30%     0%    69%     0%   100%
 
                                   ###           SUMMARY            ###
-                                  ###  23/33 (69%) test(s) FAILED  ###
+                                  ###  25/36 (69%) test(s) FAILED  ###
 

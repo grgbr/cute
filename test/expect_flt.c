@@ -445,6 +445,56 @@ CUTE_TEST(expect_flt_var_in_set_fail_test)
 	expect_flt_value_caller(0.05f, -1.2345, 1.2345L);
 }
 
+CUTE_TEST(expect_flt_not_in_set_pass_test)
+{
+	const struct cute_flt_set set = CUTE_FLT_SET(-3.0f,
+	                                             -1.2345,
+	                                             1.2345L,
+	                                             3.5f);
+
+	cute_expect_flt_set(expect_flt_value_callee,
+	                    sfloat,
+	                    not_in,
+	                    CUTE_FLT_SET(-3.0f, -1.2345, 1.2345L, 3.5f));
+	cute_expect_flt_set(expect_flt_value_callee,
+	                    dfloat,
+	                    not_in,
+	                    CUTE_FLT_SET(-3.0f, -1.2345, 1.2345L, 3.5f));
+	cute_expect_flt_set(expect_flt_value_callee,
+	                    ldfloat,
+	                    not_in,
+	                    CUTE_FLT_SET(-3.0f, -1.2345, 1.2345L, 3.5f));
+
+	cute_expect_flt_set(expect_flt_value_callee, sfloat, not_in, set);
+	cute_expect_flt_set(expect_flt_value_callee, dfloat, not_in, set);
+	cute_expect_flt_set(expect_flt_value_callee, ldfloat, not_in, set);
+
+	expect_flt_value_caller(-4.5f, -2.5, 2.0L);
+
+	expect_flt_value_caller(-4.5f, -2.5, 2.0L);
+}
+
+CUTE_TEST(expect_flt_literal_not_in_set_fail_test)
+{
+	cute_expect_flt_set(expect_flt_value_callee,
+	                    sfloat,
+	                    not_in,
+	                    CUTE_FLT_SET(-3.0f, -1.2345, 1.2345L, 3.5f));
+
+	expect_flt_value_caller(-3.0f, -1, 1);
+}
+
+CUTE_TEST(expect_flt_var_not_in_set_fail_test)
+{
+	float                     ref0 = -3.0f;
+	long double               ref2 = 1.2345L;
+	const struct cute_flt_set set = CUTE_FLT_SET(ref0, -1.2345, ref2, 3.5f);
+
+	cute_expect_flt_set(expect_flt_value_callee, sfloat, not_in, set);
+
+	expect_flt_value_caller(-3.0f, -1, 1);
+}
+
 static float
 expect_flt_retval_callee(void)
 {
@@ -545,6 +595,10 @@ static CUTE_SUITE_DEFINE_TESTS(expect_flt_tests) = {
 	CUTE_REF(expect_flt_in_set_pass_test),
 	CUTE_REF(expect_flt_literal_in_set_fail_test),
 	CUTE_REF(expect_flt_var_in_set_fail_test),
+
+	CUTE_REF(expect_flt_not_in_set_pass_test),
+	CUTE_REF(expect_flt_literal_not_in_set_fail_test),
+	CUTE_REF(expect_flt_var_not_in_set_fail_test),
 
 	CUTE_REF(expect_flt_retval_pass_test),
 	CUTE_REF(expect_flt_retval_caller_fail_test),

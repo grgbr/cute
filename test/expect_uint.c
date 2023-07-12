@@ -448,6 +448,53 @@ CUTE_TEST(expect_uint_var_in_set_fail_test)
 	expect_uint_value_caller(0, 5, 10, 15);
 }
 
+CUTE_TEST(expect_uint_not_in_set_pass_test)
+{
+	const struct cute_uint_set set = CUTE_UINT_SET(1, 5, 10, 15);
+
+	cute_expect_uint_set(expect_uint_value_callee, byte,
+	                     not_in,
+	                     CUTE_UINT_SET(1, 5, 10, 15));
+	cute_expect_uint_set(expect_uint_value_callee, hword,
+	                     not_in,
+	                     CUTE_UINT_SET(1, 5, 10, 15));
+	cute_expect_uint_set(expect_uint_value_callee, word,
+	                     not_in,
+	                     CUTE_UINT_SET(1, 5, 10, 15));
+	cute_expect_uint_set(expect_uint_value_callee, dword,
+	                     not_in,
+	                     CUTE_UINT_SET(1, 5, 10, 15));
+
+	cute_expect_uint_set(expect_uint_value_callee, byte,  not_in, set);
+	cute_expect_uint_set(expect_uint_value_callee, hword, not_in, set);
+	cute_expect_uint_set(expect_uint_value_callee, word,  not_in, set);
+	cute_expect_uint_set(expect_uint_value_callee, dword, not_in, set);
+
+	expect_uint_value_caller(2, 6, 11, 16);
+
+	expect_uint_value_caller(2, 6, 11, 16);
+}
+
+CUTE_TEST(expect_uint_literal_not_in_set_fail_test)
+{
+	cute_expect_uint_set(expect_uint_value_callee, byte,
+	                     not_in,
+	                     CUTE_UINT_SET(1, 5, 10, 15));
+
+	expect_uint_value_caller(1, 6, 11, 16);
+}
+
+CUTE_TEST(expect_uint_var_not_in_set_fail_test)
+{
+	unsigned int               ref0 = 1;
+	unsigned int               ref2 = 10;
+	const struct cute_uint_set set = CUTE_UINT_SET(ref0, 5, ref2, 15);
+
+	cute_expect_uint_set(expect_uint_value_callee, byte, not_in, set);
+
+	expect_uint_value_caller(1, 6, 11, 16);
+}
+
 static int
 expect_uint_retval_callee(void)
 {
@@ -548,6 +595,10 @@ static CUTE_SUITE_DEFINE_TESTS(expect_uint_tests) = {
 	CUTE_REF(expect_uint_in_set_pass_test),
 	CUTE_REF(expect_uint_literal_in_set_fail_test),
 	CUTE_REF(expect_uint_var_in_set_fail_test),
+
+	CUTE_REF(expect_uint_not_in_set_pass_test),
+	CUTE_REF(expect_uint_literal_not_in_set_fail_test),
+	CUTE_REF(expect_uint_var_not_in_set_fail_test),
 
 	CUTE_REF(expect_uint_retval_pass_test),
 	CUTE_REF(expect_uint_retval_caller_fail_test),

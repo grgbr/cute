@@ -239,21 +239,45 @@ found:
     caller: expect_uint_value_callee()
     actual: [0] not in set {1, 5, 10, 15}
 
+expect_uint_suite::expect_uint_literal_not_in_set_fail_test ........................................ fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:480
+    caller: expect_uint_value_callee()
+    expect: byte not in set {1, 5, 10, 15}
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [1] in set {1, 5, 10, 15}
+
+expect_uint_suite::expect_uint_var_not_in_set_fail_test ............................................ fail
+issue:  exec failed
+reason: signed integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:493
+    caller: expect_uint_value_callee()
+    expect: byte not in set {ref0, 5, ref2, 15}
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:10
+    caller: expect_uint_value_callee()
+    actual: [1] in set {1, 5, 10, 15}
+
 expect_uint_suite::expect_uint_retval_caller_fail_test ............................................. fail
 issue:  exec failed
 reason: mock expectation caller mismatch
 wanted:
-    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:482
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:529
     caller: nonexistent_callee()
 found:
-    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:454
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:501
     caller: expect_uint_retval_callee()
 
 expect_uint_suite::expect_xcess_uint_retval_fail_test .............................................. fail
 issue:  teardown failed
 reason: extra mock expectation left
 wanted:
-    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:495
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:542
     caller: expect_uint_retval_callee()
     expect: mock function return value
 found:  none
@@ -262,26 +286,26 @@ expect_uint_suite::expect_uint_inval_retval_fail_test ..........................
 issue:  exec failed
 reason: mock expectation type mismatch
 wanted:
-    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:505
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:552
     caller: expect_uint_retval_callee()
     expect: mock function parameter
 found:
-    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:454
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:501
     caller: expect_uint_retval_callee()
     found:  mock function return value
 
 expect_uint_suite .................................................................................. fail
 issue:  exec failed
 reason: descendants failed
-source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:558
+source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:609
 
 NAME                                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-expect_uint_suite                              fail    0.524050     10      0     23      0     33     33
+expect_uint_suite                              fail    0.547516     11      0     25      0     36     36
                                                                    30%     0%    69%     0%   100%
 ---------------------------------------------------------------------------------------------------------
-Total                                          fail    0.524050     10      0     23      0     33     33
+Total                                          fail    0.547516     11      0     25      0     36     36
                                                                    30%     0%    69%     0%   100%
 
                                   ###           SUMMARY            ###
-                                  ###  23/33 (69%) test(s) FAILED  ###
+                                  ###  25/36 (69%) test(s) FAILED  ###
 
