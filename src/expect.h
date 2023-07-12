@@ -26,6 +26,9 @@ struct cute_expect_parm {
 	const char *       xpct_parm;
 };
 
+extern bool
+cute_expect_check_assert(void);
+
 extern int
 cute_expect_release(struct cute_expect * expect, bool check);
 

@@ -93,8 +93,8 @@ run_testcase()
 	if ! cmp --silent $testdir/$case-stdout.txt \
 	                  $testdir/$case-outref.txt; then
 		fail "$case" "test case output differ from reference output."
-		diff --color --unified $testdir/$case-stdout.txt \
-		                       $testdir/$case-outref.txt
+		diff --color --unified $testdir/$case-outref.txt \
+		                       $testdir/$case-stdout.txt
 		return 1
 	else
 		pass "$case"

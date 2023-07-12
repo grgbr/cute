@@ -5,6 +5,80 @@
 #include <inttypes.h>
 
 /******************************************************************************
+ * Assertion mock expectation handling
+ ******************************************************************************/
+
+static sigjmp_buf cute_expect_assert_env;
+static bool       cute_expect_assert;
+
+bool
+cute_expect_check_assert(void)
+{
+	if (cute_expect_assert) {
+		cute_expect_assert = false;
+		return true;
+	}
+
+	return false;
+}
+
+bool
+cute_expect_sched_assert(void)
+{
+	cute_expect_assert = true;
+
+	if (!sigsetjmp(cute_expect_assert_env, 1))
+		return true;
+	else
+		return false;
+}
+
+void
+cute_expect_fail_assert(const char * file, int line, const char * function)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+
+	cute_expect_assert = false;
+
+	cute_break(CUTE_FAIL_ISSUE,
+	           file,
+	           line,
+	           function,
+	           "missing expected assertion");
+}
+
+void
+cute_mock_assert(const char * expression,
+                 const char * file,
+                 int          line,
+                 const char * function)
+{
+	cute_assert(expression);
+	cute_assert(expression[0]);
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+
+	if (cute_expect_check_assert())
+		/* Does not return. */
+		siglongjmp(cute_expect_assert_env, 1);
+
+	cute_assess_build_assert(&cute_curr_run->assess, expression);
+
+	cute_break(CUTE_FAIL_ISSUE,
+	           file,
+	           line,
+	           function,
+	           "extra expected assertion left");
+}
+
+/******************************************************************************
  * Mock expectation generic handling
  ******************************************************************************/
 
@@ -337,7 +411,7 @@ cute_expect_check(enum cute_expect_type type,
 			cute_expect_claim_inval_call(&cute_curr_run->call,
 			                             xpct,
 			                             type);
-			why = "mock expectation caller mismatch";
+			why = "mock caller function mismatch";
 			goto fail;
 		}
 
@@ -1360,12 +1434,12 @@ cute_expect_check_uint_parm(const char *             file,
 
 	assess = &xpct->super;
 	if (strcmp(check->expr, parm)) {
-		why = "signed integer mock parameter name mismatch";
+		why = "unsigned integer mock parameter name mismatch";
 		goto fail;
 	}
 
 	if (!assess->ops->cmp(assess, &chk)) {
-		why = "signed integer mock parameter check failed";
+		why = "unsigned integer mock parameter check failed";
 		goto fail;
 	}
 
@@ -2083,12 +2157,12 @@ cute_expect_check_flt_parm(const char *            file,
 
 	assess = &xpct->super;
 	if (strcmp(check->expr, parm)) {
-		why = "signed integer mock parameter name mismatch";
+		why = "floating point mock parameter name mismatch";
 		goto fail;
 	}
 
 	if (!assess->ops->cmp(assess, &chk)) {
-		why = "signed integer mock parameter check failed";
+		why = "floating point mock parameter check failed";
 		goto fail;
 	}
 

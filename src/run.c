@@ -359,6 +359,13 @@ cute_run_done(struct cute_run * run)
 			run->what = cute_run_what(run, CUTE_FAIL_ISSUE);
 			run->why = "extra mock expectation left";
 		}
+		else if (cute_expect_check_assert()) {
+			run->issue = CUTE_FAIL_ISSUE;
+			run->what = cute_run_what(run, CUTE_FAIL_ISSUE);
+			run->why = "extra expected assertion left";
+			run->assess.file = run->base->file;
+			run->assess.line = run->base->line;
+		}
 		else
 			run->issue = CUTE_PASS_ISSUE;
 

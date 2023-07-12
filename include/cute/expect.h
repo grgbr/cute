@@ -4,6 +4,32 @@
 #include <cute/check.h>
 
 /******************************************************************************
+ * Assertion mock expectation handling
+ ******************************************************************************/
+
+extern bool
+cute_expect_sched_assert(void) __cute_export;
+
+extern void
+cute_expect_fail_assert(const char * file, int line, const char * function)
+	__cute_export;
+
+#define cute_expect_assertion(_call) \
+	{ \
+		if (cute_expect_sched_assert()) { \
+			_call; \
+			cute_expect_fail_assert(__FILE__, __LINE__, __func__); \
+		} \
+	}
+
+extern void
+cute_mock_assert(const char * expression,
+                 const char * file,
+                 int          line,
+                 const char * function)
+	__cute_export;
+
+/******************************************************************************
  * Mock call expectation handling
  ******************************************************************************/
 

@@ -1,5 +1,5 @@
+* assert expect
 * implement str/ptr/mem support
-* mocking
 * get stdout / stderr output
 * tests
 * fork
