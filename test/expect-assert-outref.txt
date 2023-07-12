@@ -1,0 +1,38 @@
+
+##################################  Running CUTe test(s)  ##################################
+
+expect_assert_suite::expect_assert_none_fail_test ..................................... fail
+issue:  exec failed
+reason: expected assertion missed
+source: cute/test/expect_assert.c:41
+caller: expect_assert_none_fail_test__cute_exec()
+
+expect_assert_suite::expect_assert_catch0_fail_test ................................... fail
+issue:  exec failed
+reason: uncaught assertion failure
+source: cute/test/expect_assert.c:29
+caller: expect_assert_raise()
+assert: parm != 0
+
+expect_assert_suite::expect_assert_catch1_fail_test ................................... fail
+issue:  exec failed
+reason: uncaught assertion failure
+source: cute/test/expect_assert.c:30
+caller: expect_assert_raise()
+assert: parm != 1
+
+expect_assert_suite ................................................................... fail
+issue:  exec failed
+reason: descendants failed
+source: cute/test/expect_assert.c:73
+
+NAME                              STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+expect_assert_suite               fail    0.018298      3      0      3      0      6      6
+                                                      50%     0%    50%     0%   100%
+--------------------------------------------------------------------------------------------
+Total                             fail    0.018298      3      0      3      0      6      6
+                                                      50%     0%    50%     0%   100%
+
+                             ###          SUMMARY           ###
+                             ###  3/6 (50%) test(s) FAILED  ###
+

@@ -8,8 +8,8 @@
  * Assertion mock expectation handling
  ******************************************************************************/
 
-static sigjmp_buf cute_expect_assert_env;
-static bool       cute_expect_assert;
+sigjmp_buf cute_expect_assert_env;
+bool       cute_expect_assert;
 
 bool
 cute_expect_check_assert(void)
@@ -22,17 +22,6 @@ cute_expect_check_assert(void)
 	return false;
 }
 
-bool
-cute_expect_sched_assert(void)
-{
-	cute_expect_assert = true;
-
-	if (!sigsetjmp(cute_expect_assert_env, 1))
-		return true;
-	else
-		return false;
-}
-
 void
 cute_expect_fail_assert(const char * file, int line, const char * function)
 {
@@ -42,26 +31,29 @@ cute_expect_fail_assert(const char * file, int line, const char * function)
 	cute_assert(function);
 	cute_assert(function[0]);
 
+	cute_assert_intern(cute_expect_assert);
 	cute_expect_assert = false;
+
+	cute_assess_build_expr(&cute_curr_run->assess, NULL);
 
 	cute_break(CUTE_FAIL_ISSUE,
 	           file,
 	           line,
 	           function,
-	           "missing expected assertion");
+	           "expected assertion missed");
 }
 
 void
 cute_mock_assert(const char * expression,
                  const char * file,
-                 int          line,
+                 unsigned int line,
                  const char * function)
 {
 	cute_assert(expression);
 	cute_assert(expression[0]);
 	cute_assert(file);
 	cute_assert(file[0]);
-	cute_assert(line >= 0);
+	cute_assert(line <= INT_MAX);
 	cute_assert(function);
 	cute_assert(function[0]);
 
@@ -73,9 +65,9 @@ cute_mock_assert(const char * expression,
 
 	cute_break(CUTE_FAIL_ISSUE,
 	           file,
-	           line,
+	           (int)line,
 	           function,
-	           "extra expected assertion left");
+	           "uncaught assertion failure");
 }
 
 /******************************************************************************

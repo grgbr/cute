@@ -2,21 +2,23 @@
 #define _CUTE_EXPECT_H
 
 #include <cute/check.h>
+#include <setjmp.h>
 
 /******************************************************************************
  * Assertion mock expectation handling
  ******************************************************************************/
 
-extern bool
-cute_expect_sched_assert(void) __cute_export;
+extern sigjmp_buf cute_expect_assert_env __cute_export;
+extern bool       cute_expect_assert __cute_export;
 
 extern void
 cute_expect_fail_assert(const char * file, int line, const char * function)
-	__cute_export;
+	__cute_noreturn __cute_export;
 
 #define cute_expect_assertion(_call) \
 	{ \
-		if (cute_expect_sched_assert()) { \
+		cute_expect_assert = true; \
+		if (!sigsetjmp(cute_expect_assert_env, 1)) { \
 			_call; \
 			cute_expect_fail_assert(__FILE__, __LINE__, __func__); \
 		} \
@@ -25,9 +27,9 @@ cute_expect_fail_assert(const char * file, int line, const char * function)
 extern void
 cute_mock_assert(const char * expression,
                  const char * file,
-                 int          line,
+                 unsigned int line,
                  const char * function)
-	__cute_export;
+	__cute_noreturn __cute_export;
 
 /******************************************************************************
  * Mock call expectation handling

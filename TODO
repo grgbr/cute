@@ -1,4 +1,3 @@
-* assert expect
 * implement str/ptr/mem support
 * get stdout / stderr output
 * tests

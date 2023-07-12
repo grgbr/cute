@@ -131,7 +131,7 @@ cute_run_handle_tmout(int sig __cute_unused)
 	cute_assert_intern(sig == SIGALRM);
 	cute_run_assert_intern(cute_curr_run);
 
-	cute_assess_build_null(&cute_curr_run->assess);
+	cute_assess_build_expr(&cute_curr_run->assess, NULL);
 
 	cute_break(CUTE_FAIL_ISSUE,
 	           cute_curr_run->base->file,
