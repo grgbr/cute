@@ -57,54 +57,59 @@ simple-fixture-fail-utest-cflags   := $(test-cflags)
 simple-fixture-fail-utest-ldflags  := $(test-ldflags) -lcute
 simple-fixture-fail-utest-path     := $(LIBEXECDIR)/cute/simple-fixture-fail-utest
 
+bins                               += simple-iodir-utest
+simple-iodir-utest-objs            := simple_iodir.o
+simple-iodir-utest-cflags          := $(test-cflags)
+simple-iodir-utest-ldflags         := $(test-ldflags) -lcute
+simple-iodir-utest-path            := $(LIBEXECDIR)/cute/simple-iodir-utest
+
 bins                               += check-sint-utest
-check-sint-utest-objs             := check_sint.o
-check-sint-utest-cflags           := $(test-cflags)
-check-sint-utest-ldflags          := $(test-ldflags) -lcute
-check-sint-utest-path             := $(LIBEXECDIR)/cute/check-sint-utest
+check-sint-utest-objs              := check_sint.o
+check-sint-utest-cflags            := $(test-cflags)
+check-sint-utest-ldflags           := $(test-ldflags) -lcute
+check-sint-utest-path              := $(LIBEXECDIR)/cute/check-sint-utest
 
-bins                              += check-uint-utest
-check-uint-utest-objs             := check_uint.o
-check-uint-utest-cflags           := $(test-cflags)
-check-uint-utest-ldflags          := $(test-ldflags) -lcute
-check-uint-utest-path             := $(LIBEXECDIR)/cute/check-uint-utest
+bins                               += check-uint-utest
+check-uint-utest-objs              := check_uint.o
+check-uint-utest-cflags            := $(test-cflags)
+check-uint-utest-ldflags           := $(test-ldflags) -lcute
+check-uint-utest-path              := $(LIBEXECDIR)/cute/check-uint-utest
 
-bins                              += check-flt-utest
-check-flt-utest-objs              := check_flt.o
-check-flt-utest-cflags            := $(test-cflags)
-check-flt-utest-ldflags           := $(test-ldflags) -lcute
-check-flt-utest-path              := $(LIBEXECDIR)/cute/check-flt-utest
+bins                               += check-flt-utest
+check-flt-utest-objs               := check_flt.o
+check-flt-utest-cflags             := $(test-cflags)
+check-flt-utest-ldflags            := $(test-ldflags) -lcute
+check-flt-utest-path               := $(LIBEXECDIR)/cute/check-flt-utest
 
-bins                              += check-dbl-utest
-check-dbl-utest-objs              := check_dbl.o
-check-dbl-utest-cflags            := $(test-cflags)
-check-dbl-utest-ldflags           := $(test-ldflags) -lcute
-check-dbl-utest-path              := $(LIBEXECDIR)/cute/check-dbl-utest
+bins                               += check-dbl-utest
+check-dbl-utest-objs               := check_dbl.o
+check-dbl-utest-cflags             := $(test-cflags)
+check-dbl-utest-ldflags            := $(test-ldflags) -lcute
+check-dbl-utest-path               := $(LIBEXECDIR)/cute/check-dbl-utest
 
-bins                              += expect-sint-utest
-expect-sint-utest-objs            := expect_sint.o
-expect-sint-utest-cflags          := $(test-cflags)
-expect-sint-utest-ldflags         := $(test-ldflags) -lcute
-expect-sint-utest-path            := $(LIBEXECDIR)/cute/expect-sint-utest
+bins                               += expect-sint-utest
+expect-sint-utest-objs             := expect_sint.o
+expect-sint-utest-cflags           := $(test-cflags)
+expect-sint-utest-ldflags          := $(test-ldflags) -lcute
+expect-sint-utest-path             := $(LIBEXECDIR)/cute/expect-sint-utest
 
-bins                              += expect-uint-utest
-expect-uint-utest-objs            := expect_uint.o
-expect-uint-utest-cflags          := $(test-cflags)
-expect-uint-utest-ldflags         := $(test-ldflags) -lcute
-expect-uint-utest-path            := $(LIBEXECDIR)/cute/expect-uint-utest
+bins                               += expect-uint-utest
+expect-uint-utest-objs             := expect_uint.o
+expect-uint-utest-cflags           := $(test-cflags)
+expect-uint-utest-ldflags          := $(test-ldflags) -lcute
+expect-uint-utest-path             := $(LIBEXECDIR)/cute/expect-uint-utest
 
-bins                              += expect-flt-utest
-expect-flt-utest-objs             := expect_flt.o
-expect-flt-utest-cflags           := $(test-cflags)
-expect-flt-utest-ldflags          := $(test-ldflags) -lcute
-expect-flt-utest-path             := $(LIBEXECDIR)/cute/expect-flt-utest
+bins                               += expect-flt-utest
+expect-flt-utest-objs              := expect_flt.o
+expect-flt-utest-cflags            := $(test-cflags)
+expect-flt-utest-ldflags           := $(test-ldflags) -lcute
+expect-flt-utest-path              := $(LIBEXECDIR)/cute/expect-flt-utest
 
-bins                              += expect-assert-utest
-expect-assert-utest-objs          := expect_assert.o
-expect-assert-utest-cflags        := $(test-cflags)
-expect-assert-utest-ldflags       := $(test-ldflags) -lcute
-expect-assert-utest-path          := $(LIBEXECDIR)/cute/expect-assert-utest
-
+bins                               += expect-assert-utest
+expect-assert-utest-objs           := expect_assert.o
+expect-assert-utest-cflags         := $(test-cflags)
+expect-assert-utest-ldflags        := $(test-ldflags) -lcute
+expect-assert-utest-path           := $(LIBEXECDIR)/cute/expect-assert-utest
 
 build: $(BUILDDIR)/cute-utest.sh
 

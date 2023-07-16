@@ -36,6 +36,27 @@ cute_xml_report_prolog(const struct cute_xml_report * report)
 }
 
 static void
+cute_xml_report_stdio(FILE *                  stdio,
+                      int                     depth,
+                      const struct cute_run * run)
+{
+	cute_assert_intern(stdio);
+	cute_assert_intern(run);
+
+	if (cute_iodir_is_block_busy(&run->ioout)) {
+		fprintf(stdio, "%*s<system-out>\n", depth, "");
+		cute_iodir_print_block(stdio, 0, &run->ioout);
+		fprintf(stdio, "%*s</system-out>\n", depth, "");
+	}
+
+	if (cute_iodir_is_block_busy(&run->ioerr)) {
+		fprintf(stdio, "%*s<system-err>\n", depth, "");
+		cute_iodir_print_block(stdio, 0, &run->ioerr);
+		fprintf(stdio, "%*s</system-err>\n", depth, "");
+	}
+}
+
+static void
 cute_xml_report_testcase_details(FILE *                  stdio,
                                  int                     depth,
                                  const char *            label,
@@ -63,6 +84,8 @@ cute_xml_report_testcase_details(FILE *                  stdio,
 	}
 
 	fprintf(stdio, "%*s</%s>\n", depth + 4, "", label);
+
+	cute_xml_report_stdio(stdio, depth + 4, run);
 }
 
 static void
@@ -80,6 +103,7 @@ cute_xml_report_testcase(const struct cute_xml_report * report,
 
 	switch (run->issue) {
 	case CUTE_PASS_ISSUE:
+		status = "passed";
 		break;
 
 	case CUTE_SKIP_ISSUE:
@@ -104,16 +128,12 @@ cute_xml_report_testcase(const struct cute_xml_report * report,
 
 	fprintf(report->stdio,
 	        "%2$*1$s<testcase name=\"%3$s\"\n"
-	        "%2$*1$s          classname=\"%4$s\"\n",
+	        "%2$*1$s          classname=\"%4$s\"\n"
+	        "%2$*1$s          status=\"%5$s\"\n",
 	        depth, "",
 	        run->base->name,
-	        run->parent->name);
-
-	if (status)
-		fprintf(report->stdio,
-		        "%*s          status=\"%s\"\n",
-		        depth, "",
-		        status);
+	        run->parent->name,
+	        status);
 
 	fprintf(report->stdio,
 	        "%*s          time=\"%ld.%06ld\"\n",
@@ -135,6 +155,14 @@ cute_xml_report_testcase(const struct cute_xml_report * report,
 
 	switch (run->issue) {
 	case CUTE_PASS_ISSUE:
+		if (cute_iodir_is_block_busy(&run->ioout) ||
+		    cute_iodir_is_block_busy(&run->ioerr)) {
+			fputs(">\n", report->stdio);
+			cute_xml_report_stdio(report->stdio, depth + 4, run);
+			break;
+		}
+		__attribute__ ((fallthrough));
+
 	case CUTE_OFF_ISSUE:
 		fputs(" />\n", report->stdio);
 		return;

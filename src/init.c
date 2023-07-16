@@ -274,6 +274,10 @@ cute_init(struct cute_config * config,
 
 	setlocale(LC_ALL, "");
 
+	err = cute_iodir_init();
+	if (err)
+		return err;
+
 	gethostname(cute_hostname, sizeof(cute_hostname));
 
 	if (package && package[0])
@@ -283,12 +287,17 @@ cute_init(struct cute_config * config,
 
 	err = cute_config_load(config);
 	if (err)
-		return err;
+		goto fini;
 
 	cute_the_config = config;
 	cute_run_nr = 0;
 
 	return 0;
+
+fini:
+	cute_iodir_fini();
+
+	return err;
 }
 
 int
@@ -302,6 +311,8 @@ cute_fini(void)
 		cute_regex_fini(&cute_config_regex);
 
 	cute_the_config = NULL;
+
+	cute_iodir_fini();
 
 	return ret;
 }

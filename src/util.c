@@ -98,31 +98,75 @@ cute_free(void * ptr)
 }
 
 /******************************************************************************
- * String utilities
+ * System primitive wrappers
  ******************************************************************************/
 
-char *
-cute_toupper(const char * string, size_t max_size)
+int
+cute_lock_init(pthread_mutex_t * lock)
 {
-	cute_assert(string);
-	cute_assert(max_size);
+	cute_assert_intern(lock);
 
-	size_t       len;
-	char *       up;
-	unsigned int c;
+	pthread_mutexattr_t attr;
+	int                 ret;
 
-	len = strnlen(string, max_size);
-	up = cute_malloc(len + 1);
-	for (c = 0; c < len; c++) {
-		if (isgraph(string[c]))
-			up[c] = (char)toupper(string[c]);
-		else
-			up[c] = '?';
+	ret = pthread_mutexattr_init(&attr);
+	if (ret)
+		return -ret;
+
+	ret = pthread_mutexattr_setprotocol(&attr, PTHREAD_PRIO_INHERIT);
+	if (ret) {
+		cute_assert_intern(ret != EINVAL);
+		cute_assert_intern(ret != EPERM);
+		goto destroy;
 	}
-	up[len] = '\0';
+	
+	ret = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
+	if (ret) {
+		cute_assert_intern(ret != EINVAL);
+		goto destroy;
+	}
 
-	return up;
+	ret = pthread_mutex_init(lock, &attr);
+	cute_assert_intern(ret != EPERM);
+	cute_assert_intern(ret != EINVAL);
+
+destroy:
+	pthread_mutexattr_destroy(&attr);
+
+	return -ret;
 }
+
+int
+cute_thr_create(pthread_t *       hndl,
+                const sigset_t  * mask,
+                void *         (* routine)(void *),
+                void *            arg)
+{
+	pthread_attr_t attr;
+	int            err;
+
+	err = pthread_attr_init(&attr);
+	cute_assert_intern(!err || (err = -ENOMEM));
+	if (err)
+		exit(EXIT_FAILURE);
+
+	err = pthread_attr_setsigmask_np(&attr, mask);
+	cute_assert_intern(!err || (err = -ENOMEM));
+	if (err)
+		exit(EXIT_FAILURE);
+
+	err = pthread_create(hndl, &attr, routine, arg);
+	cute_assert_intern(err != EINVAL);
+	cute_assert_intern(err != EPERM);
+
+	pthread_attr_destroy(&attr);
+
+	return -err;
+}
+
+/******************************************************************************
+ * String utilities
+ ******************************************************************************/
 
 static char * __attribute__((format(printf, 1, 0)))
 cute_vasprintf(const char * format, va_list args)
@@ -160,6 +204,31 @@ err:
 	return str;
 }
 
+#if 0
+
+char *
+cute_toupper(const char * string, size_t max_size)
+{
+	cute_assert(string);
+	cute_assert(max_size);
+
+	size_t       len;
+	char *       up;
+	unsigned int c;
+
+	len = strnlen(string, max_size);
+	up = cute_malloc(len + 1);
+	for (c = 0; c < len; c++) {
+		if (isgraph(string[c]))
+			up[c] = (char)toupper(string[c]);
+		else
+			up[c] = '?';
+	}
+	up[len] = '\0';
+
+	return up;
+}
+
 char *
 cute_asprintf(const char * format, ...)
 {
@@ -174,7 +243,7 @@ cute_asprintf(const char * format, ...)
 }
 
 char *
-cute_dup(const char * string)
+cute_strdup(const char * string)
 {
 	cute_assert_intern(string);
 
@@ -187,6 +256,8 @@ cute_dup(const char * string)
 
 	return str;
 }
+
+#endif
 
 /******************************************************************************
  * Text block utility

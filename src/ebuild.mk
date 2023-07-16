@@ -30,6 +30,7 @@ libcute.so-objs    += \
 	shared/check.o \
 	shared/run.o \
 	shared/assess.o \
+	shared/iodir.o \
 	shared/common.o \
 	shared/util.o
 libcute.so-cflags  := $(filter-out -fpie -fPIE,$(common-cflags)) -fpic
@@ -53,6 +54,7 @@ libcute.a-objs     += \
 	static/check.o \
 	static/run.o \
 	static/assess.o \
+	static/iodir.o \
 	static/common.o \
 	static/util.o
 libcute.a-cflags   := $(common-cflags)

@@ -7,13 +7,14 @@
 #define CUTE_TERM_INDENT_WIDTH ((int)sizeof(CUTE_TERM_INDENT_PREF) - 1)
 
 struct cute_term {
+	const char * regular;
+	const char * bold;
+	const char * italic;
 	const char * red;
 	const char * green;
 	const char * yellow;
 	const char * blue;
 	const char * gray;
-	const char * bold;
-	const char * regular;
 	const char * fore;
 };
 

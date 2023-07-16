@@ -6,6 +6,10 @@
 #include <stdio.h>
 #include <regex.h>
 #include <errno.h>
+#include <unistd.h>
+#include <signal.h>
+#include <fcntl.h>
+#include <pthread.h>
 
 #define __CUTE_STRING(__str) \
 	# __str
@@ -55,7 +59,7 @@ extern int
 cute_close_stdio(FILE * stdio);
 
 /******************************************************************************
- * Memory allocation wrapping.
+ * Memory allocation wrappers
  ******************************************************************************/
 
 extern void *
@@ -68,17 +72,191 @@ extern void
 cute_free(void * ptr);
 
 /******************************************************************************
+ * System primitive wrappers
+ ******************************************************************************/
+
+static inline void
+cute_lock(pthread_mutex_t * lock)
+{
+	cute_assert_intern(lock);
+
+	int err __cute_unused;
+
+	err = pthread_mutex_lock(lock);
+	cute_assert_intern(err);
+}
+
+static inline void
+cute_unlock(pthread_mutex_t * lock)
+{
+	cute_assert_intern(lock);
+
+	int err __cute_unused;
+
+	err = pthread_mutex_unlock(lock);
+	cute_assert_intern(!err);
+}
+
+extern int
+cute_lock_init(pthread_mutex_t * lock);
+
+static inline void
+cute_lock_fini(pthread_mutex_t * lock)
+{
+	cute_assert_intern(lock);
+
+	int err __cute_unused;
+
+	err = pthread_mutex_destroy(lock);
+	cute_assert_intern(!err);
+}
+
+static inline void
+cute_cond_wait(pthread_cond_t * cond, pthread_mutex_t * lock)
+{
+	cute_assert_intern(cond);
+	cute_assert_intern(lock);
+
+	int err __cute_unused;
+
+	err = pthread_cond_wait(cond, lock);
+	cute_assert_intern(!err);
+}
+
+static inline void
+cute_cond_signal(pthread_cond_t * cond)
+{
+	int err __cute_unused;
+
+	err = pthread_cond_signal(cond);
+	cute_assert_intern(!err);
+}
+
+static inline int
+cute_cond_init(pthread_cond_t * cond)
+{
+	cute_assert_intern(cond);
+
+	return - pthread_cond_init(cond, NULL);
+}
+
+static inline void
+cute_cond_fini(pthread_cond_t * cond)
+{
+	cute_assert_intern(cond);
+
+	int err __cute_unused;
+
+	err = pthread_cond_destroy(cond);
+	cute_assert_intern(!err);
+}
+
+extern int
+cute_thr_create(pthread_t *       hndl,
+                const sigset_t  * mask,
+                void *         (* routine)(void *),
+                void *            arg);
+
+static inline void
+cute_thr_join(pthread_t thr, void ** retval)
+{
+	int err __cute_unused;
+
+	err = pthread_join(thr, retval);
+	cute_assert_intern(!err);
+}
+
+static inline void
+cute_thr_kill(pthread_t thr, int sig)
+{
+	cute_assert_intern(sig);
+	cute_assert_intern(sig <= NSIG || (sig >= SIGRTMIN && sig <= SIGRTMAX));
+
+	int err __cute_unused;
+
+	err = pthread_kill(thr, sig);
+	cute_assert_intern(!err);
+}
+
+static inline int
+cute_dup(int old_fd)
+{
+	int fd;
+
+	fd = dup(old_fd);
+	if (fd >= 0)
+		return fd;
+
+	cute_assert_intern(errno != EBADF);
+	cute_assert_intern(errno != EINVAL);
+	cute_assert_intern(errno != EBUSY);
+
+	return -errno;
+}
+
+static inline int
+cute_dup2(int old_fd, int new_fd)
+{
+	int fd;
+
+	fd = dup2(old_fd, new_fd);
+	if (fd >= 0)
+		return fd;
+
+	cute_assert_intern(errno != EBADF);
+	cute_assert_intern(errno != EINVAL);
+	cute_assert_intern(errno != EBUSY);
+
+	return -errno;
+}
+
+static inline int
+cute_pipe(int pipe_fds[2])
+{
+	if (!pipe(pipe_fds))
+		return 0;
+
+	cute_assert_intern(errno != EFAULT);
+	cute_assert_intern(errno != EINVAL);
+
+	return -errno;
+}
+
+static inline int
+cute_setup_nonblock(int fd)
+{
+	if (!fcntl(fd, F_SETFL, O_NONBLOCK))
+		return 0;
+
+	cute_assert_intern(errno != EACCES);
+	cute_assert_intern(errno != EBADF);
+	cute_assert_intern(errno != EBUSY);
+	cute_assert_intern(errno != EDEADLK);
+	cute_assert_intern(errno != EFAULT);
+	cute_assert_intern(errno != EINVAL);
+	cute_assert_intern(errno != ENOLCK);
+	cute_assert_intern(errno != ENOTDIR);
+	cute_assert_intern(errno != EPERM);
+
+	return -errno;
+}
+
+/******************************************************************************
  * String utilities
  ******************************************************************************/
+
+#if 0
 
 extern char *
 cute_toupper(const char * string, size_t max_size);
 
 extern char *
-cute_dup(const char * string);
+cute_strdup(const char * string);
 
 extern char *
 cute_asprintf(const char * format, ...) __attribute__((format(printf, 1, 2)));
+
+#endif
 
 /******************************************************************************
  * Text block utility

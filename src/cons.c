@@ -1,5 +1,6 @@
 #include "cons.h"
 #include "suite.h"
+#include "iodir.h"
 #include <ctype.h>
 #include <string.h>
 
@@ -110,6 +111,28 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 		if (blk) {
 			cute_report_printf_block(blk, 0, report->stdio);
 			cute_text_destroy(blk);
+		}
+
+		if (cute_iodir_is_block_busy(&run->ioout)) {
+			fprintf(report->stdio,
+			        ">>> stdout >>>%s\n",
+			        report->term.italic);
+			cute_iodir_print_block(report->stdio, 0, &run->ioout);
+			fprintf(report->stdio,
+			        "%s%s<<< stdout <<<\n",
+			        report->term.regular,
+			        report->term.gray);
+		}
+
+		if (cute_iodir_is_block_busy(&run->ioerr)) {
+			fprintf(report->stdio,
+			        ">>> stderr >>>%s\n",
+			        report->term.italic);
+			cute_iodir_print_block(report->stdio, 0, &run->ioerr);
+			fprintf(report->stdio,
+			        "%s%s<<< stderr <<<\n",
+			        report->term.regular,
+			        report->term.gray);
 		}
 
 		fputs(report->term.regular, report->stdio);

@@ -44,6 +44,25 @@ cute_tap_report_source_details(FILE *                  stdio,
 }
 
 static void
+cute_tap_report_stdio(FILE *                  stdio,
+                      int                     depth,
+                      const struct cute_run * run)
+{
+	cute_assert_intern(stdio);
+	cute_assert_intern(run);
+
+	if (cute_iodir_is_block_busy(&run->ioout)) {
+		fprintf(stdio, "%*sstdout: |\n", depth + 2, "");
+		cute_iodir_print_block(stdio, depth + 4, &run->ioout);
+	}
+
+	if (cute_iodir_is_block_busy(&run->ioerr)) {
+		fprintf(stdio, "%*sstderr: |\n", depth + 2, "");
+		cute_iodir_print_block(stdio, depth + 4, &run->ioerr);
+	}
+}
+
+static void
 cute_tap_report_realize_details(FILE *                  stdio,
                                 int                     depth,
                                 const struct cute_run * run)
@@ -113,6 +132,8 @@ cute_tap_report_test_details(FILE *                  stdio,
 
 	cute_tap_report_source_details(stdio, depth, run);
 
+	cute_tap_report_stdio(stdio, depth, run);
+
 	cute_tap_report_realize_details(stdio, depth, run);
 }
 
@@ -128,6 +149,7 @@ cute_tap_report_test_done(const struct cute_tap_report * report,
 		        "%2$*1$sok %3$d - %4$s\n"
 		        "%2$*1$s  ---\n",
 		        depth, "", run->id + 1, run->base->name);
+		cute_tap_report_stdio(report->stdio, depth, run);
 		cute_tap_report_realize_details(report->stdio, depth, run);
 		break;
 

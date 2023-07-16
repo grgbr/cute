@@ -17,9 +17,11 @@
 #define CUTE_TERM_YELLOW_COLOR  "\e[33m"
 #define CUTE_TERM_BLUE_COLOR    "\e[34m"
 #define CUTE_TERM_GRAY_COLOR    "\e[37m"
-#define CUTE_TERM_BOLD_COLOR    "\e[1m"
-#define CUTE_TERM_REGULAR_COLOR "\e[0m"
 #define CUTE_TERM_FORE_COLOR    "\e[39m"
+
+#define CUTE_TERM_REGULAR       "\e[0m"
+#define CUTE_TERM_BOLD_GRAPH    "\e[1m"
+#define CUTE_TERM_ITALIC_GRAPH  "\e[3m"
 
 int
 cute_term_depth_width(const char * name, int depth)
@@ -133,23 +135,25 @@ cute_term_setup(struct cute_term *   term,
 	}
 
 	if (tty) {
+		term->regular = CUTE_TERM_REGULAR;
+		term->bold = CUTE_TERM_BOLD_GRAPH;
+		term->italic = CUTE_TERM_ITALIC_GRAPH;
 		term->red = CUTE_TERM_RED_COLOR;
 		term->green = CUTE_TERM_GREEN_COLOR;
 		term->yellow = CUTE_TERM_YELLOW_COLOR;
 		term->blue = CUTE_TERM_BLUE_COLOR;
 		term->gray = CUTE_TERM_GRAY_COLOR;
-		term->bold = CUTE_TERM_BOLD_COLOR;
-		term->regular = CUTE_TERM_REGULAR_COLOR;
 		term->fore = CUTE_TERM_FORE_COLOR;
 	}
 	else {
+		term->regular = "";
+		term->bold = "";
+		term->italic = "";
 		term->red = "";
 		term->green = "";
 		term->yellow = "";
 		term->blue = "";
 		term->gray = "";
-		term->bold = "";
-		term->regular = "";
 		term->fore = "";
 	}
 }

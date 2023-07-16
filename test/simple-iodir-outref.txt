@@ -1,0 +1,104 @@
+
+######################################  Running CUTe test(s)  #######################################
+
+simple_iodir_suite::simple_iodir_stdout_fail_test .............................................. fail
+issue:  exec failed
+reason: explicit fail requested
+source: /mnt/devel/greg/tidor/cute/test/simple_iodir.c:12
+caller: simple_iodir_stdout_fail_test__cute_exec()
+detail: stdout collection test
+>>> stdout >>>
+a simple stdout output.
+<<< stdout <<<
+
+simple_iodir_suite::simple_iodir_stderr_fail_test .............................................. fail
+issue:  exec failed
+reason: explicit fail requested
+source: /mnt/devel/greg/tidor/cute/test/simple_iodir.c:23
+caller: simple_iodir_stderr_fail_test__cute_exec()
+detail: stderr collection test
+>>> stderr >>>
+a simple stderr output.
+<<< stderr <<<
+
+simple_iodir_suite::simple_iodir_stdio_fail_test ............................................... fail
+issue:  exec failed
+reason: explicit fail requested
+source: /mnt/devel/greg/tidor/cute/test/simple_iodir.c:36
+caller: simple_iodir_stdio_fail_test__cute_exec()
+detail: stdio collection test
+>>> stdout >>>
+a simple stdout output.
+<<< stdout <<<
+>>> stderr >>>
+a simple stderr output.
+<<< stderr <<<
+
+simple_iodir_suite::simple_iodir_blank_line_fail_test .......................................... fail
+issue:  exec failed
+reason: explicit fail requested
+source: /mnt/devel/greg/tidor/cute/test/simple_iodir.c:49
+caller: simple_iodir_blank_line_fail_test__cute_exec()
+detail: blank line stdio collection test
+>>> stdout >>>
+
+<<< stdout <<<
+>>> stderr >>>
+
+<<< stderr <<<
+
+simple_iodir_suite::simple_iodir_multi_blank_line_fail_test .................................... fail
+issue:  exec failed
+reason: explicit fail requested
+source: /mnt/devel/greg/tidor/cute/test/simple_iodir.c:62
+caller: simple_iodir_multi_blank_line_fail_test__cute_exec()
+detail: multi blank line stdio collection test
+>>> stdout >>>
+
+
+<<< stdout <<<
+>>> stderr >>>
+
+
+<<< stderr <<<
+
+simple_iodir_suite::simple_iodir_multi_line_fail_test .......................................... fail
+issue:  exec failed
+reason: explicit fail requested
+source: /mnt/devel/greg/tidor/cute/test/simple_iodir.c:75
+caller: simple_iodir_multi_line_fail_test__cute_exec()
+detail: empty line stdio collection test
+>>> stdout >>>
+
+
+simple multiline
+
+stdout
+output
+
+<<< stdout <<<
+>>> stderr >>>
+
+
+simple multiline
+
+stderr
+output
+
+<<< stderr <<<
+
+simple_iodir_suite ............................................................................. fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/simple_iodir.c:93
+
+NAME                                       STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+simple_iodir_suite                         fail    0.137121      6      0      6      0     12     12
+                                                               50%     0%    50%     0%   100%
+-----------------------------------------------------------------------------------------------------
+Total                                      fail    0.137121      6      0      6      0     12     12
+                                                               50%     0%    50%     0%   100%
+
+                                 ###           SUMMARY           ###
+                                 ###  6/12 (50%) test(s) FAILED  ###
+

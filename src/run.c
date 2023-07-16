@@ -131,6 +131,13 @@ cute_run_handle_tmout(int sig __cute_unused)
 	cute_assert_intern(sig == SIGALRM);
 	cute_run_assert_intern(cute_curr_run);
 
+	if (cute_curr_run->issue != CUTE_UNK_ISSUE)
+		/*
+		 * Test case has completed but timer has not yet been disabled:
+		 * Ignore the timeout.
+		 */
+		return;
+
 	cute_assess_build_expr(&cute_curr_run->assess, NULL);
 
 	cute_break(CUTE_FAIL_ISSUE,
@@ -155,9 +162,11 @@ cute_run_handle_sig(int sig)
 }
 
 void
-cute_run_settle(const struct cute_run * run)
+cute_run_settle(struct cute_run * run)
 {
 	cute_run_assert_intern(run);
+
+	cute_iodir_redirect(&run->ioout, &run->ioerr);
 
 	if (!cute_the_config->debug) {
 		unsigned int s;
@@ -186,7 +195,7 @@ cute_run_settle(const struct cute_run * run)
 }
 
 void
-cute_run_unsettle(const struct cute_run * run)
+cute_run_unsettle(struct cute_run * run)
 {
 	cute_run_assert_intern(run);
 
@@ -207,6 +216,8 @@ cute_run_unsettle(const struct cute_run * run)
 			cute_assert_intern(err != SIG_ERR);
 		}
 	}
+
+	cute_iodir_restore();
 }
 
 static bool
@@ -490,6 +501,8 @@ cute_run_init(struct cute_run *           run,
 	run->what = NULL;
 	run->why = NULL;
 	cute_assess_build_null(&run->assess);
+	cute_iodir_init_block(&run->ioout);
+	cute_iodir_init_block(&run->ioerr);
 
 	if (parent) {
 		cute_run_assert_intern(parent);
@@ -519,6 +532,8 @@ cute_run_fini(struct cute_run * run)
 	run->ops->fini(run);
 	run->state = CUTE_FINI_STATE;
 	cute_run_report(run, CUTE_FINI_EVT);
+	cute_iodir_fini_block(&run->ioout);
+	cute_iodir_fini_block(&run->ioerr);
 	cute_assess_release(&run->assess);
 	cute_free(run->name);
 }

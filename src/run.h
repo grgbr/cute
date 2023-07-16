@@ -3,6 +3,7 @@
 
 #include "expect.h"
 #include "report.h"
+#include "iodir.h"
 #include "util.h"
 
 struct cute_run;
@@ -87,6 +88,8 @@ struct cute_run {
 		struct cute_expect_parm parm;
 		struct cute_expect      retval;
 	};
+	struct cute_iodir_block         ioout;
+	struct cute_iodir_block         ioerr;
 };
 
 #define cute_run_assert(_run) \
@@ -126,10 +129,10 @@ cute_run_dummy_fini(struct cute_run * run __cute_unused)
 }
 
 extern void
-cute_run_settle(const struct cute_run * run);
+cute_run_settle(struct cute_run * run);
 
 extern void
-cute_run_unsettle(const struct cute_run * run);
+cute_run_unsettle(struct cute_run * run);
 
 extern int
 cute_run_setup(struct cute_run * run);
