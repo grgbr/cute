@@ -253,8 +253,7 @@ cute_tap_report_suite(struct cute_tap_report *       report,
 		break;
 
 	case CUTE_SHOW_EVT:
-		/* IMPLEMENT ME ! */
-		cute_assert(0);
+		cute_report_on_show(&suite->super, report->stdio, "", "");
 		break;
 
 	case CUTE_INIT_EVT:

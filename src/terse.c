@@ -162,40 +162,6 @@ cute_terse_report_on_foot(const struct cute_cons_report * report,
 }
 
 static void
-cute_terse_report_show_run(struct cute_run * run,
-                           enum cute_visit   visit,
-                           void *            data)
-{
-	cute_run_assert_intern(run);
-	cute_cons_report_assert_intern((struct cute_cons_report *)data);
-
-	const struct cute_cons_report * report =
-		(const struct cute_cons_report *)data;
-
-	switch (visit) {
-	case CUTE_BEGIN_VISIT:
-		if (run->state != CUTE_OFF_STATE)
-			fprintf(report->stdio,
-			        "%s%s%s\n",
-			        report->term.blue,
-			        run->name,
-			        report->term.regular);
-		break;
-
-	case CUTE_ONCE_VISIT:
-		if (run->state != CUTE_OFF_STATE)
-			fprintf(report->stdio, "%s\n", run->name);
-		break;
-
-	case CUTE_END_VISIT:
-		break;
-
-	default:
-		__cute_unreachable();
-	}
-}
-
-static void
 cute_terse_report_suite(struct cute_cons_report *     report,
                         enum cute_event               event,
                         const struct cute_suite_run * suite)
@@ -218,12 +184,10 @@ cute_terse_report_suite(struct cute_cons_report *     report,
 		break;
 
 	case CUTE_SHOW_EVT:
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcast-qual"
-		cute_run_foreach((struct cute_run *)suite,
-		                 cute_terse_report_show_run,
-		                 (struct cute_cons_report *)report);
-#pragma GCC diagnostic pop
+		cute_report_on_show(&suite->super,
+		                    report->stdio,
+		                    report->term.blue,
+		                    report->term.regular);
 		break;
 
 	case CUTE_SETUP_EVT:

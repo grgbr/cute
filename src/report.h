@@ -166,6 +166,12 @@ extern void
 cute_report_suite(enum cute_event event, const struct cute_run * run);
 
 extern void
+cute_report_on_show(const struct cute_run * run,
+		    FILE *                  stdio,
+		    const char  *           high,
+		    const char  *           regular);
+
+extern void
 cute_report_register(struct cute_report * report);
 
 extern void

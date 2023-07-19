@@ -236,6 +236,68 @@ cute_report_suite(enum cute_event event, const struct cute_run * run)
 	cute_report_handle(event, CUTE_SUITE_KIND, run);
 }
 
+struct cute_report_show {
+	FILE *       stdio;
+	const char * high;
+	const char * regular;
+};
+
+static void
+cute_report_show_run(struct cute_run * run,
+                     enum cute_visit   visit,
+                     void *            data)
+{
+	cute_run_assert_intern(run);
+
+	const struct cute_report_show * show = (const struct cute_report_show *)
+	                                       data;
+	cute_assert_intern(show->stdio);
+	cute_assert_intern(show->high);
+	cute_assert_intern(show->regular);
+
+	switch (visit) {
+	case CUTE_BEGIN_VISIT:
+		if (run->state != CUTE_OFF_STATE)
+			fprintf(show->stdio,
+			        "%s%s%s\n",
+			        show->high,
+			        run->name,
+			        show->regular);
+		break;
+
+	case CUTE_ONCE_VISIT:
+		if (run->state != CUTE_OFF_STATE)
+			fprintf(show->stdio, "%s\n", run->name);
+		break;
+
+	case CUTE_END_VISIT:
+		break;
+
+	default:
+		__cute_unreachable();
+	}
+}
+
+void
+cute_report_on_show(const struct cute_run * run,
+                    FILE *                  stdio,
+                    const char *            high,
+                    const char *            regular)
+{
+	const struct cute_report_show show = {
+		.stdio   = stdio,
+		.high    = high,
+		.regular = regular
+	};
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+	cute_run_foreach((struct cute_run *)run,
+	                 cute_report_show_run,
+			 (void *)&show);
+#pragma GCC diagnostic pop
+}
+
 static int
 _cute_report_release(struct cute_report * report)
 {

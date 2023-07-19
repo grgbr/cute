@@ -298,9 +298,9 @@ cute_xml_report_on_foot(const struct cute_xml_report * report,
 }
 
 static void
-cute_xml_report_suite(struct cute_xml_report *       report,
-                       enum cute_event               event,
-                       const struct cute_suite_run * suite)
+cute_xml_report_suite(struct cute_xml_report *      report,
+                      enum cute_event               event,
+                      const struct cute_suite_run * suite)
 {
 	switch (event) {
 
@@ -309,8 +309,7 @@ cute_xml_report_suite(struct cute_xml_report *       report,
 		break;
 
 	case CUTE_SHOW_EVT:
-		/* IMPLEMENT ME ! */
-		cute_assert(0);
+		cute_report_on_show(&suite->super, report->stdio, "", "");
 		break;
 
 	case CUTE_INIT_EVT:

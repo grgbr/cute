@@ -1,4 +1,3 @@
-* xml / tap: implement show suite, output root suite as top-level node ??
 * ensure terminal is left in a sane state on interrupt / signal
 * refine setup/teardown responsibilities (suite vs test) ?
 * implement str/ptr/mem support
