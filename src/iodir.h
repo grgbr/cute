@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+extern FILE * cute_iodir_stdout;
+extern FILE * cute_iodir_stderr;
+
 struct cute_iodir_atom;
 
 struct cute_iodir_block {
@@ -35,7 +38,7 @@ cute_iodir_restore(void);
 extern int
 cute_iodir_init(void);
 
-extern int
+extern void
 cute_iodir_fini(void);
 
 #endif /* _CUTE_IODIR_H */

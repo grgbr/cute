@@ -306,7 +306,12 @@ cute_tap_report_release(struct cute_report * report)
 
 	cute_free(report);
 
-	return cute_close_stdio(stdio);
+	if (!cute_the_config->tap_path) {
+		fflush(stdio);
+		return 0;
+	}
+	else
+		return cute_close_stdio(stdio);
 }
 
 int
@@ -336,7 +341,7 @@ cute_report_setup_tap(const struct cute_config * config)
 		cute_report_register(&rprt->super);
 	}
 	else {
-		rprt->stdio = stdout;
+		rprt->stdio = cute_iodir_stdout;
 		cute_cons_report_register(&rprt->super);
 	}
 

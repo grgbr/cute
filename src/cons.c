@@ -431,7 +431,9 @@ _cute_cons_report_release(struct cute_report * report)
 	cute_free(rprt->fill);
 	cute_free(report);
 
-	return cute_close_stdio(stdio);
+	fflush(stdio);
+
+	return 0;
 }
 
 int
@@ -443,11 +445,11 @@ cute_cons_report_setup(struct cute_cons_report *  report,
 	cute_config_assert_intern(config);
 	cute_assert_intern(handle);
 
-	cute_term_setup(&report->term, stdout, config->tty);
+	cute_term_setup(&report->term, cute_iodir_stdout, config->tty);
 
 	report->super.handle = handle;
 	report->super.release = _cute_cons_report_release;
-	report->stdio = stdout;
+	report->stdio = cute_iodir_stdout;
 	report->colnr = 0;
 	report->ncols = CUTE_CONS_NAME_COLS_MIN;
 	report->fill = NULL;

@@ -1,4 +1,4 @@
-#include "util.h"
+#include "common.h"
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
@@ -11,7 +11,7 @@ cute_fail_assert(const char * message,
                  int          line,
                  const char * func)
 {
-	fprintf(stderr,
+	fprintf(cute_iodir_stderr,
 	        "\n%s: assertion failed @ %s:%d in %s(): '%s'.\n",
 	        program_invocation_short_name,
 	        file,

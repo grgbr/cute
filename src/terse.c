@@ -14,7 +14,7 @@ cute_terse_report_progress(const struct cute_cons_report * report)
 	cute_assert_intern(prog <= 100U);
 	fill = (total * (int)prog) / 100;
 
-	fprintf(stderr,
+	fprintf(cute_iodir_stderr,
 	        "\r" CUTE_CONS_REPORT_PROG_FMT "[%.*s%*s]",
 	        prog,
 	        fill,
@@ -22,7 +22,7 @@ cute_terse_report_progress(const struct cute_cons_report * report)
 	        total - fill,
 	        "");
 
-	fflush(stderr);
+	fflush(cute_iodir_stderr);
 }
 
 static void
@@ -65,7 +65,8 @@ cute_terse_report_test_done(const struct cute_cons_report * report,
 
 		fill = cute_terse_report_fill_len(report, name);
 
-		fputc('\r', stderr);
+		fputc('\r', cute_iodir_stderr);
+		fflush(cute_iodir_stderr);
 
 		fprintf(report->stdio,
 		        "%s %*.*s ",
@@ -118,7 +119,8 @@ cute_terse_report_suite_done(const struct cute_cons_report * report,
 
 		fill = cute_terse_report_fill_len(report, name);
 
-		fputc('\r', stderr);
+		fputc('\r', cute_iodir_stderr);
+		fflush(cute_iodir_stderr);
 
 		fprintf(report->stdio,
 		        "%s%s%s %*.*s ",
@@ -153,7 +155,8 @@ static void
 cute_terse_report_on_foot(const struct cute_cons_report * report,
                           const struct cute_suite_run *   suite)
 {
-	fputs("\r", stderr);
+	fputc('\r', cute_iodir_stderr);
+	fflush(cute_iodir_stderr);
 
 	cute_cons_report_sumup(report, suite);
 }

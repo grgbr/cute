@@ -148,8 +148,6 @@ cute_suite_oper_run(struct cute_run * run, enum cute_oper oper)
 
 	switch (oper) {
 	case CUTE_SPAWN_OPER:
-		fflush(NULL);
-		sync();
 		if (run->state != CUTE_OFF_STATE)
 			cute_gettime(&run->begin);
 		cute_run_setup(run);

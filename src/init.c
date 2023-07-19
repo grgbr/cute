@@ -278,7 +278,8 @@ cute_init(struct cute_config * config,
 	if (err)
 		return err;
 
-	gethostname(cute_hostname, sizeof(cute_hostname));
+	err = gethostname(cute_hostname, sizeof(cute_hostname));
+	cute_assert_intern(!err);
 
 	if (package && package[0])
 		cute_package = package;
@@ -300,12 +301,10 @@ fini:
 	return err;
 }
 
-int
+void
 cute_fini(void)
 {
-	int ret;
-
-	ret = cute_report_release();
+	cute_report_release();
 
 	if (cute_the_config->match)
 		cute_regex_fini(&cute_config_regex);
@@ -313,8 +312,6 @@ cute_fini(void)
 	cute_the_config = NULL;
 
 	cute_iodir_fini();
-
-	return ret;
 }
 
 #define CUTE_HELP \

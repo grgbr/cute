@@ -1,10 +1,9 @@
-* implement str/ptr/mem support
-* get stdout / stderr output
-* tests
-* fork
-* xml / tap: implement show suite, output root suite as top-level node ??
-* ensure terminal is left in a sane state on interrupt / signal
 * sigaltstack
 * block signals upon malloc ? other calls ?
+* xml / tap: implement show suite, output root suite as top-level node ??
+* ensure terminal is left in a sane state on interrupt / signal
 * refine setup/teardown responsibilities (suite vs test) ?
+* implement str/ptr/mem support
 * refine stringification of check API arguments (prevent from expanding args)
+* fork
+* cleanup cute_term_depth_[v]printf...

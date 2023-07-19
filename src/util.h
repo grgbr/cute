@@ -43,12 +43,6 @@
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
-#define cute_error(_format, ...) \
-	fprintf(stderr, \
-	        "%s: " _format, \
-	        program_invocation_short_name, \
-	        ## __VA_ARGS__)
-
 extern void __cute_noreturn
 cute_fail_assert(const char * message,
                  const char * file,
@@ -83,7 +77,7 @@ cute_lock(pthread_mutex_t * lock)
 	int err __cute_unused;
 
 	err = pthread_mutex_lock(lock);
-	cute_assert_intern(err);
+	cute_assert_intern(!err);
 }
 
 static inline void
@@ -222,23 +216,13 @@ cute_pipe(int pipe_fds[2])
 	return -errno;
 }
 
-static inline int
+static inline void
 cute_setup_nonblock(int fd)
 {
-	if (!fcntl(fd, F_SETFL, O_NONBLOCK))
-		return 0;
+	int err __cute_unused;
 
-	cute_assert_intern(errno != EACCES);
-	cute_assert_intern(errno != EBADF);
-	cute_assert_intern(errno != EBUSY);
-	cute_assert_intern(errno != EDEADLK);
-	cute_assert_intern(errno != EFAULT);
-	cute_assert_intern(errno != EINVAL);
-	cute_assert_intern(errno != ENOLCK);
-	cute_assert_intern(errno != ENOTDIR);
-	cute_assert_intern(errno != EPERM);
-
-	return -errno;
+	err = fcntl(fd, F_SETFL, O_NONBLOCK);
+	cute_assert_intern(!err);
 }
 
 /******************************************************************************

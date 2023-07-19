@@ -51,9 +51,6 @@ cute_test_exec_run(struct cute_run * run, const struct cute_test * test)
 
 	run->state = CUTE_EXEC_STATE;
 
-	fflush(NULL);
-	sync();
-
 	cute_run_settle(run);
 
 	issue = sigsetjmp(cute_jmp_env, 1);

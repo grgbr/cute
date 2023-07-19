@@ -39,7 +39,7 @@ cute_term_depth_width(const char * name, int depth)
 }
 
 void
-cute_term_depth_vprintf(const struct cute_term * term,
+cute_term_depth_vprintf(const struct cute_term * term __cute_unused,
                         FILE *                   stdio,
                         int                      depth,
                         const char *             format,
@@ -245,20 +245,31 @@ _cute_report_release(struct cute_report * report)
 	return report->release(report);
 }
 
-int
+void
 cute_report_release(void)
 {
 	unsigned int r;
-	int          ret = 0;
+	int          err;
 
-	ret |= cute_cons_report_release();
+	err = cute_cons_report_release();
+	if (err)
+		goto err;
 
-	for (r = 0; r < cute_report_count; r++)
-		ret |= _cute_report_release(cute_report_table[r]);
+	for (r = 0; r < cute_report_count; r++) {
+		err = _cute_report_release(cute_report_table[r]);
+		if (err)
+			goto err;
+	}
 
 	cute_free(cute_report_table);
 
-	return ret ? -1 : 0;
+	return;
+
+err:
+	cute_error("cannot finalize report: %s (%d)\n",
+	           strerror(-err),
+	           -err);
+	exit(EXIT_FAILURE);
 }
 
 static void

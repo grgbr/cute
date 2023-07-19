@@ -361,7 +361,12 @@ cute_xml_report_release(struct cute_report * report)
 
 	cute_free(report);
 
-	return cute_close_stdio(stdio);
+	if (!cute_the_config->xml_path) {
+		fflush(stdio);
+		return 0;
+	}
+	else
+		return cute_close_stdio(stdio);
 }
 
 int
@@ -377,12 +382,12 @@ cute_report_setup_xml(const struct cute_config * config)
 	rprt->super.handle = cute_xml_report_handle;
 	rprt->super.release = cute_xml_report_release;
 
-	if (config->tap_path) {
-		rprt->stdio = fopen(config->tap_path, "w");
+	if (config->xml_path) {
+		rprt->stdio = fopen(config->xml_path, "w");
 		if (!rprt->stdio) {
 			ret = -errno;
 			cute_error("'%s': cannot open output file: %s (%d).\n",
-			           config->tap_path,
+			           config->xml_path,
 			           strerror(errno),
 			           errno);
 			goto free;
@@ -391,7 +396,7 @@ cute_report_setup_xml(const struct cute_config * config)
 		cute_report_register(&rprt->super);
 	}
 	else {
-		rprt->stdio = stdout;
+		rprt->stdio = cute_iodir_stdout;
 		cute_cons_report_register(&rprt->super);
 	}
 

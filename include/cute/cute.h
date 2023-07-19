@@ -203,7 +203,7 @@ cute_init(struct cute_config * config,
           const char *         package,
           const char *         version) __cute_export;
 
-extern int
+extern void
 cute_fini(void) __cute_export;
 
 extern int
