@@ -177,6 +177,12 @@ cute_run_init(struct cute_run *           run,
 extern void
 cute_run_destroy(struct cute_run * run);
 
+extern void
+cute_run_init_sigs(void);
+
+extern void
+cute_run_fini_sigs(void);
+
 typedef void
         (cute_run_process_fn)(struct cute_run *, enum cute_visit, void *);
 

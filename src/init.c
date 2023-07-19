@@ -291,6 +291,9 @@ cute_init(struct cute_config * config,
 		goto fini;
 
 	cute_the_config = config;
+
+	cute_run_init_sigs();
+
 	cute_run_nr = 0;
 
 	return 0;
@@ -304,6 +307,8 @@ fini:
 void
 cute_fini(void)
 {
+	cute_run_fini_sigs();
+
 	cute_report_release();
 
 	if (cute_the_config->match)

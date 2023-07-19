@@ -113,20 +113,90 @@ cute_break(enum cute_issue issue,
 	siglongjmp(cute_jmp_env, issue);
 }
 
-static int const    cute_run_sigs[] = {
-	SIGFPE,
-	SIGILL,
-	SIGSEGV,
-	SIGBUS,
-	SIGSYS
+struct cute_run_sigact {
+	int              sig;
+	struct sigaction old;
 };
 
-static sighandler_t cute_run_saved_alrm;
-static sighandler_t cute_run_saved_sigs[sizeof(cute_run_sigs) /
-                                        sizeof(cute_run_sigs[0])];
+static struct cute_run_sigact cute_run_sigs[] = {
+	{ .sig = SIGFPE },
+	{ .sig = SIGILL },
+	{ .sig = SIGSEGV },
+	{ .sig = SIGBUS },
+	{ .sig = SIGSYS }
+};
+
+static struct sigaction       cute_run_timer_act;
+
+static sigset_t               cute_run_sigmask;
+
+static stack_t                cute_run_sigstack = {
+	.ss_flags = 0,
+};
 
 static void
-cute_run_handle_tmout(int sig __cute_unused)
+cute_run_handle_sig(int         sig,
+                    siginfo_t * info __cute_unused,
+                    void *      context __cute_unused)
+{
+	cute_run_assert_intern(cute_curr_run);
+
+	cute_assess_build_excp(&cute_curr_run->assess, sig);
+
+	cute_break(CUTE_EXCP_ISSUE,
+	           cute_curr_run->base->file,
+	           cute_curr_run->base->line,
+	           NULL,
+	           "exception raised");
+}
+
+static void
+cute_run_settle_sigs(void)
+{
+	if (!cute_the_config->debug) {
+		unsigned int s;
+
+		for (s = 0;
+		     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
+		     s++) {
+			int                    err;
+			const struct sigaction act = {
+				.sa_sigaction = cute_run_handle_sig,
+				.sa_mask      = cute_run_sigmask,
+				.sa_flags     = SA_SIGINFO | SA_ONSTACK
+			};
+
+			err = sigaction(cute_run_sigs[s].sig,
+			                &act,
+			                &cute_run_sigs[s].old);
+			cute_assert_intern(!err);
+		}
+	}
+}
+
+static void
+cute_run_unsettle_sigs(void)
+{
+	if (!cute_the_config->debug) {
+		unsigned int s;
+
+		for (s = 0;
+		     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
+		     s++) {
+			int err;
+
+			err = sigaction(cute_run_sigs[s].sig,
+			                &cute_run_sigs[s].old,
+			                NULL);
+			cute_assert_intern(!err);
+		}
+	}
+}
+
+static void
+cute_run_handle_tmout(int         sig,
+                      siginfo_t * info __cute_unused,
+                      void *      context __cute_unused)
 {
 	cute_assert_intern(sig == SIGALRM);
 	cute_run_assert_intern(cute_curr_run);
@@ -148,17 +218,84 @@ cute_run_handle_tmout(int sig __cute_unused)
 }
 
 static void
-cute_run_handle_sig(int sig)
+cute_run_arm_timer(const struct cute_run * run)
 {
-	cute_run_assert_intern(cute_curr_run);
+	if (!cute_the_config->debug) {
+		/*
+		 * As stated into section "Sleeping" of the glibc manual:
+		 * On GNU system, it is safe to use sleep and SIGALRM in the
+		 * same program, because sleep does not work by means of
+		 * SIGALRM.
+		 */
+		if (run->base->tmout > 0) {
+			int                    err;
+			const struct sigaction act = {
+				.sa_sigaction = cute_run_handle_tmout,
+				.sa_mask      = cute_run_sigmask,
+				.sa_flags     = SA_SIGINFO | SA_ONSTACK
+			};
 
-	cute_assess_build_excp(&cute_curr_run->assess, sig);
+			err = sigaction(SIGALRM, &act, &cute_run_timer_act);
+			cute_assert_intern(!err);
 
-	cute_break(CUTE_EXCP_ISSUE,
-	           cute_curr_run->base->file,
-	           cute_curr_run->base->line,
-	           NULL,
-	           "exception raised");
+			alarm(run->base->tmout);
+		}
+	}
+}
+
+static void
+cute_run_disarm_timer(const struct cute_run * run)
+{
+	if (!cute_the_config->debug) {
+		if (run->base->tmout > 0) {
+			int err;
+
+			alarm(0);
+
+			err = sigaction(SIGALRM, &cute_run_timer_act, NULL);
+			cute_assert_intern(!err);
+		}
+	}
+}
+
+void
+cute_run_init_sigs(void)
+{
+	if (!cute_the_config->debug) {
+		int           err;
+		unsigned int  s;
+
+		sigemptyset(&cute_run_sigmask);
+		err = sigaddset(&cute_run_sigmask, SIGALRM);
+		cute_assert_intern(!err);
+
+		for (s = 0;
+		     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
+		     s++) {
+			err = sigaddset(&cute_run_sigmask,
+			                cute_run_sigs[s].sig);
+			cute_assert_intern(!err);
+		}
+
+		cute_run_sigstack.ss_size = (size_t)SIGSTKSZ;
+		cute_run_sigstack.ss_sp = cute_malloc((size_t)SIGSTKSZ);
+		err = sigaltstack(&cute_run_sigstack, NULL);
+		cute_assert_intern(!err);
+	}
+}
+
+void
+cute_run_fini_sigs(void)
+{
+	if (!cute_the_config->debug) {
+		const stack_t stk = { .ss_flags = SS_DISABLE };
+		int           err;
+
+		err = sigaltstack(&stk, NULL);
+		cute_assert_intern(!err);
+
+		cute_free(cute_run_sigstack.ss_sp);
+	}
 }
 
 void
@@ -166,32 +303,11 @@ cute_run_settle(struct cute_run * run)
 {
 	cute_run_assert_intern(run);
 
+	cute_run_settle_sigs();
+
 	cute_iodir_redirect(&run->ioout, &run->ioerr);
 
-	if (!cute_the_config->debug) {
-		unsigned int s;
-
-		for (s = 0;
-		     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
-		     s++) {
-			cute_run_saved_sigs[s] = signal(cute_run_sigs[s],
-			                                cute_run_handle_sig);
-			cute_assert_intern(cute_run_saved_sigs[s] != SIG_ERR);
-		}
-
-		/*
-		 * As stated into section "Sleeping" of the glibc manual:
-		 * On GNU system, it is safe to use sleep and SIGALRM in the same
-		 * program, because sleep does not work by means of SIGALRM.
-		 */
-		if (run->base->tmout > 0) {
-			cute_run_saved_alrm = signal(SIGALRM,
-			                             cute_run_handle_tmout);
-			cute_assert_intern(cute_run_saved_alrm != SIG_ERR);
-
-			alarm(run->base->tmout);
-		}
-	}
+	cute_run_arm_timer(run);
 }
 
 void
@@ -199,25 +315,11 @@ cute_run_unsettle(struct cute_run * run)
 {
 	cute_run_assert_intern(run);
 
-	if (!cute_the_config->debug) {
-		sighandler_t err __cute_unused;
-		unsigned int s;
-
-		if (run->base->tmout > 0) {
-			alarm(0);
-			err = signal(SIGALRM, cute_run_saved_alrm);
-			cute_assert_intern(err != SIG_ERR);
-		}
-
-		for (s = 0;
-		     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
-		     s++) {
-			err = signal(cute_run_sigs[s], cute_run_saved_sigs[s]);
-			cute_assert_intern(err != SIG_ERR);
-		}
-	}
+	cute_run_disarm_timer(run);
 
 	cute_iodir_restore();
+
+	cute_run_unsettle_sigs();
 }
 
 static bool
