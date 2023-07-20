@@ -62,6 +62,7 @@ cute_terse_report_test_done(const struct cute_cons_report * report,
 	    (run->issue == CUTE_EXCP_ISSUE)) {
 		const char * name = run->name;
 		int          fill;
+		sigset_t     set;
 
 		fill = cute_terse_report_fill_len(report, name);
 
@@ -75,7 +76,9 @@ cute_terse_report_test_done(const struct cute_cons_report * report,
 		        fill,
 		        report->fill);
 
+		cute_cons_report_mask(report, &set);
 		cute_cons_report_test_done(report, run);
+		cute_cons_report_unmask(report, &set);
 
 		fputc('\n', report->stdio);
 	}
@@ -116,12 +119,14 @@ cute_terse_report_suite_done(const struct cute_cons_report * report,
 	    (suite->super.issue == CUTE_EXCP_ISSUE)) {
 		const char * name = suite->super.name;
 		int          fill;
+		sigset_t     set;
 
 		fill = cute_terse_report_fill_len(report, name);
 
 		fputc('\r', cute_iodir_stderr);
 		fflush(cute_iodir_stderr);
 
+		cute_cons_report_mask(report, &set);
 		fprintf(report->stdio,
 		        "%s%s%s %*.*s ",
 		        report->term.blue,
@@ -130,8 +135,8 @@ cute_terse_report_suite_done(const struct cute_cons_report * report,
 		        fill,
 		        fill,
 		        report->fill);
-
 		cute_cons_report_test_done(report, &suite->super);
+		cute_cons_report_unmask(report, &set);
 
 		fputc('\n', report->stdio);
 	}
@@ -142,23 +147,45 @@ cute_terse_report_suite_done(const struct cute_cons_report * report,
 static void
 cute_terse_report_on_head(struct cute_cons_report * report)
 {
+	sigset_t set;
+
 	int colnr = report->ncols + CUTE_CONS_REPORT_SUMUP_WIDTH;
 
 	cute_cons_report_on_head(report,
 	                         colnr,
 	                         colnr - (CUTE_CONS_REPORT_PROG_WIDTH + 2));
 
+	cute_cons_report_mask(report, &set);
 	cute_cons_report_head(report);
+	cute_cons_report_unmask(report, &set);
 }
 
 static void
 cute_terse_report_on_foot(const struct cute_cons_report * report,
                           const struct cute_suite_run *   suite)
 {
+	sigset_t set;
+
 	fputc('\r', cute_iodir_stderr);
 	fflush(cute_iodir_stderr);
 
+	cute_cons_report_mask(report, &set);
 	cute_cons_report_sumup(report, suite);
+	cute_cons_report_unmask(report, &set);
+}
+
+static void
+cute_terse_report_on_show(const struct cute_cons_report * report,
+                          const struct cute_suite_run *   suite)
+{
+	sigset_t set;
+
+	cute_cons_report_mask(report, &set);
+	cute_report_on_show(&suite->super,
+	                    report->stdio,
+	                    report->term.blue,
+	                    report->term.regular);
+	cute_cons_report_unmask(report, &set);
 }
 
 static void
@@ -184,10 +211,7 @@ cute_terse_report_suite(struct cute_cons_report *     report,
 		break;
 
 	case CUTE_SHOW_EVT:
-		cute_report_on_show(&suite->super,
-		                    report->stdio,
-		                    report->term.blue,
-		                    report->term.regular);
+		cute_terse_report_on_show(report, suite);
 		break;
 
 	case CUTE_SETUP_EVT:

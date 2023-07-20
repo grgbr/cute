@@ -43,6 +43,7 @@ cute_verb_report_test_done(struct cute_cons_report * report,
                            const struct cute_run *   run)
 {
 	struct timespec diff;
+	sigset_t        set;
 
 	cute_diff_tspec(&diff, &run->begin, &run->end);
 
@@ -50,7 +51,9 @@ cute_verb_report_test_done(struct cute_cons_report * report,
 	        CUTE_CONS_REPORT_TIME_FMT " ",
 	        diff.tv_sec, diff.tv_nsec / 1000L);
 
+	cute_cons_report_mask(report, &set);
 	cute_cons_report_test_done(report, run);
+	cute_cons_report_unmask(report, &set);
 }
 
 static void
@@ -84,11 +87,12 @@ cute_verb_report_test(struct cute_cons_report * report,
 static void
 cute_verb_report_on_head(struct cute_cons_report * report)
 {
-	int colnr = CUTE_CONS_REPORT_PROG_WIDTH +
-	            (1 + report->ncols) +
-	            1 + 3 +
-	            (1 + CUTE_CONS_REPORT_TIME_WIDTH) +
-	            (1 + CUTE_CONS_REPORT_STAT_WIDTH);
+	int      colnr = CUTE_CONS_REPORT_PROG_WIDTH +
+	                 (1 + report->ncols) +
+	                 1 + 3 +
+	                 (1 + CUTE_CONS_REPORT_TIME_WIDTH) +
+	                 (1 + CUTE_CONS_REPORT_STAT_WIDTH);
+	sigset_t set;
 
 	if (colnr < (report->ncols + CUTE_CONS_REPORT_SUMUP_WIDTH))
 		colnr = report->ncols + CUTE_CONS_REPORT_SUMUP_WIDTH;
@@ -100,8 +104,8 @@ cute_verb_report_on_head(struct cute_cons_report * report)
 	                                  1 +
 	                                  (1 + CUTE_CONS_REPORT_STAT_WIDTH)));
 
+	cute_cons_report_mask(report, &set);
 	cute_cons_report_head(report);
-
 	fprintf(report->stdio,
 	        "%s"
 	        CUTE_CONS_REPORT_PROG_PAD
@@ -118,16 +122,20 @@ cute_verb_report_on_head(struct cute_cons_report * report)
 	                 (1 + CUTE_CONS_REPORT_STAT_WIDTH)),
 	        "",
 	        report->term.regular);
+	cute_cons_report_unmask(report, &set);
 }
 
 static void
 cute_verb_report_suite_setup(const struct cute_cons_report * report,
                              const struct cute_suite_run *   suite)
 {
+	sigset_t set;
+
 	fprintf(report->stdio,
 	        CUTE_CONS_REPORT_PROG_FMT " ",
 	        cute_report_progress());
 
+	cute_cons_report_mask(report, &set);
 	cute_term_depth_printf(&report->term,
 	                       report->stdio,
 	                       suite->super.depth,
@@ -135,12 +143,14 @@ cute_verb_report_suite_setup(const struct cute_cons_report * report,
 	                       report->term.blue,
 	                       suite->super.base->name,
 	                       report->term.regular);
+	cute_cons_report_unmask(report, &set);
 }
 
 static void
 cute_verb_report_suite_done(const struct cute_cons_report * report,
                             const struct cute_suite_run *   suite)
 {
+	sigset_t     set;
 	int          depth = suite->super.depth;
 	const char * name = suite->super.base->name;
 	const char * blue = report->term.blue;
@@ -160,36 +170,44 @@ cute_verb_report_suite_done(const struct cute_cons_report * report,
 		                       (1 + CUTE_CONS_REPORT_STAT_WIDTH);
 		struct timespec diff;
 
+		cute_diff_tspec(&diff, &suite->super.begin, &suite->super.end);
+
+		cute_cons_report_mask(report, &set);
 		cute_term_depth_printf(&report->term,
 		                       report->stdio,
 		                       depth,
 		                       "%s%s%s %*.*s ",
 		                       blue, name, reg,
 		                       fill, fill, report->fill);
-
-
-		cute_diff_tspec(&diff, &suite->super.begin, &suite->super.end);
-
 		fprintf(report->stdio,
 		        CUTE_CONS_REPORT_TIME_FMT " ",
 		        diff.tv_sec, diff.tv_nsec / 1000L);
-
 		cute_cons_report_test_done(report, &suite->super);
+		cute_cons_report_unmask(report, &set);
+
 	}
-	else
+	else {
+		cute_cons_report_mask(report, &set);
 		cute_term_depth_printf(&report->term,
 		                       report->stdio,
 		                       depth,
 		                       "%s%s%s\n",
 		                       blue, name, reg);
+		cute_cons_report_unmask(report, &set);
+	}
 }
 
 static void
 cute_verb_report_on_foot(const struct cute_cons_report * report,
                          const struct cute_suite_run *   suite)
 {
+	sigset_t set;
+
 	fputc('\n', report->stdio);
+
+	cute_cons_report_mask(report, &set);
 	cute_cons_report_sumup(report, suite);
+	cute_cons_report_unmask(report, &set);
 }
 
 static void
@@ -199,6 +217,7 @@ cute_verb_report_test_show(const struct cute_cons_report * report,
 	const char * name = run->base->name;
 	const char * color;
 	const char * active;
+	sigset_t     set;
 	int          cols;
 
 	if (run->state == CUTE_OFF_STATE) {
@@ -211,6 +230,8 @@ cute_verb_report_test_show(const struct cute_cons_report * report,
 	}
 
 	cols = report->ncols - cute_term_indent_width(run->depth);
+
+	cute_cons_report_mask(report, &set);
 	cute_term_depth_printf(&report->term,
 	                       report->stdio,
 	                       run->depth,
@@ -224,6 +245,7 @@ cute_verb_report_test_show(const struct cute_cons_report * report,
 	                       active,
 	                       run->base->file, run->base->line,
 	                       report->term.regular);
+	cute_cons_report_unmask(report, &set);
 }
 
 static void
@@ -233,6 +255,7 @@ cute_verb_report_suite_show(const struct cute_cons_report * report,
 	const char * name = run->base->name;
 	const char * color;
 	const char * active;
+	sigset_t     set;
 	int          cols;
 
 	if (run->state == CUTE_OFF_STATE) {
@@ -245,6 +268,8 @@ cute_verb_report_suite_show(const struct cute_cons_report * report,
 	}
 
 	cols = report->ncols - cute_term_indent_width(run->depth);
+
+	cute_cons_report_mask(report, &set);
 	cute_term_depth_printf(&report->term,
 	                       report->stdio,
 	                       run->depth,
@@ -256,6 +281,7 @@ cute_verb_report_suite_show(const struct cute_cons_report * report,
 	                       color, active,
 	                       run->base->file, run->base->line,
 	                       report->term.regular);
+	cute_cons_report_unmask(report, &set);
 }
 
 static void
@@ -290,6 +316,9 @@ static void
 cute_verb_report_show(const struct cute_cons_report * report,
                       const struct cute_suite_run *   run)
 {
+	sigset_t set;
+
+	cute_cons_report_mask(report, &set);
 	fprintf(report->stdio,
 	        "%s"
 	        "%-*s"
@@ -298,6 +327,7 @@ cute_verb_report_show(const struct cute_cons_report * report,
 	        report->term.bold,
 	        report->ncols, CUTE_CONS_REPORT_NAME_HEAD,
 	        report->term.regular);
+	cute_cons_report_unmask(report, &set);
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"

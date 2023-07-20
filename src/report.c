@@ -12,17 +12,6 @@
 
 #include <stdarg.h>
 
-#define CUTE_TERM_RED_COLOR     "\e[91m"
-#define CUTE_TERM_GREEN_COLOR   "\e[32m"
-#define CUTE_TERM_YELLOW_COLOR  "\e[33m"
-#define CUTE_TERM_BLUE_COLOR    "\e[34m"
-#define CUTE_TERM_GRAY_COLOR    "\e[37m"
-#define CUTE_TERM_FORE_COLOR    "\e[39m"
-
-#define CUTE_TERM_REGULAR       "\e[0m"
-#define CUTE_TERM_BOLD_GRAPH    "\e[1m"
-#define CUTE_TERM_ITALIC_GRAPH  "\e[3m"
-
 int
 cute_term_depth_width(const char * name, int depth)
 {
@@ -99,62 +88,6 @@ cute_term_issue_color(const struct cute_term * term, enum cute_issue issue)
 
 	default:
 		__cute_unreachable();
-	}
-}
-
-void
-cute_term_setup(struct cute_term *   term,
-                FILE *               stdio,
-                enum cute_config_tty config)
-{
-	cute_assert_intern(term);
-	cute_assert_intern(stdio);
-
-	bool tty;
-	int  ret;
-
-	switch (config) {
-	case CUTE_CONFIG_TRUE_TTY:
-		tty = true;
-		break;
-
-	case CUTE_CONFIG_FALSE_TTY:
-		tty = false;
-		break;
-
-	case CUTE_CONFIG_PROBE_TTY:
-		ret = isatty(fileno(stdio));
-		if (ret >= 0)
-			tty = !!ret;
-		else
-			tty = false;
-		break;
-
-	default:
-		__cute_unreachable();
-	}
-
-	if (tty) {
-		term->regular = CUTE_TERM_REGULAR;
-		term->bold = CUTE_TERM_BOLD_GRAPH;
-		term->italic = CUTE_TERM_ITALIC_GRAPH;
-		term->red = CUTE_TERM_RED_COLOR;
-		term->green = CUTE_TERM_GREEN_COLOR;
-		term->yellow = CUTE_TERM_YELLOW_COLOR;
-		term->blue = CUTE_TERM_BLUE_COLOR;
-		term->gray = CUTE_TERM_GRAY_COLOR;
-		term->fore = CUTE_TERM_FORE_COLOR;
-	}
-	else {
-		term->regular = "";
-		term->bold = "";
-		term->italic = "";
-		term->red = "";
-		term->green = "";
-		term->yellow = "";
-		term->blue = "";
-		term->gray = "";
-		term->fore = "";
 	}
 }
 

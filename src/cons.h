@@ -2,6 +2,7 @@
 #define _CUTE_CONS_H
 
 #include "report.h"
+#include <signal.h>
 
 #define CUTE_CONS_REPORT_HRULE_SYM   '#'
 #define CUTE_CONS_REPORT_FILL_SYM    '.'
@@ -64,6 +65,7 @@ struct cute_cons_report {
 	int                colnr; /* Total output width in number of columns */
 	int                ncols; /* Name field width in number of columns */
 	char *             fill;  /* Name filler horizontal rule */
+	sigset_t           mask;
 	struct cute_term   term;
 };
 
@@ -83,6 +85,13 @@ struct cute_cons_report {
 #define cute_cons_report_assert_intern(_report)
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
+
+extern void
+cute_cons_report_mask(const struct cute_cons_report * report, sigset_t * old);
+
+extern void
+cute_cons_report_unmask(const struct cute_cons_report * report,
+                        const sigset_t *                old);
 
 extern void
 cute_cons_report_head(const struct cute_cons_report * report);

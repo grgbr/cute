@@ -68,11 +68,6 @@ cute_term_depth_printf(const struct cute_term * term,
 extern const char *
 cute_term_issue_color(const struct cute_term * term, enum cute_issue issue);
 
-extern void
-cute_term_setup(struct cute_term *   term,
-                FILE *               stdio,
-                enum cute_config_tty config);
-
 enum cute_event {
 	CUTE_INIT_EVT,
 	CUTE_HEAD_EVT,

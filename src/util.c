@@ -204,61 +204,6 @@ err:
 	return str;
 }
 
-#if 0
-
-char *
-cute_toupper(const char * string, size_t max_size)
-{
-	cute_assert(string);
-	cute_assert(max_size);
-
-	size_t       len;
-	char *       up;
-	unsigned int c;
-
-	len = strnlen(string, max_size);
-	up = cute_malloc(len + 1);
-	for (c = 0; c < len; c++) {
-		if (isgraph(string[c]))
-			up[c] = (char)toupper(string[c]);
-		else
-			up[c] = '?';
-	}
-	up[len] = '\0';
-
-	return up;
-}
-
-char *
-cute_asprintf(const char * format, ...)
-{
-	va_list args;
-	char *  str;
-
-	va_start(args, format);
-	str = cute_vasprintf(format, args);
-	va_end(args);
-
-	return str;
-}
-
-char *
-cute_strdup(const char * string)
-{
-	cute_assert_intern(string);
-
-	size_t len;
-	char * str;
-
-	len = strlen(string);
-	str = malloc(len + 1);
-	memcpy(str, string, len + 1);
-
-	return str;
-}
-
-#endif
-
 /******************************************************************************
  * Text block utility
  ******************************************************************************/

@@ -6,6 +6,29 @@
 
 static struct cute_report * cute_the_cons_report;
 
+void
+cute_cons_report_mask(const struct cute_cons_report * report, sigset_t * old)
+{
+	if (!sigisemptyset(&report->mask)) {
+		int err;
+
+		err = pthread_sigmask(SIG_BLOCK, &report->mask, old);
+		cute_assert_intern(!err);
+	}
+}
+
+void
+cute_cons_report_unmask(const struct cute_cons_report * report,
+                        const sigset_t *                old)
+{
+	if (!sigisemptyset(&report->mask)) {
+		int err;
+
+		err = pthread_sigmask(SIG_SETMASK, old, NULL);
+		cute_assert_intern(!err);
+	}
+}
+
 static char *
 cute_cons_report_create_hrule(char sym, int len)
 {
@@ -106,7 +129,6 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 		        report->term.gray,
 		        run->what,
 		        run->why);
-
 		blk = cute_assess_desc(&run->assess);
 		if (blk) {
 			cute_report_printf_block(blk, 0, report->stdio);
@@ -436,6 +458,89 @@ _cute_cons_report_release(struct cute_report * report)
 	return 0;
 }
 
+#define CUTE_TERM_RED_COLOR     "\e[91m"
+#define CUTE_TERM_GREEN_COLOR   "\e[32m"
+#define CUTE_TERM_YELLOW_COLOR  "\e[33m"
+#define CUTE_TERM_BLUE_COLOR    "\e[34m"
+#define CUTE_TERM_GRAY_COLOR    "\e[37m"
+#define CUTE_TERM_FORE_COLOR    "\e[39m"
+
+#define CUTE_TERM_REGULAR       "\e[0m"
+#define CUTE_TERM_BOLD_GRAPH    "\e[1m"
+#define CUTE_TERM_ITALIC_GRAPH  "\e[3m"
+
+static void
+cute_cons_setup_term(struct cute_cons_report * report,
+                     FILE *                    stdio,
+                     enum cute_config_tty      config)
+{
+	cute_assert_intern(report);
+	cute_assert_intern(stdio);
+
+	bool               tty;
+	int                ret;
+	struct cute_term * term = &report->term;
+	sigset_t *         msk = &report->mask;
+
+	switch (config) {
+	case CUTE_CONFIG_TRUE_TTY:
+		tty = true;
+		break;
+
+	case CUTE_CONFIG_FALSE_TTY:
+		tty = false;
+		break;
+
+	case CUTE_CONFIG_PROBE_TTY:
+		ret = isatty(fileno(stdio));
+		if (ret >= 0)
+			tty = !!ret;
+		else
+			tty = false;
+		break;
+
+	default:
+		__cute_unreachable();
+	}
+
+	ret = sigemptyset(msk);
+	cute_assert_intern(!ret);
+
+	if (tty) {
+		term->regular = CUTE_TERM_REGULAR;
+		term->bold = CUTE_TERM_BOLD_GRAPH;
+		term->italic = CUTE_TERM_ITALIC_GRAPH;
+		term->red = CUTE_TERM_RED_COLOR;
+		term->green = CUTE_TERM_GREEN_COLOR;
+		term->yellow = CUTE_TERM_YELLOW_COLOR;
+		term->blue = CUTE_TERM_BLUE_COLOR;
+		term->gray = CUTE_TERM_GRAY_COLOR;
+		term->fore = CUTE_TERM_FORE_COLOR;
+
+		ret = sigaddset(msk, SIGHUP);
+		cute_assert_intern(!ret);
+		ret = sigaddset(msk, SIGINT);
+		cute_assert_intern(!ret);
+		ret = sigaddset(msk, SIGQUIT);
+		cute_assert_intern(!ret);
+		ret = sigaddset(msk, SIGTSTP);
+		cute_assert_intern(!ret);
+		ret = sigaddset(msk, SIGTERM);
+		cute_assert_intern(!ret);
+	}
+	else {
+		term->regular = "";
+		term->bold = "";
+		term->italic = "";
+		term->red = "";
+		term->green = "";
+		term->yellow = "";
+		term->blue = "";
+		term->gray = "";
+		term->fore = "";
+	}
+}
+
 int
 cute_cons_report_setup(struct cute_cons_report *  report,
                        const struct cute_config * config,
@@ -445,14 +550,14 @@ cute_cons_report_setup(struct cute_cons_report *  report,
 	cute_config_assert_intern(config);
 	cute_assert_intern(handle);
 
-	cute_term_setup(&report->term, cute_iodir_stdout, config->tty);
-
 	report->super.handle = handle;
 	report->super.release = _cute_cons_report_release;
 	report->stdio = cute_iodir_stdout;
 	report->colnr = 0;
 	report->ncols = CUTE_CONS_NAME_COLS_MIN;
 	report->fill = NULL;
+
+	cute_cons_setup_term(report, cute_iodir_stdout, config->tty);
 
 	cute_cons_report_register(&report->super);
 
