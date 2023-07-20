@@ -142,26 +142,21 @@ cute_thr_create(pthread_t *       hndl,
                 void *         (* routine)(void *),
                 void *            arg)
 {
-	pthread_attr_t attr;
-	int            err;
+	sigset_t old;
+	int      err;
+	int      ret;
 
-	err = pthread_attr_init(&attr);
-	cute_assert_intern(!err || (err = -ENOMEM));
-	if (err)
-		exit(EXIT_FAILURE);
+	err = pthread_sigmask(SIG_SETMASK, mask, &old);
+	cute_assert_intern(!err);
 
-	err = pthread_attr_setsigmask_np(&attr, mask);
-	cute_assert_intern(!err || (err = -ENOMEM));
-	if (err)
-		exit(EXIT_FAILURE);
+	ret = pthread_create(hndl, NULL, routine, arg);
+	cute_assert_intern(ret != EINVAL);
+	cute_assert_intern(ret != EPERM);
 
-	err = pthread_create(hndl, &attr, routine, arg);
-	cute_assert_intern(err != EINVAL);
-	cute_assert_intern(err != EPERM);
+	err = pthread_sigmask(SIG_SETMASK, &old, NULL);
+	cute_assert_intern(!err);
 
-	pthread_attr_destroy(&attr);
-
-	return -err;
+	return -ret;
 }
 
 /******************************************************************************

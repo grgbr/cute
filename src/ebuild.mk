@@ -10,7 +10,8 @@ common-cflags      := -Wall \
                       -D_GNU_SOURCE \
                       -I $(TOPDIR)/include \
                       $(filter-out -DNDEBUG,$(EXTRA_CFLAGS)) \
-                      -fvisibility=hidden
+                      -fvisibility=hidden \
+                      -pthread
 common-ldflags     := $(common-cflags) \
                       $(filter-out -DNDEBUG,$(EXTRA_LDFLAGS)) \
                       -Wl,-z,start-stop-visibility=hidden
