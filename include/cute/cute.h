@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #define __cute_export \
 	__attribute__((visibility("default")))

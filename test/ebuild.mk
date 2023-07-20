@@ -57,6 +57,12 @@ simple-fixture-fail-utest-cflags   := $(test-cflags)
 simple-fixture-fail-utest-ldflags  := $(test-ldflags) -lcute
 simple-fixture-fail-utest-path     := $(LIBEXECDIR)/cute/simple-fixture-fail-utest
 
+bins                               += simple-tmout-utest
+simple-tmout-utest-objs            := simple_tmout.o
+simple-tmout-utest-cflags          := $(test-cflags)
+simple-tmout-utest-ldflags         := $(test-ldflags) -lcute
+simple-tmout-utest-path            := $(LIBEXECDIR)/cute/simple-tmout-utest
+
 bins                               += simple-iodir-utest
 simple-iodir-utest-objs            := simple_iodir.o
 simple-iodir-utest-cflags          := $(test-cflags)

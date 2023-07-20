@@ -1,5 +1,4 @@
 #include "cute/expect.h"
-#include <limits.h>
 
 static void
 expect_uint_value_callee(unsigned char      byte,

@@ -1,5 +1,4 @@
 #include "cute/expect.h"
-#include <limits.h>
 
 static void
 expect_sint_value_callee(char byte, short hword, int word, long long dword)

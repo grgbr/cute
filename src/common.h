@@ -6,7 +6,6 @@
 #include "iodir.h"
 #include "util.h"
 #include <setjmp.h>
-#include <limits.h>
 
 #define cute_error(_format, ...) \
 	fprintf(cute_iodir_stderr ? cute_iodir_stderr : stderr, \

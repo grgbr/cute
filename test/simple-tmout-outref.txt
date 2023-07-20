@@ -1,0 +1,33 @@
+
+##################################  Running CUTe test(s)  ###################################
+
+simple_tmout_suite::simple_tmout_dflt_fail_test ........................................ fail
+issue:  exec failed
+reason: timer expired
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_tmout.c:9
+
+simple_tmout_suite::simple_tmout_explicit_fail_test .................................... fail
+issue:  exec failed
+reason: timer expired
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_tmout.c:25
+
+simple_tmout_suite::simple_tmout_inhr_fail_test ........................................ fail
+issue:  exec failed
+reason: timer expired
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_tmout.c:41
+
+simple_tmout_suite ..................................................................... fail
+issue:  exec failed
+reason: descendants failed
+source: /home/grb/dev/proto/icsw/src/cute/test/simple_tmout.c:59
+
+NAME                               STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+simple_tmout_suite                 fail    9.579455      3      0      3      0      6      6
+                                                       50%     0%    50%     0%   100%
+---------------------------------------------------------------------------------------------
+Total                              fail    9.579455      3      0      3      0      6      6
+                                                       50%     0%    50%     0%   100%
+
+                             ###          SUMMARY           ###
+                             ###  3/6 (50%) test(s) FAILED  ###
+
