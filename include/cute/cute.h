@@ -83,15 +83,14 @@ struct cute_base {
 		.line     = __LINE__ \
 	}
 
-static inline void
-cute_dummy_fixture(void)
-{
-}
+#define CUTE_NULL_SETUP    ((cute_test_fn *)0)
+#define CUTE_INHR_SETUP    ((cute_test_fn *)1)
+#define CUTE_NULL_TEARDOWN ((cute_test_fn *)0)
+#define CUTE_INHR_TEARDOWN ((cute_test_fn *)1)
 
-#define CUTE_NULL_SETUP    (cute_dummy_fixture)
-#define CUTE_NULL_TEARDOWN (cute_dummy_fixture)
 #define CUTE_FOREVER_TMOUT (0U)
 #define CUTE_DFLT_TMOUT    (3U)
+#define CUTE_INHR_TMOUT    (UINT_MAX)
 
 extern const struct cute_ops cute_test_ops __cute_export;
 

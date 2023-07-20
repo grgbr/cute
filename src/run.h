@@ -76,7 +76,10 @@ struct cute_run {
 	int                             depth;
 	int                             id;
 	const struct cute_base *        base;
+	cute_test_fn *                  setup;
+	cute_test_fn *                  teardown;
 	enum cute_state                 state;
+	unsigned int                    tmout;
 	enum cute_issue                 issue;
 	struct timespec                 begin;
 	struct timespec                 end;
@@ -133,12 +136,6 @@ cute_run_settle(struct cute_run * run);
 
 extern void
 cute_run_unsettle(struct cute_run * run);
-
-extern int
-cute_run_setup(struct cute_run * run);
-
-extern void
-cute_run_teardown(struct cute_run * run);
 
 extern int
 cute_run_done(struct cute_run * run);

@@ -143,7 +143,7 @@ cute_thr_create(pthread_t *       hndl,
                 void *            arg)
 {
 	sigset_t old;
-	int      err;
+	int      err __cute_unused;
 	int      ret;
 
 	err = pthread_sigmask(SIG_SETMASK, mask, &old);

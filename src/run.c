@@ -159,7 +159,7 @@ cute_run_settle_sigs(void)
 		for (s = 0;
 		     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
 		     s++) {
-			int                    err;
+			int                    err __cute_unused;
 			const struct sigaction act = {
 				.sa_sigaction = cute_run_handle_sig,
 				.sa_mask      = cute_run_sigmask,
@@ -183,7 +183,7 @@ cute_run_unsettle_sigs(void)
 		for (s = 0;
 		     s < (sizeof(cute_run_sigs) / sizeof(cute_run_sigs[0]));
 		     s++) {
-			int err;
+			int err __cute_unused;
 
 			err = sigaction(cute_run_sigs[s].sig,
 			                &cute_run_sigs[s].old,
@@ -194,7 +194,7 @@ cute_run_unsettle_sigs(void)
 }
 
 static void
-cute_run_handle_tmout(int         sig,
+cute_run_handle_tmout(int         sig __cute_unused,
                       siginfo_t * info __cute_unused,
                       void *      context __cute_unused)
 {
@@ -227,8 +227,8 @@ cute_run_arm_timer(const struct cute_run * run)
 		 * same program, because sleep does not work by means of
 		 * SIGALRM.
 		 */
-		if (run->base->tmout > 0) {
-			int                    err;
+		if (run->tmout > 0) {
+			int                    err __cute_unused;
 			const struct sigaction act = {
 				.sa_sigaction = cute_run_handle_tmout,
 				.sa_mask      = cute_run_sigmask,
@@ -238,7 +238,7 @@ cute_run_arm_timer(const struct cute_run * run)
 			err = sigaction(SIGALRM, &act, &cute_run_timer_act);
 			cute_assert_intern(!err);
 
-			alarm(run->base->tmout);
+			alarm(run->tmout);
 		}
 	}
 }
@@ -247,8 +247,8 @@ static void
 cute_run_disarm_timer(const struct cute_run * run)
 {
 	if (!cute_the_config->debug) {
-		if (run->base->tmout > 0) {
-			int err;
+		if (run->tmout > 0) {
+			int err __cute_unused;
 
 			alarm(0);
 
@@ -262,7 +262,7 @@ void
 cute_run_init_sigs(void)
 {
 	if (!cute_the_config->debug) {
-		int           err;
+		int           err __cute_unused;
 		unsigned int  s;
 
 		sigemptyset(&cute_run_sigmask);
@@ -289,7 +289,7 @@ cute_run_fini_sigs(void)
 {
 	if (!cute_the_config->debug) {
 		const stack_t stk = { .ss_flags = SS_DISABLE };
-		int           err;
+		int           err __cute_unused;
 
 		err = sigaltstack(&stk, NULL);
 		cute_assert_intern(!err);
@@ -320,133 +320,6 @@ cute_run_unsettle(struct cute_run * run)
 	cute_iodir_restore();
 
 	cute_run_unsettle_sigs();
-}
-
-static bool
-cute_run_active(struct cute_run * run)
-{
-	const struct cute_run * parent;
-
-	if (run->state == CUTE_OFF_STATE) {
-		run->issue = CUTE_OFF_ISSUE;
-		return false;
-	}
-
-	parent = run->parent;
-	if (parent) {
-		cute_run_assert_intern(parent);
-		cute_assert_intern(parent->state != CUTE_EXEC_STATE);
-		cute_assert_intern(parent->state != CUTE_TEARDOWN_STATE);
-		cute_assert_intern(parent->state != CUTE_DONE_STATE);
-		cute_assert_intern(parent->state != CUTE_FINI_STATE);
-
-		enum cute_issue issue = run->parent->issue;
-
-		switch (issue) {
-		case CUTE_UNK_ISSUE:
-		case CUTE_PASS_ISSUE:
-		case CUTE_OFF_ISSUE:
-			return true;
-
-		case CUTE_SKIP_ISSUE:
-			run->why = "ancestor skipped";
-			break;
-
-		case CUTE_FAIL_ISSUE:
-			run->why = "ancestor failed";
-			break;
-
-		case CUTE_EXCP_ISSUE:
-			run->why = "ancestor crashed";
-			break;
-
-		default:
-			__cute_unreachable();
-		}
-
-		run->issue = issue;
-		run->what = "cannot run setup";
-		cute_assess_update_source(&run->assess,
-		                          run->base->file,
-		                          run->base->line,
-		                          NULL);
-
-		return false;
-	}
-
-	return true;
-}
-
-int
-cute_run_setup(struct cute_run * run)
-{
-	cute_run_assert_intern(run);
-	cute_assert_intern((run->state == CUTE_INIT_STATE) ||
-	                   (run->state == CUTE_OFF_STATE));
-	cute_assert_intern(run->issue == CUTE_UNK_ISSUE);
-	cute_assert_intern(!run->what);
-	cute_assert_intern(!run->why);
-
-	int          ret = -EPERM;
-	volatile int issue;
-
-	if (!cute_run_active(run))
-		goto report;
-
-	run->state = CUTE_SETUP_STATE;
-
-	cute_run_settle(run);
-
-	issue = sigsetjmp(cute_jmp_env, 1);
-	if (!issue) {
-		run->base->setup();
-		ret = 0;
-		goto unsettle;
-	}
-
-	cute_assert_intern((issue == CUTE_SKIP_ISSUE) ||
-	                   (issue == CUTE_FAIL_ISSUE) ||
-	                   (issue == CUTE_EXCP_ISSUE));
-	run->issue = issue;
-
-unsettle:
-	cute_run_unsettle(run);
-report:
-	cute_run_report(run, CUTE_SETUP_EVT);
-
-	return ret;
-}
-
-void
-cute_run_teardown(struct cute_run * run)
-{
-	cute_run_assert_intern(run);
-	cute_assert_intern(run->state != CUTE_INIT_STATE);
-	cute_assert_intern(run->state != CUTE_TEARDOWN_STATE);
-	cute_assert_intern(run->state != CUTE_DONE_STATE);
-	cute_assert_intern(run->state != CUTE_FINI_STATE);
-	cute_assert_intern(run->issue < CUTE_ISSUE_NR);
-
-	volatile int issue;
-
-	run->state = CUTE_TEARDOWN_STATE;
-
-	cute_run_settle(run);
-
-	issue = sigsetjmp(cute_jmp_env, 1);
-	if (!issue) {
-		run->base->teardown();
-		goto unsettle;
-	}
-
-	cute_assert_intern((issue == CUTE_SKIP_ISSUE) ||
-	                   (issue == CUTE_FAIL_ISSUE));
-	run->issue = issue;
-
-unsettle:
-	cute_run_unsettle(run);
-
-	cute_run_report(run, CUTE_TEARDOWN_EVT);
 }
 
 int
@@ -596,7 +469,7 @@ cute_run_init(struct cute_run *           run,
 	run->name = cute_run_build_name(base, parent);
 	run->parent = parent;
 	run->id = -1;
-        run->base = base;
+	run->base = base;
 	run->issue = CUTE_UNK_ISSUE;
 	run->begin.tv_sec = run->begin.tv_nsec = 0;
 	run->end.tv_sec = run->end.tv_nsec = 0;
@@ -610,15 +483,50 @@ cute_run_init(struct cute_run *           run,
 		cute_run_assert_intern(parent);
 		cute_assert_intern((parent->state == CUTE_INIT_STATE) ||
 		                   (parent->state == CUTE_OFF_STATE));
+		cute_assert_intern(parent->setup != CUTE_INHR_SETUP);
+		cute_assert_intern(parent->teardown != CUTE_INHR_TEARDOWN);
+		cute_assert_intern(parent->tmout != CUTE_INHR_TMOUT);
 
 		run->depth = parent->depth + 1;
+
+		if (base->setup == CUTE_INHR_SETUP)
+			run->setup = parent->setup;
+		else
+			run->setup = base->setup;
+
+		if (base->teardown == CUTE_INHR_TEARDOWN)
+			run->teardown = parent->teardown;
+		else
+			run->teardown = base->teardown;
+
 		run->state = parent->state;
+
+		if (base->tmout == CUTE_INHR_TMOUT)
+			run->tmout = parent->tmout;
+		else
+			run->tmout = base->tmout;
 
 		parent->ops->join(parent, run);
 	}
 	else {
 		run->depth = 0;
+
+		if (base->setup == CUTE_INHR_SETUP)
+			run->setup = NULL;
+		else
+			run->setup = base->setup;
+
+		if (base->teardown == CUTE_INHR_TEARDOWN)
+			run->teardown = NULL;
+		else
+			run->teardown = base->teardown;
+
 		run->state = CUTE_INIT_STATE;
+
+		if (base->tmout == CUTE_INHR_TMOUT)
+			run->tmout = CUTE_DFLT_TMOUT;
+		else
+			run->tmout = base->tmout;
 	}
 }
 

@@ -61,9 +61,11 @@ cute_suite_complete_run(struct cute_suite_run * run)
 	unsigned int s;
 	unsigned int nr = run->stats.total;
 
-	if ((run->super.state != CUTE_OFF_STATE) &&
-	    (run->super.state != CUTE_INIT_STATE)) {
-		cute_run_teardown(&run->super);
+	if (run->super.state != CUTE_OFF_STATE) {
+		cute_assert_intern(run->super.state == CUTE_SETUP_STATE);
+
+		run->super.state = CUTE_TEARDOWN_STATE;
+		cute_run_report(&run->super, CUTE_TEARDOWN_EVT);
 		cute_gettime(&run->super.end);
 	}
 
@@ -148,9 +150,14 @@ cute_suite_oper_run(struct cute_run * run, enum cute_oper oper)
 
 	switch (oper) {
 	case CUTE_SPAWN_OPER:
-		if (run->state != CUTE_OFF_STATE)
-			cute_gettime(&run->begin);
-		cute_run_setup(run);
+		if (run->state == CUTE_OFF_STATE) {
+			run->issue = CUTE_OFF_ISSUE;
+			break;
+		}
+
+		cute_gettime(&run->begin);
+		run->state = CUTE_SETUP_STATE;
+		cute_run_report(run, CUTE_SETUP_EVT);
 		break;
 
 	case CUTE_COMPLETE_OPER:

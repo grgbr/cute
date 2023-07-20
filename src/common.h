@@ -80,8 +80,6 @@ cute_issue_label(enum cute_issue issue);
 #define cute_base_assert(_base) \
 	cute_assert(_base); \
 	cute_base_assert_ops((_base)->ops); \
-	cute_assert((_base)->setup); \
-	cute_assert((_base)->teardown); \
 	cute_assert((_base)->name); \
 	cute_assert((_base)->name[0]); \
 	cute_assert((_base)->file); \

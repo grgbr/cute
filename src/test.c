@@ -72,6 +72,86 @@ out:
 	cute_run_report(run, CUTE_EXEC_EVT);
 }
 
+static int
+cute_test_setup(struct cute_run * run)
+{
+	cute_run_assert_intern(run);
+	cute_assert_intern((run->state == CUTE_INIT_STATE) ||
+	                   (run->state == CUTE_OFF_STATE));
+	cute_assert_intern(run->issue == CUTE_UNK_ISSUE);
+	cute_assert_intern(!run->what);
+	cute_assert_intern(!run->why);
+
+	int          ret = -EPERM;
+	volatile int issue;
+
+	if (run->state == CUTE_OFF_STATE) {
+		run->issue = CUTE_OFF_ISSUE;
+		goto report;
+	}
+
+	run->state = CUTE_SETUP_STATE;
+	if (!run->setup) {
+		ret = 0;
+		goto report;
+	}
+
+	cute_run_settle(run);
+
+	issue = sigsetjmp(cute_jmp_env, 1);
+	if (!issue) {
+		run->setup();
+		ret = 0;
+		goto unsettle;
+	}
+
+	cute_assert_intern((issue == CUTE_SKIP_ISSUE) ||
+	                   (issue == CUTE_FAIL_ISSUE) ||
+	                   (issue == CUTE_EXCP_ISSUE));
+	run->issue = issue;
+
+unsettle:
+	cute_run_unsettle(run);
+report:
+	cute_run_report(run, CUTE_SETUP_EVT);
+
+	return ret;
+}
+
+static void
+cute_test_teardown(struct cute_run * run)
+{
+	cute_run_assert_intern(run);
+	cute_assert_intern(run->state != CUTE_INIT_STATE);
+	cute_assert_intern(run->state != CUTE_TEARDOWN_STATE);
+	cute_assert_intern(run->state != CUTE_DONE_STATE);
+	cute_assert_intern(run->state != CUTE_FINI_STATE);
+	cute_assert_intern(run->issue < CUTE_ISSUE_NR);
+
+	volatile int issue;
+
+	run->state = CUTE_TEARDOWN_STATE;
+	if (!run->teardown)
+		goto report;
+
+	cute_run_settle(run);
+
+	issue = sigsetjmp(cute_jmp_env, 1);
+	if (!issue) {
+		run->teardown();
+		goto unsettle;
+	}
+
+	cute_assert_intern((issue == CUTE_SKIP_ISSUE) ||
+	                   (issue == CUTE_FAIL_ISSUE));
+	run->issue = issue;
+
+unsettle:
+	cute_run_unsettle(run);
+report:
+	cute_run_report(run, CUTE_TEARDOWN_EVT);
+}
+
 static void
 cute_test_oper_run(struct cute_run * run, enum cute_oper oper __cute_unused)
 {
@@ -84,12 +164,12 @@ cute_test_oper_run(struct cute_run * run, enum cute_oper oper __cute_unused)
 	cute_assert_intern(!run->why);
 	cute_assert_intern(oper == CUTE_COMPLETE_OPER);
 
-	if (cute_run_setup(run))
+	if (cute_test_setup(run))
 		goto done;
 
 	cute_test_exec_run(run, (const struct cute_test *)run->base);
 
-	cute_run_teardown(run);
+	cute_test_teardown(run);
 
 done:
 	cute_run_done(run);

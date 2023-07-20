@@ -10,7 +10,7 @@ void
 cute_cons_report_mask(const struct cute_cons_report * report, sigset_t * old)
 {
 	if (!sigisemptyset(&report->mask)) {
-		int err;
+		int err __cute_unused;
 
 		err = pthread_sigmask(SIG_BLOCK, &report->mask, old);
 		cute_assert_intern(!err);
@@ -22,7 +22,7 @@ cute_cons_report_unmask(const struct cute_cons_report * report,
                         const sigset_t *                old)
 {
 	if (!sigisemptyset(&report->mask)) {
-		int err;
+		int err __cute_unused;
 
 		err = pthread_sigmask(SIG_SETMASK, old, NULL);
 		cute_assert_intern(!err);
