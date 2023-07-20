@@ -91,10 +91,16 @@ CUTE_TEST(expect_uint_unequal_pass_test)
 	cute_expect_uint_parm(expect_uint_value_callee, word, unequal,  2);
 	cute_expect_uint_parm(expect_uint_value_callee, dword, unequal, 3);
 
-	cute_expect_uint_parm(expect_uint_value_callee, byte, unequal,  - bref);
-	cute_expect_uint_parm(expect_uint_value_callee, hword, unequal, - href);
-	cute_expect_uint_parm(expect_uint_value_callee, word, unequal,  - wref);
-	cute_expect_uint_parm(expect_uint_value_callee, dword, unequal, - dref);
+	cute_expect_uint_parm(expect_uint_value_callee,
+	                      byte,
+	                      unequal,
+	                      (unsigned)-bref);
+	cute_expect_uint_parm(expect_uint_value_callee,
+	                      hword,
+	                      unequal,
+	                      (unsigned)-href);
+	cute_expect_uint_parm(expect_uint_value_callee, word, unequal, -wref);
+	cute_expect_uint_parm(expect_uint_value_callee, dword, unequal, -dref);
 
 	expect_uint_value_caller(UCHAR_MAX, USHRT_MAX, UINT_MAX, ULLONG_MAX);
 
@@ -130,11 +136,11 @@ CUTE_TEST(expect_uint_greater_pass_test)
 	cute_expect_uint_parm(expect_uint_value_callee,
 	                      byte,
 	                      greater,
-	                      bref - 1);
+	                      (unsigned)bref - 1);
 	cute_expect_uint_parm(expect_uint_value_callee,
 	                      hword,
 	                      greater,
-	                      href - 1);
+	                      (unsigned)href - 1);
 	cute_expect_uint_parm(expect_uint_value_callee,
 			      word,
 			      greater,
@@ -194,7 +200,7 @@ CUTE_TEST(expect_uint_greater_equal_pass_test)
 	cute_expect_uint_parm(expect_uint_value_callee,
 	                      hword,
 	                      greater_equal,
-	                      href - 1);
+	                      (unsigned)href - 1);
 	cute_expect_uint_parm(expect_uint_value_callee,
 	                      word,
 	                      greater_equal,
@@ -235,8 +241,14 @@ CUTE_TEST(expect_uint_lower_pass_test)
 	cute_expect_uint_parm(expect_uint_value_callee, word, lower,  3);
 	cute_expect_uint_parm(expect_uint_value_callee, dword, lower, 4);
 
-	cute_expect_uint_parm(expect_uint_value_callee, byte, lower,  bref + 1);
-	cute_expect_uint_parm(expect_uint_value_callee, hword, lower, href + 1);
+	cute_expect_uint_parm(expect_uint_value_callee,
+	                      byte,
+	                      lower,
+	                      (unsigned)bref + 1);
+	cute_expect_uint_parm(expect_uint_value_callee,
+	                      hword,
+	                      lower,
+	                      (unsigned)href + 1);
 	cute_expect_uint_parm(expect_uint_value_callee, word, lower,  wref + 1);
 	cute_expect_uint_parm(expect_uint_value_callee, dword, lower, dref + 1);
 
@@ -274,7 +286,7 @@ CUTE_TEST(expect_uint_lower_equal_pass_test)
 	cute_expect_uint_parm(expect_uint_value_callee,
 	                      byte,
 	                      lower_equal,
-	                      bref + 1);
+	                      (unsigned)bref + 1);
 	cute_expect_uint_parm(expect_uint_value_callee,
 	                      hword,
 	                      lower_equal,
