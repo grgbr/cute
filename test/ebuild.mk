@@ -93,6 +93,12 @@ check-dbl-utest-cflags             := $(test-cflags)
 check-dbl-utest-ldflags            := $(test-ldflags) -lcute
 check-dbl-utest-path               := $(LIBEXECDIR)/cute/check-dbl-utest
 
+bins                               += check-str-utest
+check-str-utest-objs               := check_str.o
+check-str-utest-cflags             := $(test-cflags)
+check-str-utest-ldflags            := $(test-ldflags) -lcute
+check-str-utest-path               := $(LIBEXECDIR)/cute/check-str-utest
+
 bins                               += expect-sint-utest
 expect-sint-utest-objs             := expect_sint.o
 expect-sint-utest-cflags           := $(test-cflags)

@@ -1578,3 +1578,305 @@ cute_check_flt_not_in_set(const char *                file,
 	                           check,
 	                           expect);
 }
+
+/******************************************************************************
+ * Strings checking
+ ******************************************************************************/
+
+static struct cute_text_block *
+cute_check_desc_str(const struct cute_assess * assess,
+                    const char *               oper,
+                    const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->check.str.expr);
+	cute_assert_intern(assess->check.str.expr[0]);
+	cute_assert_intern(assess->check.str.value);
+	cute_assert_intern(assess->expect.str.sole.expr);
+	cute_assert_intern(assess->expect.str.sole.expr[0]);
+	cute_assert_intern(assess->expect.str.sole.value);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block * blk;
+
+	blk = cute_assess_desc_source(assess,
+	                              3 +
+	                              (unsigned int)!!assess->func);
+
+	cute_text_asprintf(blk,
+	                   "wanted: %s %s %s",
+	                   assess->check.str.expr,
+	                   oper,
+	                   assess->expect.str.sole.expr);
+
+	cute_text_asprintf(blk,
+	                   "found:  \"%s\" %s \"%s\"",
+	                   assess->check.str.value,
+	                   inv,
+	                   assess->expect.str.sole.value);
+
+	return blk;
+}
+
+static void
+cute_check_assess_str(const char *                   file,
+                      int                            line,
+                      const char *                   function,
+                      const struct cute_assess_ops * ops,
+                      const struct cute_str *        check,
+                      const struct cute_str *        expect)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(check->expr);
+	cute_assert(check->expr[0]);
+	cute_assert(check->value);
+	cute_assert(expect->expr);
+	cute_assert(expect->expr[0]);
+	cute_assert(expect->value);
+	cute_run_assert_intern(cute_curr_run);
+
+	struct cute_assess *          assess = &cute_curr_run->assess;
+	const union cute_assess_value chk = { .str = *check };
+
+	assess->ops = ops;
+	assess->expect.str.sole = *expect;
+
+	if (!cute_assess_check(assess, &chk))
+		cute_break(CUTE_FAIL_ISSUE,
+		           file,
+		           line,
+		           function,
+		           "string content check failed");
+}
+
+static struct cute_text_block *
+cute_check_desc_str_equal(const struct cute_assess * assess)
+{
+	return cute_check_desc_str(assess, "==", "!=");
+}
+
+static const struct cute_assess_ops cute_assess_str_equal_ops = {
+	.cmp     = cute_assess_cmp_str_equal,
+	.desc    = cute_check_desc_str_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_str_equal(const char *            file,
+                     int                     line,
+                     const char *            function,
+                     const struct cute_str * check,
+                     const struct cute_str * expect)
+
+{
+	cute_check_assess_str(file,
+	                      line,
+	                      function,
+	                      &cute_assess_str_equal_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_str_unequal(const struct cute_assess * assess)
+{
+	return cute_check_desc_str(assess, "!=", "==");
+}
+
+static const struct cute_assess_ops cute_assess_str_unequal_ops = {
+	.cmp     = cute_assess_cmp_str_unequal,
+	.desc    = cute_check_desc_str_unequal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_str_unequal(const char *            file,
+                       int                     line,
+                       const char *            function,
+                       const struct cute_str * check,
+                       const struct cute_str * expect)
+
+{
+	cute_check_assess_str(file,
+	                      line,
+	                      function,
+	                      &cute_assess_str_unequal_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_str_begin(const struct cute_assess * assess)
+{
+	return cute_check_desc_str(assess, "begins with", "doesn't begin with");
+}
+
+static const struct cute_assess_ops cute_assess_str_begin_ops = {
+	.cmp     = cute_assess_cmp_str_begin,
+	.desc    = cute_check_desc_str_begin,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_str_begin(const char *            file,
+                     int                     line,
+                     const char *            function,
+                     const struct cute_str * check,
+                     const struct cute_str * expect)
+
+{
+	cute_check_assess_str(file,
+	                      line,
+	                      function,
+	                      &cute_assess_str_begin_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_str_not_begin(const struct cute_assess * assess)
+{
+	return cute_check_desc_str(assess, "doesn't begin with", "begins with");
+}
+
+static const struct cute_assess_ops cute_assess_str_not_begin_ops = {
+	.cmp     = cute_assess_cmp_str_not_begin,
+	.desc    = cute_check_desc_str_not_begin,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_str_not_begin(const char *            file,
+                         int                     line,
+                         const char *            function,
+                         const struct cute_str * check,
+                         const struct cute_str * expect)
+
+{
+	cute_check_assess_str(file,
+	                      line,
+	                      function,
+	                      &cute_assess_str_not_begin_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_str_end(const struct cute_assess * assess)
+{
+	return cute_check_desc_str(assess, "ends with", "doesn't end with");
+}
+
+static const struct cute_assess_ops cute_assess_str_end_ops = {
+	.cmp     = cute_assess_cmp_str_end,
+	.desc    = cute_check_desc_str_end,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_str_end(const char *            file,
+                   int                     line,
+                   const char *            function,
+                   const struct cute_str * check,
+                   const struct cute_str * expect)
+
+{
+	cute_check_assess_str(file,
+	                      line,
+	                      function,
+	                      &cute_assess_str_end_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_str_not_end(const struct cute_assess * assess)
+{
+	return cute_check_desc_str(assess, "doesn't end with", "ends with");
+}
+
+static const struct cute_assess_ops cute_assess_str_not_end_ops = {
+	.cmp     = cute_assess_cmp_str_not_end,
+	.desc    = cute_check_desc_str_not_end,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_str_not_end(const char *            file,
+                       int                     line,
+                       const char *            function,
+                       const struct cute_str * check,
+                       const struct cute_str * expect)
+
+{
+	cute_check_assess_str(file,
+	                      line,
+	                      function,
+	                      &cute_assess_str_not_end_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_str_contain(const struct cute_assess * assess)
+{
+	return cute_check_desc_str(assess, "contains", "doesn't contain");
+}
+
+static const struct cute_assess_ops cute_assess_str_contain_ops = {
+	.cmp     = cute_assess_cmp_str_contain,
+	.desc    = cute_check_desc_str_contain,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_str_contain(const char *            file,
+                   int                     line,
+                   const char *            function,
+                   const struct cute_str * check,
+                   const struct cute_str * expect)
+
+{
+	cute_check_assess_str(file,
+	                      line,
+	                      function,
+	                      &cute_assess_str_contain_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_str_not_contain(const struct cute_assess * assess)
+{
+	return cute_check_desc_str(assess, "doesn't contain", "contains");
+}
+
+static const struct cute_assess_ops cute_assess_str_not_contain_ops = {
+	.cmp     = cute_assess_cmp_str_not_contain,
+	.desc    = cute_check_desc_str_not_contain,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_str_not_contain(const char *            file,
+                       int                     line,
+                       const char *            function,
+                       const struct cute_str * check,
+                       const struct cute_str * expect)
+
+{
+	cute_check_assess_str(file,
+	                      line,
+	                      function,
+	                      &cute_assess_str_not_contain_ops,
+	                      check,
+	                      expect);
+}

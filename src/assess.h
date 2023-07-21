@@ -68,7 +68,7 @@ union cute_flt_assess {
 };
 
 union cute_str_assess {
-	struct cute_str value;
+	struct cute_str sole;
 };
 
 union cute_ptr_assess {
@@ -317,6 +317,42 @@ cute_assess_flt_set_str(const long double * items, unsigned int count);
 
 extern void
 cute_assess_release_flt_set(struct cute_assess * assess);
+
+/******************************************************************************
+ * Strings checking
+ ******************************************************************************/
+
+extern bool
+cute_assess_cmp_str_equal(const struct cute_assess *      assess,
+                          const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_str_unequal(const struct cute_assess *      assess,
+                            const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_str_begin(const struct cute_assess *      assess,
+                          const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_str_not_begin(const struct cute_assess *      assess,
+                              const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_str_end(const struct cute_assess *      assess,
+                        const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_str_not_end(const struct cute_assess *      assess,
+                            const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_str_contain(const struct cute_assess *      assess,
+                            const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_str_not_contain(const struct cute_assess *      assess,
+                                const union cute_assess_value * check);
 
 /******************************************************************************
  * Top-level generic assess handling

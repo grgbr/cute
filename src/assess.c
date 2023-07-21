@@ -613,6 +613,82 @@ cute_assess_release_flt_set(struct cute_assess * assess)
 }
 
 /******************************************************************************
+ * Strings checking
+ ******************************************************************************/
+
+bool
+cute_assess_cmp_str_equal(const struct cute_assess *      assess,
+                          const union cute_assess_value * check)
+{
+	return !strcmp(check->str.value, assess->expect.str.sole.value);
+}
+
+bool
+cute_assess_cmp_str_unequal(const struct cute_assess *      assess,
+                            const union cute_assess_value * check)
+{
+	return !cute_assess_cmp_str_equal(assess, check);
+}
+
+bool
+cute_assess_cmp_str_begin(const struct cute_assess *      assess,
+                          const union cute_assess_value * check)
+{
+	const char * ref = assess->expect.str.sole.value;
+	size_t       len;
+
+	len = strlen(ref);
+
+	return !memcmp(check->str.value, ref, len);
+}
+
+bool
+cute_assess_cmp_str_not_begin(const struct cute_assess *      assess,
+                              const union cute_assess_value * check)
+{
+	return !cute_assess_cmp_str_begin(assess, check);
+}
+
+bool
+cute_assess_cmp_str_end(const struct cute_assess *      assess,
+                        const union cute_assess_value * check)
+{
+	const char * chk = check->str.value;
+	const char * ref = assess->expect.str.sole.value;
+	size_t       clen;
+	size_t       rlen;
+
+	clen = strlen(chk);
+	rlen = strlen(ref);
+
+	if (rlen > clen)
+		return false;
+
+	return !memcmp(&chk[clen - rlen], ref, rlen + 1);
+}
+
+bool
+cute_assess_cmp_str_not_end(const struct cute_assess *      assess,
+                            const union cute_assess_value * check)
+{
+	return !cute_assess_cmp_str_end(assess, check);
+}
+
+bool
+cute_assess_cmp_str_contain(const struct cute_assess *      assess,
+                            const union cute_assess_value * check)
+{
+	return !!strstr(check->str.value, assess->expect.str.sole.value);
+}
+
+bool
+cute_assess_cmp_str_not_contain(const struct cute_assess *      assess,
+                                const union cute_assess_value * check)
+{
+	return !cute_assess_cmp_str_contain(assess, check);
+}
+
+/******************************************************************************
  * Top-level generic assess handling
  ******************************************************************************/
 

@@ -1,0 +1,274 @@
+
+######################################  Running CUTe test(s)  #######################################
+
+check_str_suite::check_str_literal_equal_fail_test ............................................. fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:17
+caller: check_str_literal_equal_fail_test__cute_exec()
+wanted: "Lorem ipsum" == ""
+found:  "Lorem ipsum" != ""
+
+check_str_suite::check_str_var_equal_fail_test ................................................. fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:24
+caller: check_str_var_equal_fail_test__cute_exec()
+wanted: chk == ""
+found:  "Lorem ipsum" != ""
+
+check_str_suite::check_str_equal_ref_fail_test ................................................. fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:31
+caller: check_str_equal_ref_fail_test__cute_exec()
+wanted: "" == ref
+found:  "" != "Lorem ipsum"
+
+check_str_suite::check_str_var_equal_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:39
+caller: check_str_var_equal_ref_fail_test__cute_exec()
+wanted: chk == ref
+found:  "Lorem" != "Lorem ipsum"
+
+check_str_suite::check_str_literal_unequal_fail_test ........................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:56
+caller: check_str_literal_unequal_fail_test__cute_exec()
+wanted: "Lorem ipsum" != "Lorem ipsum"
+found:  "Lorem ipsum" == "Lorem ipsum"
+
+check_str_suite::check_str_var_unequal_fail_test ............................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:63
+caller: check_str_var_unequal_fail_test__cute_exec()
+wanted: chk != "Lorem ipsum"
+found:  "Lorem ipsum" == "Lorem ipsum"
+
+check_str_suite::check_str_unequal_ref_fail_test ............................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:70
+caller: check_str_unequal_ref_fail_test__cute_exec()
+wanted: "Lorem ipsum" != ref
+found:  "Lorem ipsum" == "Lorem ipsum"
+
+check_str_suite::check_str_var_unequal_ref_fail_test ........................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:78
+caller: check_str_var_unequal_ref_fail_test__cute_exec()
+wanted: chk != ref
+found:  "Lorem ipsum" == "Lorem ipsum"
+
+check_str_suite::check_str_literal_begin_fail_test ............................................. fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:96
+caller: check_str_literal_begin_fail_test__cute_exec()
+wanted: "Lorem ipsum" begins with "ipsum"
+found:  "Lorem ipsum" doesn't begin with "ipsum"
+
+check_str_suite::check_str_var_begin_fail_test ................................................. fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:103
+caller: check_str_var_begin_fail_test__cute_exec()
+wanted: chk begins with "ipsum"
+found:  "Lorem ipsum" doesn't begin with "ipsum"
+
+check_str_suite::check_str_begin_ref_fail_test ................................................. fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:110
+caller: check_str_begin_ref_fail_test__cute_exec()
+wanted: "Lorem ipsum" begins with ref
+found:  "Lorem ipsum" doesn't begin with "ipsum"
+
+check_str_suite::check_str_var_begin_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:118
+caller: check_str_var_begin_ref_fail_test__cute_exec()
+wanted: chk begins with ref
+found:  "Lorem ipsum" doesn't begin with "ipsum"
+
+check_str_suite::check_str_literal_not_begin_fail_test ......................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:135
+caller: check_str_literal_not_begin_fail_test__cute_exec()
+wanted: "Lorem ipsum" doesn't begin with "Lorem"
+found:  "Lorem ipsum" begins with "Lorem"
+
+check_str_suite::check_str_var_not_begin_fail_test ............................................. fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:142
+caller: check_str_var_not_begin_fail_test__cute_exec()
+wanted: chk doesn't begin with "Lorem"
+found:  "Lorem ipsum" begins with "Lorem"
+
+check_str_suite::check_str_not_begin_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:149
+caller: check_str_not_begin_ref_fail_test__cute_exec()
+wanted: "Lorem ipsum" doesn't begin with ref
+found:  "Lorem ipsum" begins with "Lorem"
+
+check_str_suite::check_str_var_not_begin_ref_fail_test ......................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:157
+caller: check_str_var_not_begin_ref_fail_test__cute_exec()
+wanted: chk doesn't begin with ref
+found:  "Lorem ipsum" begins with "Lorem"
+
+check_str_suite::check_str_literal_end_fail_test ............................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:175
+caller: check_str_literal_end_fail_test__cute_exec()
+wanted: "Lorem ipsum" ends with "Lorem"
+found:  "Lorem ipsum" doesn't end with "Lorem"
+
+check_str_suite::check_str_var_end_fail_test ................................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:182
+caller: check_str_var_end_fail_test__cute_exec()
+wanted: chk ends with "Lorem ipsum"
+found:  "Lorem" doesn't end with "Lorem ipsum"
+
+check_str_suite::check_str_end_ref_fail_test ................................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:189
+caller: check_str_end_ref_fail_test__cute_exec()
+wanted: "Lorem ipsum" ends with ref
+found:  "Lorem ipsum" doesn't end with "Lorem"
+
+check_str_suite::check_str_var_end_ref_fail_test ............................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:197
+caller: check_str_var_end_ref_fail_test__cute_exec()
+wanted: chk ends with ref
+found:  "Lorem ipsum" doesn't end with "Lorem"
+
+check_str_suite::check_str_literal_not_end_fail_test ........................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:214
+caller: check_str_literal_not_end_fail_test__cute_exec()
+wanted: "Lorem ipsum" doesn't end with "ipsum"
+found:  "Lorem ipsum" ends with "ipsum"
+
+check_str_suite::check_str_var_not_end_fail_test ............................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:221
+caller: check_str_var_not_end_fail_test__cute_exec()
+wanted: chk doesn't end with "ipsum"
+found:  "Lorem ipsum" ends with "ipsum"
+
+check_str_suite::check_str_not_end_ref_fail_test ............................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:228
+caller: check_str_not_end_ref_fail_test__cute_exec()
+wanted: "Lorem ipsum" doesn't end with ref
+found:  "Lorem ipsum" ends with "ipsum"
+
+check_str_suite::check_str_var_not_end_ref_fail_test ........................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:236
+caller: check_str_var_not_end_ref_fail_test__cute_exec()
+wanted: chk doesn't end with ref
+found:  "Lorem ipsum" ends with "ipsum"
+
+check_str_suite::check_str_literal_contain_fail_test ........................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:254
+caller: check_str_literal_contain_fail_test__cute_exec()
+wanted: "Lorem ipsum" contains "dolor"
+found:  "Lorem ipsum" doesn't contain "dolor"
+
+check_str_suite::check_str_var_contain_fail_test ............................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:261
+caller: check_str_var_contain_fail_test__cute_exec()
+wanted: chk contains "dolor"
+found:  "Lorem ipsum" doesn't contain "dolor"
+
+check_str_suite::check_str_contain_ref_fail_test ............................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:268
+caller: check_str_contain_ref_fail_test__cute_exec()
+wanted: "Lorem ipsum" contains ref
+found:  "Lorem ipsum" doesn't contain "dolor"
+
+check_str_suite::check_str_var_contain_ref_fail_test ........................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:276
+caller: check_str_var_contain_ref_fail_test__cute_exec()
+wanted: chk contains ref
+found:  "Lorem ipsum" doesn't contain "Lorem ipsum dolor sit amet."
+
+check_str_suite::check_str_literal_not_contain_fail_test ....................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:312
+caller: check_str_literal_not_contain_fail_test__cute_exec()
+wanted: "Lorem ipsum dolor sit amet." doesn't contain "dolor"
+found:  "Lorem ipsum dolor sit amet." contains "dolor"
+
+check_str_suite::check_str_var_not_contain_fail_test ........................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:319
+caller: check_str_var_not_contain_fail_test__cute_exec()
+wanted: chk doesn't contain "dolor"
+found:  "Lorem ipsum dolor sit amet." contains "dolor"
+
+check_str_suite::check_str_not_contain_ref_fail_test ........................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:326
+caller: check_str_not_contain_ref_fail_test__cute_exec()
+wanted: "Lorem ipsum dolor sit amet." doesn't contain ref
+found:  "Lorem ipsum dolor sit amet." contains "dolor"
+
+check_str_suite::check_str_var_not_contain_ref_fail_test ....................................... fail
+issue:  exec failed
+reason: string content check failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:334
+caller: check_str_var_not_contain_ref_fail_test__cute_exec()
+wanted: chk doesn't contain ref
+found:  "Lorem ipsum" contains "Lorem ipsum"
+
+check_str_suite ................................................................................ fail
+issue:  exec failed
+reason: descendants failed
+source: /home/grb/dev/proto/icsw/src/cute/test/check_str.c:391
+
+NAME                                       STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+check_str_suite                            fail    1.189416      8      0     32      0     40     40
+                                                               20%     0%    80%     0%   100%
+-----------------------------------------------------------------------------------------------------
+Total                                      fail    1.189416      8      0     32      0     40     40
+                                                               20%     0%    80%     0%   100%
+
+                                ###           SUMMARY            ###
+                                ###  32/40 (80%) test(s) FAILED  ###
+
