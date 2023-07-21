@@ -1,0 +1,311 @@
+
+#######################################  Running CUTe test(s)  #######################################
+
+expect_str_suite::expect_str_caller_fail_test ................................................... fail
+issue:  exec failed
+reason: mock caller function mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:17
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+
+expect_str_suite::expect_str_parm_fail_test ..................................................... fail
+issue:  exec failed
+reason: string content mock parameter name mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:23
+    caller: expect_str_value_callee()
+    expect: nonexistent_parm == "Lorem"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    expect: str == "Lorem"
+
+expect_str_suite::expect_str_null_equal_fail_test ............................................... fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:45
+    caller: expect_str_value_callee()
+    expect: str == "Lorem"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "(null)" != "Lorem"
+
+expect_str_suite::expect_str_literal_equal_fail_test ............................................ fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:51
+    caller: expect_str_value_callee()
+    expect: str == "Lorem"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "ipsum" != "Lorem"
+
+expect_str_suite::expect_str_var_equal_fail_test ................................................ fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:59
+    caller: expect_str_value_callee()
+    expect: str == ref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "ipsum" != "Lorem"
+
+expect_str_suite::expect_str_literal_unequal_fail_test .......................................... fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:85
+    caller: expect_str_value_callee()
+    expect: str != "Lorem"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem" == "Lorem"
+
+expect_str_suite::expect_str_var_unequal_fail_test .............................................. fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:93
+    caller: expect_str_value_callee()
+    expect: str != ref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem" == "Lorem"
+
+expect_str_suite::expect_str_null_begin_fail_test ............................................... fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:113
+    caller: expect_str_value_callee()
+    expect: str begins with "Lorem"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "(null)" doesn't begin with "Lorem"
+
+expect_str_suite::expect_str_literal_begin_fail_test ............................................ fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:119
+    caller: expect_str_value_callee()
+    expect: str begins with "ipsum"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum" doesn't begin with "ipsum"
+
+expect_str_suite::expect_str_var_begin_fail_test ................................................ fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:127
+    caller: expect_str_value_callee()
+    expect: str begins with ref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum" doesn't begin with "ipsum"
+
+expect_str_suite::expect_str_literal_not_begin_fail_test ........................................ fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:153
+    caller: expect_str_value_callee()
+    expect: str doesn't begin with "Lorem"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum" begins with "Lorem"
+
+expect_str_suite::expect_str_var_not_begin_fail_test ............................................ fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:161
+    caller: expect_str_value_callee()
+    expect: str doesn't begin with ref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum" begins with "Lorem"
+
+expect_str_suite::expect_str_null_end_fail_test ................................................. fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:181
+    caller: expect_str_value_callee()
+    expect: str ends with "Lorem"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "(null)" doesn't end with "Lorem"
+
+expect_str_suite::expect_str_literal_end_fail_test .............................................. fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:187
+    caller: expect_str_value_callee()
+    expect: str ends with "dolor"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum" doesn't end with "dolor"
+
+expect_str_suite::expect_str_var_end_fail_test .................................................. fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:195
+    caller: expect_str_value_callee()
+    expect: str ends with ref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum" doesn't end with "dolor"
+
+expect_str_suite::expect_str_literal_not_end_fail_test .......................................... fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:221
+    caller: expect_str_value_callee()
+    expect: str doesn't end with "ipsum"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum" ends with "ipsum"
+
+expect_str_suite::expect_str_var_not_end_fail_test .............................................. fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:229
+    caller: expect_str_value_callee()
+    expect: str doesn't end with ref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum" ends with "ipsum"
+
+expect_str_suite::expect_str_null_contain_fail_test ............................................. fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:249
+    caller: expect_str_value_callee()
+    expect: str contains "Lorem"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "(null)" doesn't contain "Lorem"
+
+expect_str_suite::expect_str_literal_contain_fail_test .......................................... fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:255
+    caller: expect_str_value_callee()
+    expect: str contains "dolor"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum" doesn't contain "dolor"
+
+expect_str_suite::expect_str_var_contain_fail_test .............................................. fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:263
+    caller: expect_str_value_callee()
+    expect: str contains ref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum" doesn't contain "dolor"
+
+expect_str_suite::expect_str_literal_not_contain_fail_test ...................................... fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:295
+    caller: expect_str_value_callee()
+    expect: str doesn't contain "ipsum"
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum dolor sit amet." contains "ipsum"
+
+expect_str_suite::expect_str_var_not_contain_fail_test .......................................... fail
+issue:  exec failed
+reason: string content mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:306
+    caller: expect_str_value_callee()
+    expect: str doesn't contain ref
+found: 
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
+    caller: expect_str_value_callee()
+    actual: "Lorem ipsum dolor sit amet." contains "ipsum"
+
+expect_str_suite::expect_str_retval_caller_fail_test ............................................ fail
+issue:  exec failed
+reason: mock caller function mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:355
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:314
+    caller: expect_str_retval_callee()
+
+expect_str_suite::expect_xcess_str_retval_fail_test ............................................. fail
+issue:  teardown failed
+reason: extra mock expectation left
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:370
+    caller: expect_str_retval_callee()
+    expect: mock function return value
+found:  none
+
+expect_str_suite::expect_str_inval_retval_fail_test ............................................. fail
+issue:  exec failed
+reason: mock expectation type mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:381
+    caller: expect_str_retval_callee()
+    expect: mock function parameter
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_str.c:314
+    caller: expect_str_retval_callee()
+    found:  mock function return value
+
+expect_str_suite ................................................................................ fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/expect_str.c:439
+
+NAME                                        STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+expect_str_suite                            fail    0.781135     14      0     25      0     39     39
+                                                                35%     0%    64%     0%   100%
+------------------------------------------------------------------------------------------------------
+Total                                       fail    0.781135     14      0     25      0     39     39
+                                                                35%     0%    64%     0%   100%
+
+                                 ###           SUMMARY            ###
+                                 ###  25/39 (64%) test(s) FAILED  ###
+

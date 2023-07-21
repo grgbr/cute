@@ -123,6 +123,12 @@ expect-assert-utest-cflags         := $(test-cflags)
 expect-assert-utest-ldflags        := $(test-ldflags) -lcute
 expect-assert-utest-path           := $(LIBEXECDIR)/cute/expect-assert-utest
 
+bins                               += expect-str-utest
+expect-str-utest-objs              := expect_str.o
+expect-str-utest-cflags            := $(test-cflags)
+expect-str-utest-ldflags           := $(test-ldflags) -lcute
+expect-str-utest-path              := $(LIBEXECDIR)/cute/expect-str-utest
+
 build: $(BUILDDIR)/cute-utest.sh
 
 $(BUILDDIR)/cute-utest.sh: $(SRCDIR)/cute-utest.sh | $(BUILDDIR)

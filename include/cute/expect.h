@@ -484,4 +484,118 @@ cute_expect_check_flt_retval(const char * file,
 #define cute_mock_flt_retval() \
 	cute_expect_check_flt_retval(__FILE__, __LINE__, __func__)
 
+/******************************************************************************
+ * String parameter expectation handling
+ ******************************************************************************/
+
+#define cute_expect_str_parm(_func, _parm, _op, _xpct) \
+	cute_expect_sched_str_parm_ ##  _op(__FILE__, \
+	                                    __LINE__, \
+	                                    # _func, \
+	                                    # _parm, \
+		                            &__CUTE_VALUE(str, _xpct))
+
+#define cute_mock_str_parm(_parm) \
+	cute_expect_check_str_parm(__FILE__, \
+	                           __LINE__, \
+	                           __func__, \
+	                           &__CUTE_VALUE(str, _parm))
+
+extern void
+cute_expect_check_str_parm(const char *            file,
+                           int                     line,
+                           const char *            function,
+                           const struct cute_str * check)
+	__cute_export;
+
+extern void
+cute_expect_sched_str_parm_equal(const char *            file,
+                                 int                     line,
+                                 const char *            function,
+                                 const char *            parm,
+                                 const struct cute_str * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_str_parm_unequal(const char *            file,
+                                   int                     line,
+                                   const char *            function,
+                                   const char *            parm,
+                                   const struct cute_str * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_str_parm_begin(const char *            file,
+                                 int                     line,
+                                 const char *            function,
+                                 const char *            parm,
+                                 const struct cute_str * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_str_parm_not_begin(const char *            file,
+                                     int                     line,
+                                     const char *            function,
+                                     const char *            parm,
+                                     const struct cute_str * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_str_parm_end(const char *            file,
+                               int                     line,
+                               const char *            function,
+                               const char *            parm,
+                               const struct cute_str * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_str_parm_not_end(const char *            file,
+                                   int                     line,
+                                   const char *            function,
+                                   const char *            parm,
+                                   const struct cute_str * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_str_parm_contain(const char *            file,
+                                   int                     line,
+                                   const char *            function,
+                                   const char *            parm,
+                                   const struct cute_str * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_str_parm_not_contain(const char *            file,
+                                       int                     line,
+                                       const char *            function,
+                                       const char *            parm,
+                                       const struct cute_str * expect)
+	__cute_export;
+
+/******************************************************************************
+ * String return value expectation handling
+ ******************************************************************************/
+
+extern void
+cute_expect_sched_str_retval(const char *            file,
+                             int                     line,
+                             const char *            function,
+                             const struct cute_str * retval)
+	__cute_export;
+
+#define cute_expect_str_retval(_func, _retval) \
+	cute_expect_sched_str_retval(__FILE__, \
+	                             __LINE__, \
+	                             # _func, \
+	                             &__CUTE_VALUE(str, _retval))
+
+extern char *
+cute_expect_check_str_retval(const char * file,
+                             int          line,
+                             const char * function)
+	__cute_export;
+
+#define cute_mock_str_retval() \
+	cute_expect_check_str_retval(__FILE__, __LINE__, __func__)
+
 #endif /* _CUTE_EXPECT_H */

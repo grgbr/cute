@@ -127,6 +127,7 @@ run_testcase "check-str-utest" 1 || ret=1
 run_testcase "expect-sint-utest" 1 || ret=1
 run_testcase "expect-uint-utest" 1 || ret=1
 run_testcase "expect-flt-utest" 1 || ret=1
+run_testcase "expect-str-utest" 1 || ret=1
 run_testcase "expect-assert-utest" 1 || ret=1
 
 exit $ret

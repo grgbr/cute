@@ -620,6 +620,9 @@ bool
 cute_assess_cmp_str_equal(const struct cute_assess *      assess,
                           const union cute_assess_value * check)
 {
+	if (!check->str.value)
+		return false;
+
 	return !strcmp(check->str.value, assess->expect.str.sole.value);
 }
 
@@ -636,6 +639,9 @@ cute_assess_cmp_str_begin(const struct cute_assess *      assess,
 {
 	const char * ref = assess->expect.str.sole.value;
 	size_t       len;
+
+	if (!check->str.value)
+		return false;
 
 	len = strlen(ref);
 
@@ -658,6 +664,9 @@ cute_assess_cmp_str_end(const struct cute_assess *      assess,
 	size_t       clen;
 	size_t       rlen;
 
+	if (!check->str.value)
+		return false;
+
 	clen = strlen(chk);
 	rlen = strlen(ref);
 
@@ -678,6 +687,9 @@ bool
 cute_assess_cmp_str_contain(const struct cute_assess *      assess,
                             const union cute_assess_value * check)
 {
+	if (!check->str.value)
+		return false;
+
 	return !!strstr(check->str.value, assess->expect.str.sole.value);
 }
 

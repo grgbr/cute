@@ -1591,7 +1591,6 @@ cute_check_desc_str(const struct cute_assess * assess,
 	cute_assess_assert_intern(assess);
 	cute_assert_intern(assess->check.str.expr);
 	cute_assert_intern(assess->check.str.expr[0]);
-	cute_assert_intern(assess->check.str.value);
 	cute_assert_intern(assess->expect.str.sole.expr);
 	cute_assert_intern(assess->expect.str.sole.expr[0]);
 	cute_assert_intern(assess->expect.str.sole.value);
@@ -1637,7 +1636,6 @@ cute_check_assess_str(const char *                   file,
 	cute_assess_assert_ops(ops);
 	cute_assert(check->expr);
 	cute_assert(check->expr[0]);
-	cute_assert(check->value);
 	cute_assert(expect->expr);
 	cute_assert(expect->expr[0]);
 	cute_assert(expect->value);
