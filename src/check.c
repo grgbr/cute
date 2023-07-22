@@ -1837,10 +1837,10 @@ static const struct cute_assess_ops cute_assess_str_contain_ops = {
 
 void
 cute_check_str_contain(const char *            file,
-                   int                     line,
-                   const char *            function,
-                   const struct cute_str * check,
-                   const struct cute_str * expect)
+                       int                     line,
+                       const char *            function,
+                       const struct cute_str * check,
+                       const struct cute_str * expect)
 
 {
 	cute_check_assess_str(file,
@@ -1865,10 +1865,10 @@ static const struct cute_assess_ops cute_assess_str_not_contain_ops = {
 
 void
 cute_check_str_not_contain(const char *            file,
-                       int                     line,
-                       const char *            function,
-                       const struct cute_str * check,
-                       const struct cute_str * expect)
+                           int                     line,
+                           const char *            function,
+                           const struct cute_str * check,
+                           const struct cute_str * expect)
 
 {
 	cute_check_assess_str(file,
@@ -1877,4 +1877,156 @@ cute_check_str_not_contain(const char *            file,
 	                      &cute_assess_str_not_contain_ops,
 	                      check,
 	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_str_set(const struct cute_assess * assess,
+                        const char *               oper,
+                        const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->check.str.expr);
+	cute_assert_intern(assess->check.str.expr[0]);
+	cute_assert_intern(assess->expect.str.set.expr);
+	cute_assert_intern(assess->expect.str.set.expr[0]);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block *    blk;
+	const struct cute_str_set * set = &assess->expect.str.set;
+
+	blk = cute_assess_desc_source(assess,
+	                              3 +
+	                              (unsigned int)!!assess->func);
+
+	cute_text_asprintf(blk,
+	                   "wanted: %s %s set %s",
+	                   assess->check.str.expr,
+	                   oper,
+	                   set->expr);
+
+
+	if (set->count) {
+		char * items;
+
+		items = cute_assess_str_set_str(set->items, set->count);
+		cute_text_asprintf(blk,
+		                   "found:  \"%s\" %s set {%s}",
+		                   assess->check.str.value,
+		                   inv,
+		                   items);
+		cute_free(items);
+	}
+	else
+		cute_text_asprintf(blk,
+		                   "found:  \"%s\" %s set {}",
+		                   assess->check.str.value,
+		                   inv);
+
+	return blk;
+}
+
+static void
+cute_check_assess_str_set(const char *                   file,
+                          int                            line,
+                          const char *                   function,
+                          const struct cute_assess_ops * ops,
+                          const struct cute_str *        check,
+                          const struct cute_str_set *    expect)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(check->expr);
+	cute_assert(check->expr[0]);
+	cute_assert(expect->expr);
+	cute_assert(expect->expr[0]);
+	cute_run_assert_intern(cute_curr_run);
+
+	const char **                 items;
+	struct cute_assess *          assess = &cute_curr_run->assess;
+	const union cute_assess_value chk = { .str = *check };
+
+	if (expect->count) {
+		unsigned int i;
+
+		items = cute_malloc(expect->count * sizeof(items[0]));
+		for (i = 0; i < expect->count; i++) {
+			cute_assert(expect->items[i]);
+
+			items[i] = expect->items[i];
+		}
+	}
+	else
+		items = NULL;
+
+	assess->ops = ops;
+	assess->expect.str.set = *expect;
+	assess->expect.str.set.items = items;
+
+	if (!cute_assess_check(assess, &chk))
+		cute_break(CUTE_FAIL_ISSUE,
+		           file,
+		           line,
+		           function,
+		           "string content set check failed");
+}
+
+static struct cute_text_block *
+cute_check_desc_str_in_set(const struct cute_assess * assess)
+{
+	return cute_check_desc_str_set(assess, "in", "not in");
+}
+
+static const struct cute_assess_ops cute_assess_str_in_set_ops = {
+	.cmp     = cute_assess_cmp_str_in_set,
+	.desc    = cute_check_desc_str_in_set,
+	.release = cute_assess_release_str_set
+};
+
+void
+cute_check_str_in_set(const char *                file,
+                      int                         line,
+                      const char *                function,
+                      const struct cute_str *     check,
+                      const struct cute_str_set * expect)
+{
+	cute_check_assess_str_set(file,
+	                          line,
+	                          function,
+	                          &cute_assess_str_in_set_ops,
+	                          check,
+	                          expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_str_not_in_set(const struct cute_assess * assess)
+{
+	return cute_check_desc_str_set(assess, "not in", "in");
+}
+
+static const struct cute_assess_ops cute_assess_str_not_in_set_ops = {
+	.cmp     = cute_assess_cmp_str_not_in_set,
+	.desc    = cute_check_desc_str_not_in_set,
+	.release = cute_assess_release_str_set
+};
+
+void
+cute_check_str_not_in_set(const char *                file,
+                          int                         line,
+                          const char *                function,
+                          const struct cute_str *     check,
+                          const struct cute_str_set * expect)
+{
+	cute_check_assess_str_set(file,
+	                          line,
+	                          function,
+	                          &cute_assess_str_not_in_set_ops,
+	                          check,
+	                          expect);
 }

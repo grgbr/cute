@@ -355,6 +355,116 @@ CUTE_TEST(check_str_var_not_contain_ref_fail_test)
 	cute_check_str(chk, not_contain, ref);
 }
 
+CUTE_TEST(check_str_in_set_pass_test)
+{
+	const char *              lorem = "Lorem";
+	const char *              dolor = "dolor";
+	const struct cute_str_set set = CUTE_STR_SET("Lorem", "ipsum", "dolor");
+
+	cute_check_str_set("dolor",
+	                   in,
+	                   CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+	cute_check_str_set(lorem, in, CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+	cute_check_str_set(dolor, in, CUTE_STR_SET(lorem, "ipsum", dolor));
+	cute_check_str_set("Lorem", in, set);
+	cute_check_str_set(dolor, in, set);
+}
+
+CUTE_TEST(check_str_null_in_set_fail_test)
+{
+	cute_check_str_set(NULL, in, CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+}
+
+CUTE_TEST(check_str_literal_in_set_fail_test)
+{
+	cute_check_str_set("sit", in, CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+}
+
+CUTE_TEST(check_str_var_in_set_fail_test)
+{
+	const char * sit = "sit";
+
+	cute_check_str_set(sit, in, CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+}
+
+CUTE_TEST(check_str_in_set_ref_fail_test)
+{
+	const char *              lorem = "Lorem";
+	const char *              dolor = "dolor";
+	const struct cute_str_set set = CUTE_STR_SET(lorem, "ipsum", dolor);
+
+	cute_check_str_set("Lorem", in, set);
+	cute_check_str_set("sit", in, set);
+}
+
+CUTE_TEST(check_str_var_in_set_ref_fail_test)
+{
+	const char *              lorem = "Lorem";
+	const char *              dolor = "dolor";
+	const char *              sit = "sit";
+	const struct cute_str_set set = CUTE_STR_SET(lorem, "ipsum", dolor);
+
+	cute_check_str_set(lorem, in, set);
+	cute_check_str_set(sit, in, set);
+}
+
+CUTE_TEST(check_str_not_in_set_pass_test)
+{
+	const char *              sit = "sit";
+	const struct cute_str_set set = CUTE_STR_SET("Lorem", "ipsum", "dolor");
+
+	cute_check_str_set("sit",
+	                   not_in,
+	                   CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+	cute_check_str_set(sit, not_in, CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+	cute_check_str_set("sit", not_in, set);
+	cute_check_str_set(sit, not_in, set);
+}
+
+CUTE_TEST(check_str_null_not_in_set_pass_test)
+{
+	cute_check_str_set(NULL,
+	                   not_in,
+	                   CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+}
+
+CUTE_TEST(check_str_literal_not_in_set_fail_test)
+{
+	cute_check_str_set("ipsum",
+	                   not_in,
+	                   CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+}
+
+CUTE_TEST(check_str_var_not_in_set_fail_test)
+{
+	const char * ipsum = "ipsum";
+
+	cute_check_str_set(ipsum,
+	                   not_in,
+	                   CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+}
+
+CUTE_TEST(check_str_not_in_set_ref_fail_test)
+{
+	const char *              lorem = "Lorem";
+	const char *              dolor = "dolor";
+	const struct cute_str_set set = CUTE_STR_SET(lorem, "ipsum", dolor);
+
+	cute_check_str_set("sit", not_in, set);
+	cute_check_str_set("Lorem", not_in, set);
+}
+
+CUTE_TEST(check_str_var_not_in_set_ref_fail_test)
+{
+	const char *              lorem = "Lorem";
+	const char *              dolor = "dolor";
+	const char *              sit = "sit";
+	const struct cute_str_set set = CUTE_STR_SET(lorem, "ipsum", dolor);
+
+	cute_check_str_set(sit, not_in, set);
+	cute_check_str_set(lorem, not_in, set);
+}
+
 static CUTE_SUITE_DEFINE_TESTS(check_str_tests) = {
 	CUTE_REF(check_str_equal_pass_test),
 	CUTE_REF(check_str_null_equal_fail_test),
@@ -410,7 +520,21 @@ static CUTE_SUITE_DEFINE_TESTS(check_str_tests) = {
 	CUTE_REF(check_str_literal_not_contain_fail_test),
 	CUTE_REF(check_str_var_not_contain_fail_test),
 	CUTE_REF(check_str_not_contain_ref_fail_test),
-	CUTE_REF(check_str_var_not_contain_ref_fail_test)
+	CUTE_REF(check_str_var_not_contain_ref_fail_test),
+
+	CUTE_REF(check_str_in_set_pass_test),
+	CUTE_REF(check_str_null_in_set_fail_test),
+	CUTE_REF(check_str_literal_in_set_fail_test),
+	CUTE_REF(check_str_var_in_set_fail_test),
+	CUTE_REF(check_str_in_set_ref_fail_test),
+	CUTE_REF(check_str_var_in_set_ref_fail_test),
+
+	CUTE_REF(check_str_not_in_set_pass_test),
+	CUTE_REF(check_str_null_not_in_set_pass_test),
+	CUTE_REF(check_str_literal_not_in_set_fail_test),
+	CUTE_REF(check_str_var_not_in_set_fail_test),
+	CUTE_REF(check_str_not_in_set_ref_fail_test),
+	CUTE_REF(check_str_var_not_in_set_ref_fail_test)
 };
 
 static CUTE_SUITE_DEFINE(check_str_suite,

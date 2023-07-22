@@ -477,6 +477,20 @@ cute_check_str_not_contain(const char *            file,
                            const struct cute_str * check,
                            const struct cute_str * expect) __cute_export;
 
+extern void
+cute_check_str_in_set(const char *                file,
+                      int                         line,
+                      const char *                function,
+                      const struct cute_str *     check,
+                      const struct cute_str_set * expect) __cute_export;
+
+extern void
+cute_check_str_not_in_set(const char *                file,
+                          int                         line,
+                          const char *                function,
+                          const struct cute_str *     check,
+                          const struct cute_str_set * expect) __cute_export;
+
 /******************************************************************************
  * Pointer checking
  ******************************************************************************/

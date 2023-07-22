@@ -700,6 +700,84 @@ cute_assess_cmp_str_not_contain(const struct cute_assess *      assess,
 	return !cute_assess_cmp_str_contain(assess, check);
 }
 
+bool
+cute_assess_cmp_str_in_set(const struct cute_assess *      assess,
+                           const union cute_assess_value * check)
+{
+	unsigned int cnt;
+
+	if (!check->str.value)
+		return false;
+
+	for (cnt = 0; cnt < assess->expect.str.set.count; cnt++) {
+		if (!strcmp(check->str.value,
+		            assess->expect.str.set.items[cnt]))
+			return true;
+	}
+
+	return false;
+}
+
+bool
+cute_assess_cmp_str_not_in_set(const struct cute_assess *      assess,
+                               const union cute_assess_value * value)
+{
+	return !cute_assess_cmp_str_in_set(assess, value);
+}
+
+char *
+cute_assess_str_set_str(const char ** items, unsigned int count)
+{
+	cute_assert_intern(items);
+	cute_assert_intern(count);
+
+	size_t       len;
+	char *       str;
+	unsigned int i;
+	int          sz;
+
+	/* Compute space needed to show something like: "str0", "str1"... */
+	cute_assert_intern(items[0]);
+	len = 1 +                /* double quotes */
+	      strlen(items[0]) + /* item length */
+	      1;                 /* double quotes */
+	/* For each item in set... */
+	for (i = 1; i < count; i++) {
+		cute_assert_intern(items[i]);
+		len += 2 +                /* comma + space char */
+		       1 +                /* double quotes */
+		       strlen(items[i]) + /* item length */
+		       1;                 /* double quotes */
+	}
+
+	str = cute_malloc(len + 1);
+
+	sz = sprintf(str, "\"%s\"", items[0]);
+	for (i = 1; i < count; i++) {
+		cute_assert_intern((unsigned int)sz < (len + 1));
+		sz += sprintf(&str[sz], ", \"%s\"", items[i]);
+	}
+
+	return str;
+}
+
+void
+cute_assess_release_str_set(struct cute_assess * assess)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->expect.str.set.expr);
+	cute_assert_intern(assess->expect.str.set.expr[0]);
+	cute_assert_intern(!assess->expect.str.set.count ||
+	                    assess->expect.str.set.items);
+
+	if (assess->expect.str.set.count) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+		cute_free((void *)assess->expect.str.set.items);
+#pragma GCC diagnostic pop
+	}
+}
+
 /******************************************************************************
  * Top-level generic assess handling
  ******************************************************************************/
