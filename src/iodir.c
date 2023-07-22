@@ -395,6 +395,8 @@ cute_iodir_scan_query(struct cute_iodir_block ** out,
 
 	case CUTE_IODIR_IDLE_STAT:
 	case CUTE_IODIR_HALT_STAT:
+		*out = NULL;
+		*err = NULL;
 		break;
 
 	default:

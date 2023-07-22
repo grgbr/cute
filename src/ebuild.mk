@@ -10,10 +10,13 @@ common-cflags      := -Wall \
                       -D_GNU_SOURCE \
                       -I $(TOPDIR)/include \
                       $(filter-out -DNDEBUG,$(EXTRA_CFLAGS)) \
+                      $(filter-out -ffast-math,$(EXTRA_CFLAGS)) -fno-fast-math \
                       -fvisibility=hidden \
                       -pthread
 common-ldflags     := $(common-cflags) \
                       $(filter-out -DNDEBUG,$(EXTRA_LDFLAGS)) \
+                      $(filter-out -ffast-math,$(EXTRA_LDFLAGS)) \
+                      -fno-fast-math \
                       -Wl,-z,start-stop-visibility=hidden
 
 solibs             := libcute.so
