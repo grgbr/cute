@@ -7,7 +7,7 @@ reason: string content check failed
 source: /mnt/devel/greg/tidor/cute/test/check_str.c:17
 caller: check_str_null_equal_fail_test__cute_exec()
 wanted: ((void *)0) == ""
-found:  "(null)" != ""
+found:  NULL != ""
 
 check_str_suite::check_str_literal_equal_fail_test ............................................. fail
 issue:  exec failed
@@ -79,7 +79,7 @@ reason: string content check failed
 source: /mnt/devel/greg/tidor/cute/test/check_str.c:106
 caller: check_str_null_begin_fail_test__cute_exec()
 wanted: ((void *)0) begins with ""
-found:  "(null)" doesn't begin with ""
+found:  NULL doesn't begin with ""
 
 check_str_suite::check_str_literal_begin_fail_test ............................................. fail
 issue:  exec failed
@@ -151,7 +151,7 @@ reason: string content check failed
 source: /mnt/devel/greg/tidor/cute/test/check_str.c:195
 caller: check_str_null_end_fail_test__cute_exec()
 wanted: ((void *)0) ends with ""
-found:  "(null)" doesn't end with ""
+found:  NULL doesn't end with ""
 
 check_str_suite::check_str_literal_end_fail_test ............................................... fail
 issue:  exec failed
@@ -223,7 +223,7 @@ reason: string content check failed
 source: /mnt/devel/greg/tidor/cute/test/check_str.c:284
 caller: check_str_null_contain_fail_test__cute_exec()
 wanted: ((void *)0) contains "dolor"
-found:  "(null)" doesn't contain "dolor"
+found:  NULL doesn't contain "dolor"
 
 check_str_suite::check_str_literal_contain_fail_test ........................................... fail
 issue:  exec failed
@@ -289,18 +289,90 @@ caller: check_str_var_not_contain_ref_fail_test__cute_exec()
 wanted: chk doesn't contain ref
 found:  "Lorem ipsum" contains "Lorem ipsum"
 
+check_str_suite::check_str_null_in_set_fail_test ............................................... fail
+issue:  exec failed
+reason: string content set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:375
+caller: check_str_null_in_set_fail_test__cute_exec()
+wanted: ((void *)0) in set {"Lorem", "ipsum", "dolor"}
+found:  NULL not in set {"Lorem", "ipsum", "dolor"}
+
+check_str_suite::check_str_literal_in_set_fail_test ............................................ fail
+issue:  exec failed
+reason: string content set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:380
+caller: check_str_literal_in_set_fail_test__cute_exec()
+wanted: "sit" in set {"Lorem", "ipsum", "dolor"}
+found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
+
+check_str_suite::check_str_var_in_set_fail_test ................................................ fail
+issue:  exec failed
+reason: string content set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:387
+caller: check_str_var_in_set_fail_test__cute_exec()
+wanted: sit in set {"Lorem", "ipsum", "dolor"}
+found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
+
+check_str_suite::check_str_in_set_ref_fail_test ................................................ fail
+issue:  exec failed
+reason: string content set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:397
+caller: check_str_in_set_ref_fail_test__cute_exec()
+wanted: "sit" in set {lorem, "ipsum", dolor}
+found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
+
+check_str_suite::check_str_var_in_set_ref_fail_test ............................................ fail
+issue:  exec failed
+reason: string content set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:408
+caller: check_str_var_in_set_ref_fail_test__cute_exec()
+wanted: sit in set {lorem, "ipsum", dolor}
+found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
+
+check_str_suite::check_str_literal_not_in_set_fail_test ........................................ fail
+issue:  exec failed
+reason: string content set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:435
+caller: check_str_literal_not_in_set_fail_test__cute_exec()
+wanted: "ipsum" not in set {"Lorem", "ipsum", "dolor"}
+found:  "ipsum" in set {"Lorem", "ipsum", "dolor"}
+
+check_str_suite::check_str_var_not_in_set_fail_test ............................................ fail
+issue:  exec failed
+reason: string content set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:444
+caller: check_str_var_not_in_set_fail_test__cute_exec()
+wanted: ipsum not in set {"Lorem", "ipsum", "dolor"}
+found:  "ipsum" in set {"Lorem", "ipsum", "dolor"}
+
+check_str_suite::check_str_not_in_set_ref_fail_test ............................................ fail
+issue:  exec failed
+reason: string content set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:456
+caller: check_str_not_in_set_ref_fail_test__cute_exec()
+wanted: "Lorem" not in set {lorem, "ipsum", dolor}
+found:  "Lorem" in set {"Lorem", "ipsum", "dolor"}
+
+check_str_suite::check_str_var_not_in_set_ref_fail_test ........................................ fail
+issue:  exec failed
+reason: string content set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:467
+caller: check_str_var_not_in_set_ref_fail_test__cute_exec()
+wanted: lorem not in set {lorem, "ipsum", dolor}
+found:  "Lorem" in set {"Lorem", "ipsum", "dolor"}
+
 check_str_suite ................................................................................ fail
 issue:  exec failed
 reason: descendants failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:416
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:542
 
 NAME                                       STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-check_str_suite                            fail    0.951169     12      0     36      0     48     48
+check_str_suite                            fail    1.145051     15      0     45      0     60     60
                                                                25%     0%    75%     0%   100%
 -----------------------------------------------------------------------------------------------------
-Total                                      fail    0.951169     12      0     36      0     48     48
+Total                                      fail    1.145051     15      0     45      0     60     60
                                                                25%     0%    75%     0%   100%
 
                                 ###           SUMMARY            ###
-                                ###  36/48 (75%) test(s) FAILED  ###
+                                ###  45/60 (75%) test(s) FAILED  ###
 

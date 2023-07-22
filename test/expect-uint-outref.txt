@@ -5,21 +5,21 @@ expect_uint_suite::expect_uint_caller_fail_test ................................
 issue:  exec failed
 reason: mock caller function mismatch
 wanted:
-    source: cute/test/expect_uint.c:27
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:26
     caller: nonexistent_callee()
 found:
-    source: cute/test/expect_uint.c:10
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
 
 expect_uint_suite::expect_uint_parm_fail_test ...................................................... fail
 issue:  exec failed
 reason: unsigned integer mock parameter name mismatch
 wanted:
-    source: cute/test/expect_uint.c:38
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:37
     caller: expect_uint_value_callee()
     expect: nonexistent_parm == 2
-found: 
-    source: cute/test/expect_uint.c:12
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:11
     caller: expect_uint_value_callee()
     expect: word == 2
 
@@ -27,11 +27,11 @@ expect_uint_suite::expect_uint_literal_equal_fail_test .........................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:70
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:69
     caller: expect_uint_value_callee()
     expect: byte == 1
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] != [1]
 
@@ -39,11 +39,11 @@ expect_uint_suite::expect_uint_var_equal_fail_test .............................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:78
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:77
     caller: expect_uint_value_callee()
     expect: byte == bref
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] != [1]
 
@@ -51,11 +51,11 @@ expect_uint_suite::expect_uint_literal_unequal_fail_test .......................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:106
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:111
     caller: expect_uint_value_callee()
     expect: byte != 0
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] == [0]
 
@@ -63,11 +63,11 @@ expect_uint_suite::expect_uint_var_unequal_fail_test ...........................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:114
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:119
     caller: expect_uint_value_callee()
     expect: byte != bref
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] == [0]
 
@@ -75,11 +75,11 @@ expect_uint_suite::expect_uint_literal_greater_fail_test .......................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:154
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:159
     caller: expect_uint_value_callee()
     expect: byte > 1
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] <= [1]
 
@@ -87,11 +87,11 @@ expect_uint_suite::expect_uint_var_greater_fail_test ...........................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:162
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:167
     caller: expect_uint_value_callee()
     expect: byte > bref
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] <= [1]
 
@@ -99,11 +99,11 @@ expect_uint_suite::expect_uint_literal_greater_equal_fail_test .................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:214
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:219
     caller: expect_uint_value_callee()
     expect: byte >= 1
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] < [1]
 
@@ -111,11 +111,11 @@ expect_uint_suite::expect_uint_var_greater_equal_fail_test .....................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:222
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:227
     caller: expect_uint_value_callee()
     expect: byte > bref
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] <= [1]
 
@@ -123,11 +123,11 @@ expect_uint_suite::expect_uint_literal_lower_fail_test .........................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:250
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:261
     caller: expect_uint_value_callee()
     expect: byte < 0
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] >= [0]
 
@@ -135,11 +135,11 @@ expect_uint_suite::expect_uint_var_lower_fail_test .............................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:258
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:269
     caller: expect_uint_value_callee()
     expect: byte < bref
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [1] >= [0]
 
@@ -147,11 +147,11 @@ expect_uint_suite::expect_uint_literal_lower_equal_fail_test ...................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:298
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:309
     caller: expect_uint_value_callee()
     expect: byte <= 0
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [1] > [0]
 
@@ -159,11 +159,11 @@ expect_uint_suite::expect_uint_var_lower_equal_fail_test .......................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:306
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:317
     caller: expect_uint_value_callee()
     expect: byte <= bref
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [1] > [0]
 
@@ -171,11 +171,11 @@ expect_uint_suite::expect_uint_literal_in_range_fail_test ......................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:342
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:353
     caller: expect_uint_value_callee()
     expect: byte in range {1 ... 10}
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] not in range {1 ... 10}
 
@@ -183,11 +183,11 @@ expect_uint_suite::expect_uint_var_in_range_fail_test ..........................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:354
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:365
     caller: expect_uint_value_callee()
     expect: byte in range {rmin ... rmax}
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] not in range {1 ... 10}
 
@@ -195,11 +195,11 @@ expect_uint_suite::expect_uint_literal_not_in_range_fail_test ..................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:388
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:399
     caller: expect_uint_value_callee()
     expect: byte not in range {5 ... 9}
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [5] in range {5 ... 9}
 
@@ -207,11 +207,11 @@ expect_uint_suite::expect_uint_var_not_in_range_fail_test ......................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:400
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:411
     caller: expect_uint_value_callee()
     expect: byte not in range {rmin ... rmax}
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [5] in range {5 ... 9}
 
@@ -219,11 +219,11 @@ expect_uint_suite::expect_uint_literal_in_set_fail_test ........................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:433
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:444
     caller: expect_uint_value_callee()
     expect: byte in set {1, 5, 10, 15}
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] not in set {1, 5, 10, 15}
 
@@ -231,11 +231,11 @@ expect_uint_suite::expect_uint_var_in_set_fail_test ............................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:446
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:457
     caller: expect_uint_value_callee()
     expect: byte in set {ref0, 5, ref2, 15}
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [0] not in set {1, 5, 10, 15}
 
@@ -243,11 +243,11 @@ expect_uint_suite::expect_uint_literal_not_in_set_fail_test ....................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:480
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:491
     caller: expect_uint_value_callee()
     expect: byte not in set {1, 5, 10, 15}
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [1] in set {1, 5, 10, 15}
 
@@ -255,11 +255,11 @@ expect_uint_suite::expect_uint_var_not_in_set_fail_test ........................
 issue:  exec failed
 reason: unsigned integer mock parameter check failed
 wanted:
-    source: cute/test/expect_uint.c:493
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:504
     caller: expect_uint_value_callee()
     expect: byte not in set {ref0, 5, ref2, 15}
-found: 
-    source: cute/test/expect_uint.c:10
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:9
     caller: expect_uint_value_callee()
     actual: [1] in set {1, 5, 10, 15}
 
@@ -267,17 +267,17 @@ expect_uint_suite::expect_uint_retval_caller_fail_test .........................
 issue:  exec failed
 reason: mock caller function mismatch
 wanted:
-    source: cute/test/expect_uint.c:529
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:540
     caller: nonexistent_callee()
 found:
-    source: cute/test/expect_uint.c:501
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:512
     caller: expect_uint_retval_callee()
 
 expect_uint_suite::expect_xcess_uint_retval_fail_test .............................................. fail
 issue:  teardown failed
 reason: extra mock expectation left
 wanted:
-    source: cute/test/expect_uint.c:542
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:553
     caller: expect_uint_retval_callee()
     expect: mock function return value
 found:  none
@@ -286,24 +286,24 @@ expect_uint_suite::expect_uint_inval_retval_fail_test ..........................
 issue:  exec failed
 reason: mock expectation type mismatch
 wanted:
-    source: cute/test/expect_uint.c:552
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:563
     caller: expect_uint_retval_callee()
     expect: mock function parameter
 found:
-    source: cute/test/expect_uint.c:501
+    source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:512
     caller: expect_uint_retval_callee()
     found:  mock function return value
 
 expect_uint_suite .................................................................................. fail
 issue:  exec failed
 reason: descendants failed
-source: cute/test/expect_uint.c:609
+source: /mnt/devel/greg/tidor/cute/test/expect_uint.c:620
 
 NAME                                           STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-expect_uint_suite                              fail    0.121911     11      0     25      0     36     36
+expect_uint_suite                              fail    0.852029     11      0     25      0     36     36
                                                                    30%     0%    69%     0%   100%
 ---------------------------------------------------------------------------------------------------------
-Total                                          fail    0.121911     11      0     25      0     36     36
+Total                                          fail    0.852029     11      0     25      0     36     36
                                                                    30%     0%    69%     0%   100%
 
                                   ###           SUMMARY            ###

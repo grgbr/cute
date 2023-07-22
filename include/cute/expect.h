@@ -572,6 +572,29 @@ cute_expect_sched_str_parm_not_contain(const char *            file,
                                        const struct cute_str * expect)
 	__cute_export;
 
+#define cute_expect_str_set(_func, _parm, _op, _xpct) \
+	cute_expect_sched_str_parm_ ##  _op ## _set(__FILE__, \
+	                                            __LINE__, \
+	                                            # _func, \
+	                                            # _parm, \
+	                                            &(_xpct))
+
+extern void
+cute_expect_sched_str_parm_in_set(const char *                file,
+                                  int                         line,
+                                  const char *                function,
+                                  const char *                parm,
+                                  const struct cute_str_set * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_str_parm_not_in_set(const char *                file,
+                                      int                         line,
+                                      const char *                function,
+                                      const char *                parm,
+                                      const struct cute_str_set * expect)
+	__cute_export;
+
 /******************************************************************************
  * String return value expectation handling
  ******************************************************************************/

@@ -308,6 +308,116 @@ CUTE_TEST(expect_str_var_not_contain_fail_test)
 	expect_str_value_caller("Lorem ipsum dolor sit amet.");
 }
 
+CUTE_TEST(expect_str_in_set_pass_test)
+{
+	const struct cute_str_set set = CUTE_STR_SET("Lorem", "ipsum", "dolor");
+
+	cute_expect_str_set(expect_str_value_callee,
+	                    str,
+	                    in,
+	                    CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+	cute_expect_str_set(expect_str_value_callee, str, in, set);
+
+	expect_str_value_caller("Lorem");
+	expect_str_value_caller("dolor");
+}
+
+CUTE_TEST(expect_str_null_in_set_fail_test)
+{
+	cute_expect_str_set(expect_str_value_callee,
+	                    str,
+	                    in,
+	                    CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+
+	expect_str_value_caller(NULL);
+}
+
+CUTE_TEST(expect_str_literal_in_set_fail_test)
+{
+	cute_expect_str_set(expect_str_value_callee,
+	                    str,
+	                    in,
+	                    CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+	cute_expect_str_set(expect_str_value_callee,
+	                    str,
+	                    in,
+	                    CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+
+	expect_str_value_caller("Lorem");
+	expect_str_value_caller("sit");
+}
+
+CUTE_TEST(expect_str_var_in_set_fail_test)
+{
+	const char *              lorem = "Lorem";
+	const char *              dolor = "dolor";
+	const struct cute_str_set set = CUTE_STR_SET(lorem, "ipsum", dolor);
+
+	cute_expect_str_set(expect_str_value_callee, str, in, set);
+	cute_expect_str_set(expect_str_value_callee, str, in, set);
+	cute_expect_str_set(expect_str_value_callee, str, in, set);
+
+	expect_str_value_caller("Lorem");
+	expect_str_value_caller(dolor);
+	expect_str_value_caller("sit");
+}
+
+CUTE_TEST(expect_str_not_in_set_pass_test)
+{
+	const char *              amet = "amet";
+	const struct cute_str_set set = CUTE_STR_SET("Lorem", "ipsum", "dolor");
+
+	cute_expect_str_set(expect_str_value_callee,
+	                    str,
+	                    not_in,
+	                    CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+	cute_expect_str_set(expect_str_value_callee, str, not_in, set);
+
+	expect_str_value_caller("sit");
+	expect_str_value_caller(amet);
+}
+
+CUTE_TEST(expect_str_null_not_in_set_pass_test)
+{
+	cute_expect_str_set(expect_str_value_callee,
+	                    str,
+	                    not_in,
+	                    CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+
+	expect_str_value_caller(NULL);
+}
+
+CUTE_TEST(expect_str_literal_not_in_set_fail_test)
+{
+	cute_expect_str_set(expect_str_value_callee,
+	                    str,
+	                    not_in,
+	                    CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+	cute_expect_str_set(expect_str_value_callee,
+	                    str,
+	                    not_in,
+	                    CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+
+	expect_str_value_caller("sit");
+	expect_str_value_caller("Lorem");
+}
+
+CUTE_TEST(expect_str_var_not_in_set_fail_test)
+{
+	const char *              lorem = "Lorem";
+	const char *              dolor = "dolor";
+	const char *              amet = "amet";
+	const struct cute_str_set set = CUTE_STR_SET(lorem, "ipsum", dolor);
+
+	cute_expect_str_set(expect_str_value_callee, str, not_in, set);
+	cute_expect_str_set(expect_str_value_callee, str, not_in, set);
+	cute_expect_str_set(expect_str_value_callee, str, not_in, set);
+
+	expect_str_value_caller("sit");
+	expect_str_value_caller(amet);
+	expect_str_value_caller("dolor");
+}
+
 static const char *
 expect_str_retval_callee(void)
 {
@@ -428,6 +538,16 @@ static CUTE_SUITE_DEFINE_TESTS(expect_str_tests) = {
 	CUTE_REF(expect_str_null_not_contain_pass_test),
 	CUTE_REF(expect_str_literal_not_contain_fail_test),
 	CUTE_REF(expect_str_var_not_contain_fail_test),
+
+	CUTE_REF(expect_str_in_set_pass_test),
+	CUTE_REF(expect_str_null_in_set_fail_test),
+	CUTE_REF(expect_str_literal_in_set_fail_test),
+	CUTE_REF(expect_str_var_in_set_fail_test),
+
+	CUTE_REF(expect_str_not_in_set_pass_test),
+	CUTE_REF(expect_str_null_not_in_set_pass_test),
+	CUTE_REF(expect_str_literal_not_in_set_fail_test),
+	CUTE_REF(expect_str_var_not_in_set_fail_test),
 
 	CUTE_REF(expect_str_retval_pass_test),
 	CUTE_REF(expect_null_str_retval_pass_test),

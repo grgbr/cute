@@ -5,21 +5,21 @@ expect_flt_suite::expect_flt_caller_fail_test ..................................
 issue:  exec failed
 reason: mock caller function mismatch
 wanted:
-    source: cute/test/expect_flt.c:19
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:19
     caller: nonexistent_callee()
 found:
-    source: cute/test/expect_flt.c:6
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
 
 expect_flt_suite::expect_flt_parm_fail_test ....................................................... fail
 issue:  exec failed
 reason: floating point mock parameter name mismatch
 wanted:
-    source: cute/test/expect_flt.c:29
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:29
     caller: expect_flt_value_callee()
     expect: nonexistent_parm == 2.0L
-found: 
-    source: cute/test/expect_flt.c:8
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:8
     caller: expect_flt_value_callee()
     expect: ldfloat == 2.0L
 
@@ -27,11 +27,11 @@ expect_flt_suite::expect_flt_literal_equal_fail_test ...........................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:60
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:60
     caller: expect_flt_value_callee()
     expect: sfloat == 1
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [0.05000000075] != [1]
 
@@ -39,11 +39,11 @@ expect_flt_suite::expect_flt_var_equal_fail_test ...............................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:68
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:68
     caller: expect_flt_value_callee()
     expect: sfloat == sref
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [0.05000000075] != [-1]
 
@@ -51,11 +51,11 @@ expect_flt_suite::expect_flt_literal_unequal_fail_test .........................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:99
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:99
     caller: expect_flt_value_callee()
     expect: sfloat != 0.05f
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [0.05000000075] == [0.05000000075]
 
@@ -63,11 +63,11 @@ expect_flt_suite::expect_flt_var_unequal_fail_test .............................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:107
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:107
     caller: expect_flt_value_callee()
     expect: sfloat != sref
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [0.05000000075] == [0.05000000075]
 
@@ -75,11 +75,11 @@ expect_flt_suite::expect_flt_literal_greater_fail_test .........................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:150
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:150
     caller: expect_flt_value_callee()
     expect: sfloat > 0.05f
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [-1.234500051] <= [0.05000000075]
 
@@ -87,11 +87,11 @@ expect_flt_suite::expect_flt_var_greater_fail_test .............................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:158
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:158
     caller: expect_flt_value_callee()
     expect: sfloat > sref
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [-1] <= [0.05000000075]
 
@@ -99,11 +99,11 @@ expect_flt_suite::expect_flt_literal_greater_equal_fail_test ...................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:201
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:201
     caller: expect_flt_value_callee()
     expect: sfloat >= 0.05f
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [-1] < [0.05000000075]
 
@@ -111,11 +111,11 @@ expect_flt_suite::expect_flt_var_greater_equal_fail_test .......................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:212
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:212
     caller: expect_flt_value_callee()
     expect: sfloat > sref
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [-1] <= [0.05000000075]
 
@@ -123,11 +123,11 @@ expect_flt_suite::expect_flt_literal_lower_fail_test ...........................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:246
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:246
     caller: expect_flt_value_callee()
     expect: sfloat < 0.05f
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [1] >= [0.05000000075]
 
@@ -135,11 +135,11 @@ expect_flt_suite::expect_flt_var_lower_fail_test ...............................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:254
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:254
     caller: expect_flt_value_callee()
     expect: sfloat < sref
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [1] >= [0.05000000075]
 
@@ -147,11 +147,11 @@ expect_flt_suite::expect_flt_literal_lower_equal_fail_test .....................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:297
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:297
     caller: expect_flt_value_callee()
     expect: sfloat <= 0.05f
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [1.234500051] > [0.05000000075]
 
@@ -159,11 +159,11 @@ expect_flt_suite::expect_flt_var_lower_equal_fail_test .........................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:308
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:308
     caller: expect_flt_value_callee()
     expect: sfloat <= sref
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [1.234500051] > [0.05000000075]
 
@@ -171,11 +171,11 @@ expect_flt_suite::expect_flt_literal_in_range_fail_test ........................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:340
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:340
     caller: expect_flt_value_callee()
     expect: sfloat in range {1.2345f ... 10.0f}
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [0.05000000075] not in range{1.234500051 ... 10}
 
@@ -183,11 +183,11 @@ expect_flt_suite::expect_flt_var_in_range_fail_test ............................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:352
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:352
     caller: expect_flt_value_callee()
     expect: sfloat in range {rmin ... rmax}
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [0.05000000075] not in range{1.234500051 ... 10.5}
 
@@ -195,11 +195,11 @@ expect_flt_suite::expect_flt_literal_not_in_range_fail_test ....................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:382
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:382
     caller: expect_flt_value_callee()
     expect: sfloat not in range {0.05f ... 10.5f}
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [0.05000000075] in range{0.05000000075 ... 10.5}
 
@@ -207,11 +207,11 @@ expect_flt_suite::expect_flt_var_not_in_range_fail_test ........................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:394
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:394
     caller: expect_flt_value_callee()
     expect: sfloat not in range {rmin ... rmax}
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [10.5] in range{0.05 ... 10.5}
 
@@ -219,11 +219,11 @@ expect_flt_suite::expect_flt_literal_in_set_fail_test ..........................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:429
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:429
     caller: expect_flt_value_callee()
     expect: sfloat in set {-3.0f, -1.2345, 1.2345L, 3.5f}
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [0.05000000075] not in set {-3, -1.2345, 1.2345, 3.5}
 
@@ -231,11 +231,11 @@ expect_flt_suite::expect_flt_var_in_set_fail_test ..............................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:443
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:443
     caller: expect_flt_value_callee()
     expect: sfloat in set {ref0, -1.2345, ref2, 3.0f}
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [0.05000000075] not in set {-3, -1.2345, 1.2345, 3}
 
@@ -243,11 +243,11 @@ expect_flt_suite::expect_flt_literal_not_in_set_fail_test ......................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:479
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:479
     caller: expect_flt_value_callee()
     expect: sfloat not in set {-3.0f, -1.2345, 1.2345L, 3.5f}
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [-3] in set {-3, -1.2345, 1.2345, 3.5}
 
@@ -255,11 +255,11 @@ expect_flt_suite::expect_flt_var_not_in_set_fail_test ..........................
 issue:  exec failed
 reason: floating point mock parameter check failed
 wanted:
-    source: cute/test/expect_flt.c:493
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:493
     caller: expect_flt_value_callee()
     expect: sfloat not in set {ref0, -1.2345, ref2, 3.5f}
-found: 
-    source: cute/test/expect_flt.c:6
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:6
     caller: expect_flt_value_callee()
     actual: [-3] in set {-3, -1.2345, 1.2345, 3.5}
 
@@ -267,17 +267,17 @@ expect_flt_suite::expect_flt_retval_caller_fail_test ...........................
 issue:  exec failed
 reason: mock caller function mismatch
 wanted:
-    source: cute/test/expect_flt.c:529
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:529
     caller: nonexistent_callee()
 found:
-    source: cute/test/expect_flt.c:501
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:501
     caller: expect_flt_retval_callee()
 
 expect_flt_suite::expect_xcess_flt_retval_fail_test ............................................... fail
 issue:  teardown failed
 reason: extra mock expectation left
 wanted:
-    source: cute/test/expect_flt.c:542
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:542
     caller: expect_flt_retval_callee()
     expect: mock function return value
 found:  none
@@ -286,24 +286,24 @@ expect_flt_suite::expect_flt_inval_retval_fail_test ............................
 issue:  exec failed
 reason: mock expectation type mismatch
 wanted:
-    source: cute/test/expect_flt.c:552
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:552
     caller: expect_flt_retval_callee()
     expect: mock function parameter
 found:
-    source: cute/test/expect_flt.c:501
+    source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:501
     caller: expect_flt_retval_callee()
     found:  mock function return value
 
 expect_flt_suite .................................................................................. fail
 issue:  exec failed
 reason: descendants failed
-source: cute/test/expect_flt.c:609
+source: /mnt/devel/greg/tidor/cute/test/expect_flt.c:609
 
 NAME                                          STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-expect_flt_suite                              fail    0.126337     11      0     25      0     36     36
+expect_flt_suite                              fail    1.021993     11      0     25      0     36     36
                                                                   30%     0%    69%     0%   100%
 --------------------------------------------------------------------------------------------------------
-Total                                         fail    0.126337     11      0     25      0     36     36
+Total                                         fail    1.021993     11      0     25      0     36     36
                                                                   30%     0%    69%     0%   100%
 
                                   ###           SUMMARY            ###

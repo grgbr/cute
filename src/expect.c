@@ -606,7 +606,7 @@ cute_expect_desc_sint_parm_value(const struct cute_assess * assess,
 	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
 	cute_text_asprintf(blk, "    expect: %s %s %s", parm, op, ref->expr);
 
-	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
 	                   "    source: %s:%d",
 	                   assess->file, assess->line);
@@ -925,7 +925,7 @@ cute_expect_desc_sint_parm_range(const struct cute_assess * assess,
 	                   "    expect: %s %s range %s",
 	                   parm, op, ref->expr);
 
-	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
 	                   "    source: %s:%d",
 	                   assess->file, assess->line);
@@ -1086,7 +1086,7 @@ cute_expect_desc_sint_parm_set(const struct cute_assess * assess,
 	                   "    expect: %s %s set %s",
 	                   parm, op, ref->expr);
 
-	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
 	                   "    source: %s:%d",
 	                   assess->file, assess->line);
@@ -1153,6 +1153,8 @@ cute_expect_sched_sint_parm_set(const char *                   file,
 	struct cute_assess *      assess;
 
 	if (reference->count) {
+		cute_assert(reference->items);
+
 		unsigned int i;
 
 		items = cute_malloc(reference->count * sizeof(items[0]));
@@ -1329,7 +1331,7 @@ cute_expect_desc_uint_parm_value(const struct cute_assess * assess,
 	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
 	cute_text_asprintf(blk, "    expect: %s %s %s", parm, op, ref->expr);
 
-	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
 	                   "    source: %s:%d",
 	                   assess->file, assess->line);
@@ -1648,7 +1650,7 @@ cute_expect_desc_uint_parm_range(const struct cute_assess * assess,
 	                   "    expect: %s %s range %s",
 	                   parm, op, ref->expr);
 
-	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
 	                   "    source: %s:%d",
 	                   assess->file, assess->line);
@@ -1809,7 +1811,7 @@ cute_expect_desc_uint_parm_set(const struct cute_assess * assess,
 	                   "    expect: %s %s set %s",
 	                   parm, op, ref->expr);
 
-	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
 	                   "    source: %s:%d",
 	                   assess->file, assess->line);
@@ -1876,6 +1878,8 @@ cute_expect_sched_uint_parm_set(const char *                   file,
 	struct cute_assess *      assess;
 
 	if (reference->count) {
+		cute_assert(reference->items);
+
 		unsigned int i;
 
 		items = cute_malloc(reference->count * sizeof(items[0]));
@@ -2052,7 +2056,7 @@ cute_expect_desc_flt_parm_value(const struct cute_assess * assess,
 	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
 	cute_text_asprintf(blk, "    expect: %s %s %s", parm, op, ref->expr);
 
-	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
 	                   "    source: %s:%d",
 	                   assess->file, assess->line);
@@ -2371,7 +2375,7 @@ cute_expect_desc_flt_parm_range(const struct cute_assess * assess,
 	                   "    expect: %s %s range %s",
 	                   parm, op, ref->expr);
 
-	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
 	                   "    source: %s:%d",
 	                   assess->file, assess->line);
@@ -2534,7 +2538,7 @@ cute_expect_desc_flt_parm_set(const struct cute_assess * assess,
 	                   "    expect: %s %s set %s",
 	                   parm, op, ref->expr);
 
-	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
 	                   "    source: %s:%d",
 	                   assess->file, assess->line);
@@ -2600,6 +2604,8 @@ cute_expect_sched_flt_parm_set(const char *                   file,
 	struct cute_assess *      assess;
 
 	if (reference->count) {
+		cute_assert(reference->items);
+
 		unsigned int i;
 
 		items = cute_malloc(reference->count * sizeof(items[0]));
@@ -2775,13 +2781,27 @@ cute_expect_desc_str_parm_value(const struct cute_assess * assess,
 	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
 	cute_text_asprintf(blk, "    expect: %s %s %s", parm, op, ref->expr);
 
-	cute_text_enroll(blk, "found: ", CUTE_TEXT_LEASE);
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
 	cute_text_asprintf(blk,
 	                   "    source: %s:%d",
 	                   assess->file, assess->line);
 	cute_text_asprintf(blk, "    caller: %s()",  assess->func);
 
-	if (strcmp(parm, chk->expr))
+	if (!strcmp(parm, chk->expr)) {
+		/* Unexpected parameter value. */
+		if (chk->value)
+			cute_text_asprintf(blk,
+			                   "    actual: \"%s\" %s \"%s\"",
+			                   chk->value,
+			                   inv,
+			                   ref->value);
+		else
+			cute_text_asprintf(blk,
+			                   "    actual: NULL %s \"%s\"",
+			                   inv,
+			                   ref->value);
+	}
+	else
 		/*
 		 * Parameter name checked using cute_mock_...() does not match
 		 * parameter name scheduled using cute_expect_...().
@@ -2789,13 +2809,6 @@ cute_expect_desc_str_parm_value(const struct cute_assess * assess,
 		cute_text_asprintf(blk,
 		                   "    expect: %s %s %s",
 		                   chk->expr, op, ref->expr);
-	else
-		/* Unexpected parameter value. */
-		cute_text_asprintf(blk,
-		                   "    actual: \"%s\" %s \"%s\"",
-		                   chk->value,
-		                   inv,
-		                   ref->value);
 
 	return blk;
 }
@@ -3116,6 +3129,211 @@ cute_expect_sched_str_parm_not_contain(const char *            file,
 	                                 &cute_expect_str_parm_not_contain_ops,
 	                                 parm,
 	                                 expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_str_parm_set(const struct cute_assess * assess,
+                              const char *               op,
+                              const char *               inv)
+{
+	cute_assert_intern(assess);
+	cute_assert_intern(op);
+	cute_assert_intern(op[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block *      blk;
+	const struct cute_expect *    xpct = (const struct cute_expect *)
+	                                     assess;
+	const char *                  parm = ((const struct cute_expect_parm *)
+	                                      assess)->xpct_parm;
+	const struct cute_str *       chk = &assess->check.str;
+	const struct cute_str_set *   ref = &assess->expect.str.set;
+
+	cute_expect_assert_intern(xpct);
+	cute_assert_intern(parm);
+	cute_assert_intern(parm[0]);
+	cute_assert_intern(chk->expr);
+	cute_assert_intern(chk->expr[0]);
+	cute_assert_intern(ref->expr);
+	cute_assert_intern(ref->expr[0]);
+
+	blk = cute_text_create(8);
+
+	cute_text_enroll(blk, "wanted:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   xpct->xpct_file, xpct->xpct_line);
+	cute_text_asprintf(blk, "    caller: %s()",  xpct->xpct_func);
+	cute_text_asprintf(blk,
+	                   "    expect: %s %s set %s",
+	                   parm, op, ref->expr);
+
+	cute_text_enroll(blk, "found:", CUTE_TEXT_LEASE);
+	cute_text_asprintf(blk,
+	                   "    source: %s:%d",
+	                   assess->file, assess->line);
+	cute_text_asprintf(blk, "    caller: %s()",  assess->func);
+
+	if (!strcmp(parm, chk->expr)) {
+		/* Unexpected parameter value. */
+		if (ref->count) {
+			char * items;
+
+			items = cute_assess_str_set_str(ref->items, ref->count);
+
+			if (chk->value)
+				cute_text_asprintf(blk,
+				                   "    actual: \"%s\" "
+				                   "%s "
+				                   "set {%s}",
+				                   chk->value,
+				                   inv,
+				                   items);
+			else
+				cute_text_asprintf(blk,
+				                   "    actual: NULL "
+				                   "%s "
+				                   "set {%s}",
+				                   inv,
+				                   items);
+			cute_free(items);
+		}
+		else {
+			if (chk->value)
+				cute_text_asprintf(blk,
+				                   "    actual: \"%s\" "
+				                   "%s "
+				                   "set {}",
+				                   chk->value,
+				                   inv);
+			else
+				cute_text_asprintf(blk,
+				                   "    actual: NULL %s set {}",
+				                   inv);
+		}
+	}
+	else
+		/*
+		 * Parameter name checked using cute_mock_...() does not match
+		 * parameter name scheduled using cute_expect_...().
+		 */
+		cute_text_asprintf(blk,
+		                   "    expect: %s %s set %s",
+		                   chk->expr, op, ref->expr);
+
+	return blk;
+}
+
+static void
+cute_expect_sched_str_parm_set(const char *                   file,
+                               int                            line,
+                               const char *                   function,
+                               const struct cute_assess_ops * ops,
+                               const char *                   parm,
+                               const struct cute_str_set *    reference)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(parm);
+	cute_assert(parm[0]);
+	cute_assert(reference);
+	cute_assert(reference->expr);
+	cute_assert(reference->expr[0]);
+
+	const char **             items;
+	struct cute_expect_parm * xpct;
+	struct cute_assess *      assess;
+
+	if (reference->count) {
+		cute_assert(reference->items);
+
+		unsigned int i;
+
+		items = cute_malloc(reference->count * sizeof(items[0]));
+		for (i = 0; i < reference->count; i++) {
+			cute_assert(reference->items[i]);
+
+			items[i] = reference->items[i];
+		}
+	}
+	else
+		items = NULL;
+
+	xpct = (struct cute_expect_parm *)
+	       cute_expect_create(CUTE_EXPECT_PARM_TYPE,
+	                          file,
+	                          line,
+	                          function,
+	                          sizeof(*xpct));
+
+	assess = &xpct->super.super;
+	assess->ops = ops;
+	assess->expect.str.set = *reference;
+	assess->expect.str.set.items = items;
+	xpct->xpct_parm = parm;
+
+	cute_expect_nqueue(&cute_expect_sched, &xpct->super);
+}
+
+static struct cute_text_block *
+cute_expect_desc_str_parm_in_set(const struct cute_assess * assess)
+{
+	return cute_expect_desc_str_parm_set(assess, "in", "not in");
+}
+
+static const struct cute_assess_ops cute_expect_str_parm_in_set = {
+	.cmp     = cute_assess_cmp_str_in_set,
+	.desc    = cute_expect_desc_str_parm_in_set,
+	.release = cute_assess_release_str_set
+};
+
+void
+cute_expect_sched_str_parm_in_set(const char *                file,
+                                  int                         line,
+                                  const char *                function,
+                                  const char *                parm,
+                                  const struct cute_str_set * expect)
+{
+	cute_expect_sched_str_parm_set(
+		file,
+		line,
+		function,
+		&cute_expect_str_parm_in_set,
+		parm,
+		expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_str_parm_not_in_set(const struct cute_assess * assess)
+{
+	return cute_expect_desc_str_parm_set(assess, "not in", "in");
+}
+
+static const struct cute_assess_ops cute_expect_str_parm_not_in_set = {
+	.cmp     = cute_assess_cmp_str_not_in_set,
+	.desc    = cute_expect_desc_str_parm_not_in_set,
+	.release = cute_assess_release_str_set
+};
+
+void
+cute_expect_sched_str_parm_not_in_set(const char *                file,
+                                      int                         line,
+                                      const char *                function,
+                                      const char *                parm,
+                                      const struct cute_str_set * expect)
+{
+	cute_expect_sched_str_parm_set(
+		file,
+		line,
+		function,
+		&cute_expect_str_parm_not_in_set,
+		parm,
+		expect);
 }
 
 /******************************************************************************

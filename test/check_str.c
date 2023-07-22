@@ -416,7 +416,9 @@ CUTE_TEST(check_str_not_in_set_pass_test)
 	cute_check_str_set("sit",
 	                   not_in,
 	                   CUTE_STR_SET("Lorem", "ipsum", "dolor"));
-	cute_check_str_set(sit, not_in, CUTE_STR_SET("Lorem", "ipsum", "dolor"));
+	cute_check_str_set(sit,
+	                   not_in,
+	                   CUTE_STR_SET("Lorem", "ipsum", "dolor"));
 	cute_check_str_set("sit", not_in, set);
 	cute_check_str_set(sit, not_in, set);
 }

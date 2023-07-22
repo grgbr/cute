@@ -1600,6 +1600,7 @@ cute_check_desc_str(const struct cute_assess * assess,
 	cute_assert_intern(inv[0]);
 
 	struct cute_text_block * blk;
+	const char *             val = assess->check.str.value;
 
 	blk = cute_assess_desc_source(assess,
 	                              3 +
@@ -1611,11 +1612,17 @@ cute_check_desc_str(const struct cute_assess * assess,
 	                   oper,
 	                   assess->expect.str.sole.expr);
 
-	cute_text_asprintf(blk,
-	                   "found:  \"%s\" %s \"%s\"",
-	                   assess->check.str.value,
-	                   inv,
-	                   assess->expect.str.sole.value);
+	if (val)
+		cute_text_asprintf(blk,
+		                   "found:  \"%s\" %s \"%s\"",
+		                   val,
+		                   inv,
+		                   assess->expect.str.sole.value);
+	else
+		cute_text_asprintf(blk,
+		                   "found:  NULL %s \"%s\"",
+		                   inv,
+		                   assess->expect.str.sole.value);
 
 	return blk;
 }
@@ -1895,6 +1902,7 @@ cute_check_desc_str_set(const struct cute_assess * assess,
 	cute_assert_intern(inv[0]);
 
 	struct cute_text_block *    blk;
+	const char *                val = assess->check.str.value;
 	const struct cute_str_set * set = &assess->expect.str.set;
 
 	blk = cute_assess_desc_source(assess,
@@ -1907,23 +1915,32 @@ cute_check_desc_str_set(const struct cute_assess * assess,
 	                   oper,
 	                   set->expr);
 
-
 	if (set->count) {
-		char * items;
+		char *       items;
 
 		items = cute_assess_str_set_str(set->items, set->count);
-		cute_text_asprintf(blk,
-		                   "found:  \"%s\" %s set {%s}",
-		                   assess->check.str.value,
-		                   inv,
-		                   items);
+		if (val)
+			cute_text_asprintf(blk,
+			                   "found:  \"%s\" %s set {%s}",
+			                   val,
+			                   inv,
+			                   items);
+		else
+			cute_text_asprintf(blk,
+			                   "found:  NULL %s set {%s}",
+			                   inv,
+			                   items);
 		cute_free(items);
 	}
-	else
-		cute_text_asprintf(blk,
-		                   "found:  \"%s\" %s set {}",
-		                   assess->check.str.value,
-		                   inv);
+	else {
+		if (val)
+			cute_text_asprintf(blk,
+			                   "found:  \"%s\" %s set {}",
+			                   val,
+			                   inv);
+		else
+			cute_text_asprintf(blk, "found:  NULL %s set {}", inv);
+	}
 
 	return blk;
 }
