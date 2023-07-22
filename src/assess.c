@@ -779,6 +779,136 @@ cute_assess_release_str_set(struct cute_assess * assess)
 }
 
 /******************************************************************************
+ * Unsigned integer nubmers handling
+ ******************************************************************************/
+
+bool
+cute_assess_cmp_ptr_equal(const struct cute_assess *      assess,
+                          const union cute_assess_value * check)
+{
+	return check->ptr.value == assess->expect.ptr.scal.value;
+}
+
+bool
+cute_assess_cmp_ptr_unequal(const struct cute_assess *      assess,
+                            const union cute_assess_value * check)
+{
+	return check->ptr.value != assess->expect.ptr.scal.value;
+}
+
+bool
+cute_assess_cmp_ptr_greater(const struct cute_assess *      assess,
+                            const union cute_assess_value * check)
+{
+	return check->ptr.value > assess->expect.ptr.scal.value;
+}
+
+bool
+cute_assess_cmp_ptr_greater_equal(const struct cute_assess *      assess,
+                                  const union cute_assess_value * check)
+{
+	return check->ptr.value >= assess->expect.ptr.scal.value;
+}
+
+bool
+cute_assess_cmp_ptr_lower(const struct cute_assess *      assess,
+                          const union cute_assess_value * check)
+{
+	return check->ptr.value < assess->expect.ptr.scal.value;
+}
+
+bool
+cute_assess_cmp_ptr_lower_equal(const struct cute_assess *      assess,
+                                const union cute_assess_value * check)
+{
+	return check->ptr.value <= assess->expect.ptr.scal.value;
+}
+
+bool
+cute_assess_cmp_ptr_in_range(const struct cute_assess *      assess,
+                             const union cute_assess_value * check)
+{
+	return (check->ptr.value >= assess->expect.ptr.range.min) &&
+	       (check->ptr.value <= assess->expect.ptr.range.max);
+}
+
+bool
+cute_assess_cmp_ptr_not_in_range(const struct cute_assess *      assess,
+                                 const union cute_assess_value * check)
+{
+	return !cute_assess_cmp_ptr_in_range(assess, check);
+}
+
+bool
+cute_assess_cmp_ptr_in_set(const struct cute_assess *      assess,
+                           const union cute_assess_value * check)
+{
+	unsigned int cnt;
+
+	for (cnt = 0; cnt < assess->expect.ptr.set.count; cnt++) {
+		if (check->ptr.value == assess->expect.ptr.set.items[cnt])
+			return true;
+	}
+
+	return false;
+}
+
+bool
+cute_assess_cmp_ptr_not_in_set(const struct cute_assess *      assess,
+                               const union cute_assess_value * value)
+{
+	return !cute_assess_cmp_ptr_in_set(assess, value);
+}
+
+#define PTRMAX_DIGITS ((unsigned int)sizeof(void *) * 2)
+
+char *
+cute_assess_ptr_set_str(const void ** items, unsigned int count)
+{
+	cute_assert_intern(items);
+	cute_assert_intern(count);
+
+	/* Compute space needed to show something like: "-2, 0, 4, -100"... */
+	unsigned int len = PTRMAX_DIGITS    /* number of digits */
+	                   +
+	                   ((1 +            /* comma char */
+	                     1 +            /* space char */
+	                     PTRMAX_DIGITS) /* number of digits */
+	                    *               /* number of integer */
+	                    (count - 1));   /* prefixed with ", " */
+	char *       str;
+	unsigned int i;
+	int          sz;
+
+	str = cute_malloc(len + 1);
+
+	sz = sprintf(str, "%p", items[0]);
+	for (i = 1; i < count; i++) {
+		cute_assert_intern((unsigned int)sz < (len + 1));
+		sz += sprintf(&str[sz], ", %p", items[i]);
+	}
+
+	return str;
+}
+
+void
+cute_assess_release_ptr_set(struct cute_assess * assess)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->expect.ptr.set.expr);
+	cute_assert_intern(assess->expect.ptr.set.expr[0]);
+	cute_assert_intern(!assess->expect.ptr.set.count ||
+	                    assess->expect.ptr.set.items);
+
+	if (assess->expect.ptr.set.count) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+		cute_free((void *)assess->expect.ptr.set.items);
+#pragma GCC diagnostic pop
+	}
+}
+
+/******************************************************************************
  * Top-level generic assess handling
  ******************************************************************************/
 

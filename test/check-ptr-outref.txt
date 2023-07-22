@@ -1,0 +1,338 @@
+
+#######################################  Running CUTe test(s)  ########################################
+
+check_ptr_suite::check_ptr_literal_equal_fail_test ............................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:18
+caller: check_ptr_literal_equal_fail_test__cute_exec()
+wanted: (void *)0xdeadbeef == (void *)0xdeadc0de
+found:  [0xdeadbeef] != [0xdeadc0de]
+
+check_ptr_suite::check_ptr_var_equal_fail_test ................................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:25
+caller: check_ptr_var_equal_fail_test__cute_exec()
+wanted: chk == (void *)0xdeadc0de
+found:  [0xdeadbeef] != [0xdeadc0de]
+
+check_ptr_suite::check_ptr_equal_ref_fail_test ................................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:32
+caller: check_ptr_equal_ref_fail_test__cute_exec()
+wanted: (void *)0xdeadbeef == ref
+found:  [0xdeadbeef] != [0xdeadc0de]
+
+check_ptr_suite::check_ptr_var_equal_ref_fail_test ............................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:40
+caller: check_ptr_var_equal_ref_fail_test__cute_exec()
+wanted: chk == ref
+found:  [0xdeadbeef] != [0xdeadc0de]
+
+check_ptr_suite::check_ptr_literal_unequal_fail_test ............................................. fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:58
+caller: check_ptr_literal_unequal_fail_test__cute_exec()
+wanted: (void *)0xdeadbeef != (void *)0xdeadbeef
+found:  [0xdeadbeef] == [0xdeadbeef]
+
+check_ptr_suite::check_ptr_var_unequal_fail_test ................................................. fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:65
+caller: check_ptr_var_unequal_fail_test__cute_exec()
+wanted: chk != (void *)0xdeadbeef
+found:  [0xdeadbeef] == [0xdeadbeef]
+
+check_ptr_suite::check_ptr_unequal_ref_fail_test ................................................. fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:72
+caller: check_ptr_unequal_ref_fail_test__cute_exec()
+wanted: (void *)0xdeadc0de != ref
+found:  [0xdeadc0de] == [0xdeadc0de]
+
+check_ptr_suite::check_ptr_var_unequal_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:80
+caller: check_ptr_var_unequal_ref_fail_test__cute_exec()
+wanted: chk != ref
+found:  [0xdeadbeef] == [0xdeadbeef]
+
+check_ptr_suite::check_ptr_literal_greater_fail_test ............................................. fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:97
+caller: check_ptr_literal_greater_fail_test__cute_exec()
+wanted: (void *)0xdeadc0de > (void *)0xdeadc0de
+found:  [0xdeadc0de] <= [0xdeadc0de]
+
+check_ptr_suite::check_ptr_var_greater_fail_test ................................................. fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:104
+caller: check_ptr_var_greater_fail_test__cute_exec()
+wanted: chk > (void *)0xdeadc0de
+found:  [0xdeadbeef] <= [0xdeadc0de]
+
+check_ptr_suite::check_ptr_greater_ref_fail_test ................................................. fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:111
+caller: check_ptr_greater_ref_fail_test__cute_exec()
+wanted: ((void *)0) > ref
+found:  [(nil)] <= [0xdeadbeef]
+
+check_ptr_suite::check_ptr_var_greater_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:119
+caller: check_ptr_var_greater_ref_fail_test__cute_exec()
+wanted: chk > ref
+found:  [0xdeadbeef] <= [0xdeadc0de]
+
+check_ptr_suite::check_ptr_literal_greater_equal_fail_test ....................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:138
+caller: check_ptr_literal_greater_equal_fail_test__cute_exec()
+wanted: (void *)0xdeadbeef >= (void *)0xdeadc0de
+found:  [0xdeadbeef] < [0xdeadc0de]
+
+check_ptr_suite::check_ptr_var_greater_equal_fail_test ........................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:145
+caller: check_ptr_var_greater_equal_fail_test__cute_exec()
+wanted: chk >= (void *)0xdeadc0de
+found:  [0xdeadbeef] < [0xdeadc0de]
+
+check_ptr_suite::check_ptr_greater_equal_ref_fail_test ........................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:152
+caller: check_ptr_greater_equal_ref_fail_test__cute_exec()
+wanted: ((void *)0) >= ref
+found:  [(nil)] < [0xdeadbeef]
+
+check_ptr_suite::check_ptr_var_greater_equal_ref_fail_test ....................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:160
+caller: check_ptr_var_greater_equal_ref_fail_test__cute_exec()
+wanted: chk >= ref
+found:  [0xdeadbeef] < [0xdeadc0de]
+
+check_ptr_suite::check_ptr_literal_lower_fail_test ............................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:177
+caller: check_ptr_literal_lower_fail_test__cute_exec()
+wanted: (void *)0xdeadc0de < (void *)0xdeadc0de
+found:  [0xdeadc0de] >= [0xdeadc0de]
+
+check_ptr_suite::check_ptr_var_lower_fail_test ................................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:184
+caller: check_ptr_var_lower_fail_test__cute_exec()
+wanted: chk < (void *)0xdeadbeef
+found:  [0xdeadc0de] >= [0xdeadbeef]
+
+check_ptr_suite::check_ptr_lower_ref_fail_test ................................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:191
+caller: check_ptr_lower_ref_fail_test__cute_exec()
+wanted: chk < ((void *)0)
+found:  [0xdeadbeef] >= [(nil)]
+
+check_ptr_suite::check_ptr_var_lower_ref_fail_test ............................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:199
+caller: check_ptr_var_lower_ref_fail_test__cute_exec()
+wanted: chk < ref
+found:  [0xdeadc0de] >= [0xdeadbeef]
+
+check_ptr_suite::check_ptr_literal_lower_equal_fail_test ......................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:218
+caller: check_ptr_literal_lower_equal_fail_test__cute_exec()
+wanted: (void *)0xdeadc0de <= (void *)0xdeadbeef
+found:  [0xdeadc0de] > [0xdeadbeef]
+
+check_ptr_suite::check_ptr_var_lower_equal_fail_test ............................................. fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:225
+caller: check_ptr_var_lower_equal_fail_test__cute_exec()
+wanted: chk <= (void *)0xdeadbeef
+found:  [0xdeadc0de] > [0xdeadbeef]
+
+check_ptr_suite::check_ptr_lower_equal_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:232
+caller: check_ptr_lower_equal_ref_fail_test__cute_exec()
+wanted: chk <= ((void *)0)
+found:  [0xdeadbeef] > [(nil)]
+
+check_ptr_suite::check_ptr_var_lower_equal_ref_fail_test ......................................... fail
+issue:  exec failed
+reason: pointer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:240
+caller: check_ptr_var_lower_equal_ref_fail_test__cute_exec()
+wanted: chk <= ref
+found:  [0xdeadc0de] > [0xdeadbeef]
+
+check_ptr_suite::check_ptr_literal_in_range_fail_test ............................................ fail
+issue:  exec failed
+reason: pointer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:262
+caller: check_ptr_literal_in_range_fail_test__cute_exec()
+wanted: ((void *)0) in range {(void *)0xdeadbeef ... (void *)0xdeadc0de}
+found:  [(nil)] not in range {0xdeadbeef ... 0xdeadc0de}
+
+check_ptr_suite::check_ptr_var_in_range_fail_test ................................................ fail
+issue:  exec failed
+reason: pointer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:272
+caller: check_ptr_var_in_range_fail_test__cute_exec()
+wanted: chk in range {(void *)0xdeadbeef ... (void *)0xdeadc0da}
+found:  [0xdeadc0de] not in range {0xdeadbeef ... 0xdeadc0da}
+
+check_ptr_suite::check_ptr_in_range_ref_fail_test ................................................ fail
+issue:  exec failed
+reason: pointer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:286
+caller: check_ptr_in_range_ref_fail_test__cute_exec()
+wanted: ((void *)0) in range {min_ref ... max_ref}
+found:  [(nil)] not in range {0xdeadbeef ... 0xdeadc0de}
+
+check_ptr_suite::check_ptr_var_in_range_ref_fail_test ............................................ fail
+issue:  exec failed
+reason: pointer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:299
+caller: check_ptr_var_in_range_ref_fail_test__cute_exec()
+wanted: chk in range {min_ref ... max_ref}
+found:  [0xdeadbeee] not in range {0xdeadbeef ... 0xdeadc0de}
+
+check_ptr_suite::check_ptr_literal_not_in_range_fail_test ........................................ fail
+issue:  exec failed
+reason: pointer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:354
+caller: check_ptr_literal_not_in_range_fail_test__cute_exec()
+wanted: (void *)0xdeadc0da not in range {(void *)0xdeadbeef ... (void *)0xdeadc0de}
+found:  [0xdeadc0da] in range {0xdeadbeef ... 0xdeadc0de}
+
+check_ptr_suite::check_ptr_var_not_in_range_fail_test ............................................ fail
+issue:  exec failed
+reason: pointer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:364
+caller: check_ptr_var_not_in_range_fail_test__cute_exec()
+wanted: chk not in range {(void *)0xdeadbeef ... (void *)0xdeadc0de}
+found:  [0xdeadc0da] in range {0xdeadbeef ... 0xdeadc0de}
+
+check_ptr_suite::check_ptr_not_in_range_ref_fail_test ............................................ fail
+issue:  exec failed
+reason: pointer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:378
+caller: check_ptr_not_in_range_ref_fail_test__cute_exec()
+wanted: (void *)0xdeadbeef not in range {min_ref ... max_ref}
+found:  [0xdeadbeef] in range {0xdeadbeef ... 0xdeadc0de}
+
+check_ptr_suite::check_ptr_var_not_in_range_ref_fail_test ........................................ fail
+issue:  exec failed
+reason: pointer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:391
+caller: check_ptr_var_not_in_range_ref_fail_test__cute_exec()
+wanted: chk not in range {min_ref ... max_ref}
+found:  [0xdeadc0da] in range {0xdeadbeef ... 0xdeadc0de}
+
+check_ptr_suite::check_ptr_literal_in_set_fail_test .............................................. fail
+issue:  exec failed
+reason: pointer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:444
+caller: check_ptr_literal_in_set_fail_test__cute_exec()
+wanted: (void *)0xdeadc0da in set {((void *)0), (void *)0xdeadcafe, (void *)0xdeadbeef, (void *)0xdeadc0de, (void *)0xdeadbabe, (void *)0xdeadce11}
+found:  [0xdeadc0da] not in set {(nil), 0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+check_ptr_suite::check_ptr_var_in_set_fail_test .................................................. fail
+issue:  exec failed
+reason: pointer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:458
+caller: check_ptr_var_in_set_fail_test__cute_exec()
+wanted: chk in set {((void *)0), (void *)0xdeadcafe, (void *)0xdeadbeef, (void *)0xdeadc0de, (void *)0xdeadbabe, (void *)0xdeadce11}
+found:  [0xdeadc0da] not in set {(nil), 0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+check_ptr_suite::check_ptr_in_set_ref_fail_test .................................................. fail
+issue:  exec failed
+reason: pointer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:480
+caller: check_ptr_in_set_ref_fail_test__cute_exec()
+wanted: (void *)0xdeadc0da in set {((void *)0), (void *)0xdeadcafe, (void *)0xdeadbeef, code, babe, (void *)0xdeadce11}
+found:  [0xdeadc0da] not in set {(nil), 0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+check_ptr_suite::check_ptr_var_in_set_ref_fail_test .............................................. fail
+issue:  exec failed
+reason: pointer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:497
+caller: check_ptr_var_in_set_ref_fail_test__cute_exec()
+wanted: chk in set {((void *)0), (void *)0xdeadcafe, (void *)0xdeadbeef, code, babe, (void *)0xdeadce11}
+found:  [0xdeadbeee] not in set {(nil), 0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+check_ptr_suite::check_ptr_literal_not_in_set_fail_test .......................................... fail
+issue:  exec failed
+reason: pointer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:545
+caller: check_ptr_literal_not_in_set_fail_test__cute_exec()
+wanted: (void *)0xdeadc0de not in set {(void *)0xdeadcafe, (void *)0xdeadbeef, (void *)0xdeadc0de, (void *)0xdeadbabe, (void *)0xdeadce11}
+found:  [0xdeadc0de] in set {0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+check_ptr_suite::check_ptr_var_not_in_set_fail_test .............................................. fail
+issue:  exec failed
+reason: pointer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:558
+caller: check_ptr_var_not_in_set_fail_test__cute_exec()
+wanted: chk not in set {(void *)0xdeadcafe, (void *)0xdeadbeef, (void *)0xdeadc0de, (void *)0xdeadbabe, (void *)0xdeadce11}
+found:  [0xdeadc0de] in set {0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+check_ptr_suite::check_ptr_not_in_set_ref_fail_test .............................................. fail
+issue:  exec failed
+reason: pointer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:578
+caller: check_ptr_not_in_set_ref_fail_test__cute_exec()
+wanted: (void *)0xdeadce11 not in set {(void *)0xdeadcafe, (void *)0xdeadbeef, code, babe, (void *)0xdeadce11}
+found:  [0xdeadce11] in set {0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+check_ptr_suite::check_ptr_var_not_in_set_ref_fail_test .......................................... fail
+issue:  exec failed
+reason: pointer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:594
+caller: check_ptr_var_not_in_set_ref_fail_test__cute_exec()
+wanted: chk not in set {(void *)0xdeadcafe, (void *)0xdeadbeef, code, babe, (void *)0xdeadce11}
+found:  [0xdeadbeef] in set {0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+check_ptr_suite .................................................................................. fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/check_ptr.c:659
+
+NAME                                         STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+check_ptr_suite                              fail    1.034596     10      0     40      0     50     50
+                                                                 20%     0%    80%     0%   100%
+-------------------------------------------------------------------------------------------------------
+Total                                        fail    1.034596     10      0     40      0     50     50
+                                                                 20%     0%    80%     0%   100%
+
+                                 ###           SUMMARY            ###
+                                 ###  40/50 (80%) test(s) FAILED  ###
+

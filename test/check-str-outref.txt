@@ -7,7 +7,7 @@ reason: string content check failed
 source: /mnt/devel/greg/tidor/cute/test/check_str.c:17
 caller: check_str_null_equal_fail_test__cute_exec()
 wanted: ((void *)0) == ""
-found:  NULL != ""
+found:  (null) != ""
 
 check_str_suite::check_str_literal_equal_fail_test ............................................. fail
 issue:  exec failed
@@ -79,7 +79,7 @@ reason: string content check failed
 source: /mnt/devel/greg/tidor/cute/test/check_str.c:106
 caller: check_str_null_begin_fail_test__cute_exec()
 wanted: ((void *)0) begins with ""
-found:  NULL doesn't begin with ""
+found:  (null) doesn't begin with ""
 
 check_str_suite::check_str_literal_begin_fail_test ............................................. fail
 issue:  exec failed
@@ -151,7 +151,7 @@ reason: string content check failed
 source: /mnt/devel/greg/tidor/cute/test/check_str.c:195
 caller: check_str_null_end_fail_test__cute_exec()
 wanted: ((void *)0) ends with ""
-found:  NULL doesn't end with ""
+found:  (null) doesn't end with ""
 
 check_str_suite::check_str_literal_end_fail_test ............................................... fail
 issue:  exec failed
@@ -223,7 +223,7 @@ reason: string content check failed
 source: /mnt/devel/greg/tidor/cute/test/check_str.c:284
 caller: check_str_null_contain_fail_test__cute_exec()
 wanted: ((void *)0) contains "dolor"
-found:  NULL doesn't contain "dolor"
+found:  (null) doesn't contain "dolor"
 
 check_str_suite::check_str_literal_contain_fail_test ........................................... fail
 issue:  exec failed
@@ -295,7 +295,7 @@ reason: string content set check failed
 source: /mnt/devel/greg/tidor/cute/test/check_str.c:375
 caller: check_str_null_in_set_fail_test__cute_exec()
 wanted: ((void *)0) in set {"Lorem", "ipsum", "dolor"}
-found:  NULL not in set {"Lorem", "ipsum", "dolor"}
+found:  (null) not in set {"Lorem", "ipsum", "dolor"}
 
 check_str_suite::check_str_literal_in_set_fail_test ............................................ fail
 issue:  exec failed
@@ -367,10 +367,10 @@ reason: descendants failed
 source: /mnt/devel/greg/tidor/cute/test/check_str.c:542
 
 NAME                                       STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-check_str_suite                            fail    1.145051     15      0     45      0     60     60
+check_str_suite                            fail    1.159072     15      0     45      0     60     60
                                                                25%     0%    75%     0%   100%
 -----------------------------------------------------------------------------------------------------
-Total                                      fail    1.145051     15      0     45      0     60     60
+Total                                      fail    1.159072     15      0     45      0     60     60
                                                                25%     0%    75%     0%   100%
 
                                 ###           SUMMARY            ###

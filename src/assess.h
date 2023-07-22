@@ -73,7 +73,9 @@ union cute_str_assess {
 };
 
 union cute_ptr_assess {
-	struct cute_ptr value;
+	struct cute_ptr       scal;
+	struct cute_ptr_range range;
+	struct cute_ptr_set   set;
 };
 
 union cute_mem_assess {
@@ -368,6 +370,62 @@ cute_assess_str_set_str(const char ** items, unsigned int count);
 
 extern void
 cute_assess_release_str_set(struct cute_assess * assess);
+
+/******************************************************************************
+ * Pointers handling
+ ******************************************************************************/
+
+struct cute_ptr;
+
+extern bool
+cute_assess_cmp_ptr_equal(const struct cute_assess *      assess,
+                          const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_ptr_unequal(const struct cute_assess *      assess,
+                            const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_ptr_greater(const struct cute_assess *      assess,
+                            const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_ptr_greater_equal(const struct cute_assess *      assess,
+                                  const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_ptr_lower(const struct cute_assess *      assess,
+                          const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_ptr_lower_equal(const struct cute_assess *      assess,
+                                const union cute_assess_value * check);
+
+struct cute_ptr_range;
+
+extern bool
+cute_assess_cmp_ptr_in_range(const struct cute_assess *      assess,
+                             const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_ptr_not_in_range(const struct cute_assess *      assess,
+                                 const union cute_assess_value * check);
+
+struct cute_ptr_set;
+
+extern bool
+cute_assess_cmp_ptr_in_set(const struct cute_assess *      assess,
+                           const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_ptr_not_in_set(const struct cute_assess *      assess,
+                               const union cute_assess_value * value);
+
+extern char *
+cute_assess_ptr_set_str(const void ** items, unsigned int count);
+
+extern void
+cute_assess_release_ptr_set(struct cute_assess * assess);
 
 /******************************************************************************
  * Top-level generic assess handling

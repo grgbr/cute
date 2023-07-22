@@ -2797,7 +2797,7 @@ cute_expect_desc_str_parm_value(const struct cute_assess * assess,
 			                   ref->value);
 		else
 			cute_text_asprintf(blk,
-			                   "    actual: NULL %s \"%s\"",
+			                   "    actual: (null) %s \"%s\"",
 			                   inv,
 			                   ref->value);
 	}
@@ -3192,7 +3192,7 @@ cute_expect_desc_str_parm_set(const struct cute_assess * assess,
 				                   items);
 			else
 				cute_text_asprintf(blk,
-				                   "    actual: NULL "
+				                   "    actual: (null) "
 				                   "%s "
 				                   "set {%s}",
 				                   inv,
@@ -3209,7 +3209,9 @@ cute_expect_desc_str_parm_set(const struct cute_assess * assess,
 				                   inv);
 			else
 				cute_text_asprintf(blk,
-				                   "    actual: NULL %s set {}",
+				                   "    actual: (null) "
+				                   "%s "
+				                   "set {}",
 				                   inv);
 		}
 	}

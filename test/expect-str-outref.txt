@@ -33,7 +33,7 @@ wanted:
 found:
     source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
     caller: expect_str_value_callee()
-    actual: NULL != "Lorem"
+    actual: (null) != "Lorem"
 
 expect_str_suite::expect_str_literal_equal_fail_test ............................................ fail
 issue:  exec failed
@@ -93,7 +93,7 @@ wanted:
 found:
     source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
     caller: expect_str_value_callee()
-    actual: NULL doesn't begin with "Lorem"
+    actual: (null) doesn't begin with "Lorem"
 
 expect_str_suite::expect_str_literal_begin_fail_test ............................................ fail
 issue:  exec failed
@@ -153,7 +153,7 @@ wanted:
 found:
     source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
     caller: expect_str_value_callee()
-    actual: NULL doesn't end with "Lorem"
+    actual: (null) doesn't end with "Lorem"
 
 expect_str_suite::expect_str_literal_end_fail_test .............................................. fail
 issue:  exec failed
@@ -213,7 +213,7 @@ wanted:
 found:
     source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
     caller: expect_str_value_callee()
-    actual: NULL doesn't contain "Lorem"
+    actual: (null) doesn't contain "Lorem"
 
 expect_str_suite::expect_str_literal_contain_fail_test .......................................... fail
 issue:  exec failed
@@ -273,7 +273,7 @@ wanted:
 found:
     source: /mnt/devel/greg/tidor/cute/test/expect_str.c:6
     caller: expect_str_value_callee()
-    actual: NULL not in set {"Lorem", "ipsum", "dolor"}
+    actual: (null) not in set {"Lorem", "ipsum", "dolor"}
 
 expect_str_suite::expect_str_literal_in_set_fail_test ........................................... fail
 issue:  exec failed
@@ -360,10 +360,10 @@ reason: descendants failed
 source: /mnt/devel/greg/tidor/cute/test/expect_str.c:559
 
 NAME                                        STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-expect_str_suite                            fail    0.933399     17      0     30      0     47     47
+expect_str_suite                            fail    0.821631     17      0     30      0     47     47
                                                                 36%     0%    63%     0%   100%
 ------------------------------------------------------------------------------------------------------
-Total                                       fail    0.933399     17      0     30      0     47     47
+Total                                       fail    0.821631     17      0     30      0     47     47
                                                                 36%     0%    63%     0%   100%
 
                                  ###           SUMMARY            ###

@@ -1620,7 +1620,7 @@ cute_check_desc_str(const struct cute_assess * assess,
 		                   assess->expect.str.sole.value);
 	else
 		cute_text_asprintf(blk,
-		                   "found:  NULL %s \"%s\"",
+		                   "found:  (null) %s \"%s\"",
 		                   inv,
 		                   assess->expect.str.sole.value);
 
@@ -1927,7 +1927,7 @@ cute_check_desc_str_set(const struct cute_assess * assess,
 			                   items);
 		else
 			cute_text_asprintf(blk,
-			                   "found:  NULL %s set {%s}",
+			                   "found:  (null) %s set {%s}",
 			                   inv,
 			                   items);
 		cute_free(items);
@@ -1939,7 +1939,9 @@ cute_check_desc_str_set(const struct cute_assess * assess,
 			                   val,
 			                   inv);
 		else
-			cute_text_asprintf(blk, "found:  NULL %s set {}", inv);
+			cute_text_asprintf(blk,
+			                   "found:  (null) %s set {}",
+			                   inv);
 	}
 
 	return blk;
@@ -2044,6 +2046,518 @@ cute_check_str_not_in_set(const char *                file,
 	                          line,
 	                          function,
 	                          &cute_assess_str_not_in_set_ops,
+	                          check,
+	                          expect);
+}
+
+/******************************************************************************
+ * Pointers handling
+ ******************************************************************************/
+
+static struct cute_text_block *
+cute_check_desc_ptr(const struct cute_assess * assess,
+                    const char *               oper,
+                    const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->check.ptr.expr);
+	cute_assert_intern(assess->check.ptr.expr[0]);
+	cute_assert_intern(assess->expect.ptr.scal.expr);
+	cute_assert_intern(assess->expect.ptr.scal.expr[0]);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block * blk;
+
+	blk = cute_assess_desc_source(assess,
+	                              3 +
+	                              (unsigned int)!!assess->func);
+
+	cute_text_asprintf(blk,
+	                   "wanted: %s %s %s",
+	                   assess->check.ptr.expr,
+	                   oper,
+	                   assess->expect.ptr.scal.expr);
+
+	cute_text_asprintf(blk,
+	                   "found:  [%p] %s [%p]",
+	                   assess->check.ptr.value,
+	                   inv,
+	                   assess->expect.ptr.scal.value);
+
+	return blk;
+}
+
+static void
+cute_check_assess_ptr(const char *                   file,
+                      int                            line,
+                      const char *                   function,
+                      const struct cute_assess_ops * ops,
+                      const struct cute_ptr *        check,
+                      const struct cute_ptr *        expect)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(check->expr);
+	cute_assert(check->expr[0]);
+	cute_assert(expect->expr);
+	cute_assert(expect->expr[0]);
+	cute_run_assert_intern(cute_curr_run);
+
+	struct cute_assess *          assess = &cute_curr_run->assess;
+	const union cute_assess_value chk = { .ptr = *check };
+
+	assess->ops = ops;
+	assess->expect.ptr.scal = *expect;
+
+	if (!cute_assess_check(assess, &chk))
+		cute_break(CUTE_FAIL_ISSUE,
+		           file,
+		           line,
+		           function,
+		           "pointer value check failed");
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_equal(const struct cute_assess * assess)
+{
+	return cute_check_desc_ptr(assess, "==", "!=");
+}
+
+static const struct cute_assess_ops cute_assess_ptr_equal_ops = {
+	.cmp     = cute_assess_cmp_ptr_equal,
+	.desc    = cute_check_desc_ptr_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_ptr_equal(const char *            file,
+                     int                     line,
+                     const char *            function,
+                     const struct cute_ptr * check,
+                     const struct cute_ptr * expect)
+{
+	cute_check_assess_ptr(file,
+	                      line,
+	                      function,
+	                      &cute_assess_ptr_equal_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_unequal(const struct cute_assess * assess)
+{
+	return cute_check_desc_ptr(assess, "!=", "==");
+}
+
+static const struct cute_assess_ops cute_assess_ptr_unequal_ops = {
+	.cmp     = cute_assess_cmp_ptr_unequal,
+	.desc    = cute_check_desc_ptr_unequal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_ptr_unequal(const char *            file,
+                       int                     line,
+                       const char *            function,
+                       const struct cute_ptr * check,
+                       const struct cute_ptr * expect)
+{
+	cute_check_assess_ptr(file,
+	                      line,
+	                      function,
+	                      &cute_assess_ptr_unequal_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_greater(const struct cute_assess * assess)
+{
+	return cute_check_desc_ptr(assess, ">", "<=");
+}
+
+static const struct cute_assess_ops cute_assess_ptr_greater_ops = {
+	.cmp     = cute_assess_cmp_ptr_greater,
+	.desc    = cute_check_desc_ptr_greater,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_ptr_greater(const char *             file,
+                       int                      line,
+                       const char *             function,
+                       const struct cute_ptr * check,
+                       const struct cute_ptr * expect)
+{
+	cute_check_assess_ptr(file,
+	                      line,
+	                      function,
+	                      &cute_assess_ptr_greater_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_greater_equal(const struct cute_assess * assess)
+{
+	return cute_check_desc_ptr(assess, ">=", "<");
+}
+
+static const struct cute_assess_ops cute_assess_ptr_greater_equal_ops = {
+	.cmp     = cute_assess_cmp_ptr_greater_equal,
+	.desc    = cute_check_desc_ptr_greater_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_ptr_greater_equal(const char *             file,
+                             int                      line,
+                             const char *             function,
+                             const struct cute_ptr * check,
+                             const struct cute_ptr * expect)
+{
+	cute_check_assess_ptr(file,
+	                      line,
+	                      function,
+	                      &cute_assess_ptr_greater_equal_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_lower(const struct cute_assess * assess)
+{
+	return cute_check_desc_ptr(assess, "<", ">=");
+}
+
+static const struct cute_assess_ops cute_assess_ptr_lower_ops = {
+	.cmp     = cute_assess_cmp_ptr_lower,
+	.desc    = cute_check_desc_ptr_lower,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_ptr_lower(const char *             file,
+                     int                      line,
+                     const char *             function,
+                     const struct cute_ptr * check,
+                     const struct cute_ptr * expect)
+{
+	cute_check_assess_ptr(file,
+	                      line,
+	                      function,
+	                      &cute_assess_ptr_lower_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_lower_equal(const struct cute_assess * assess)
+{
+	return cute_check_desc_ptr(assess, "<=", ">");
+}
+
+static const struct cute_assess_ops cute_assess_ptr_lower_equal_ops = {
+	.cmp     = cute_assess_cmp_ptr_lower_equal,
+	.desc    = cute_check_desc_ptr_lower_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_ptr_lower_equal(const char *             file,
+                           int                      line,
+                           const char *             function,
+                           const struct cute_ptr * check,
+                           const struct cute_ptr * expect)
+{
+	cute_check_assess_ptr(file,
+	                      line,
+	                      function,
+	                      &cute_assess_ptr_lower_equal_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_range(const struct cute_assess * assess,
+                          const char *               oper,
+                          const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->check.ptr.expr);
+	cute_assert_intern(assess->check.ptr.expr[0]);
+	cute_assert_intern(assess->expect.ptr.range.expr);
+	cute_assert_intern(assess->expect.ptr.range.expr[0]);
+	cute_assert_intern(assess->expect.ptr.range.min <=
+	                   assess->expect.ptr.range.max);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block * blk;
+
+	blk = cute_assess_desc_source(assess,
+	                              3 +
+	                              (unsigned int)!!assess->func);
+
+	cute_text_asprintf(blk,
+	                   "wanted: %s %s range %s",
+	                   assess->check.ptr.expr,
+	                   oper,
+	                   assess->expect.ptr.range.expr);
+
+	cute_text_asprintf(blk,
+	                   "found:  [%p] %s range {%p ... %p}",
+	                   assess->check.ptr.value,
+	                   inv,
+	                   assess->expect.ptr.range.min,
+	                   assess->expect.ptr.range.max);
+
+	return blk;
+}
+
+static void
+cute_check_assess_ptr_range(const char *                   file,
+                            int                            line,
+                            const char *                   function,
+                            const struct cute_assess_ops * ops,
+                            const struct cute_ptr *        check,
+                            const struct cute_ptr_range *  expect)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(check->expr);
+	cute_assert(check->expr[0]);
+	cute_assert(expect->expr);
+	cute_assert(expect->expr[0]);
+	cute_assert(expect->min <= expect->max);
+	cute_run_assert_intern(cute_curr_run);
+
+	struct cute_assess *          assess = &cute_curr_run->assess;
+	const union cute_assess_value chk = { .ptr = *check };
+
+	assess->ops = ops;
+	assess->expect.ptr.range = *expect;
+
+	if (!cute_assess_check(assess, &chk))
+		cute_break(CUTE_FAIL_ISSUE,
+		           file,
+		           line,
+		           function,
+		           "pointer range check failed");
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_in_range(const struct cute_assess * assess)
+{
+	return cute_check_desc_ptr_range(assess, "in", "not in");
+}
+
+static const struct cute_assess_ops cute_assess_ptr_in_range_ops = {
+	.cmp     = cute_assess_cmp_ptr_in_range,
+	.desc    = cute_check_desc_ptr_in_range,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_ptr_in_range(const char *                  file,
+                        int                           line,
+                        const char *                  function,
+                        const struct cute_ptr *       check,
+                        const struct cute_ptr_range * expect)
+{
+	cute_check_assess_ptr_range(file,
+	                            line,
+	                            function,
+	                            &cute_assess_ptr_in_range_ops,
+	                            check,
+	                            expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_not_in_range(const struct cute_assess * assess)
+{
+	return cute_check_desc_ptr_range(assess, "not in", "in");
+}
+
+static const struct cute_assess_ops cute_assess_ptr_not_in_range_ops = {
+	.cmp     = cute_assess_cmp_ptr_not_in_range,
+	.desc    = cute_check_desc_ptr_not_in_range,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_ptr_not_in_range(const char *                  file,
+                            int                           line,
+                            const char *                  function,
+                            const struct cute_ptr *       check,
+                            const struct cute_ptr_range * expect)
+{
+	cute_check_assess_ptr_range(file,
+	                            line,
+	                            function,
+	                            &cute_assess_ptr_not_in_range_ops,
+	                            check,
+	                            expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_set(const struct cute_assess * assess,
+                        const char *               oper,
+                        const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->check.ptr.expr);
+	cute_assert_intern(assess->check.ptr.expr[0]);
+	cute_assert_intern(assess->expect.ptr.set.expr);
+	cute_assert_intern(assess->expect.ptr.set.expr[0]);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block *    blk;
+	const struct cute_ptr_set * set = &assess->expect.ptr.set;
+
+	blk = cute_assess_desc_source(assess,
+	                              3 +
+	                              (unsigned int)!!assess->func);
+
+	cute_text_asprintf(blk,
+	                   "wanted: %s %s set %s",
+	                   assess->check.ptr.expr,
+	                   oper,
+	                   set->expr);
+
+	if (set->count) {
+		char * items;
+
+		items = cute_assess_ptr_set_str(set->items, set->count);
+		cute_text_asprintf(blk,
+		                   "found:  [%p] %s set {%s}",
+		                   assess->check.ptr.value,
+		                   inv,
+		                   items);
+		cute_free(items);
+	}
+	else
+		cute_text_asprintf(blk,
+		                   "found:  [%p] %s set {}",
+		                   assess->check.ptr.value,
+		                   inv);
+
+	return blk;
+}
+
+static void
+cute_check_assess_ptr_set(const char *                   file,
+                          int                            line,
+                          const char *                   function,
+                          const struct cute_assess_ops * ops,
+                          const struct cute_ptr *        check,
+                          const struct cute_ptr_set *    expect)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(check->expr);
+	cute_assert(check->expr[0]);
+	cute_assert(expect->expr);
+	cute_assert(expect->expr[0]);
+	cute_run_assert_intern(cute_curr_run);
+
+	const void **                 items;
+	struct cute_assess *          assess = &cute_curr_run->assess;
+	const union cute_assess_value chk = { .ptr = *check };
+
+	if (expect->count) {
+		unsigned int i;
+
+		items = cute_malloc(expect->count * sizeof(items[0]));
+		for (i = 0; i < expect->count; i++)
+			items[i] = expect->items[i];
+	}
+	else
+		items = NULL;
+
+	assess->ops = ops;
+	assess->expect.ptr.set = *expect;
+	assess->expect.ptr.set.items = items;
+
+	if (!cute_assess_check(assess, &chk))
+		cute_break(CUTE_FAIL_ISSUE,
+		           file,
+		           line,
+		           function,
+		           "pointer set check failed");
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_in_set(const struct cute_assess * assess)
+{
+	return cute_check_desc_ptr_set(assess, "in", "not in");
+}
+
+static const struct cute_assess_ops cute_assess_ptr_in_set_ops = {
+	.cmp     = cute_assess_cmp_ptr_in_set,
+	.desc    = cute_check_desc_ptr_in_set,
+	.release = cute_assess_release_ptr_set
+};
+
+void
+cute_check_ptr_in_set(const char *                file,
+                      int                         line,
+                      const char *                function,
+                      const struct cute_ptr *     check,
+                      const struct cute_ptr_set * expect)
+{
+	cute_check_assess_ptr_set(file,
+	                          line,
+	                          function,
+	                          &cute_assess_ptr_in_set_ops,
+	                          check,
+	                          expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_ptr_not_in_set(const struct cute_assess * assess)
+{
+	return cute_check_desc_ptr_set(assess, "not in", "in");
+}
+
+static const struct cute_assess_ops cute_assess_ptr_not_in_set_ops = {
+	.cmp     = cute_assess_cmp_ptr_not_in_set,
+	.desc    = cute_check_desc_ptr_not_in_set,
+	.release = cute_assess_release_ptr_set
+};
+
+void
+cute_check_ptr_not_in_set(const char *                file,
+                          int                         line,
+                          const char *                function,
+                          const struct cute_ptr *     check,
+                          const struct cute_ptr_set * expect)
+{
+	cute_check_assess_ptr_set(file,
+	                          line,
+	                          function,
+	                          &cute_assess_ptr_not_in_set_ops,
 	                          check,
 	                          expect);
 }

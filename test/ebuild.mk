@@ -99,6 +99,12 @@ check-str-utest-cflags             := $(test-cflags)
 check-str-utest-ldflags            := $(test-ldflags) -lcute
 check-str-utest-path               := $(LIBEXECDIR)/cute/check-str-utest
 
+bins                               += check-ptr-utest
+check-ptr-utest-objs               := check_ptr.o
+check-ptr-utest-cflags             := $(test-cflags)
+check-ptr-utest-ldflags            := $(test-ldflags) -lcute
+check-ptr-utest-path               := $(LIBEXECDIR)/cute/check-ptr-utest
+
 bins                               += expect-sint-utest
 expect-sint-utest-objs             := expect_sint.o
 expect-sint-utest-cflags           := $(test-cflags)
