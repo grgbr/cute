@@ -16,6 +16,10 @@ BEGIN {
 	             $0);
 }
 
+/^found:/ {
+	gsub("0x[0-9a-fA-F]+", "0x????????????????", $0);
+}
+
 /^NAME[[:blank:]]+[#[:blank:](.A-Z]+/ {
 	stat=1
 }
@@ -125,6 +129,7 @@ run_testcase "check-flt-utest" 1 || ret=1
 run_testcase "check-dbl-utest" 1 || ret=1
 run_testcase "check-str-utest" 1 || ret=1
 run_testcase "check-ptr-utest" 1 || ret=1
+run_testcase "check-mem-utest" 1 || ret=1
 run_testcase "expect-sint-utest" 1 || ret=1
 run_testcase "expect-uint-utest" 1 || ret=1
 run_testcase "expect-flt-utest" 1 || ret=1

@@ -909,6 +909,29 @@ cute_assess_release_ptr_set(struct cute_assess * assess)
 }
 
 /******************************************************************************
+ * Memory area checking
+ ******************************************************************************/
+
+bool
+cute_assess_cmp_mem_equal(const struct cute_assess *      assess,
+                          const union cute_assess_value * check)
+{
+	if (!check->ptr.value)
+		return false;
+
+	return !memcmp(check->ptr.value,
+	               assess->expect.mem.area.ptr,
+	               assess->expect.mem.area.size);
+}
+
+bool
+cute_assess_cmp_mem_unequal(const struct cute_assess *      assess,
+                            const union cute_assess_value * check)
+{
+	return !cute_assess_cmp_mem_equal(assess, check);
+}
+
+/******************************************************************************
  * Top-level generic assess handling
  ******************************************************************************/
 

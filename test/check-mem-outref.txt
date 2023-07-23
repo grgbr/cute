@@ -1,0 +1,58 @@
+
+####################################  Running CUTe test(s)  #####################################
+
+check_mem_suite::check_mem_null_equal_fail_test ............................................ fail
+issue:  exec failed
+reason: Memory area check failed
+source: /mnt/devel/greg/tidor/cute/test/check_mem.c:30
+caller: check_mem_null_equal_fail_test__cute_exec()
+wanted: ((void *)0) == {@ check_mem_str:sizeof(check_mem_str)}
+found:  (null) != {@ 0x56204a4b4370:17}
+
+check_mem_suite::check_mem_literal_equal_fail_test ......................................... fail
+issue:  exec failed
+reason: Memory area check failed
+source: /mnt/devel/greg/tidor/cute/test/check_mem.c:38
+caller: check_mem_literal_equal_fail_test__cute_exec()
+wanted: "test string" == {@ check_mem_str:sizeof(check_mem_str)}
+found:  [0x56204a4b4161] != {@ 0x56204a4b4370:17}
+
+check_mem_suite::check_mem_var_equal_fail_test ............................................. fail
+issue:  exec failed
+reason: Memory area check failed
+source: /mnt/devel/greg/tidor/cute/test/check_mem.c:46
+caller: check_mem_var_equal_fail_test__cute_exec()
+wanted: check_mem_str == {@ check_mem_uint:sizeof(check_mem_uint)}
+found:  [0x56204a4b4370] != {@ 0x56204a4b43e0:64}
+
+check_mem_suite::check_mem_literal_unequal_fail_test ....................................... fail
+issue:  exec failed
+reason: Memory area check failed
+source: /mnt/devel/greg/tidor/cute/test/check_mem.c:72
+caller: check_mem_literal_unequal_fail_test__cute_exec()
+wanted: "reference string" != {@ check_mem_str:sizeof(check_mem_str)}
+found:  [0x56204a4b4136] == {@ 0x56204a4b4370:17}
+
+check_mem_suite::check_mem_var_unequal_fail_test ........................................... fail
+issue:  exec failed
+reason: Memory area check failed
+source: /mnt/devel/greg/tidor/cute/test/check_mem.c:83
+caller: check_mem_var_unequal_fail_test__cute_exec()
+wanted: chk != {@ check_mem_uint:sizeof(check_mem_uint)}
+found:  [0x7ffc918f61f0] == {@ 0x56204a4b43e0:64}
+
+check_mem_suite ............................................................................ fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/check_mem.c:100
+
+NAME                                   STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+check_mem_suite                        fail    0.160638      2      0      5      0      7      7
+                                                           28%     0%    71%     0%   100%
+-------------------------------------------------------------------------------------------------
+Total                                  fail    0.160638      2      0      5      0      7      7
+                                                           28%     0%    71%     0%   100%
+
+                               ###          SUMMARY           ###
+                               ###  5/7 (71%) test(s) FAILED  ###
+

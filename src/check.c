@@ -2561,3 +2561,147 @@ cute_check_ptr_not_in_set(const char *                file,
 	                          check,
 	                          expect);
 }
+
+/******************************************************************************
+ * Memory area checking
+ ******************************************************************************/
+
+static struct cute_text_block *
+cute_check_desc_mem(const struct cute_assess * assess,
+                    const char *               oper,
+                    const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->check.ptr.expr);
+	cute_assert_intern(assess->check.ptr.expr[0]);
+	cute_assert_intern(assess->expect.mem.area.expr);
+	cute_assert_intern(assess->expect.mem.area.expr[0]);
+	cute_assert_intern(assess->expect.mem.area.ptr);
+	cute_assert_intern(assess->expect.mem.area.size);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block * blk;
+	const void *             val = assess->check.ptr.value;
+	const struct cute_mem *  mem = &assess->expect.mem.area;
+
+	blk = cute_assess_desc_source(assess,
+	                              3 +
+	                              (unsigned int)!!assess->func);
+
+	cute_text_asprintf(blk,
+	                   "wanted: %s %s %s",
+	                   assess->check.ptr.expr,
+	                   oper,
+	                   mem->expr);
+
+	if (val)
+		cute_text_asprintf(blk,
+		                   "found:  [%p] %s {@ %p:%zu}",
+		                   val,
+		                   inv,
+		                   mem->ptr,
+		                   mem->size);
+	else
+		cute_text_asprintf(blk,
+		                   "found:  (null) %s {@ %p:%zu}",
+		                   inv,
+		                   mem->ptr,
+		                   mem->size);
+
+	return blk;
+}
+
+static void
+cute_check_assess_mem(const char *                   file,
+                      int                            line,
+                      const char *                   function,
+                      const struct cute_assess_ops * ops,
+                      const struct cute_ptr *        check,
+                      const struct cute_mem *        expect)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(check->expr);
+	cute_assert(check->expr[0]);
+	cute_assert(expect->expr);
+	cute_assert(expect->expr[0]);
+	cute_assert(expect->ptr);
+	cute_assert(expect->size);
+	cute_run_assert_intern(cute_curr_run);
+
+	struct cute_assess *          assess = &cute_curr_run->assess;
+	const union cute_assess_value chk = { .ptr = *check };
+
+	assess->ops = ops;
+	assess->expect.mem.area = *expect;
+
+	if (!cute_assess_check(assess, &chk))
+		cute_break(CUTE_FAIL_ISSUE,
+		           file,
+		           line,
+		           function,
+		           "Memory area check failed");
+}
+
+static struct cute_text_block *
+cute_check_desc_mem_equal(const struct cute_assess * assess)
+{
+	return cute_check_desc_mem(assess, "==", "!=");
+}
+
+static const struct cute_assess_ops cute_assess_mem_equal_ops = {
+	.cmp     = cute_assess_cmp_mem_equal,
+	.desc    = cute_check_desc_mem_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_mem_equal(const char *            file,
+                     int                     line,
+                     const char *            function,
+                     const struct cute_ptr * check,
+                     const struct cute_mem * expect)
+
+{
+	cute_check_assess_mem(file,
+	                      line,
+	                      function,
+	                      &cute_assess_mem_equal_ops,
+	                      check,
+	                      expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_mem_unequal(const struct cute_assess * assess)
+{
+	return cute_check_desc_mem(assess, "!=", "==");
+}
+
+static const struct cute_assess_ops cute_assess_mem_unequal_ops = {
+	.cmp     = cute_assess_cmp_mem_unequal,
+	.desc    = cute_check_desc_mem_unequal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_mem_unequal(const char *            file,
+                       int                     line,
+                       const char *            function,
+                       const struct cute_ptr * check,
+                       const struct cute_mem * expect)
+
+{
+	cute_check_assess_mem(file,
+	                      line,
+	                      function,
+	                      &cute_assess_mem_unequal_ops,
+	                      check,
+	                      expect);
+}

@@ -604,15 +604,15 @@ cute_check_ptr_not_in_set(const char *                file,
 
 struct cute_mem {
 	const char * expr;
-	const void * value;
+	const void * ptr;
 	size_t       size;
 };
 
-#define __CUTE_MEM_VALUE(_type, _ptr, _sz) \
+#define __CUTE_MEM(_ptr, _sz) \
 	((const struct cute_mem) { \
-		.expr  = "@" # _ptr "/" # _sz, \
-		.value = _ptr, \
-		.size  = _sz \
+		.expr = "{@ " # _ptr ":" # _sz "}", \
+		.ptr  = _ptr, \
+		.size = _sz \
 	 })
 
 #define cute_check_mem(_chk, _op, _xpct, _sz) \
@@ -620,7 +620,7 @@ struct cute_mem {
 	                       __LINE__, \
 	                       __func__, \
 	                       &__CUTE_VALUE(ptr, _chk), \
-	                       &__CUTE_MEM_VALUE(mem, _xpct, _sz))
+	                       &__CUTE_MEM(_xpct, _sz))
 
 extern void
 cute_check_mem_equal(const char *             file,

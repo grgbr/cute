@@ -79,7 +79,7 @@ union cute_ptr_assess {
 };
 
 union cute_mem_assess {
-	struct cute_mem value;
+	struct cute_mem area;
 };
 
 struct cute_assess {
@@ -426,6 +426,18 @@ cute_assess_ptr_set_str(const void ** items, unsigned int count);
 
 extern void
 cute_assess_release_ptr_set(struct cute_assess * assess);
+
+/******************************************************************************
+ * Memory area checking
+ ******************************************************************************/
+
+extern bool
+cute_assess_cmp_mem_equal(const struct cute_assess *      assess,
+                          const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_mem_unequal(const struct cute_assess *      assess,
+                            const union cute_assess_value * check);
 
 /******************************************************************************
  * Top-level generic assess handling
