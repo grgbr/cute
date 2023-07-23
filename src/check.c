@@ -2647,7 +2647,7 @@ cute_check_assess_mem(const char *                   file,
 		           file,
 		           line,
 		           function,
-		           "Memory area check failed");
+		           "memory area check failed");
 }
 
 static struct cute_text_block *

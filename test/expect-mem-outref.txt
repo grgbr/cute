@@ -1,0 +1,100 @@
+
+#####################################  Running CUTe test(s)  #####################################
+
+expect_mem_suite::expect_mem_caller_fail_test ............................................... fail
+issue:  exec failed
+reason: mock caller function mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:28
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:15
+    caller: expect_mem_value_callee()
+
+expect_mem_suite::expect_mem_parm_fail_test ................................................. fail
+issue:  exec failed
+reason: memory area mock parameter name mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:36
+    caller: expect_mem_value_callee()
+    expect: nonexistent_parm == {@ str:sizeof(str)}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:15
+    caller: expect_mem_value_callee()
+    expect: ptr == {@ str:sizeof(str)}
+
+expect_mem_suite::expect_mem_null_equal_fail_test ........................................... fail
+issue:  exec failed
+reason: memory area mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:67
+    caller: expect_mem_value_callee()
+    expect: ptr == {@ expect_mem_str:sizeof(expect_mem_str)}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:15
+    caller: expect_mem_value_callee()
+    actual: (null) != {@ 0x10a260:17}
+
+expect_mem_suite::expect_mem_literal_equal_fail_test ........................................ fail
+issue:  exec failed
+reason: memory area mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:77
+    caller: expect_mem_value_callee()
+    expect: ptr == {@ expect_mem_uint:sizeof(expect_mem_uint)}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:15
+    caller: expect_mem_value_callee()
+    actual: [0x10a01c] != {@ 0x10a280:64}
+
+expect_mem_suite::expect_mem_var_equal_fail_test ............................................ fail
+issue:  exec failed
+reason: memory area mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:87
+    caller: expect_mem_value_callee()
+    expect: ptr == {@ expect_mem_uint:sizeof(expect_mem_uint)}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:15
+    caller: expect_mem_value_callee()
+    actual: [0x10a260] != {@ 0x10a280:64}
+
+expect_mem_suite::expect_mem_literal_unequal_fail_test ...................................... fail
+issue:  exec failed
+reason: memory area mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:123
+    caller: expect_mem_value_callee()
+    expect: ptr != {@ expect_mem_str:sizeof(expect_mem_str)}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:15
+    caller: expect_mem_value_callee()
+    actual: [0x10a068] == {@ 0x10a260:17}
+
+expect_mem_suite::expect_mem_var_unequal_fail_test .......................................... fail
+issue:  exec failed
+reason: memory area mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:135
+    caller: expect_mem_value_callee()
+    expect: ptr != {@ expect_mem_uint:sizeof(expect_mem_uint)}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:15
+    caller: expect_mem_value_callee()
+    actual: [0x1ffefff9f0] == {@ 0x10a280:64}
+
+expect_mem_suite ............................................................................ fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/expect_mem.c:159
+
+NAME                                    STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+expect_mem_suite                        fail    0.237497      2      0      7      0      9      9
+                                                            22%     0%    77%     0%   100%
+--------------------------------------------------------------------------------------------------
+Total                                   fail    0.237497      2      0      7      0      9      9
+                                                            22%     0%    77%     0%   100%
+
+                                ###          SUMMARY           ###
+                                ###  7/9 (77%) test(s) FAILED  ###
+

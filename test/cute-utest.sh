@@ -16,7 +16,7 @@ BEGIN {
 	             $0);
 }
 
-/^found:/ {
+/^found:/ || /^[[:blank:]]+actual:/ {
 	gsub("0x[0-9a-fA-F]+", "0x????????????????", $0);
 }
 
@@ -135,6 +135,7 @@ run_testcase "expect-uint-utest" 1 || ret=1
 run_testcase "expect-flt-utest" 1 || ret=1
 run_testcase "expect-str-utest" 1 || ret=1
 run_testcase "expect-ptr-utest" 1 || ret=1
+run_testcase "expect-mem-utest" 1 || ret=1
 run_testcase "expect-assert-utest" 1 || ret=1
 
 exit $ret

@@ -766,5 +766,44 @@ cute_expect_check_ptr_retval(const char * file,
 #define cute_mock_ptr_retval() \
 	cute_expect_check_ptr_retval(__FILE__, __LINE__, __func__)
 
+/******************************************************************************
+ * Memory area parameter expectation handling
+ ******************************************************************************/
+
+#define cute_expect_mem_parm(_func, _parm, _op, _ptr, _sz) \
+	cute_expect_sched_mem_parm_ ##  _op(__FILE__, \
+	                                    __LINE__, \
+	                                    # _func, \
+	                                    # _parm, \
+		                            &__CUTE_MEM(_ptr, _sz))
+
+#define cute_mock_mem_parm(_parm) \
+	cute_expect_check_mem_parm(__FILE__, \
+	                           __LINE__, \
+	                           __func__, \
+	                           &__CUTE_VALUE(ptr, _parm))
+
+extern void
+cute_expect_check_mem_parm(const char *            file,
+                           int                     line,
+                           const char *            function,
+                           const struct cute_ptr * check)
+	__cute_export;
+
+extern void
+cute_expect_sched_mem_parm_equal(const char *            file,
+                                 int                     line,
+                                 const char *            function,
+                                 const char *            parm,
+                                 const struct cute_mem * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_mem_parm_unequal(const char *            file,
+                                   int                     line,
+                                   const char *            function,
+                                   const char *            parm,
+                                   const struct cute_mem * expect)
+	__cute_export;
 
 #endif /* _CUTE_EXPECT_H */
