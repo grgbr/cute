@@ -1,4 +1,6 @@
-* implement mem support
+* documentation !!
+* test complex hierarchy setup/teardown
 * refine stringification of check API arguments (prevent from expanding args)
+* implement mem dump support ?
 * fork
 * cleanup cute_term_depth_[v]printf...
