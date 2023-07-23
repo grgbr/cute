@@ -1,0 +1,311 @@
+
+########################################  Running CUTe test(s)  ########################################
+
+expect_ptr_suite::expect_ptr_caller_fail_test ..................................................... fail
+issue:  exec failed
+reason: mock caller function mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:17
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+
+expect_ptr_suite::expect_ptr_parm_fail_test ....................................................... fail
+issue:  exec failed
+reason: pointer mock parameter name mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:23
+    caller: expect_ptr_value_callee()
+    expect: nonexistent_parm == ((void *)0)
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    expect: ptr == ((void *)0)
+
+expect_ptr_suite::expect_ptr_literal_equal_fail_test .............................................. fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:55
+    caller: expect_ptr_value_callee()
+    expect: ptr == (void *)0xdeadbeef
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadc0de] != [0xdeadbeef]
+
+expect_ptr_suite::expect_ptr_var_equal_fail_test .................................................. fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:66
+    caller: expect_ptr_value_callee()
+    expect: ptr == ref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadbeef] != [0xdeadc0de]
+
+expect_ptr_suite::expect_ptr_literal_unequal_fail_test ............................................ fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:98
+    caller: expect_ptr_value_callee()
+    expect: ptr != (void *)0xdeadbeef
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadbeef] == [0xdeadbeef]
+
+expect_ptr_suite::expect_ptr_var_unequal_fail_test ................................................ fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:109
+    caller: expect_ptr_value_callee()
+    expect: ptr != ref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadc0de] == [0xdeadc0de]
+
+expect_ptr_suite::expect_ptr_literal_greater_fail_test ............................................ fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:141
+    caller: expect_ptr_value_callee()
+    expect: ptr > (void *)0xdeadbeef
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadbeef] <= [0xdeadbeef]
+
+expect_ptr_suite::expect_ptr_var_greater_fail_test ................................................ fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:152
+    caller: expect_ptr_value_callee()
+    expect: ptr > ref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadbabe] <= [0xdeadbeef]
+
+expect_ptr_suite::expect_ptr_literal_greater_equal_fail_test ...................................... fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:184
+    caller: expect_ptr_value_callee()
+    expect: ptr >= (void *)0xdeadbeef
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadbabe] < [0xdeadbeef]
+
+expect_ptr_suite::expect_ptr_var_greater_equal_fail_test .......................................... fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:195
+    caller: expect_ptr_value_callee()
+    expect: ptr >= ref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadbabe] < [0xdeadbeef]
+
+expect_ptr_suite::expect_ptr_literal_lower_fail_test .............................................. fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:227
+    caller: expect_ptr_value_callee()
+    expect: ptr < (void *)0xdeadbeef
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadc0de] >= [0xdeadbeef]
+
+expect_ptr_suite::expect_ptr_var_lower_fail_test .................................................. fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:238
+    caller: expect_ptr_value_callee()
+    expect: ptr < ref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadc0de] >= [0xdeadbeef]
+
+expect_ptr_suite::expect_ptr_literal_lower_equal_fail_test ........................................ fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:270
+    caller: expect_ptr_value_callee()
+    expect: ptr <= (void *)0xdeadbeef
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadc0de] > [0xdeadbeef]
+
+expect_ptr_suite::expect_ptr_var_lower_equal_fail_test ............................................ fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:281
+    caller: expect_ptr_value_callee()
+    expect: ptr <= ref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadc0de] > [0xdeadbeef]
+
+expect_ptr_suite::expect_ptr_literal_in_range_fail_test ........................................... fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:306
+    caller: expect_ptr_value_callee()
+    expect: ptr in range {(void *)0xdeadbeef ... (void *)0xdeadc0de}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadbabe] not in range {0xdeadbeef ... 0xdeadc0de}
+
+expect_ptr_suite::expect_ptr_var_in_range_fail_test ............................................... fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:320
+    caller: expect_ptr_value_callee()
+    expect: ptr in range {rmin ... rmax}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadbabe] not in range {0xdeadbeef ... 0xdeadc0de}
+
+expect_ptr_suite::expect_ptr_literal_not_in_range_fail_test ....................................... fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:342
+    caller: expect_ptr_value_callee()
+    expect: ptr not in range {(void *)0xdeadbeef ... (void *)0xdeadc0de}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadbeef] in range {0xdeadbeef ... 0xdeadc0de}
+
+expect_ptr_suite::expect_ptr_var_not_in_range_fail_test ........................................... fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:356
+    caller: expect_ptr_value_callee()
+    expect: ptr not in range {rmin ... rmax}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadc0de] in range {0xdeadbeef ... 0xdeadc0de}
+
+expect_ptr_suite::expect_ptr_literal_in_set_fail_test ............................................. fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:394
+    caller: expect_ptr_value_callee()
+    expect: ptr in set {(void *)0xdeadcafe, (void *)0xdeadbeef, (void *)0xdeadc0de, (void *)0xdeadbabe, (void *)0xdeadce11}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeaddddd] not in set {0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+expect_ptr_suite::expect_ptr_var_in_set_fail_test ................................................. fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:415
+    caller: expect_ptr_value_callee()
+    expect: ptr in set {(void *)0xdeadcafe, beef, code, (void *)0xdeadbabe, (void *)0xdeadce11}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeaddddd] not in set {0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+expect_ptr_suite::expect_ptr_literal_not_in_set_fail_test ......................................... fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:451
+    caller: expect_ptr_value_callee()
+    expect: ptr not in set {(void *)0xdeadcafe, (void *)0xdeadbeef, (void *)0xdeadc0de, (void *)0xdeadbabe, (void *)0xdeadce11}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadc0de] in set {0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+expect_ptr_suite::expect_ptr_var_not_in_set_fail_test ............................................. fail
+issue:  exec failed
+reason: pointer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:472
+    caller: expect_ptr_value_callee()
+    expect: ptr not in set {(void *)0xdeadcafe, beef, code, (void *)0xdeadbabe, (void *)0xdeadce11}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
+    caller: expect_ptr_value_callee()
+    actual: [0xdeadbeef] in set {0xdeadcafe, 0xdeadbeef, 0xdeadc0de, 0xdeadbabe, 0xdeadce11}
+
+expect_ptr_suite::expect_ptr_retval_caller_fail_test .............................................. fail
+issue:  exec failed
+reason: mock caller function mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:508
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:480
+    caller: expect_ptr_retval_callee()
+
+expect_ptr_suite::expect_xcess_ptr_retval_fail_test ............................................... fail
+issue:  teardown failed
+reason: extra mock expectation left
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:521
+    caller: expect_ptr_retval_callee()
+    expect: mock function return value
+found:  none
+
+expect_ptr_suite::expect_ptr_inval_retval_fail_test ............................................... fail
+issue:  exec failed
+reason: mock expectation type mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:531
+    caller: expect_ptr_retval_callee()
+    expect: mock function parameter
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:480
+    caller: expect_ptr_retval_callee()
+    found:  mock function return value
+
+expect_ptr_suite .................................................................................. fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:588
+
+NAME                                          STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+expect_ptr_suite                              fail    0.688534     11      0     25      0     36     36
+                                                                  30%     0%    69%     0%   100%
+--------------------------------------------------------------------------------------------------------
+Total                                         fail    0.688534     11      0     25      0     36     36
+                                                                  30%     0%    69%     0%   100%
+
+                                  ###           SUMMARY            ###
+                                  ###  25/36 (69%) test(s) FAILED  ###
+

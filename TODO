@@ -1,4 +1,4 @@
-* implement str/ptr/mem support
+* implement mem support
 * refine stringification of check API arguments (prevent from expanding args)
 * fork
 * cleanup cute_term_depth_[v]printf...
