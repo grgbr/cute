@@ -1,5 +1,6 @@
 #include "cons.h"
 #include "suite.h"
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 

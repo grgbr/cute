@@ -1,3 +1,5 @@
+#include "cute/cute.h"
+#include "cute/check.h"
 #include "cute/expect.h"
 
 static void

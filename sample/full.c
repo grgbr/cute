@@ -1,3 +1,4 @@
+#include <cute/cute.h>
 #include <cute/check.h>
 #include <stdlib.h>
 #include <unistd.h>

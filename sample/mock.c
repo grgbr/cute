@@ -1,3 +1,4 @@
+#include <cute/cute.h>
 #include <cute/expect.h>
 #include <stdlib.h>
 

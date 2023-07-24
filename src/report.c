@@ -1,6 +1,7 @@
 #include "cons.h"
 #include "run.h"
 #include <stdbool.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>

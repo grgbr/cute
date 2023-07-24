@@ -1,3 +1,4 @@
+#include "cute/cute.h"
 #include "cute/check.h"
 
 CUTE_TEST(simple_exec_pass_test)

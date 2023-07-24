@@ -1,3 +1,4 @@
+#include "cute/cute.h"
 #include "cute/check.h"
 
 CUTE_TEST(check_uint_equal_pass_test)

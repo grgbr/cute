@@ -1,10 +1,12 @@
 config-in   := Config.in
-config-h    := $(PACKAGE)/config.h
+config-h    := $(PACKAGE)/priv/config.h
 
 HEADERDIR   := $(CURDIR)/include
 headers     += $(PACKAGE)/cute.h
 headers     += $(PACKAGE)/check.h
 headers     += $(PACKAGE)/expect.h
+headers     += $(PACKAGE)/priv/core.h
+headers     += $(PACKAGE)/priv/types.h
 
 subdirs     := src
 

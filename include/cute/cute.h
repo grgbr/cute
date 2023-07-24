@@ -1,15 +1,104 @@
 #ifndef _CUTE_H
 #define _CUTE_H
 
+#include <cute/priv/core.h>
+#include <cute/priv/types.h>
+#include <stddef.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include <limits.h>
 
-#define __cute_export \
-	__attribute__((visibility("default")))
+#define CUTE_SINT_RANGE(_min, _max) \
+	__CUTE_RANGE(sint, _min, _max)
 
-#define __cute_noreturn \
-	__attribute__((noreturn))
+#define CUTE_SINT_SET(...) \
+	__CUTE_SET(sint, __VA_ARGS__)
+
+#define CUTE_UINT_RANGE(_min, _max) \
+	__CUTE_RANGE(uint, _min, _max)
+
+#define CUTE_UINT_SET(...) \
+	__CUTE_SET(uint, __VA_ARGS__)
+
+#define CUTE_FLT_RANGE(_min, _max) \
+	__CUTE_RANGE(flt, _min, _max)
+
+#define CUTE_FLT_SET(...) \
+	__CUTE_SET(flt, __VA_ARGS__)
+
+#define CUTE_STR_SET(...) \
+	__CUTE_SET(str, __VA_ARGS__)
+
+#define CUTE_PTR_RANGE(_min, _max) \
+	__CUTE_RANGE(ptr, _min, _max)
+
+#define CUTE_PTR_SET(...) \
+	__CUTE_SET(ptr, __VA_ARGS__)
+
+#define CUTE_NULL_SETUP    ((cute_test_fn *)0)
+#define CUTE_INHR_SETUP    ((cute_test_fn *)1)
+#define CUTE_NULL_TEARDOWN ((cute_test_fn *)0)
+#define CUTE_INHR_TEARDOWN ((cute_test_fn *)1)
+
+#define CUTE_FOREVER_TMOUT (0U)
+#define CUTE_DFLT_TMOUT    (3U)
+#define CUTE_INHR_TMOUT    (UINT_MAX)
+
+#define CUTE_TEST_DEFINE(_name, _exec, _setup, _teardown, _tmout) \
+	const struct cute_test _name = CUTE_TEST_INIT(# _name, \
+		                                      _exec, \
+		                                      _setup, \
+		                                      _teardown, \
+		                                      _tmout)
+
+#define CUTE_STATIC_TEST(_name, _setup, _teardown, _tmout) \
+	static void _name ## __cute_exec(void); \
+	static CUTE_TEST_DEFINE(_name, \
+	                        _name ## __cute_exec, \
+	                        _setup, \
+	                        _teardown, \
+	                        _tmout); \
+	static void _name ## __cute_exec(void)
+
+#define CUTE_TEST(_name) \
+	CUTE_STATIC_TEST(_name, \
+	                 CUTE_NULL_SETUP, \
+	                 CUTE_NULL_TEARDOWN, \
+	                 CUTE_DFLT_TMOUT)
+
+#define CUTE_SUITE_DEFINE(_name, _tests, _setup, _teardown, _tmout) \
+	const struct cute_suite _name = CUTE_SUITE_INIT(# _name, \
+	                                                _tests, \
+	                                                _setup, \
+	                                                _teardown, \
+	                                                _tmout)
+
+#define CUTE_SUITE_DEFINE_TESTS(_name) \
+	const struct cute_base * const _name[]
+
+
+#define CUTE_SUITE(_name, _setup, _teardown, _tmout) \
+	static const struct cute_base * const * _name ## __cute_tests; \
+	CUTE_SUITE_DEFINE(_name, \
+	                  _name ## __cute_tests, \
+	                  _setup, \
+	                  _teardown, \
+	                  _tmout); \
+	static CUTE_SUITE_DEFINE_TESTS(_name ## __cute_tests)
+
+#define CUTE_REF(_name) \
+	(&(_name).super)
+
+#define cute_skip(_reason) \
+	_cute_skip(_reason, __FILE__, __LINE__, __func__)
+
+#define cute_fail(_reason) \
+	_cute_fail(_reason, __FILE__, __LINE__, __func__)
+
+extern void
+cute_show_suite(const struct cute_suite *  suite) __cute_export;
+
+extern int
+cute_run_suite(const struct cute_suite * suite) __cute_export;
 
 enum cute_config_report {
 	CUTE_CONFIG_SILENT_REPORT = (1U << 0),
@@ -46,157 +135,6 @@ struct cute_config {
 		.tap_path = NULL, \
 		.xml_path = NULL \
 	}
-
-struct cute_base;
-struct cute_iter;
-struct cute_run;
-
-typedef struct cute_iter * (cute_iter_fn)(const struct cute_base * base);
-
-typedef struct cute_run * (cute_run_fn)(const struct cute_base * base,
-                                        struct cute_run *        parent);
-
-struct cute_ops {
-	cute_iter_fn * iter;
-	cute_run_fn *  run;
-};
-
-typedef void (cute_test_fn)(void);
-
-struct cute_base {
-	const struct cute_ops * ops;
-	cute_test_fn *          setup;
-	cute_test_fn *          teardown;
-	const char *            name;
-	unsigned int            tmout;
-	const char *            file;
-	int                     line;
-};
-
-#define CUTE_BASE_INIT(_name, _ops, _setup, _teardown, _tmout) \
-	{ \
-		.ops      = _ops, \
-		.setup    = _setup, \
-		.teardown = _teardown, \
-		.name     = _name, \
-		.tmout    = _tmout, \
-		.file     = __FILE__, \
-		.line     = __LINE__ \
-	}
-
-#define CUTE_NULL_SETUP    ((cute_test_fn *)0)
-#define CUTE_INHR_SETUP    ((cute_test_fn *)1)
-#define CUTE_NULL_TEARDOWN ((cute_test_fn *)0)
-#define CUTE_INHR_TEARDOWN ((cute_test_fn *)1)
-
-#define CUTE_FOREVER_TMOUT (0U)
-#define CUTE_DFLT_TMOUT    (3U)
-#define CUTE_INHR_TMOUT    (UINT_MAX)
-
-extern const struct cute_ops cute_test_ops __cute_export;
-
-struct cute_test {
-	struct cute_base super;
-	cute_test_fn *   exec;
-};
-
-#define CUTE_TEST_INIT(_name, _exec, _setup, _teardown, _tmout) \
-	{ \
-		.super = CUTE_BASE_INIT(_name, \
-		                        &cute_test_ops, \
-		                        _setup, \
-		                        _teardown, \
-		                        _tmout), \
-		.exec  = _exec, \
-	}
-
-#define CUTE_TEST_DEFINE(_name, _exec, _setup, _teardown, _tmout) \
-	const struct cute_test _name = CUTE_TEST_INIT(# _name, \
-		                                      _exec, \
-		                                      _setup, \
-		                                      _teardown, \
-		                                      _tmout)
-
-#define CUTE_STATIC_TEST(_name, _setup, _teardown, _tmout) \
-	static void _name ## __cute_exec(void); \
-	static CUTE_TEST_DEFINE(_name, \
-	                        _name ## __cute_exec, \
-	                        _setup, \
-	                        _teardown, \
-	                        _tmout); \
-	static void _name ## __cute_exec(void)
-
-#define CUTE_TEST(_name) \
-	CUTE_STATIC_TEST(_name, \
-	                 CUTE_NULL_SETUP, \
-	                 CUTE_NULL_TEARDOWN, \
-	                 CUTE_DFLT_TMOUT)
-
-extern void
-_cute_skip(const char * reason,
-           const char * file,
-           int          line,
-           const char * function) __cute_export;
-
-#define cute_skip(_reason) \
-	_cute_skip(_reason, __FILE__, __LINE__, __func__)
-
-extern void
-_cute_fail(const char * reason,
-           const char * file,
-           int          line,
-           const char * function) __cute_export;
-
-#define cute_fail(_reason) \
-	_cute_fail(_reason, __FILE__, __LINE__, __func__)
-
-extern const struct cute_ops cute_suite_ops __cute_export;
-
-struct cute_suite {
-	struct cute_base                 super;
-	unsigned int                     nr;
-	const struct cute_base * const * tests;
-};
-
-#define CUTE_SUITE_INIT(_name, _tests, _setup, _teardown, _tmout) \
-	{ \
-		.super = CUTE_BASE_INIT(_name, \
-		                        &cute_suite_ops, \
-		                        _setup, \
-		                        _teardown, \
-		                        _tmout), \
-		.nr    = sizeof(_tests) / sizeof((_tests)[0]), \
-		.tests = _tests \
-	}
-
-#define CUTE_SUITE_DEFINE(_name, _tests, _setup, _teardown, _tmout) \
-	const struct cute_suite _name = CUTE_SUITE_INIT(# _name, \
-	                                                _tests, \
-	                                                _setup, \
-	                                                _teardown, \
-	                                                _tmout)
-
-#define CUTE_SUITE_DEFINE_TESTS(_name) \
-	const struct cute_base * const _name[]
-
-
-#define CUTE_SUITE(_name, _setup, _teardown, _tmout) \
-	static const struct cute_base * const * _name ## __cute_tests; \
-	CUTE_SUITE_DEFINE(_name, \
-	                  _name ## __cute_tests, \
-	                  _setup, \
-	                  _teardown, \
-	                  _tmout); \
-	static CUTE_SUITE_DEFINE_TESTS(_name ## __cute_tests)
-
-#define CUTE_REF(_name) \
-	(&(_name).super)
-
-extern void
-cute_show_suite(const struct cute_suite *  suite) __cute_export;
-
-extern int
-cute_run_suite(const struct cute_suite * suite) __cute_export;
 
 extern int
 cute_init(struct cute_config * config,

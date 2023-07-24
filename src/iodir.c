@@ -1,8 +1,9 @@
 #include "iodir.h"
 #include "common.h"
-#include <poll.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <poll.h>
 #include <sys/eventfd.h>
 
 /******************************************************************************
@@ -66,7 +67,7 @@ cute_iodir_alloc_atom(void)
 {
 	struct cute_iodir_atom * atom;
 
-	atom = malloc(sizeof(*atom));
+	atom = cute_malloc(sizeof(*atom));
 	atom->next = NULL;
 	atom->busy = 0;
 
@@ -79,7 +80,7 @@ cute_iodir_free_atom(struct cute_iodir_atom * atom)
 	cute_assert_intern(atom);
 	cute_assert_intern(atom->busy <= sizeof(atom->data));
 
-	free(atom);
+	cute_free(atom);
 }
 
 bool
