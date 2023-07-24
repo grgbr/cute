@@ -143,7 +143,7 @@ CUTE_TEST(expect_mem_var_unequal_fail_test)
 	expect_mem_value_caller(chk);
 }
 
-static CUTE_SUITE_DEFINE_TESTS(expect_mem_tests) = {
+CUTE_GROUP(expect_mem_tests) = {
 	CUTE_REF(expect_mem_caller_fail_test),
 	CUTE_REF(expect_mem_parm_fail_test),
 
@@ -157,10 +157,6 @@ static CUTE_SUITE_DEFINE_TESTS(expect_mem_tests) = {
 	CUTE_REF(expect_mem_var_unequal_fail_test),
 };
 
-static CUTE_SUITE_DEFINE(expect_mem_suite,
-                         expect_mem_tests,
-                         CUTE_NULL_SETUP,
-                         CUTE_NULL_TEARDOWN,
-                         CUTE_FOREVER_TMOUT);
+CUTE_SUITE(expect_mem_suite, expect_mem_tests);
 
 CUTE_MAIN(expect_mem_suite, "CUTe", NULL)

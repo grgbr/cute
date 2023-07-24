@@ -26,16 +26,12 @@ CUTE_TEST(simple_exec_error_fpe_test)
 
 #pragma GCC diagnostic pop
 
-static CUTE_SUITE_DEFINE_TESTS(simple_exec_error_tests) = {
+CUTE_GROUP(simple_exec_error_tests) = {
 	CUTE_REF(simple_exec_error_segv_test),
 	CUTE_REF(simple_exec_error_ill_test),
 	CUTE_REF(simple_exec_error_fpe_test)
 };
 
-static CUTE_SUITE_DEFINE(simple_exec_error_suite,
-                         simple_exec_error_tests,
-                         CUTE_NULL_SETUP,
-                         CUTE_NULL_TEARDOWN,
-                         CUTE_FOREVER_TMOUT);
+CUTE_SUITE(simple_exec_error_suite, simple_exec_error_tests);
 
 CUTE_MAIN(simple_exec_error_suite, "CUTe", NULL)

@@ -87,7 +87,7 @@ CUTE_TEST(check_mem_var_unequal_fail_test)
 	               sizeof(check_mem_uint));
 }
 
-static CUTE_SUITE_DEFINE_TESTS(check_mem_tests) = {
+CUTE_GROUP(check_mem_tests) = {
 	CUTE_REF(check_mem_equal_pass_test),
 	CUTE_REF(check_mem_null_equal_fail_test),
 	CUTE_REF(check_mem_literal_equal_fail_test),
@@ -98,10 +98,6 @@ static CUTE_SUITE_DEFINE_TESTS(check_mem_tests) = {
 	CUTE_REF(check_mem_var_unequal_fail_test),
 };
 
-static CUTE_SUITE_DEFINE(check_mem_suite,
-                         check_mem_tests,
-                         CUTE_NULL_SETUP,
-                         CUTE_NULL_TEARDOWN,
-                         CUTE_FOREVER_TMOUT);
+CUTE_SUITE(check_mem_suite, check_mem_tests);
 
 CUTE_MAIN(check_mem_suite, "CUTe", NULL)

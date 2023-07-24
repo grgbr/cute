@@ -569,7 +569,7 @@ CUTE_TEST(expect_uint_inval_retval_fail_test)
 	expect_uint_retval_caller(res, sizeof(res) / sizeof(res[0]));
 }
 
-static CUTE_SUITE_DEFINE_TESTS(expect_uint_tests) = {
+CUTE_GROUP(expect_uint_tests) = {
 	CUTE_REF(expect_uint_caller_fail_test),
 	CUTE_REF(expect_uint_parm_fail_test),
 
@@ -619,10 +619,6 @@ static CUTE_SUITE_DEFINE_TESTS(expect_uint_tests) = {
 	CUTE_REF(expect_uint_inval_retval_fail_test)
 };
 
-static CUTE_SUITE_DEFINE(expect_uint_suite,
-                         expect_uint_tests,
-                         CUTE_NULL_SETUP,
-                         CUTE_NULL_TEARDOWN,
-                         CUTE_FOREVER_TMOUT);
+CUTE_SUITE(expect_uint_suite, expect_uint_tests);
 
 CUTE_MAIN(expect_uint_suite, "CUTe", NULL)

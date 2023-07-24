@@ -80,7 +80,7 @@ CUTE_TEST(mock_inval_parm_fail_test)
 	caller(mocked_callee);
 }
 
-static CUTE_SUITE_DEFINE_TESTS(mock_suite_tests) = {
+CUTE_GROUP(mock_suite_tests) = {
 	CUTE_REF(mock_call_pass_test),
 	CUTE_REF(mock_call_inval_fail_test),
 	CUTE_REF(mock_call_xcess_fail_test),
@@ -91,10 +91,10 @@ static CUTE_SUITE_DEFINE_TESTS(mock_suite_tests) = {
 	CUTE_REF(mock_inval_parm_fail_test)
 };
 
-static CUTE_SUITE_DEFINE(mock_suite,
-                         mock_suite_tests,
-                         CUTE_NULL_SETUP,
-                         CUTE_NULL_TEARDOWN,
-                         CUTE_FOREVER_TMOUT);
+static CUTE_SUITE_DEFN(mock_suite,
+                       mock_suite_tests,
+                       CUTE_NULL_SETUP,
+                       CUTE_NULL_TEARDOWN,
+                       CUTE_FOREVER_TMOUT);
 
 CUTE_MAIN(mock_suite, "CUTe mocking sample", CUTE_VERSION_STRING)

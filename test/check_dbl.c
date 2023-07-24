@@ -530,7 +530,7 @@ CUTE_TEST(check_dbl_var_not_in_set_ref_fail_test)
 	cute_check_flt_set(chk, not_in, set);
 }
 
-static CUTE_SUITE_DEFINE_TESTS(check_dbl_tests) = {
+CUTE_GROUP(check_dbl_tests) = {
 	CUTE_REF(check_dbl_equal_pass_test),
 	CUTE_REF(check_dbl_literal_equal_nan_fail_test),
 	CUTE_REF(check_dbl_literal_equal_inf_fail_test),
@@ -594,10 +594,6 @@ static CUTE_SUITE_DEFINE_TESTS(check_dbl_tests) = {
 	CUTE_REF(check_dbl_var_not_in_set_ref_fail_test)
 };
 
-static CUTE_SUITE_DEFINE(check_dbl_suite,
-                         check_dbl_tests,
-                         CUTE_NULL_SETUP,
-                         CUTE_NULL_TEARDOWN,
-                         CUTE_FOREVER_TMOUT);
+CUTE_SUITE(check_dbl_suite, check_dbl_tests);
 
 CUTE_MAIN(check_dbl_suite, "CUTe", NULL)

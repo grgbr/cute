@@ -429,7 +429,7 @@ CUTE_TEST(check_uint_var_not_in_set_ref_fail_test)
 	cute_check_uint_set(chk, not_in, set);
 }
 
-static CUTE_SUITE_DEFINE_TESTS(check_uint_tests) = {
+CUTE_GROUP(check_uint_tests) = {
 	CUTE_REF(check_uint_equal_pass_test),
 	CUTE_REF(check_uint_literal_equal_fail_test),
 	CUTE_REF(check_uint_var_equal_fail_test),
@@ -491,10 +491,6 @@ static CUTE_SUITE_DEFINE_TESTS(check_uint_tests) = {
 	CUTE_REF(check_uint_var_not_in_set_ref_fail_test)
 };
 
-static CUTE_SUITE_DEFINE(check_uint_suite,
-                         check_uint_tests,
-                         CUTE_NULL_SETUP,
-                         CUTE_NULL_TEARDOWN,
-                         CUTE_FOREVER_TMOUT);
+CUTE_SUITE(check_uint_suite, check_uint_tests);
 
 CUTE_MAIN(check_uint_suite, "CUTe", NULL)

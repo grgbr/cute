@@ -76,7 +76,7 @@ CUTE_TEST(simple_iodir_multi_line_fail_test)
 	cute_fail("empty line stdio collection test");
 }
 
-static CUTE_SUITE_DEFINE_TESTS(simple_iodir_tests) = {
+CUTE_GROUP(simple_iodir_tests) = {
 	CUTE_REF(simple_iodir_stdout_pass_test),
 	CUTE_REF(simple_iodir_stdout_fail_test),
 	CUTE_REF(simple_iodir_stderr_pass_test),
@@ -91,10 +91,6 @@ static CUTE_SUITE_DEFINE_TESTS(simple_iodir_tests) = {
 	CUTE_REF(simple_iodir_multi_line_fail_test)
 };
 
-static CUTE_SUITE_DEFINE(simple_iodir_suite,
-                         simple_iodir_tests,
-                         CUTE_NULL_SETUP,
-                         CUTE_NULL_TEARDOWN,
-                         CUTE_FOREVER_TMOUT);
+CUTE_SUITE(simple_iodir_suite, simple_iodir_tests);
 
 CUTE_MAIN(simple_iodir_suite, "CUTe", NULL)

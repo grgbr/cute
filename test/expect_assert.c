@@ -53,7 +53,7 @@ CUTE_TEST(expect_assert_catch1_pass_test)
 	cute_expect_assertion(expect_assert_raise(1));
 }
 
-static CUTE_SUITE_DEFINE_TESTS(expect_assert_tests) = {
+CUTE_GROUP(expect_assert_tests) = {
 	CUTE_REF(expect_assert_none_pass_test),
 	CUTE_REF(expect_assert_none_fail_test),
 	CUTE_REF(expect_assert_catch0_fail_test),
@@ -62,10 +62,6 @@ static CUTE_SUITE_DEFINE_TESTS(expect_assert_tests) = {
 	CUTE_REF(expect_assert_catch1_pass_test)
 };
 
-static CUTE_SUITE_DEFINE(expect_assert_suite,
-                         expect_assert_tests,
-                         CUTE_NULL_SETUP,
-                         CUTE_NULL_TEARDOWN,
-                         CUTE_FOREVER_TMOUT);
+CUTE_SUITE(expect_assert_suite, expect_assert_tests);
 
 CUTE_MAIN(expect_assert_suite, "CUTe", NULL)

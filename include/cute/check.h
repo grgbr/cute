@@ -1,8 +1,8 @@
 #ifndef _CUTE_CHECK_H
 #define _CUTE_CHECK_H
 
+#include <cute/types.h>
 #include <cute/priv/core.h>
-#include <cute/priv/types.h>
 #include <stdbool.h>
 
 /******************************************************************************

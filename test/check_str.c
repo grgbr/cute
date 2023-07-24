@@ -468,7 +468,7 @@ CUTE_TEST(check_str_var_not_in_set_ref_fail_test)
 	cute_check_str_set(lorem, not_in, set);
 }
 
-static CUTE_SUITE_DEFINE_TESTS(check_str_tests) = {
+CUTE_GROUP(check_str_tests) = {
 	CUTE_REF(check_str_equal_pass_test),
 	CUTE_REF(check_str_null_equal_fail_test),
 	CUTE_REF(check_str_literal_equal_fail_test),
@@ -540,10 +540,6 @@ static CUTE_SUITE_DEFINE_TESTS(check_str_tests) = {
 	CUTE_REF(check_str_var_not_in_set_ref_fail_test)
 };
 
-static CUTE_SUITE_DEFINE(check_str_suite,
-                         check_str_tests,
-                         CUTE_NULL_SETUP,
-                         CUTE_NULL_TEARDOWN,
-                         CUTE_FOREVER_TMOUT);
+CUTE_SUITE(check_str_suite, check_str_tests);
 
 CUTE_MAIN(check_str_suite, "CUTe", NULL)

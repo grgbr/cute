@@ -3,6 +3,7 @@ config-h    := $(PACKAGE)/priv/config.h
 
 HEADERDIR   := $(CURDIR)/include
 headers     += $(PACKAGE)/cute.h
+headers     += $(PACKAGE)/types.h
 headers     += $(PACKAGE)/check.h
 headers     += $(PACKAGE)/expect.h
 headers     += $(PACKAGE)/priv/core.h

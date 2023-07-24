@@ -2,37 +2,23 @@
 #define _CUTE_H
 
 #include <cute/priv/core.h>
-#include <cute/priv/types.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include <limits.h>
 
-#define CUTE_SINT_RANGE(_min, _max) \
-	__CUTE_RANGE(sint, _min, _max)
+/******************************************************************************
+ * Test case implementation primitives
+ ******************************************************************************/
 
-#define CUTE_SINT_SET(...) \
-	__CUTE_SET(sint, __VA_ARGS__)
+#define cute_skip(_reason) \
+	_cute_skip(_reason, __FILE__, __LINE__, __func__)
 
-#define CUTE_UINT_RANGE(_min, _max) \
-	__CUTE_RANGE(uint, _min, _max)
+#define cute_fail(_reason) \
+	_cute_fail(_reason, __FILE__, __LINE__, __func__)
 
-#define CUTE_UINT_SET(...) \
-	__CUTE_SET(uint, __VA_ARGS__)
-
-#define CUTE_FLT_RANGE(_min, _max) \
-	__CUTE_RANGE(flt, _min, _max)
-
-#define CUTE_FLT_SET(...) \
-	__CUTE_SET(flt, __VA_ARGS__)
-
-#define CUTE_STR_SET(...) \
-	__CUTE_SET(str, __VA_ARGS__)
-
-#define CUTE_PTR_RANGE(_min, _max) \
-	__CUTE_RANGE(ptr, _min, _max)
-
-#define CUTE_PTR_SET(...) \
-	__CUTE_SET(ptr, __VA_ARGS__)
+/******************************************************************************
+ * Common definitions
+ ******************************************************************************/
 
 #define CUTE_NULL_SETUP    ((cute_test_fn *)0)
 #define CUTE_INHR_SETUP    ((cute_test_fn *)1)
@@ -43,62 +29,110 @@
 #define CUTE_DFLT_TMOUT    (3U)
 #define CUTE_INHR_TMOUT    (UINT_MAX)
 
-#define CUTE_TEST_DEFINE(_name, _exec, _setup, _teardown, _tmout) \
+/******************************************************************************
+ * Test case definitions
+ ******************************************************************************/
+
+#define CUTE_TEST_DECL(_name) \
+	const struct cute_test _name
+
+#define CUTE_TEST_DEFN(_name, _exec, _setup, _teardown, _tmout) \
 	const struct cute_test _name = CUTE_TEST_INIT(# _name, \
 		                                      _exec, \
 		                                      _setup, \
 		                                      _teardown, \
 		                                      _tmout)
 
-#define CUTE_STATIC_TEST(_name, _setup, _teardown, _tmout) \
+#define CUTE_TEST_STATIC(_name, _setup, _teardown, _tmout) \
 	static void _name ## __cute_exec(void); \
-	static CUTE_TEST_DEFINE(_name, \
-	                        _name ## __cute_exec, \
-	                        _setup, \
-	                        _teardown, \
-	                        _tmout); \
+	static CUTE_TEST_DEFN(_name, \
+	                      _name ## __cute_exec, \
+	                      _setup, \
+	                      _teardown, \
+	                      _tmout); \
+	static void _name ## __cute_exec(void)
+
+#define CUTE_TEST_EXTERN(_name, _setup, _teardown, _tmout) \
+	static void _name ## __cute_exec(void); \
+	CUTE_TEST_DEFN(_name, \
+	               _name ## __cute_exec, \
+	               _setup, \
+	               _teardown, \
+	               _tmout); \
 	static void _name ## __cute_exec(void)
 
 #define CUTE_TEST(_name) \
-	CUTE_STATIC_TEST(_name, \
-	                 CUTE_NULL_SETUP, \
-	                 CUTE_NULL_TEARDOWN, \
-	                 CUTE_DFLT_TMOUT)
+	CUTE_TEST_STATIC(_name, \
+	                 CUTE_INHR_SETUP, \
+	                 CUTE_INHR_TEARDOWN, \
+	                 CUTE_INHR_TMOUT)
 
-#define CUTE_SUITE_DEFINE(_name, _tests, _setup, _teardown, _tmout) \
+/******************************************************************************
+ * Test group definitions
+ ******************************************************************************/
+
+#define CUTE_REF(_name) \
+	(&(_name).super)
+
+#define CUTE_GROUP_DECL(_name) \
+	const struct cute_base * const * const _name
+
+#define CUTE_GROUP_DEFN(_name) \
+	const struct cute_base * const _name[]
+
+#define CUTE_GROUP_STATIC(_name) \
+	static CUTE_GROUP_DEFN(_name)
+
+#define CUTE_GROUP_EXTERN(_name) \
+	CUTE_GROUP_DEFN(_name)
+
+#define CUTE_GROUP(_name) \
+	CUTE_GROUP_STATIC(_name)
+
+/******************************************************************************
+ * Test suite definitions
+ ******************************************************************************/
+
+#define CUTE_SUITE_DECL(_name) \
+	const struct cute_suite _name
+
+#define CUTE_SUITE_DEFN(_name, _tests, _setup, _teardown, _tmout) \
 	const struct cute_suite _name = CUTE_SUITE_INIT(# _name, \
 	                                                _tests, \
 	                                                _setup, \
 	                                                _teardown, \
 	                                                _tmout)
 
-#define CUTE_SUITE_DEFINE_TESTS(_name) \
-	const struct cute_base * const _name[]
+#define CUTE_SUITE_STATIC(_name, _group, _setup, _teardown, _tmout) \
+	static CUTE_SUITE_DEFN(_name, \
+	                       _group, \
+	                       _setup, \
+	                       _teardown, \
+	                       _tmout)
 
+#define CUTE_SUITE_EXTERN(_name, _setup, _teardown, _tmout) \
+	CUTE_SUITE_DEFN(_name, \
+	                _group, \
+	                _setup, \
+	                _teardown, \
+	                _tmout)
 
-#define CUTE_SUITE(_name, _setup, _teardown, _tmout) \
-	static const struct cute_base * const * _name ## __cute_tests; \
-	CUTE_SUITE_DEFINE(_name, \
-	                  _name ## __cute_tests, \
-	                  _setup, \
-	                  _teardown, \
-	                  _tmout); \
-	static CUTE_SUITE_DEFINE_TESTS(_name ## __cute_tests)
-
-#define CUTE_REF(_name) \
-	(&(_name).super)
-
-#define cute_skip(_reason) \
-	_cute_skip(_reason, __FILE__, __LINE__, __func__)
-
-#define cute_fail(_reason) \
-	_cute_fail(_reason, __FILE__, __LINE__, __func__)
+#define CUTE_SUITE(_name, _group) \
+	CUTE_SUITE_STATIC(_name, \
+	                  _group, \
+	                  CUTE_INHR_SETUP, \
+	                  CUTE_INHR_TEARDOWN, \
+	                  CUTE_INHR_TMOUT)
 
 extern void
 cute_show_suite(const struct cute_suite *  suite) __cute_export;
 
 extern int
 cute_run_suite(const struct cute_suite * suite) __cute_export;
+
+/******************************************************************************
+ * Top-level definitions
+ ******************************************************************************/
 
 enum cute_config_report {
 	CUTE_CONFIG_SILENT_REPORT = (1U << 0),

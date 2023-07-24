@@ -1,4 +1,5 @@
 * documentation !!
+* devise API to run a single test
 * hexdecimal checking / expectations support
 * stack trace upon failures and errors / crashes
 * hexdump upon memory content failures
