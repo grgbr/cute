@@ -1,4 +1,5 @@
 * documentation !!
+* hexdecimal checking / expectations support
 * stack trace upon failures and errors / crashes
 * hexdump upon memory content failures
 * test complex hierarchy setup/teardown
