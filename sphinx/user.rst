@@ -1,1168 +1,306 @@
-.. _tdd: https://en.wikipedia.org/wiki/Test-driven_development
-.. _bdd: https://en.wikipedia.org/wiki/Behavior-driven_development
+.. include:: _cdefs.rst
+
+.. _tdd:          https://en.wikipedia.org/wiki/Test-driven_development
+.. _bdd:          https://en.wikipedia.org/wiki/Behavior-driven_development
+.. _regtest:      https://en.wikipedia.org/wiki/Regression_testing
+.. _fixture:      https://en.wikipedia.org/wiki/Test_fixture
+.. _mock:         https://en.wikipedia.org/wiki/Mock_object
+.. _tap:          https://testanything.org/
+.. _junit:        https://en.wikipedia.org/wiki/JUnit
+.. _glibc:        https://www.gnu.org/software/libc/
+.. |longjmp(3)|   replace:: :manpage:`longjmp(3)`
+.. |fork(2)|      replace:: :manpage:`fork(2)`
+.. |signal(7)|    replace:: :manpage:`signal(7)`
+.. |fixture|      replace:: :ref:`fixture <sect-user-writing_tests-fixture_operations>`
+.. |timer|        replace:: :ref:`timer <sect-user-writing_tests-test_timeout>`
 
 Overview
 ========
 
-CUTe is a lightweight unit testing and mocking framework for C.
+|CUTe| is a lightweight unit testing and mocking framework for C.
 
 Unit testing is a software development practice where small units of code are
 tested for proper operation. The technique is carried out as part of software
 development process testing activities.
-`Test-Driven Development (TDD) <tdd_>` and
-`Behavior-Driven Development (BDD) <bdd_>` are well known examples of such
+`Test-Driven Development (TDD) <tdd_>`_ and
+`Behavior-Driven Development (BDD) <bdd_>`_ are well known examples of such
 development processes making heavy usage of unit testing.
 
-CUTe is meant to ease the process of writing unit tests which are suitable
-candidates to test automation and non-regression testing. It is designed with
-the following goals in mind:
+|CUTe| is meant to ease the process of writing unit tests and make them suitable
+for test automation and `regression testing <regtest_>`_ activities. It is
+designed with the following goals in mind:
 
-* GNU / Linux userspace C unit testing only,
-* minimal dependencies (GLibc library only),
-* readable C API with expressive constraints for many types of data
-* composable test suite hierarchy with fixtures support
-* longjmp() based test failure recovery (no fork() based isolation),
-* strict mocking support
-* extensive output
-* XML / TAP report
-* ease of debug
+.. rubric:: Features
 
-What follows here provides a thorough description of how to use CUTe:
+* test failure recovery
+* extensive reporting
+* flexible and modular test suite hierarchies
+* `test fixtures <fixture_>`_
+* strict function `mocking <mock_>`_
+* `JUnit <junit_>`_ XML reporting
+* `Test Anything Protocol <tap_>`_ reporting
+* ease debugging of test failures
+* clear and expressive C API
+* C library dependency only
 
-* `Common definitions`_,
-* Assertions_,
-* `Bit operations`_,
-* `Bitmaps`_,
-* `Length-value strings`_.
+.. rubric:: Limitations
 
-.. index:: build configuration, configuration macros
-   
-Build configuration
-===================
+* GNU / Linux / `Glibc <glibc_>`_ userspace C unit testing only
+* |longjmp(3)| based test failure recovery only
+* no |fork(2)| based test isolation
+* no parameterizable test support
+* custom check assertion not supported
 
-At :ref:`Build configuration time <workflow-configure-phase>`, multiple build
-options are available to customize final Stroll build. From client code, you may
-eventually refer to the corresponding C macros listed below:
-
-* :c:macro:`CONFIG_STROLL_ASSERT`
-* :c:macro:`CONFIG_STROLL_ASSERT_API`
-* :c:macro:`CONFIG_STROLL_ASSERT_INTERN`
-* :c:macro:`CONFIG_STROLL_UTEST`
-* :c:macro:`CONFIG_STROLL_VALGRIND`
-* :c:macro:`CONFIG_STROLL_BOPS`
-* :c:macro:`CONFIG_STROLL_BMAP`
-* :c:macro:`CONFIG_STROLL_LVSTR`
-
-.. index:: common definitions, cdefs
-
-Common definitions
-==================
-
-Stroll library exposes various C preprocessor macros used to implement Stroll
-internals and meant for application development purposes. These are:
-
-.. hlist::
-
-   * Compile time logic :
-
-      * :c:macro:`STROLL_CONCAT`
-      * :c:macro:`STROLL_CONST_ABS`
-      * :c:macro:`STROLL_CONST_MAX`
-      * :c:macro:`STROLL_CONST_MIN`
-      * :c:macro:`STROLL_STRING`
-      * :c:macro:`STROLL_UNIQ`
-      * :c:macro:`compile_assert`
-      * :c:macro:`compile_choose`
-      * :c:macro:`compile_eval`
-
-   * Various
-
-      * :c:macro:`array_nr`
-      * :c:macro:`stroll_abs`
-      * :c:macro:`stroll_min`
-      * :c:macro:`stroll_max`
-
-   * Attribute wrappers :
-
-      * :c:macro:`__align`
-      * :c:macro:`__const`
-      * :c:macro:`__ctor`
-      * :c:macro:`__dtor`
-      * :c:macro:`__export_public`
-      * :c:macro:`__export_protect`
-      * :c:macro:`__leaf`
-      * :c:macro:`__nonull`
-      * :c:macro:`__noreturn`
-      * :c:macro:`__nothrow`
-      * :c:macro:`__packed`
-      * :c:macro:`__printf`
-      * :c:macro:`__pure`
-      * :c:macro:`__returns_nonull`
-      * :c:macro:`__unused`
-      * :c:macro:`__warn_result`
-
-.. index:: assertions
-
-Assertions
-==========
-
-When compiled with the :c:macro:`CONFIG_STROLL_ASSERT` build configuration
-option enabled, the Stroll library exposes the :c:macro:`stroll_assert` macro so
-that developper may perform standard assertion checking.
-
-.. index:: bit operations, bitops
-
-Bit operations
+Basic concepts
 ==============
 
-When compiled with the :c:macro:`CONFIG_STROLL_BOPS` build configuration
-option enabled, the Stroll library provides support for bit manipulation
-operations. These are:
+|CUTe| is a framework allowing to write, manage and run unit tests in C. It's
+:ref:`API <sect-api-overview>` provides a set functions to :
 
-.. hlist::
+* build test case / suite hierarchies ;
+* check strongly typed data against specified constraints ;
+* schecule and verify mock expectations against specified constraints ;
+* run test cases and suites according to specified configurations ;
+* report test results onto the console and / or,
+* into files according to various specified formats.
+
+|CUTe| is built as a static and / or shared library which must be linked with
+the user's testing code.
 
-   * Find First bit Set:
+Tests are organized in a hierarchical manner as shown in the example diagram
+below :
 
-      * :c:func:`stroll_bops_ffs`
-      * :c:func:`stroll_bops32_ffs`
-      * :c:func:`stroll_bops64_ffs`
+.. graphviz::
+   :align: center
 
-   * Find Last bit Set:
+   digraph {
+        node [shape=box3d margin="0.15"]
+        root [label=<root<BR/><FONT COLOR="gray40"><I>&laquo;suite&raquo;</I></FONT>>]
+        s0   [label=<suite 0<BR/><FONT COLOR="gray40"><I>&laquo;suite&raquo;</I></FONT>>]
+        s1   [label=<suite 1<BR/><FONT COLOR="gray40"><I>&laquo;suite&raquo;</I></FONT>>]
 
-      * :c:func:`stroll_bops_fls`
-      * :c:func:`stroll_bops32_fls`
-      * :c:func:`stroll_bops64_fls`
-
-   * Find First bit Cleared:
+        node [shape=box margin="0.15"]
+        t0   [label=<test 0<BR/><FONT COLOR="gray40"><I>&laquo;test&raquo;</I></FONT>>]
+        t00  [label=<test 00<BR/><FONT COLOR="gray40"><I>&laquo;test&raquo;</I></FONT>>]
+        t01  [label=<test 01<BR/><FONT COLOR="gray40"><I>&laquo;test&raquo;</I></FONT>>]
+        t10  [label=<test 10<BR/><FONT COLOR="gray40"><I>&laquo;test&raquo;</I></FONT>>]
 
-      * :c:func:`stroll_bops_ffc`
-      * :c:func:`stroll_bops32_ffc`
-      * :c:func:`stroll_bops64_ffc`
+        root -> s0
+        root -> t0
+        root -> s1
+        s0 -> t00
+        s0 -> t01
+        s1 -> t10
+   }
 
-   * Find number of set bits (:index:`Hammimg weight`):
-
-      * :c:func:`stroll_bops_hweight`
-      * :c:func:`stroll_bops32_hweight`
-      * :c:func:`stroll_bops64_hweight`
-
-.. index:: bitmaps, bmap
-
-Bitmaps
-=======
-
-When compiled with the :c:macro:`CONFIG_STROLL_BMAP` build configuration
-option enabled, the Stroll library provides support for bitmap operations.
-These are:
-
-.. hlist::
-
-   * Initialization:
-
-      * :c:macro:`STROLL_BMAP_INIT_CLEAR`
-      * :c:macro:`STROLL_BMAP_INIT_SET`
-      * :c:macro:`STROLL_BMAP32_INIT_CLEAR`
-      * :c:macro:`STROLL_BMAP32_INIT_SET`
-      * :c:macro:`STROLL_BMAP64_INIT_CLEAR`
-      * :c:macro:`STROLL_BMAP64_INIT_SET`
-      * :c:func:`stroll_bmap_setup_clear`
-      * :c:func:`stroll_bmap32_setup_clear`
-      * :c:func:`stroll_bmap64_setup_clear`
-      * :c:func:`stroll_bmap_setup_set`
-      * :c:func:`stroll_bmap32_setup_set`
-      * :c:func:`stroll_bmap64_setup_set`
-
-   * Iteration:
-
-      * :c:macro:`stroll_bmap_foreach_clear`
-      * :c:macro:`stroll_bmap32_foreach_clear`
-      * :c:macro:`stroll_bmap64_foreach_clear`
-      * :c:macro:`stroll_bmap_foreach_set`
-      * :c:macro:`stroll_bmap32_foreach_set`
-      * :c:macro:`stroll_bmap64_foreach_set`
-
-   * Compute masks:
-
-      * :c:func:`stroll_bmap_mask`
-      * :c:func:`stroll_bmap32_mask`
-      * :c:func:`stroll_bmap64_mask`
-
-   * Compute number of bits set (:index:`Hammimg weight`):
-
-      * :c:func:`stroll_bmap_hweight`
-      * :c:func:`stroll_bmap32_hweight`
-      * :c:func:`stroll_bmap64_hweight`
-
-   * Perform bitwise AND operation:
-
-      * :c:func:`stroll_bmap_and`
-      * :c:func:`stroll_bmap_and_range`
-      * :c:func:`stroll_bmap32_and`
-      * :c:func:`stroll_bmap32_and_range`
-      * :c:func:`stroll_bmap64_and`
-      * :c:func:`stroll_bmap64_and_range`
-
-   * Perform bitwise OR operation:
-
-      * :c:func:`stroll_bmap_or`
-      * :c:func:`stroll_bmap_or_range`
-      * :c:func:`stroll_bmap32_or`
-      * :c:func:`stroll_bmap32_or_range`
-      * :c:func:`stroll_bmap64_or`
-      * :c:func:`stroll_bmap64_or_range`
-
-   * Perform bitwise XOR operation:
-
-      * :c:func:`stroll_bmap_xor`
-      * :c:func:`stroll_bmap_xor_range`
-      * :c:func:`stroll_bmap32_xor`
-      * :c:func:`stroll_bmap32_xor_range`
-      * :c:func:`stroll_bmap64_xor`
-      * :c:func:`stroll_bmap64_xor_range`
-
-   * Test set bit(s):
-
-      * :c:func:`stroll_bmap_test`
-      * :c:func:`stroll_bmap_test_all`
-      * :c:func:`stroll_bmap_test_mask`
-      * :c:func:`stroll_bmap_test_range`
-      * :c:func:`stroll_bmap32_test`
-      * :c:func:`stroll_bmap32_test_all`
-      * :c:func:`stroll_bmap32_test_mask`
-      * :c:func:`stroll_bmap32_test_range`
-      * :c:func:`stroll_bmap64_test`
-      * :c:func:`stroll_bmap64_test_all`
-      * :c:func:`stroll_bmap64_test_mask`
-      * :c:func:`stroll_bmap64_test_range`
-
-   * Set bit(s):
-
-      * :c:func:`stroll_bmap_set`
-      * :c:func:`stroll_bmap_set_mask`
-      * :c:func:`stroll_bmap_set_range`
-      * :c:func:`stroll_bmap_set_all`
-      * :c:func:`stroll_bmap32_set`
-      * :c:func:`stroll_bmap32_set_mask`
-      * :c:func:`stroll_bmap32_set_range`
-      * :c:func:`stroll_bmap32_set_all`
-      * :c:func:`stroll_bmap64_set`
-      * :c:func:`stroll_bmap64_set_mask`
-      * :c:func:`stroll_bmap64_set_range`
-      * :c:func:`stroll_bmap64_set_all`
-
-   * Clear bit(s):
-
-      * :c:func:`stroll_bmap_clear`
-      * :c:func:`stroll_bmap_clear_mask`
-      * :c:func:`stroll_bmap_clear_range`
-      * :c:func:`stroll_bmap_clear_all`
-      * :c:func:`stroll_bmap32_clear`
-      * :c:func:`stroll_bmap32_clear_mask`
-      * :c:func:`stroll_bmap32_clear_range`
-      * :c:func:`stroll_bmap32_clear_all`
-      * :c:func:`stroll_bmap64_clear`
-      * :c:func:`stroll_bmap64_clear_mask`
-      * :c:func:`stroll_bmap64_clear_range`
-      * :c:func:`stroll_bmap64_clear_all`
-
-   * Toggle bit(s):
-
-      * :c:func:`stroll_bmap_toggle`
-      * :c:func:`stroll_bmap_toggle_mask`
-      * :c:func:`stroll_bmap_toggle_range`
-      * :c:func:`stroll_bmap_toggle_all`
-      * :c:func:`stroll_bmap32_toggle`
-      * :c:func:`stroll_bmap32_toggle_mask`
-      * :c:func:`stroll_bmap32_toggle_range`
-      * :c:func:`stroll_bmap32_toggle_all`
-      * :c:func:`stroll_bmap64_toggle`
-      * :c:func:`stroll_bmap64_toggle_mask`
-      * :c:func:`stroll_bmap64_toggle_range`
-      * :c:func:`stroll_bmap64_toggle_all`
 
-.. _sect-api-lvstr:
+A test (case) implements the logic validating a single unit of code to check for
+proper operation.
 
-.. index:: length-value string, lvstr
+A suite is a collection of suites and / or test cases. All suites may
+arbitrarily be selected for :ref:`running <sect-user-running_tests>`.
 
-Length-Value Strings
-====================
+Finally, a particular run may be setup to :ref:`report <sect-user-test_reports>`
+test results according to a specified configuration.
 
-When compiled with the :c:macro:`CONFIG_STROLL_LVSTR` build configuration option
-enabled, the Stroll library provides support for :c:struct:`stroll_lvstr`
-length-value strings.
+Typical Workflow
+================
 
-This framework ease the management of C strings life-cycle. In addition,
-it caches the length of string registered into it to mitigate client code string
-length computation overhead.
+As a **developper**, implementing tests involves the following sequence of
+steps:
 
-The following manipulations are available:
+* preparatory phase:
 
-.. hlist::
+  #. :ref:`write <sect-user-writing_tests-test_definition>` a dummy failing
+     test,
+  #. setup a primary test hierarchy including a single root suite and the test
+     just created
+  #. build and run to check for proper operation
+  #. modify the test written initially to implement the first real test case
 
-   * Static initialization:
+* iterative test implementation:
 
-      * :c:macro:`STROLL_LVSTR_INIT`
-      * :c:macro:`STROLL_LVSTR_INIT_LEND`
-      * :c:macro:`STROLL_LVSTR_INIT_NLEND`
-      * :c:macro:`STROLL_LVSTR_INIT_NCEDE`
+  #. build and run
+  #. fix test failures
+  #. implement additional test cases
+  #. when required, refine test hierarchy by defining test suites
 
-   * Initialization:
+As an **integrator**, you may be required to tweak test suites :ref:`run
+<sect-user-running_tests>` configuration for proper integration within test
+regression / automation infrastructure.
 
-      * :c:func:`stroll_lvstr_init`
-      * :c:func:`stroll_lvstr_init_cede`
-      * :c:func:`stroll_lvstr_init_dup`
-      * :c:func:`stroll_lvstr_init_lend`
-      * :c:func:`stroll_lvstr_init_ncede`
-      * :c:func:`stroll_lvstr_init_ndup`
-      * :c:func:`stroll_lvstr_init_nlend`
+Writing tests
+=============
 
-   * C string registration:
+.. _sect-user-writing_tests-test_definition:
 
-      * :c:func:`stroll_lvstr_cede`
-      * :c:func:`stroll_lvstr_drop`
-      * :c:func:`stroll_lvstr_dup`
-      * :c:func:`stroll_lvstr_lend`
-      * :c:func:`stroll_lvstr_ncede`
-      * :c:func:`stroll_lvstr_ndup`
-      * :c:func:`stroll_lvstr_nlend`
+Test definition
+---------------
 
-   * Accessors:
+To **define a test**, one is expected to:
 
-      * :c:macro:`STROLL_LVSTR_LEN_MAX`
-      * :c:func:`stroll_lvstr_cstr`
-      * :c:func:`stroll_lvstr_len`
+* give the test a name,
+* provide a function / block of instructions that defines the testing logic,
+* optionally specify test |fixture| function(s) and / or |timer|.
 
-   * Finalization:
+At running time, the test function is executed with the following
+**assumptions** :
 
-      * :c:func:`stroll_lvstr_fini`
+* the ``setup()`` |fixture| function (if any) has completed,
+* a |timer| has been armed to protect against situations where testing
+  logic hangs,
+* ``SIGFPE``, ``SIGILL``, ``SIGSEGV``, ``SIGBUS`` and ``SIGSYS`` |signal(7)|
+  dispositions have been setup to catch potential testing logic exceptions /
+  traps / crashes,
+* the ``teardown()`` |fixture| function (if any) is always executed after test
+  function has completed.
+* the test function does not alter |CUTe|'s internal state consistency.
 
-.. index:: API reference, reference
-   
-Reference
-=========
+As state above, result is unpredictable when the test function alters |CUTe|'s
+internal state consistency. In particular, the **test function is not allowed
+to** :
 
-Configuration macros
---------------------
+* modify test hierarchy ;
+* run tests or suites ;
+* alter |signal(7)| dispositions installed by |CUTe|.
 
-CONFIG_STROLL_ASSERT
-********************
+Using the :c:macro:`CUTE_TEST` macro is the most straightforward way to define
+a test:
 
-.. doxygendefine:: CONFIG_STROLL_ASSERT
+.. code-block:: c
 
-CONFIG_STROLL_ASSERT_API
-************************
+   CUTE_TEST(sample_test)
+   {
+        /* Implement testing logic here */
+   }
 
-.. doxygendefine:: CONFIG_STROLL_ASSERT_API
+The code sample above implements a test case named ``sample_test``. The call to
+:c:macro:`CUTE_TEST` is immediately followed by a block of instructions that
+defines the related testing logic.
 
-CONFIG_STROLL_ASSERT_INTERN
-***************************
+As not specified, no particular |fixture| functions are attached to the
+``sample_test`` test case, meaning that it will inherit them from its parent
+suite once explicicly registered.
 
-.. doxygendefine:: CONFIG_STROLL_ASSERT_INTERN
+In addition, as no test |timer| is specified, it will also inherit from its
+parent suite timeout settings at registering time.
 
-.. _CONFIG_STROLL_UTEST:
+Just in case you need to debug the testing logic, you should remind that
+the block of instructions above is used to define a test function assigned to
+the ``sample_test`` test case as following :
 
-CONFIG_STROLL_UTEST
-*******************
+.. code-block:: c
 
-.. doxygendefine:: CONFIG_STROLL_UTEST
+   static void sample_test__cute_exec(void);
 
-CONFIG_STROLL_VALGRIND
-**********************
+For additional flexibility, |CUTe| also allows to attach |fixture| functions to
+test cases.
 
-.. doxygendefine:: CONFIG_STROLL_VALGRIND
+.. _sect-user-writing_tests-fixture_operations:
 
-CONFIG_STROLL_BOPS
-******************
+Fixture operations
+------------------
 
-.. doxygendefine:: CONFIG_STROLL_BOPS
+A test case may be attached optional |fixture| operations to setup runtime
+preconditions and / or postconditions of the unit of code under test.
 
-CONFIG_STROLL_BMAP
-******************
+Using |fixture| operations brings in multiple benefits :
 
-.. doxygendefine:: CONFIG_STROLL_BMAP
+* it enhances test repeatability since tests are executed with controlled and
+  reproducible runtime preconditions ;
+* it allows for better reusability since testing logic and testing context setup
+  may be delegated to different functions.
 
-CONFIG_STROLL_LVSTR
-*******************
+2 types of |fixture| operation are distinguished. These are implemented using
+``setup()`` and ``teardown()`` functions so that the whole test case sequence
+is :
 
-.. doxygendefine:: CONFIG_STROLL_LVSTR
+* execute the ``setup()`` function attached to test case ;
+* *if* ``setup()`` function succeeded:
 
-Macros
-------
+  * execute test case test function ;
+  * execute the ``teardown()`` function attached to test case.
 
-__align
-*******
+* *else* fail the test case.
 
-.. doxygendefine:: __align
+The ``setup()`` function initializes the testing context to a deterministic
+state whereas the ``teardown()`` function is used to restore testing context
+that existed prior to ``setup()`` execution.
 
-__const
-*******
+Use the :c:macro:`CUTE_TEST_DEFN` macro to define a fixture'd test case:
 
-.. doxygendefine:: __const
+.. code-block:: c
 
-__ctor
-******
+   static void sample_setup(void)
+   {
+        /* Initialize test case runtime context. */
+   }
 
-.. doxygendefine:: __ctor
+   static void sample_teardown(void)
+   {
+        /* Finalize test case runtime context. */
+   }
 
-__dtor
-******
+   /* `sample_fixtured_test' test case test function. */
+   static void sample_fixtured_test_exec(void)
+   {
+        /* Implement testing logic here */
+   }
 
-.. doxygendefine:: __dtor
-   
-__export_public
-***************
+   /*
+    * Define `sample_fixtured_test' test case with attached setup() and
+    * teardown() fixture operations as well as default test timeout.
+    */
+   static CUTE_TEST_DEFN(sample_fixtured_test,
+                         sample_fixtured_test_exec,
+                         sample_setup,
+                         sample_teardown,
+                         CUTE_DFLT_TMOUT);
 
-.. doxygendefine:: __export_public
+.. _sect-user-writing_tests-test_timeout:
 
-__export_protect
-****************
+Test timeout
+------------
 
-.. doxygendefine:: __export_protect
-
-__leaf
-******
-
-.. doxygendefine:: __leaf
-
-__nonull
-********
-
-.. doxygendefine:: __nonull
-
-__noreturn
-**********
-
-.. doxygendefine:: __noreturn
-
-__nothrow
-*********
-
-.. doxygendefine:: __nothrow
-
-__packed
-********
-
-.. doxygendefine:: __packed
-
-__printf
-********
-
-.. doxygendefine:: __printf
-
-__pure
-******
-
-.. doxygendefine:: __pure
-
-__returns_nonull
-****************
-
-.. doxygendefine:: __returns_nonull
-
-__unused
-********
-
-.. doxygendefine:: __unused
-
-__warn_result
-*************
-
-.. doxygendefine:: __warn_result
-
-STROLL_BMAP_INIT_CLEAR
-**********************
-
-.. doxygendefine:: STROLL_BMAP_INIT_CLEAR
-
-STROLL_BMAP_INIT_SET
-********************
-
-.. doxygendefine:: STROLL_BMAP_INIT_SET
-
-STROLL_BMAP32_INIT_CLEAR
-************************
-
-.. doxygendefine:: STROLL_BMAP32_INIT_CLEAR
-
-STROLL_BMAP32_INIT_SET
-**********************
-
-.. doxygendefine:: STROLL_BMAP32_INIT_SET
-
-STROLL_BMAP64_INIT_CLEAR
-************************
-
-.. doxygendefine:: STROLL_BMAP64_INIT_CLEAR
-
-STROLL_BMAP64_INIT_SET
-**********************
-
-.. doxygendefine:: STROLL_BMAP64_INIT_SET
-
-STROLL_CONCAT
-*************
-
-.. doxygendefine:: STROLL_CONCAT
-
-STROLL_CONST_ABS
-****************
-
-.. doxygendefine:: STROLL_CONST_ABS
-
-STROLL_CONST_MAX
-****************
-
-.. doxygendefine:: STROLL_CONST_MAX
-
-STROLL_CONST_MIN
-****************
-
-.. doxygendefine:: STROLL_CONST_MIN
-
-STROLL_LVSTR_INIT
-*****************
-
-.. doxygendefine:: STROLL_LVSTR_INIT
-
-STROLL_LVSTR_INIT_LEND
-**********************
-
-.. doxygendefine:: STROLL_LVSTR_INIT_LEND
-
-STROLL_LVSTR_INIT_NLEND
-***********************
-
-.. doxygendefine:: STROLL_LVSTR_INIT_NLEND
-
-STROLL_LVSTR_INIT_NCEDE
-***********************
-
-.. doxygendefine:: STROLL_LVSTR_INIT_NCEDE
-
-STROLL_LVSTR_LEN_MAX
-********************
-
-.. doxygendefine:: STROLL_LVSTR_LEN_MAX
-
-STROLL_STRING
-*************
-
-.. doxygendefine:: STROLL_STRING
-
-STROLL_UNIQ
-***********
-
-.. doxygendefine:: STROLL_UNIQ
-
-array_nr
-********
-
-.. doxygendefine:: array_nr
-
-compile_eval
-************
-
-.. doxygendefine:: compile_eval
-
-compile_assert
-**************
-
-.. doxygendefine:: compile_assert
-
-compile_choose
-**************
-
-.. doxygendefine:: compile_choose
-
-stroll_abs
-**********
-
-.. doxygendefine:: stroll_abs
-
-stroll_assert
-*************
-
-.. doxygendefine:: stroll_assert
-
-stroll_bmap_foreach_clear
-*************************
-
-.. doxygendefine:: stroll_bmap_foreach_clear
-
-stroll_bmap_foreach_set
-***********************
-
-.. doxygendefine:: stroll_bmap_foreach_set
-
-stroll_bmap32_foreach_clear
-***************************
-
-.. doxygendefine:: stroll_bmap32_foreach_clear
-
-stroll_bmap32_foreach_set
-*************************
-
-.. doxygendefine:: stroll_bmap32_foreach_set
-
-stroll_bmap64_foreach_clear
-***************************
-
-.. doxygendefine:: stroll_bmap64_foreach_clear
-
-stroll_bmap64_foreach_set
-*************************
-
-.. doxygendefine:: stroll_bmap64_foreach_set
-
-stroll_min
-**********
-
-.. doxygendefine:: stroll_min
-
-stroll_max
-**********
-
-.. doxygendefine:: stroll_max
-
-Structures
+Test scope
 ----------
 
-stroll_lvstr
-************
+Test hierarchy
+==============
 
-.. doxygenstruct:: stroll_lvstr
+Suite definition
+----------------
 
-Functions
+Fixture inheritance
+-------------------
+
+Timeout inheritance
+-------------------
+
+.. _sect-user-running_tests:
+
+Running tests
+=============
+
+Test selection
+--------------
+
+Output settings
+---------------
+
+Debug mode
+----------
+
+.. _sect-user-test_reports:
+
+Test reports
+============
+
+Console settings
+----------------
+
+JUnit XML
 ---------
 
-stroll_bmap_and
-***************
-
-.. doxygenfunction:: stroll_bmap_and
-
-stroll_bmap_and_range
-*********************
-
-.. doxygenfunction:: stroll_bmap_and_range
-
-stroll_bmap_clear
-*****************
-
-.. doxygenfunction:: stroll_bmap_clear
-
-
-stroll_bmap_clear_mask
-**********************
-
-.. doxygenfunction:: stroll_bmap_clear_mask
-
-stroll_bmap_clear_range
-***********************
-
-.. doxygenfunction:: stroll_bmap_clear_range
-
-stroll_bmap_clear_all
-*********************
-
-.. doxygenfunction:: stroll_bmap_clear_all
-
-stroll_bmap_hweight
-*******************
-
-.. doxygenfunction:: stroll_bmap_hweight
-
-stroll_bmap_mask
-****************
-   
-.. doxygenfunction:: stroll_bmap_mask
-
-stroll_bmap_or
-**************
-
-.. doxygenfunction:: stroll_bmap_or
-
-stroll_bmap_or_range
-********************
-
-.. doxygenfunction:: stroll_bmap_or_range
-
-stroll_bmap_set
-***************
-
-.. doxygenfunction:: stroll_bmap_set
-
-stroll_bmap_set_mask
-********************
-
-.. doxygenfunction:: stroll_bmap_set_mask
-
-stroll_bmap_set_range
-*********************
-
-.. doxygenfunction:: stroll_bmap_set_range
-
-stroll_bmap_set_all
-*******************
-
-.. doxygenfunction:: stroll_bmap_set_all
-
-stroll_bmap_setup_clear
-***********************
-
-.. doxygenfunction:: stroll_bmap_setup_clear
-
-stroll_bmap_setup_set
-*********************
-
-.. doxygenfunction:: stroll_bmap_setup_set
-
-stroll_bmap_test
-****************
-
-.. doxygenfunction:: stroll_bmap_test
-
-stroll_bmap_test_all
-********************
-
-.. doxygenfunction:: stroll_bmap_test_all
-
-stroll_bmap_test_mask
-*********************
-
-.. doxygenfunction:: stroll_bmap_test_mask
-
-stroll_bmap_test_range
-**********************
-
-.. doxygenfunction:: stroll_bmap_test_range
-
-stroll_bmap_toggle
-******************
-
-.. doxygenfunction:: stroll_bmap_toggle
-
-stroll_bmap_toggle_mask
-***********************
-
-.. doxygenfunction:: stroll_bmap_toggle_mask
-
-stroll_bmap_toggle_range
-************************
-
-.. doxygenfunction:: stroll_bmap_toggle_range
-
-stroll_bmap_toggle_all
-**********************
-
-.. doxygenfunction:: stroll_bmap_toggle_all
-
-stroll_bmap_xor
-***************
-
-.. doxygenfunction:: stroll_bmap_xor
-
-stroll_bmap_xor_range
-*********************
-
-.. doxygenfunction:: stroll_bmap_xor_range
-
-stroll_bmap32_and
-*****************
-
-.. doxygenfunction:: stroll_bmap32_and
-
-stroll_bmap32_and_range
-***********************
-
-.. doxygenfunction:: stroll_bmap32_and_range
-
-stroll_bmap32_clear
-*******************
-
-.. doxygenfunction:: stroll_bmap32_clear
-
-
-stroll_bmap32_clear_mask
-************************
-
-.. doxygenfunction:: stroll_bmap32_clear_mask
-
-stroll_bmap32_clear_range
-*************************
-
-.. doxygenfunction:: stroll_bmap32_clear_range
-
-stroll_bmap32_clear_all
-***********************
-
-.. doxygenfunction:: stroll_bmap32_clear_all
-
-stroll_bmap32_hweight
-*********************
-
-.. doxygenfunction:: stroll_bmap32_hweight
-
-stroll_bmap32_mask
-******************
-
-.. doxygenfunction:: stroll_bmap32_mask
-   
-stroll_bmap32_or
-****************
-
-.. doxygenfunction:: stroll_bmap32_or
-
-stroll_bmap32_or_range
-**********************
-
-.. doxygenfunction:: stroll_bmap32_or_range
-
-stroll_bmap32_set
-*****************
-
-.. doxygenfunction:: stroll_bmap32_set
-
-stroll_bmap32_set_mask
-**********************
-
-.. doxygenfunction:: stroll_bmap32_set_mask
-
-stroll_bmap32_set_range
-***********************
-
-.. doxygenfunction:: stroll_bmap32_set_range
-
-stroll_bmap32_set_all
-*********************
-
-.. doxygenfunction:: stroll_bmap32_set_all
-
-stroll_bmap32_setup_clear
-*************************
-
-.. doxygenfunction:: stroll_bmap32_setup_clear
-
-stroll_bmap32_setup_set
-***********************
-
-.. doxygenfunction:: stroll_bmap32_setup_set
-
-stroll_bmap32_test
-******************
-
-.. doxygenfunction:: stroll_bmap32_test
-
-stroll_bmap32_test_all
-**********************
-
-.. doxygenfunction:: stroll_bmap32_test_all
-
-stroll_bmap32_test_mask
-***********************
-
-.. doxygenfunction:: stroll_bmap32_test_mask
-
-stroll_bmap32_test_range
-************************
-
-.. doxygenfunction:: stroll_bmap32_test_range
-
-stroll_bmap32_toggle
-********************
-
-.. doxygenfunction:: stroll_bmap32_toggle
-
-stroll_bmap32_toggle_mask
-*************************
-
-.. doxygenfunction:: stroll_bmap32_toggle_mask
-
-stroll_bmap32_toggle_range
-**************************
-
-.. doxygenfunction:: stroll_bmap32_toggle_range
-
-stroll_bmap32_toggle_all
-************************
-
-.. doxygenfunction:: stroll_bmap32_toggle_all
-
-stroll_bmap32_xor
-*****************
-
-.. doxygenfunction:: stroll_bmap32_xor
-
-stroll_bmap32_xor_range
-***********************
-
-.. doxygenfunction:: stroll_bmap32_xor_range
-
-stroll_bmap64_and
-*****************
-
-.. doxygenfunction:: stroll_bmap64_and
-
-stroll_bmap64_and_range
-***********************
-
-.. doxygenfunction:: stroll_bmap64_and_range
-
-stroll_bmap64_clear
-*******************
-
-.. doxygenfunction:: stroll_bmap64_clear
-
-
-stroll_bmap64_clear_mask
-************************
-
-.. doxygenfunction:: stroll_bmap64_clear_mask
-
-stroll_bmap64_clear_range
-*************************
-
-.. doxygenfunction:: stroll_bmap64_clear_range
-
-stroll_bmap64_clear_all
-***********************
-
-.. doxygenfunction:: stroll_bmap64_clear_all
-
-stroll_bmap64_hweight
-*********************
-
-.. doxygenfunction:: stroll_bmap64_hweight
-
-stroll_bmap64_mask
-******************
-   
-.. doxygenfunction:: stroll_bmap64_mask
-
-stroll_bmap64_or
-****************
-
-.. doxygenfunction:: stroll_bmap64_or
-
-stroll_bmap64_or_range
-**********************
-
-.. doxygenfunction:: stroll_bmap64_or_range
-
-stroll_bmap64_set
-*****************
-
-.. doxygenfunction:: stroll_bmap64_set
-
-stroll_bmap64_set_mask
-**********************
-
-.. doxygenfunction:: stroll_bmap64_set_mask
-
-stroll_bmap64_set_range
-***********************
-
-.. doxygenfunction:: stroll_bmap64_set_range
-
-stroll_bmap64_set_all
-*********************
-
-.. doxygenfunction:: stroll_bmap64_set_all
-
-stroll_bmap64_setup_clear
-*************************
-
-.. doxygenfunction:: stroll_bmap64_setup_clear
-
-stroll_bmap64_setup_set
-***********************
-
-.. doxygenfunction:: stroll_bmap64_setup_set
-
-stroll_bmap64_test
-******************
-
-.. doxygenfunction:: stroll_bmap64_test
-
-stroll_bmap64_test_all
-**********************
-
-.. doxygenfunction:: stroll_bmap64_test_all
-
-stroll_bmap64_test_mask
-***********************
-
-.. doxygenfunction:: stroll_bmap64_test_mask
-
-stroll_bmap64_test_range
-************************
-
-.. doxygenfunction:: stroll_bmap64_test_range
-
-stroll_bmap64_toggle
-********************
-
-.. doxygenfunction:: stroll_bmap64_toggle
-
-stroll_bmap64_toggle_mask
-*************************
-
-.. doxygenfunction:: stroll_bmap64_toggle_mask
-
-stroll_bmap64_toggle_range
-**************************
-
-.. doxygenfunction:: stroll_bmap64_toggle_range
-
-stroll_bmap64_toggle_all
-************************
-
-.. doxygenfunction:: stroll_bmap64_toggle_all
-
-stroll_bmap64_xor
-*****************
-
-.. doxygenfunction:: stroll_bmap64_xor
-
-stroll_bmap64_xor_range
-***********************
-
-.. doxygenfunction:: stroll_bmap64_xor_range
-
-stroll_bops_ffc
-***************
-
-.. doxygenfunction:: stroll_bops_ffc
-
-stroll_bops_ffs
-***************
-
-.. doxygenfunction:: stroll_bops_ffs
-
-stroll_bops_fls
-***************
-
-.. doxygenfunction:: stroll_bops_fls
-
-stroll_bops_hweight
-*******************
-
-.. doxygenfunction:: stroll_bops_hweight
-
-stroll_bops32_ffc
-*****************
-
-.. doxygenfunction:: stroll_bops32_ffc
-
-stroll_bops64_ffc
-*****************
-
-.. doxygenfunction:: stroll_bops64_ffc
-
-stroll_bops32_ffs
-*****************
-
-.. doxygenfunction:: stroll_bops32_ffs
-
-stroll_bops64_ffs
-*****************
-
-.. doxygenfunction:: stroll_bops64_ffs
-
-stroll_bops32_fls
-*****************
-
-.. doxygenfunction:: stroll_bops32_fls
-
-stroll_bops64_fls
-*****************
-
-.. doxygenfunction:: stroll_bops64_fls
-
-stroll_bops32_hweight
-*********************
-
-.. doxygenfunction:: stroll_bops32_hweight
-
-stroll_bops64_hweight
-*********************
-
-.. doxygenfunction:: stroll_bops64_hweight
-
-stroll_lvstr_cede
-*****************
-
-.. doxygenfunction:: stroll_lvstr_cede
-
-stroll_lvstr_cstr
-*****************
-
-.. doxygenfunction:: stroll_lvstr_cstr
-
-stroll_lvstr_dup
-****************
-
-.. doxygenfunction:: stroll_lvstr_dup
-
-stroll_lvstr_fini
-*****************
-
-.. doxygenfunction:: stroll_lvstr_fini
-
-stroll_lvstr_init
-*****************
-
-.. doxygenfunction:: stroll_lvstr_init
-
-stroll_lvstr_init_cede
-**********************
-
-.. doxygenfunction:: stroll_lvstr_init_cede
-
-stroll_lvstr_init_dup
-*********************
-
-.. doxygenfunction:: stroll_lvstr_init_dup
-
-stroll_lvstr_init_lend
-**********************
-
-.. doxygenfunction:: stroll_lvstr_init_lend
-
-stroll_lvstr_init_ncede
-***********************
-
-.. doxygenfunction:: stroll_lvstr_init_ncede
-
-stroll_lvstr_init_ndup
-**********************
-
-.. doxygenfunction:: stroll_lvstr_init_ndup
-
-stroll_lvstr_init_nlend
-***********************
-
-.. doxygenfunction:: stroll_lvstr_init_nlend
-
-stroll_lvstr_len
-****************
-
-.. doxygenfunction:: stroll_lvstr_len
-
-stroll_lvstr_lend
-*****************
-
-.. doxygenfunction:: stroll_lvstr_lend
-
-stroll_lvstr_ncede
-******************
-
-.. doxygenfunction:: stroll_lvstr_ncede
-
-stroll_lvstr_ndup
-*****************
-
-.. doxygenfunction:: stroll_lvstr_ndup
-
-stroll_lvstr_nlend
-******************
-
-.. doxygenfunction:: stroll_lvstr_nlend
+TAP
+---

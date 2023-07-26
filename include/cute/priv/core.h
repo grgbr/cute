@@ -13,6 +13,10 @@ struct cute_run;
 
 typedef void (cute_test_fn)(void);
 
+
+#define CUTE_NULL_FIXTURE ((cute_test_fn *)0)
+#define CUTE_INHR_FIXTURE ((cute_test_fn *)1)
+
 typedef struct cute_iter * (cute_iter_fn)(const struct cute_base * base);
 
 typedef struct cute_run * (cute_run_fn)(const struct cute_base * base,

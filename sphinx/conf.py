@@ -28,6 +28,7 @@ import sys
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.intersphinx',
+              'sphinx.ext.graphviz',
               'sphinx.ext.mathjax',
               'sphinx.ext.ifconfig',
               'sphinx_rtd_theme',
@@ -186,6 +187,13 @@ texinfo_documents = [
      'CUTe Install',
      'CUTe common C utilities integration manual',
      'Programming'),
+    ('api',
+     'cute_api',
+     'CUTe API Guide',
+     author,
+     'CUTe API',
+     'CUTe C Unit Testing framework API reference manual',
+     'Programming')
 ]
 
 # Request texinfo backend to generate the following appendix entries to benefit

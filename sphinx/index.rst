@@ -1,5 +1,5 @@
-Welcome to Stroll documentation
-###############################
+Welcome to CUTe documentation
+#############################
 
 .. Caption of toctrees are not translated into latex, hence the dirty trick
 .. below. See https://github.com/sphinx-doc/sphinx/issues/3169 for more infos.
@@ -31,6 +31,20 @@ Welcome to Stroll documentation
    :caption: Integration Guide
 
    install
+
+
+.. only:: latex
+
+   .. raw:: latex
+
+      \part{API Guide}
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+   :caption: API
+
+   api
 
 
 .. We use the latex_appendices setting into conf.py to benefit from native latex

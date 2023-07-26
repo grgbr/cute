@@ -95,6 +95,6 @@ static CUTE_SUITE_DEFN(mock_suite,
                        mock_suite_tests,
                        CUTE_NULL_SETUP,
                        CUTE_NULL_TEARDOWN,
-                       CUTE_FOREVER_TMOUT);
+                       CUTE_NONE_TMOUT);
 
 CUTE_MAIN(mock_suite, "CUTe mocking sample", CUTE_VERSION_STRING)

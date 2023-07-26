@@ -12,7 +12,7 @@ static CUTE_TEST_DEFN(skipped,
                       test_skipped,
                       CUTE_NULL_SETUP,
                       CUTE_NULL_TEARDOWN,
-                      CUTE_FOREVER_TMOUT);
+                      CUTE_NONE_TMOUT);
 
 static void
 test_failed(void)
@@ -24,7 +24,7 @@ static CUTE_TEST_DEFN(failed,
                       test_failed,
                       CUTE_NULL_SETUP,
                       CUTE_NULL_TEARDOWN,
-                      CUTE_FOREVER_TMOUT);
+                      CUTE_NONE_TMOUT);
 
 static void
 test_failed_ensure(void)
@@ -38,7 +38,7 @@ static CUTE_TEST_DEFN(failed_ensure,
                       test_failed_ensure,
                       CUTE_NULL_SETUP,
                       CUTE_NULL_TEARDOWN,
-                      CUTE_FOREVER_TMOUT);
+                      CUTE_NONE_TMOUT);
 
 static void
 test_passed(void)
@@ -50,7 +50,7 @@ static CUTE_TEST_DEFN(passed,
                       test_passed,
                       CUTE_NULL_SETUP,
                       CUTE_NULL_TEARDOWN,
-                      CUTE_FOREVER_TMOUT);
+                      CUTE_NONE_TMOUT);
 
 
 CUTE_GROUP(hello_suite_tests) = {
@@ -64,6 +64,6 @@ static CUTE_SUITE_DEFN(hello_suite,
                        hello_suite_tests,
                        CUTE_NULL_SETUP,
                        CUTE_NULL_TEARDOWN,
-                       CUTE_FOREVER_TMOUT);
+                       CUTE_NONE_TMOUT);
 
 CUTE_MAIN(hello_suite, "CUTe hello sample", CUTE_VERSION_STRING)
