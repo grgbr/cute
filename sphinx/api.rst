@@ -19,38 +19,52 @@ eventually refer to the corresponding C macros listed below:
 * :c:macro:`CONFIG_CUTE_INTERN_ASSERT`
 * :c:macro:`CONFIG_CUTE_UTEST`
 
-.. index:: test definition, test case definition
+.. index::
+   single: test definition; API
+   single: test case definition; API
 
 Test definition
 ===============
 
 Various C preprocessor macros are exposed to define test cases. These are:
 
-.. hlist::
+* :c:macro:`CUTE_TEST`
+* :c:macro:`CUTE_TEST_DEFN`
+* :c:macro:`CUTE_TEST_DECL`
+* :c:macro:`CUTE_TEST_STATIC`
+* :c:macro:`CUTE_TEST_EXTERN`
 
-   * Test definition:
-
-     * :c:macro:`CUTE_TEST`
-     * :c:macro:`CUTE_TEST_DEFN`
-
-   * Test timeout:
-
-     * :c:macro:`CUTE_DFLT_TMOUT`
-     * :c:macro:`CUTE_INHR_TMOUT`
-     * :c:macro:`CUTE_NONE_TMOUT`
-
-.. index:: fixture, fixture operation, fixture function
+.. index::
+   single: fixture; API
+   single: fixture operation; API
+   single: fixture function; API
    
 Fixture operations
 ==================
 
 Various C preprocessor macros are exposed to attach test fixture functions to
-tests or suites. These are:
+tests or suites at definition time. These are:
 
 * :c:macro:`CUTE_NULL_SETUP`
 * :c:macro:`CUTE_NULL_TEARDOWN`
 * :c:macro:`CUTE_INHR_SETUP`
 * :c:macro:`CUTE_INHR_TEARDOWN`
+  
+.. index::
+   single: timeout; API
+   single: test timeout; API
+   single: timer; API
+   single: test timer; API
+
+Test Timeouts
+=============
+
+Various C preprocessor macros are exposed to assign timeouts to tests or suites
+at definition time. These are:
+
+* :c:macro:`CUTE_DFLT_TMOUT`
+* :c:macro:`CUTE_INHR_TMOUT`
+* :c:macro:`CUTE_NONE_TMOUT`
 
 .. index:: API reference, reference
 
@@ -113,7 +127,22 @@ CUTE_TEST
 
 .. doxygendefine:: CUTE_TEST
 
+CUTE_TEST_DECL
+**************
+
+.. doxygendefine:: CUTE_TEST_DECL
+
 CUTE_TEST_DEFN
 **************
 
 .. doxygendefine:: CUTE_TEST_DEFN
+
+CUTE_TEST_EXTERN
+****************
+
+.. doxygendefine:: CUTE_TEST_EXTERN
+
+CUTE_TEST_STATIC
+****************
+
+.. doxygendefine:: CUTE_TEST_STATIC

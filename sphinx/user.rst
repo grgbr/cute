@@ -13,6 +13,8 @@
 .. |signal(7)|    replace:: :manpage:`signal(7)`
 .. |fixture|      replace:: :ref:`fixture <sect-user-writing_tests-fixture_operations>`
 .. |timer|        replace:: :ref:`timer <sect-user-writing_tests-test_timeout>`
+.. |test case|    replace:: :ref:`test case <sect-user-writing_tests-test_definition>`
+.. |file scope|   replace:: :ref:`file scope <sect-user-writing_tests-file_scope>`
 
 Overview
 ========
@@ -109,21 +111,20 @@ Typical Workflow
 As a **developper**, implementing tests involves the following sequence of
 steps:
 
-* preparatory phase:
+.. rubric:: Preparatory phase:
 
-  #. :ref:`write <sect-user-writing_tests-test_definition>` a dummy failing
-     test,
-  #. setup a primary test hierarchy including a single root suite and the test
-     just created
-  #. build and run to check for proper operation
-  #. modify the test written initially to implement the first real test case
+#. write a dummy failing |test case| ;
+#. setup a primary test hierarchy including a single root suite and the test
+   just created ;
+#. build and run to check for proper operation ;
+#. modify the test written initially to implement the first real test case ;
 
-* iterative test implementation:
+.. rubric:: Iterative test implementation phases:
 
-  #. build and run
-  #. fix test failures
-  #. implement additional test cases
-  #. when required, refine test hierarchy by defining test suites
+#. build and run ;
+#. fix test failures ;
+#. implement additional |test case| ;
+#. when required, refine test hierarchy by defining test suites.
 
 As an **integrator**, you may be required to tweak test suites :ref:`run
 <sect-user-running_tests>` configuration for proper integration within test
@@ -132,6 +133,7 @@ regression / automation infrastructure.
 Writing tests
 =============
 
+.. index:: test definition, test case definition
 .. _sect-user-writing_tests-test_definition:
 
 Test definition
@@ -193,9 +195,13 @@ the ``sample_test`` test case as following :
 
    static void sample_test__cute_exec(void);
 
-For additional flexibility, |CUTe| also allows to attach |fixture| functions to
-test cases.
+For additional flexibility, |CUTe| also allows to :
 
+* attach |fixture| functions to tests and / or suites ;
+* assign a |timer| to tests and / or suites ;
+* specify global |file scope| for tests and / or suites.
+
+.. index:: fixture, fixture operation, fixture function
 .. _sect-user-writing_tests-fixture_operations:
 
 Fixture operations
@@ -223,9 +229,9 @@ is :
 
 * *else* fail the test case.
 
-The ``setup()`` function initializes the testing context to a deterministic
-state whereas the ``teardown()`` function is used to restore testing context
-that existed prior to ``setup()`` execution.
+The ``setup()`` function is meant to initialize the testing context to a
+deterministic state whereas the ``teardown()`` function is used to restore
+testing context that existed prior to ``setup()`` execution.
 
 Use the :c:macro:`CUTE_TEST_DEFN` macro to define a fixture'd test case:
 
@@ -257,16 +263,137 @@ Use the :c:macro:`CUTE_TEST_DEFN` macro to define a fixture'd test case:
                          sample_teardown,
                          CUTE_DFLT_TMOUT);
 
+.. index:: timeout, test timeout, timer, test timer
 .. _sect-user-writing_tests-test_timeout:
 
 Test timeout
 ------------
 
-Test scope
+To protect against situations where a |test case| or |fixture| function hangs,
+|CUTe| may arm a test timer that interrupts current test case execution upon
+expiry.
+
+The timeout may be specified at |test case| definition time using one of the
+following C macros :
+
+* :c:macro:`CUTE_TEST_DEFN`,
+* :c:macro:`CUTE_TEST_STATIC`,
+* :c:macro:`CUTE_TEST_EXTERN`.
+  
+All 3 macros take a timeout setting passed as ``_tmout`` argument and which may
+be specified as one of :
+
+* :c:macro:`CUTE_DFLT_TMOUT`, denoting a default timeout of 3 seconds ;
+* :c:macro:`CUTE_INHR_TMOUT`, requesting a timeout inherited from the parent
+  suite if existing and which falls back to :c:macro:`CUTE_DFLT_TMOUT`
+  otherwise ;
+* :c:macro:`CUTE_NONE_TMOUT`, to disable the timeout mechanism ;
+* or an *unsigned integer*, specifying a timeout value expressed as seconds.
+  
+When the timer expires, the current |test case| or |fixture| function execution
+is *interrupted*, |CUTe| marks the test as *failing* then proceeds to the *next*
+one in sequence.
+
+Use the :c:macro:`CUTE_TEST_DEFN` macro to specify a timeout at definition
+time :
+
+.. code-block:: c
+
+   /* `sample_timed_test' test case test function. */
+   static void sample_timed_test_exec(void)
+   {
+        /* Implement testing logic here */
+   }
+
+   /*
+    * Define `sample_timed_test' test case with an explicitly specified timeout
+    * of 10 seconds.
+    */
+   static CUTE_TEST_DEFN(sample_timed_test,
+                         sample_timed_test_exec,
+                         CUTE_NULL_SETUP,
+                         CUTE_NULL_TEARDOWN,
+                         10U);
+
+.. index:: file scope, test scope
+.. _sect-user-writing_tests-file_scope:
+
+File scope
 ----------
+
+To enhance test case reusability, |CUTe| allows to specify global file scope
+at test definition time. 2 shorthand macros allow to minimize test developper
+workload compared to :c:macro:`CUTE_TEST_DEFN` usage. These are :
+
+* :c:macro:`CUTE_TEST_STATIC`,
+* :c:macro:`CUTE_TEST_DECL` and :c:macro:`CUTE_TEST_EXTERN`.
+
+:c:macro:`CUTE_TEST_STATIC` allows to define a test with ``static`` global file
+scope. :ref:`Registering <sect-user-test_hierarchy-suite_definition>` the
+created test to a suite is then restricted to the source file where the suite is
+defined :
+
+.. code-block:: c
+
+   /* Define `sample_static_test' test case with static global file scope. */
+   CUTE_TEST_STATIC(sample_static_test,
+                    CUTE_INHR_SETUP,
+                    CUTE_INHR_TEARDOWN,
+                    CUTE_INHR_TMOUT);
+   {
+        /* Implement testing logic here */
+   }
+
+:c:macro:`CUTE_TEST_DECL` and :c:macro:`CUTE_TEST_EXTERN` macros are meant to
+work with reusable definitions.
+Use :c:macro:`CUTE_TEST_EXTERN` to define a test with default global file
+scope, i.e. with external linkage :
+
+.. code-block:: c
+
+   #include "test.h"
+
+   /* Define `sample_extern_test' test case with default global file scope. */
+   CUTE_TEST_EXTERN(sample_extern_test,
+                    CUTE_INHR_SETUP,
+                    CUTE_INHR_TEARDOWN,
+                    CUTE_INHR_TMOUT)
+   {
+        /* Implement testing logic here */
+   }
+
+And use :c:macro:`CUTE_TEST_DECL` to declare the test defined above in a header
+so that it may be referenced from other compilation units :
+
+.. code-block:: c
+
+   #ifndef _TEST_H
+   #define _TEST_H
+
+   #include <cute/cute.h>
+   
+   /* Declare `sample_extern_test' test case with default global file scope. */
+   extern CUTE_TEST_DECL(sample_extern_test);
+   
+   #endif /* _TEST_H */
+   
+As shown above, both :c:macro:`CUTE_TEST_STATIC` and :c:macro:`CUTE_TEST_EXTERN`
+macros should be immediately followed by a block of instructions that defines
+the related testing logic.
+The block of instructions is used to define a test function which is assigned to
+the created test case with the following signature scheme:
+
+.. code-block:: c
+
+   static void <test_case_name>__cute_exec(void);
+
+Next section shows how to register test cases to suites to build a complete test
+hierarchy.
 
 Test hierarchy
 ==============
+
+.. _sect-user-test_hierarchy-suite_definition:
 
 Suite definition
 ----------------

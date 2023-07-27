@@ -50,6 +50,8 @@
  *
  * When defining a test or suite, use this to attach an empty / NULL setup
  * fixture function.
+ *
+ * @see #CUTE_INHR_SETUP
  */
 #define CUTE_NULL_SETUP CUTE_NULL_FIXTURE
 
@@ -58,6 +60,8 @@
  *
  * When defining a test or suite, use this to attach a setup fixture function
  * inherited from its parent suite.
+ *
+ * @see #CUTE_NULL_SETUP
  */
 #define CUTE_INHR_SETUP CUTE_INHR_FIXTURE
 
@@ -66,6 +70,8 @@
  *
  * When defining a test or suite, use this to attach an empty / NULL teardown
  * fixture function.
+ *
+ * @see #CUTE_INHR_TEARDOWN
  */
 #define CUTE_NULL_TEARDOWN CUTE_NULL_FIXTURE
 
@@ -74,6 +80,8 @@
  *
  * When defining a test or suite, use this to attach a teardown fixture function
  * inherited from its parent suite.
+ *
+ * @see #CUTE_NULL_TEARDOWN
  */
 #define CUTE_INHR_TEARDOWN CUTE_INHR_FIXTURE
 
@@ -82,6 +90,10 @@
  *
  * Timeout in seconds assigned to test when not explicitly specified. It is 3
  * seconds long.
+ *
+ * @see
+ * - #CUTE_INHR_TMOUT
+ * - #CUTE_NONE_TMOUT
  */
 #define CUTE_DFLT_TMOUT (3U)
 
@@ -93,6 +105,10 @@
  *
  * When the test case has no parent suite at running time, #CUTE_DFLT_TMOUT is
  * applied instead.
+ *
+ * @see
+ * - #CUTE_DFLT_TMOUT
+ * - #CUTE_NONE_TMOUT
  */
 #define CUTE_INHR_TMOUT (UINT_MAX)
 
@@ -101,6 +117,10 @@
  *
  * When defining a test case, instruct CUTe to disable the test timeout
  * mechanism.
+ *
+ * @see
+ * - #CUTE_DFLT_TMOUT
+ * - #CUTE_INHR_TMOUT
  */
 #define CUTE_NONE_TMOUT (0U)
 
@@ -108,6 +128,30 @@
  * Test case definitions
  ******************************************************************************/
 
+/**
+ * Declare a test case
+ *
+ * @param[in] _name test case name
+ *
+ * Declare a test case designated by the @p _name variable.
+ *
+ * Use this in combination with #CUTE_TEST_EXTERN or #CUTE_TEST_DEFN to allow
+ * referencing defined test cases from multiple compilation units.
+ *
+ * **Example**
+ * @code
+ * #ifndef _SAMPLE_TEST_H
+ * #define _SAMPLE_TEST_H
+ *
+ * extern CUTE_TEST_DECL(sample_test);
+ *
+ * #endif
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST_DEFN
+ * - #CUTE_TEST_EXTERN
+ */
 #define CUTE_TEST_DECL(_name) \
 	const struct cute_test _name
 
@@ -125,32 +169,42 @@
  *
  * @p _exec is a test function that should implement the testing logic. It
  * should be defined according to the following signature:
- * ``void test_exec(void)``.
+ * @code
+ * void test_exec(void)
+ * @endcode
  *
  * @p _setup is a setup() fixture function that should initialize the testing
  * context. It is run before @p _exec function and should be defined according
- * to the following signature: ``void test_setup(void)``.
+ * to the following signature:
+ * @code
+ * void test_setup(void)
+ * @endcode
+ *
  * Values allowed for @p _setup are :
- * - an arbitrary function,
  * - #CUTE_NULL_SETUP,
- * - or #CUTE_INHR_SETUP.
+ * - #CUTE_INHR_SETUP,
+ * - or an arbitrary function,
  *
  * @p _teardown is a teardown() fixture function that should release the testing
  * context established by @p _setup. It is run if @p _setup has completed
  * and after @p _exec function. It should be defined according to the following
- * signature: ``void test_teardown(void)``.
+ * signature:
+ * @code
+ * void test_teardown(void)
+ * @endcode
+ *
  * Values allowed for @p _teardown are :
- * - an arbitrary function,
  * - #CUTE_NULL_TEARDOWN,
- * - or #CUTE_INHR_TEARDOWN.
+ * - #CUTE_INHR_TEARDOWN,
+ * - or an arbitrary function,
  *
  * @p _tmout is a timeout expressed in seconds that protects the test run
  * against situations where @p _setup, @p _teardown or @p _exec functions stall.
  * Values allowed for @p _tmout are :
- * - a positive integer,
  * - #CUTE_DFLT_TMOUT,
  * - #CUTE_INHR_TMOUT,
- * - or #CUTE_NONE_TMOUT.
+ * - #CUTE_NONE_TMOUT,
+ * - or an unsigned integer.
  *
  * @see
  * - #CUTE_TEST
@@ -186,6 +240,42 @@
 		                                      _teardown, \
 		                                      _tmout)
 
+/**
+ * Define a static file scoped test case with attributes
+ *
+ * @param[in] _name     test case name
+ * @param[in] _setup    setup fixture function
+ * @param[in] _teardown teardown fixture function
+ * @param[in] _tmout    test timeout
+ *
+ * Define a test case designated by the @p _name variable with static global
+ * file scope. The test case is created with attributes given in argument as
+ * explained below.
+ * 
+ * In addition, #CUTE_TEST_STATIC must be immediately followed by a block of
+ * instructions defining the related testing logic as stated in #CUTE_TEST_DEFN.
+ * 
+ * @p _setup is a setup() fixture function as described in #CUTE_TEST_DEFN.
+ * @p _teardown is a teardown() fixture function as described in
+ * #CUTE_TEST_DEFN.
+ * @p _tmout is a timeout expressed in seconds as described in #CUTE_TEST_DEFN.
+ *
+ * @see
+ * - #CUTE_TEST
+ * - #CUTE_TEST_DEFN
+ * - #CUTE_TEST_EXTERN
+ *
+ * **Example**
+ * @code
+ * CUTE_TEST_STATIC(sample_test,
+ *                  CUTE_NULL_SETUP,
+ *                  CUTE_NULL_TEARDOWN,
+ *                  CUTE_DFLT_TMOUT)
+ * {
+ *      cute_check_assert(0 == 0);
+ * }
+ * @endcode
+ */
 #define CUTE_TEST_STATIC(_name, _setup, _teardown, _tmout) \
 	static void _name ## __cute_exec(void); \
 	static CUTE_TEST_DEFN(_name, \
@@ -195,6 +285,58 @@
 	                      _tmout); \
 	static void _name ## __cute_exec(void)
 
+/**
+ * Define a test case with attributes and external linkage
+ *
+ * @param[in] _name     test case name
+ * @param[in] _setup    setup fixture function
+ * @param[in] _teardown teardown fixture function
+ * @param[in] _tmout    test timeout
+ *
+ * Define a test case designated by the @p _name variable with default global
+ * file scope, i.e. with external linkage. The test case is created with
+ * attributes given in argument as explained below.
+ *
+ * In addition, #CUTE_TEST_EXTERN must be immediately followed by a block of
+ * instructions defining the related testing logic as stated in #CUTE_TEST_DEFN.
+ *
+ * @p _setup is a setup() fixture function as described in #CUTE_TEST_DEFN.
+ * @p _teardown is a teardown() fixture function as described in
+ * #CUTE_TEST_DEFN.
+ * @p _tmout is a timeout expressed in seconds as described in #CUTE_TEST_DEFN.
+ *
+ * Use #CUTE_TEST_DECL to produce a declaration in a header file so that the
+ * created test case may be referenced from other compilation units.
+ *
+ * **Example definition**
+ * @code
+ * #include "sample_test.h"
+ *
+ * CUTE_TEST_EXTERN(sample_test,
+ *                  CUTE_NULL_SETUP,
+ *                  CUTE_NULL_TEARDOWN,
+ *                  CUTE_DFLT_TMOUT)
+ * {
+ *      cute_check_assert(0 == 0);
+ * }
+ * @endcode
+ *
+ * **Example declaration** in a sample_test.h header file
+ * @code
+ * #ifndef _SAMPLE_TEST_H
+ * #define _SAMPLE_TEST_H
+ *
+ * extern CUTE_TEST_DECL(sample_test);
+ *
+ * #endif
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST
+ * - #CUTE_TEST_DEFN
+ * - #CUTE_TEST_DECL
+ * - #CUTE_TEST_STATIC
+ */
 #define CUTE_TEST_EXTERN(_name, _setup, _teardown, _tmout) \
 	static void _name ## __cute_exec(void); \
 	CUTE_TEST_DEFN(_name, \
@@ -211,22 +353,18 @@
  *
  * Define a test case designated by the @p _name variable. #CUTE_TEST must be
  * immediately followed by a block of instructions defining the related testing
- * logic.
- * 
- * This block of instructions defines a function assigned to @p _name test
- * case and which signature is: ``static void _name ## __cute_exec(void)``.
+ * logic as stated in #CUTE_TEST_DEFN.
  *
  * When @p _name test is registered to a suite, it inherits setup() and
  * teardown() fixture functions from its parent suite. It is attached dummy /
  * null fixture functions otherwise.
- * 
+ *
  * Similarly, it inherits timeout settings from its parent suite when present.
  * #CUTE_DFLT_TMOUT default timeout is assigned to it otherwise.
  *
  * @see
  * - #CUTE_TEST_STATIC
  * - #CUTE_TEST_EXTERN
- * - #CUTE_TEST_DECL
  * - #CUTE_TEST_DEFN
  *
  * **Example**

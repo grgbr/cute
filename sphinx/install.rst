@@ -1,4 +1,5 @@
 .. _breathe:              https://github.com/breathe-doc/breathe
+.. _graphviz:             https://www.graphviz.org/
 .. _ebuild:               https://github.com/grgbr/ebuild/
 .. _gnu_make:             https://www.gnu.org/software/make/
 .. |eBuild|               replace:: `eBuild <ebuild_>`_
@@ -32,11 +33,11 @@ required to build CUTe.
 
 Optionally, you will need :command:`awk`, :command:`cmp` and a :command:`sh`
 Bourne shell at runtime when unit testsuite is enabled (see
-:ref:`CONFIG_CUTE_UTEST`).
+:c:macro:`CONFIG_CUTE_UTEST`).
 
 Optionally, you will need multiple packages installed to build the
 documentation. In addition to packages listed into |eBuild Prerequisites|,
-CUTe's documentation generation process requires breathe_.
+CUTe's documentation generation process requires breathe_ and graphviz_.
 
 Getting help
 ============
