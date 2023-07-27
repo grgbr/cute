@@ -335,7 +335,7 @@ cute_fini(void)
 "                                       exception handling nor timeouts.\n" \
 "    -i|--icase                      -- Ignore case when matching against\n" \
 "                                       <PATTERN>.\n" \
-"    -s[<COLOR>]|--silent[=<COLOR>]  -- Silence all suites and tests console\n" \
+"    -s|--silent                     -- Silence all suites and tests console\n" \
 "                                       output.\n" \
 "    -t[<COLOR>]|--terse[=<COLOR>]   -- Enable minimal suites and tests console\n" \
 "                                       output.\n" \

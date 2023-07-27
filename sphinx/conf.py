@@ -147,7 +147,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ('index', 'cute.tex', master_title, author, 'manual')
+    ('index', 'cute.tex', master_title, author, 'howto')
 ]
 
 # Request latex backend to generate the following appendix entries to benefit

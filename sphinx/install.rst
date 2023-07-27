@@ -96,7 +96,7 @@ Refer to :external+ebuild:ref:`eBuild Tools <sect-user-tools>` and
 informations.
 
 .. _workflow-configure-phase:
-   
+
 Configure phase
 ---------------
 
@@ -116,7 +116,7 @@ by running the :external+ebuild:ref:`eBuild build target <target-build>`:
 .. code-block:: console
 
    $ make build BUILDDIR=$HOME/build/cute PREFIX=/usr
- 
+
 Install phase
 -------------
 
@@ -124,15 +124,15 @@ Finally, |Install| programs, libraries, etc.: by running the
 :external+ebuild:ref:`eBuild install target <target-install>`:
 
 .. code-block:: console
-   
+
    $ make install BUILDDIR=$HOME/build/cute PREFIX=/usr
- 
+
 Alternative staged install phase
 --------------------------------
 
 Alternatively, perform a |Staged install| by specifying the |DESTDIR| variable
 instead:
-   
+
 .. code-block:: console
 
    $ make install BUILDDIR=$HOME/build/cute PREFIX=/usr DESTDIR=$HOME/staging

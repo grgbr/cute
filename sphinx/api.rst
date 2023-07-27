@@ -1,5 +1,5 @@
 .. include:: _cdefs.rst
-   
+
 .. _sect-api-overview:
 
 Overview
@@ -38,7 +38,7 @@ Various C preprocessor macros are exposed to define test cases. These are:
    single: fixture; API
    single: fixture operation; API
    single: fixture function; API
-   
+
 Fixture operations
 ==================
 
@@ -49,7 +49,7 @@ tests or suites at definition time. These are:
 * :c:macro:`CUTE_NULL_TEARDOWN`
 * :c:macro:`CUTE_INHR_SETUP`
 * :c:macro:`CUTE_INHR_TEARDOWN`
-  
+
 .. index::
    single: timeout; API
    single: test timeout; API

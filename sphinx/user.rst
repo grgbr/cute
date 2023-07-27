@@ -15,6 +15,9 @@
 .. |timer|        replace:: :ref:`timer <sect-user-writing_tests-test_timeout>`
 .. |test case|    replace:: :ref:`test case <sect-user-writing_tests-test_definition>`
 .. |file scope|   replace:: :ref:`file scope <sect-user-writing_tests-file_scope>`
+.. |build|        replace:: :ref:`build <sect-user-building_tests>`
+.. |run|          replace:: :ref:`run <sect-user-running_tests>`
+.. |regex(7)|     replace:: :manpage:`regex(7)`
 
 Overview
 ========
@@ -57,12 +60,12 @@ Basic concepts
 ==============
 
 |CUTe| is a framework allowing to write, manage and run unit tests in C. It's
-:ref:`API <sect-api-overview>` provides a set functions to :
+:ref:`API <sect-api-overview>` provides a set of functions to :
 
-* build test case / suite hierarchies ;
+* structure test case / suite hierarchies ;
 * check strongly typed data against specified constraints ;
 * schecule and verify mock expectations against specified constraints ;
-* run test cases and suites according to specified configurations ;
+* |run| test cases and suites according to specified configurations ;
 * report test results onto the console and / or,
 * into files according to various specified formats.
 
@@ -100,10 +103,10 @@ A test (case) implements the logic validating a single unit of code to check for
 proper operation.
 
 A suite is a collection of suites and / or test cases. All suites may
-arbitrarily be selected for :ref:`running <sect-user-running_tests>`.
+arbitrarily be selected for a |run|.
 
-Finally, a particular run may be setup to :ref:`report <sect-user-test_reports>`
-test results according to a specified configuration.
+Finally, a particular |run| may be setup to :ref:`report
+<sect-user-test_reports>` test results according to a specified configuration.
 
 Typical Workflow
 ================
@@ -116,19 +119,19 @@ steps:
 #. write a dummy failing |test case| ;
 #. setup a primary test hierarchy including a single root suite and the test
    just created ;
-#. build and run to check for proper operation ;
+#. |build| and |run| to check for proper operation ;
 #. modify the test written initially to implement the first real test case ;
 
 .. rubric:: Iterative test implementation phases:
 
-#. build and run ;
+#. |build| and |run| ;
 #. fix test failures ;
 #. implement additional |test case| ;
 #. when required, refine test hierarchy by defining test suites.
 
-As an **integrator**, you may be required to tweak test suites :ref:`run
-<sect-user-running_tests>` configuration for proper integration within test
-regression / automation infrastructure.
+As an **integrator**, you may be required to tweak test suites |run|
+configuration for proper integration within test regression / automation
+infrastructure.
 
 Writing tests
 =============
@@ -163,7 +166,7 @@ internal state consistency. In particular, the **test function is not allowed
 to** :
 
 * modify test hierarchy ;
-* run tests or suites ;
+* |run| tests or suites ;
 * alter |signal(7)| dispositions installed by |CUTe|.
 
 Using the :c:macro:`CUTE_TEST` macro is the most straightforward way to define
@@ -279,7 +282,7 @@ following C macros :
 * :c:macro:`CUTE_TEST_DEFN`,
 * :c:macro:`CUTE_TEST_STATIC`,
 * :c:macro:`CUTE_TEST_EXTERN`.
-  
+
 All 3 macros take a timeout setting passed as ``_tmout`` argument and which may
 be specified as one of :
 
@@ -289,7 +292,7 @@ be specified as one of :
   otherwise ;
 * :c:macro:`CUTE_NONE_TMOUT`, to disable the timeout mechanism ;
 * or an *unsigned integer*, specifying a timeout value expressed as seconds.
-  
+
 When the timer expires, the current |test case| or |fixture| function execution
 is *interrupted*, |CUTe| marks the test as *failing* then proceeds to the *next*
 one in sequence.
@@ -306,8 +309,8 @@ time :
    }
 
    /*
-    * Define `sample_timed_test' test case with an explicitly specified timeout
-    * of 10 seconds.
+    * Define `sample_timed_test' test case with an explicitly specified
+    * timeout of 10 seconds.
     */
    static CUTE_TEST_DEFN(sample_timed_test,
                          sample_timed_test_exec,
@@ -335,7 +338,10 @@ defined :
 
 .. code-block:: c
 
-   /* Define `sample_static_test' test case with static global file scope. */
+   /*
+    * Define `sample_static_test' test case with static global file
+    * scope.
+    */
    CUTE_TEST_STATIC(sample_static_test,
                     CUTE_INHR_SETUP,
                     CUTE_INHR_TEARDOWN,
@@ -353,7 +359,10 @@ scope, i.e. with external linkage :
 
    #include "test.h"
 
-   /* Define `sample_extern_test' test case with default global file scope. */
+   /*
+    * Define `sample_extern_test' test case with default global file
+    * scope.
+    */
    CUTE_TEST_EXTERN(sample_extern_test,
                     CUTE_INHR_SETUP,
                     CUTE_INHR_TEARDOWN,
@@ -371,12 +380,15 @@ so that it may be referenced from other compilation units :
    #define _TEST_H
 
    #include <cute/cute.h>
-   
-   /* Declare `sample_extern_test' test case with default global file scope. */
+
+   /*
+    * Declare `sample_extern_test' test case with default global file
+    * scope.
+    */
    extern CUTE_TEST_DECL(sample_extern_test);
-   
+
    #endif /* _TEST_H */
-   
+
 As shown above, both :c:macro:`CUTE_TEST_STATIC` and :c:macro:`CUTE_TEST_EXTERN`
 macros should be immediately followed by a block of instructions that defines
 the related testing logic.
@@ -387,8 +399,8 @@ the created test case with the following signature scheme:
 
    static void <test_case_name>__cute_exec(void);
 
-Next section shows how to register test cases to suites to build a complete test
-hierarchy.
+Next section shows how to register test cases to suites and how to structure a
+complete test hierarchy.
 
 Test hierarchy
 ==============
@@ -404,19 +416,112 @@ Fixture inheritance
 Timeout inheritance
 -------------------
 
+Instantiation
+-------------
+
+.. _sect-user-building_tests:
+
+Building tests
+==============
+
 .. _sect-user-running_tests:
 
 Running tests
 =============
 
-Test selection
---------------
+|Build|'ing a test hierarchy which instantiation_ is based upon
+:c:func:`cute_main` and / or :c:macro:`CUTE_MAIN`, should produce an executable
+that allows to run tests and / or suites according to arguments given on the
+command line.
 
-Output settings
----------------
+Unless command line arguments parsing was modified by the test developper, the
+produced executable should behave like what is shown for the fictional
+:program:`sample-test` program hereafter.
 
-Debug mode
-----------
+.. rubric:: SYNOPSIS
+
+| **sample-test** [<*OPTIONS*>] show [<*PATTERN*>]
+| **sample-test** [<*OPTIONS*>] run [<*PATTERN*>]
+| **sample-test** [-h|--help] [help]
+
+.. rubric:: DESCRIPTION
+
+When the :option:`show` argument is given, test hierarchy is listed according to
+the specified :option:`PATTERN`.
+
+When the :option:`run` argument is given, test hierarchy is executed according
+to the specified :option:`PATTERN`.
+
+Finally, the :option:`-h` and :option:`--help` options as well as the
+:option:`help` argument displays a help message.
+
+.. rubric:: PATTERN
+
+When given, :option:`PATTERN` selects a subset of the test hierarchy. When
+missing, the whole hierarchy is considered.
+
+:option:`PATTERN` should be specified as a POSIX extended regular expression as
+described in |regex(7)|.
+
+.. rubric:: OPTIONS
+
+.. program:: sample-test
+
+.. option:: -d|--debug
+
+   Run in debug mode without neither exception handling nor timeouts.
+
+   This may be useful when running a test hierarchy under a debugger (see
+   |test case| section).
+
+.. option:: -i|--icase
+
+   Ignore case when matching against <*PATTERN*>.
+
+.. option:: -s|--silent
+
+   Silence all suites and tests console output.
+
+   :option:`-s`, :option:`--silent`, :option:`-t`, :option:`--terse`,
+   :option:`-v`, and :option:`--verbose` options are exclusive.
+
+.. option:: -t[<COLOR>]|--terse[=<COLOR>]
+
+   Enable minimal suites and tests console output.
+
+   :option:`-s`, :option:`--silent`, :option:`-t`, :option:`--terse`,
+   :option:`-v`, and :option:`--verbose` options are exclusive.
+
+.. option:: -v[<COLOR>]|--verbose[=<COLOR>]
+
+   Enable verbose suites and tests console output.
+
+   :option:`-s`, :option:`--silent`, :option:`-t`, :option:`--terse`,
+   :option:`-v`, and :option:`--verbose` options are exclusive.
+
+.. option:: -x[<PATH>]|--xml[=<PATH>]
+
+   Generate output to <*PATH*> according to JUnit XML format.
+
+.. option:: -a[<PATH>]|--tap[=<PATH>]
+
+   Generate output to <*PATH*> according to Test Anything Protocol format.
+
+.. rubric:: PATH
+
+:option:`PATH` is a pathname to a file where to store generated output.
+
+When unspecified or specified as ``-``, output is directed to standard output in
+which case this option is exclusive with :option:`-s`, :option:`--silent`,
+:option:`-t`, :option:`--terse`, :option:`-v` and :option:`--verbose`.
+
+.. rubric:: COLOR
+
+:option:`COLOR` controls the colorization of console output. When ``on``,
+it enforces colorization whereas it disables it when ``off``.
+
+By default, colorization is automatically enabled if current terminal supports
+it.
 
 .. _sect-user-test_reports:
 
