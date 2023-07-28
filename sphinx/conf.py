@@ -30,6 +30,7 @@ import sys
 extensions = ['sphinx.ext.intersphinx',
               'sphinx.ext.todo',
               'sphinx.ext.graphviz',
+              'sphinxcontrib.plantuml',
               'sphinx.ext.mathjax',
               'sphinx.ext.ifconfig',
               'sphinx_rtd_theme',

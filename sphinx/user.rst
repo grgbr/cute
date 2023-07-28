@@ -1,23 +1,24 @@
 .. include:: _cdefs.rst
 
-.. _tdd:          https://en.wikipedia.org/wiki/Test-driven_development
-.. _bdd:          https://en.wikipedia.org/wiki/Behavior-driven_development
-.. _regtest:      https://en.wikipedia.org/wiki/Regression_testing
-.. _fixture:      https://en.wikipedia.org/wiki/Test_fixture
-.. _mock:         https://en.wikipedia.org/wiki/Mock_object
-.. _tap:          https://testanything.org/
-.. _junit:        https://en.wikipedia.org/wiki/JUnit
-.. _glibc:        https://www.gnu.org/software/libc/
-.. |longjmp(3)|   replace:: :manpage:`longjmp(3)`
-.. |fork(2)|      replace:: :manpage:`fork(2)`
-.. |signal(7)|    replace:: :manpage:`signal(7)`
-.. |fixture|      replace:: :ref:`fixture <sect-user-writing_tests-fixture_operations>`
-.. |timer|        replace:: :ref:`timer <sect-user-writing_tests-test_timeout>`
-.. |test case|    replace:: :ref:`test case <sect-user-writing_tests-test_definition>`
-.. |file scope|   replace:: :ref:`file scope <sect-user-writing_tests-file_scope>`
-.. |build|        replace:: :ref:`build <sect-user-building_tests>`
-.. |run|          replace:: :ref:`run <sect-user-running_tests>`
-.. |regex(7)|     replace:: :manpage:`regex(7)`
+.. _tdd:            https://en.wikipedia.org/wiki/Test-driven_development
+.. _bdd:            https://en.wikipedia.org/wiki/Behavior-driven_development
+.. _regtest:        https://en.wikipedia.org/wiki/Regression_testing
+.. _fixture:        https://en.wikipedia.org/wiki/Test_fixture
+.. _mock:           https://en.wikipedia.org/wiki/Mock_object
+.. _tap:            https://testanything.org/
+.. _junit:          https://en.wikipedia.org/wiki/JUnit
+.. _glibc:          https://www.gnu.org/software/libc/
+.. |longjmp(3)|     replace:: :manpage:`longjmp(3)`
+.. |fork(2)|        replace:: :manpage:`fork(2)`
+.. |signal(7)|      replace:: :manpage:`signal(7)`
+.. |fixture|        replace:: :ref:`fixture <sect-user-writing_tests-fixture_operations>`
+.. |timer|          replace:: :ref:`timer <sect-user-writing_tests-test_timeout>`
+.. |test case|      replace:: :ref:`test case <sect-user-writing_tests-test_definition>`
+.. |file scope|     replace:: :ref:`file scope <sect-user-writing_tests-file_scope>`
+.. |hierarchy|      replace:: :ref:`hierarchy <sect-user-test_hierarchy>`
+.. |build|          replace:: :ref:`build <sect-user-building_tests>`
+.. |run|            replace:: :ref:`run <sect-user-running_tests>`
+.. |regex(7)|       replace:: :manpage:`regex(7)`
 
 Overview
 ========
@@ -62,7 +63,7 @@ Basic concepts
 |CUTe| is a framework allowing to write, manage and run unit tests in C. It's
 :ref:`API <sect-api-overview>` provides a set of functions to :
 
-* structure test case / suite hierarchies ;
+* structure test case / suite |hierarchy| ;
 * check strongly typed data against specified constraints ;
 * schecule and verify mock expectations against specified constraints ;
 * |run| test cases and suites according to specified configurations ;
@@ -117,7 +118,7 @@ steps:
 .. rubric:: Preparatory phase:
 
 #. write a dummy failing |test case| ;
-#. setup a primary test hierarchy including a single root suite and the test
+#. setup a primary test |hierarchy| including a single root suite and the test
    just created ;
 #. |build| and |run| to check for proper operation ;
 #. modify the test written initially to implement the first real test case ;
@@ -127,7 +128,7 @@ steps:
 #. |build| and |run| ;
 #. fix test failures ;
 #. implement additional |test case| ;
-#. when required, refine test hierarchy by defining test suites.
+#. when required, refine test |hierarchy| by defining test suites.
 
 As an **integrator**, you may be required to tweak test suites |run|
 configuration for proper integration within test regression / automation
@@ -165,7 +166,7 @@ As state above, result is unpredictable when the test function alters |CUTe|'s
 internal state consistency. In particular, the **test function is not allowed
 to** :
 
-* modify test hierarchy ;
+* modify test |hierarchy| ;
 * |run| tests or suites ;
 * alter |signal(7)| dispositions installed by |CUTe|.
 
@@ -332,9 +333,8 @@ workload compared to :c:macro:`CUTE_TEST_DEFN` usage. These are :
 * :c:macro:`CUTE_TEST_DECL` and :c:macro:`CUTE_TEST_EXTERN`.
 
 :c:macro:`CUTE_TEST_STATIC` allows to define a test with ``static`` global file
-scope. :ref:`Registering <sect-user-test_hierarchy-suite_definition>` the
-created test to a suite is then restricted to the source file where the suite is
-defined :
+scope. :ref:`Registering <sect-user-test_hierarchy>` the created test to a suite
+is then restricted to the source file where the suite is defined :
 
 .. code-block:: c
 
@@ -400,10 +400,62 @@ the created test case with the following signature scheme:
    static void <test_case_name>__cute_exec(void);
 
 Next section shows how to register test cases to suites and how to structure a
-complete test hierarchy.
+complete test |hierarchy|.
+
+.. _sect-user-test_hierarchy:
 
 Test hierarchy
 ==============
+
+Test hierarchy is structured around test suites. A suite is basically a
+container for (sub-)tests and / or (sub-)suites.
+Once a
+:ref:`suite has been defined <sect-user-test_hierarchy-suite_definition>`,
+(sub-)tests and / or (sub-)suites may be registered to it thanks to a `group
+definition`_.
+
+.. uml::
+   :align: center
+
+      @startuml
+
+      skinparam monochrome true
+      skinparam backgroundColor transparent
+      skinparam shadowing false
+      skinparam defaultFontSize 14
+      skinparam linetype ortho
+      skinparam circledCharacterFontSize 0
+      skinparam circledCharacterRadius 0
+      skinparam classAttributeIconSize 0
+      hide empty members
+
+      together {
+          class Base
+          class Suite
+      }
+
+      Base "*" --o "1" Suite
+      Group . (Suite, Base)
+      Base <|-- Suite
+      Base <|-- Test
+
+      @enduml
+
+
+To create a test hierarchy :
+
+* define |test case|\s,
+* :ref:`define a group <sect-user-test_hierarchy-group_definition>` referencing
+  tests defined above,
+* :ref:`define a suite <sect-user-test_hierarchy-suite_definition>` based on the
+  group defined above.
+
+Let's see how to define a group...
+
+.. _sect-user-test_hierarchy-group_definition:
+
+Group definition
+----------------
 
 .. _sect-user-test_hierarchy-suite_definition:
 
@@ -418,6 +470,9 @@ Timeout inheritance
 
 Instantiation
 -------------
+
+Test assertions
+===============
 
 .. _sect-user-building_tests:
 
@@ -528,8 +583,8 @@ it.
 Test reports
 ============
 
-Console settings
-----------------
+Console
+-------
 
 JUnit XML
 ---------

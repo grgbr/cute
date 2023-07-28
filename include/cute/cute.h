@@ -410,9 +410,9 @@
 #define CUTE_SUITE_DECL(_name) \
 	const struct cute_suite _name
 
-#define CUTE_SUITE_DEFN(_name, _tests, _setup, _teardown, _tmout) \
+#define CUTE_SUITE_DEFN(_name, _group, _setup, _teardown, _tmout) \
 	const struct cute_suite _name = CUTE_SUITE_INIT(# _name, \
-	                                                _tests, \
+	                                                _group, \
 	                                                _setup, \
 	                                                _teardown, \
 	                                                _tmout)
