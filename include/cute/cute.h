@@ -143,6 +143,8 @@
  * #ifndef _SAMPLE_TEST_H
  * #define _SAMPLE_TEST_H
  *
+ * #include <cute/cute.h>
+ *
  * extern CUTE_TEST_DECL(sample_test);
  *
  * #endif
@@ -251,10 +253,10 @@
  * Define a test case designated by the @p _name variable with static global
  * file scope. The test case is created with attributes given in argument as
  * explained below.
- * 
+ *
  * In addition, #CUTE_TEST_STATIC must be immediately followed by a block of
  * instructions defining the related testing logic as stated in #CUTE_TEST_DEFN.
- * 
+ *
  * @p _setup is a setup() fixture function as described in #CUTE_TEST_DEFN.
  * @p _teardown is a teardown() fixture function as described in
  * #CUTE_TEST_DEFN.
@@ -308,6 +310,12 @@
  * Use #CUTE_TEST_DECL to produce a declaration in a header file so that the
  * created test case may be referenced from other compilation units.
  *
+ * @see
+ * - #CUTE_TEST
+ * - #CUTE_TEST_DEFN
+ * - #CUTE_TEST_DECL
+ * - #CUTE_TEST_STATIC
+ *
  * **Example definition**
  * @code
  * #include "sample_test.h"
@@ -326,16 +334,12 @@
  * #ifndef _SAMPLE_TEST_H
  * #define _SAMPLE_TEST_H
  *
+ * #include <cute/cute.h>
+ *
  * extern CUTE_TEST_DECL(sample_test);
  *
  * #endif
  * @endcode
- *
- * @see
- * - #CUTE_TEST
- * - #CUTE_TEST_DEFN
- * - #CUTE_TEST_DECL
- * - #CUTE_TEST_STATIC
  */
 #define CUTE_TEST_EXTERN(_name, _setup, _teardown, _tmout) \
 	static void _name ## __cute_exec(void); \
@@ -347,7 +351,7 @@
 	static void _name ## __cute_exec(void)
 
 /**
- * Define a test case.
+ * Define a test case with default attributes and class storage
  *
  * @param[in] _name test case name
  *
@@ -355,6 +359,10 @@
  * immediately followed by a block of instructions defining the related testing
  * logic as stated in #CUTE_TEST_DEFN.
  *
+ * The @p _name test case variable is defined with default class storage
+ * specifier, i.e. static global file scope.
+ *
+ * file scope. The test case is created with attributes given in argument as
  * When @p _name test is registered to a suite, it inherits setup() and
  * teardown() fixture functions from its parent suite. It is attached dummy /
  * null fixture functions otherwise.
@@ -385,21 +393,258 @@
  * Test group definitions
  ******************************************************************************/
 
+/**
+ * Return a pointer to a test case or suite.
+ *
+ * @param[in] _name test or suite name
+ *
+ * Use #CUTE_REF to define collections of test cases or suites when initializing
+ * test groups.
+ *
+ * @see
+ * - #CUTE_GROUP
+ * - #CUTE_GROUP_STATIC
+ * - #CUTE_GROUP_EXTERN
+ * - #CUTE_GROUP_DEFN
+ *
+ * **Example**
+ * @code
+ * CUTE_TEST(sample_subtest)
+ * {
+ *      cute_check_assert(0 == 0);
+ * }
+ *
+ * CUTE_GROUP(sample_subgroup) = {
+ *      CUTE_REF(sample_subtest)
+ * };
+ *
+ * CUTE_SUITE(sample_subsuite, sample_subgroup);
+ *
+ * CUTE_TEST(sample_test)
+ * {
+ *      cute_check_assert(1 == 1);
+ * }
+ *
+ * CUTE_GROUP(sample_group) = {
+ *      CUTE_REF(sample_subsuite),
+ *      CUTE_REF(sample_test)
+ * };
+ *
+ * CUTE_SUITE(sample_suite, sample_group);
+ * @endcode
+ */
 #define CUTE_REF(_name) \
 	(&(_name).super)
 
+/**
+ * Declare a test group
+ *
+ * @param[in] _name test group name
+ *
+ * Declare a test group designated by the @p _name variable that may later be
+ * used to define suites.
+ *
+ * Use this in combination with #CUTE_GROUP_EXTERN or #CUTE_GROUP_DEFN to allow
+ * referencing defined test group from multiple compilation units.
+ *
+ * **Example**
+ * @code
+ * #ifndef _SAMPLE_TEST_H
+ * #define _SAMPLE_TEST_H
+ *
+ * #include <cute/cute.h>
+ *
+ * extern CUTE_GROUP_DECL(sample_group);
+ *
+ * #endif
+ * @endcode
+ *
+ * @see
+ * - #CUTE_GROUP_DEFN
+ * - #CUTE_GROUP_EXTERN
+ */
 #define CUTE_GROUP_DECL(_name) \
 	const struct cute_base * const * const _name
 
+/**
+ * Define a test group
+ *
+ * @param[in] _name test group name
+ *
+ * Define a test group designated by the @p _name variable that may later be
+ * used to define suites.
+ *
+ * #CUTE_GROUP_DEFN must be immediately followed by an initializer. It should
+ * define the collection of tests (and / or suites) that composes the @p _name
+ * group thanks to the #CUTE_REF macro as shown in the example below.
+ *
+ * @see
+ * - #CUTE_REF
+ * - #CUTE_GROUP
+ * - #CUTE_GROUP_STATIC
+ * - #CUTE_GROUP_EXTERN
+ * - #CUTE_GROUP_DECL
+ * - #CUTE_SUITE
+ *
+ * **Example**
+ * @code
+ * CUTE_TEST(sample_test_0)
+ * {
+ *      cute_check_assert(0 == 0);
+ * }
+ *
+ * CUTE_TEST(sample_test_1)
+ * {
+ *      cute_check_assert(1 == 1);
+ * }
+ *
+ * static CUTE_GROUP_DEFN(sample_group) = {
+ *      CUTE_REF(sample_test_0),
+ *      CUTE_REF(sample_test_1)
+ * };
+ *
+ * CUTE_SUITE(sample_suite, sample_group);
+ * @endcode
+ */
 #define CUTE_GROUP_DEFN(_name) \
 	const struct cute_base * const _name[]
 
+/**
+ * Define a test group with static global file scope
+ *
+ * @param[in] _name test group name
+ *
+ * Define a test group designated by the @p _name variable that may later be
+ * used to define suites.
+ * The @p _name test group variable is defined with static global file scope.
+ *
+ * #CUTE_GROUP_STATIC must be immediately followed by an initializer as stated
+ * in #CUTE_GROUP_DEFN.
+ *
+ * @see
+ * - #CUTE_REF
+ * - #CUTE_GROUP
+ * - #CUTE_GROUP_EXTERN
+ * - #CUTE_GROUP_DEFN
+ *
+ * **Example**
+ * @code
+ * CUTE_TEST(sample_test_0)
+ * {
+ *      cute_check_assert(0 == 0);
+ * }
+ *
+ * CUTE_TEST(sample_test_1)
+ * {
+ *      cute_check_assert(1 == 1);
+ * }
+ *
+ * CUTE_GROUP_STATIC(sample_group) = {
+ *      CUTE_REF(sample_test_0),
+ *      CUTE_REF(sample_test_1)
+ * };
+ *
+ * CUTE_SUITE(sample_suite, sample_group);
+ * @endcode
+ */
 #define CUTE_GROUP_STATIC(_name) \
 	static CUTE_GROUP_DEFN(_name)
 
+/**
+ * Define a test group with external linkage
+ *
+ * @param[in] _name test group name
+ *
+ * Define a test group designated by the @p _name variable that may later be
+ * used to define suites.
+ * The @p _name test group variable is defined with default global file scope,
+ * i.e., with external linkage.
+ *
+ * #CUTE_GROUP_EXTERN must be immediately followed by an initializer as stated
+ * in #CUTE_GROUP_DEFN.
+ *
+ * Use #CUTE_GROUP_DECL to produce a declaration in a header file so that the
+ * created test group may be referenced from other compilation units.
+ *
+ * @see
+ * - #CUTE_REF
+ * - #CUTE_GROUP
+ * - #CUTE_GROUP_STATIC
+ * - #CUTE_GROUP_DEFN
+ * - #CUTE_GROUP_DECL
+ *
+ * **Example definition**
+ * @code
+ * CUTE_TEST(sample_test_0)
+ * {
+ *      cute_check_assert(0 == 0);
+ * }
+ *
+ * CUTE_TEST(sample_test_1)
+ * {
+ *      cute_check_assert(1 == 1);
+ * }
+ *
+ * CUTE_GROUP_EXTERN(sample_group) = {
+ *      CUTE_REF(sample_test_0),
+ *      CUTE_REF(sample_test_1)
+ * };
+ * @endcode
+ *
+ * **Example declaration** in a sample_test.h header file
+ * @code
+ * #ifndef _SAMPLE_TEST_H
+ * #define _SAMPLE_TEST_H
+ *
+ * #include <cute/cute.h>
+ *
+ * extern CUTE_GROUP_DECL(sample_test);
+ *
+ * #endif
+ * @endcode
+ */
 #define CUTE_GROUP_EXTERN(_name) \
 	CUTE_GROUP_DEFN(_name)
 
+/**
+ * Define a test group with default class storage
+ *
+ * @param[in] _name test group name
+ *
+ * Define a test group designated by the @p _name variable that may later be
+ * used to define suites.
+ * The @p _name test group variable is defined with default class storage
+ * specifier, i.e., static global file scope.
+ *
+ * #CUTE_GROUP must be immediately followed by an initializer as stated in
+ * #CUTE_GROUP_DEFN.
+ *
+ * @see
+ * - #CUTE_REF
+ * - #CUTE_GROUP_STATIC
+ * - #CUTE_GROUP_EXTERN
+ * - #CUTE_GROUP_DEFN
+ *
+ * **Example**
+ * @code
+ * CUTE_TEST(sample_test_0)
+ * {
+ *      cute_check_assert(0 == 0);
+ * }
+ *
+ * CUTE_TEST(sample_test_1)
+ * {
+ *      cute_check_assert(1 == 1);
+ * }
+ *
+ * CUTE_GROUP(sample_group) = {
+ *      CUTE_REF(sample_test_0),
+ *      CUTE_REF(sample_test_1)
+ * };
+ *
+ * CUTE_SUITE(sample_suite, sample_group);
+ * @endcode
+ */
 #define CUTE_GROUP(_name) \
 	CUTE_GROUP_STATIC(_name)
 

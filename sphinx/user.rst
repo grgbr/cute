@@ -8,6 +8,7 @@
 .. _tap:            https://testanything.org/
 .. _junit:          https://en.wikipedia.org/wiki/JUnit
 .. _glibc:          https://www.gnu.org/software/libc/
+.. _umlclass:       https://en.wikipedia.org/wiki/Class_diagram
 .. |longjmp(3)|     replace:: :manpage:`longjmp(3)`
 .. |fork(2)|        replace:: :manpage:`fork(2)`
 .. |signal(7)|      replace:: :manpage:`signal(7)`
@@ -414,6 +415,8 @@ Once a
 (sub-)tests and / or (sub-)suites may be registered to it thanks to a `group
 definition`_.
 
+A test hierarchy `UML class diagram <umlclass_>`_ would barely look like:
+
 .. uml::
    :align: center
 
@@ -441,8 +444,7 @@ definition`_.
 
       @enduml
 
-
-To create a test hierarchy :
+To create a test hierarchy, follow the typical workflow hereafter :
 
 * define |test case|\s,
 * :ref:`define a group <sect-user-test_hierarchy-group_definition>` referencing
@@ -452,10 +454,50 @@ To create a test hierarchy :
 
 Let's see how to define a group...
 
+.. index:: group definition, test group definition
 .. _sect-user-test_hierarchy-group_definition:
 
 Group definition
 ----------------
+
+A test group is basically an ordered collection of test cases and / or suites.
+
+Using the :c:macro:`CUTE_GROUP` macro is the most straightforward way to define
+a group:
+
+.. code-block:: c
+
+   CUTE_TEST(sample_test_0)
+   {
+        /* Implement testing logic here */
+   }
+
+   CUTE_TEST(sample_test_1)
+   {
+        /* Implement testing logic here */
+   }
+
+   CUTE_GROUP(sample_group) = {
+        CUTE_REF(sample_test_0),
+        CUTE_REF(sample_test_1),
+   };
+
+The code sample above defines 2 test cases respectively named ``sample_test_0``
+and ``sample_test_1``. The call to :c:macro:`CUTE_GROUP` defines a test group
+name ``sample_group`` that aggregates both test cases created above.
+You may later :ref:`define suite(s) <sect-user-test_hierarchy-suite_definition>`
+by using the variable named ``sample_group`` which itself refers to the created
+group.
+
+This test group variable is defined with *static global file scope*. However,
+for additional flexibility and reusability, |CUTe| also provides the following
+macros that allow to specify a desired global file scope :
+
+* :c:macro:`CUTE_GROUP_STATIC`,
+* :c:macro:`CUTE_GROUP_EXTERN`,
+* :c:macro:`CUTE_GROUP_DEFN` and :c:macro:`CUTE_GROUP_DECL`.
+
+Now that a group has been defined, let's see how to use it to define a suite...
 
 .. _sect-user-test_hierarchy-suite_definition:
 

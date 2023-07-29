@@ -5,7 +5,7 @@
 Overview
 ========
 
-This document is a reference manual of |CUTe|'s programmatic API.
+Here is the |CUTe|'s programmatic API reference manual.
 
 .. index:: build configuration, configuration macros
 
@@ -56,8 +56,8 @@ tests or suites at definition time. These are:
    single: timer; API
    single: test timer; API
 
-Test Timeouts
-=============
+Timeouts
+========
 
 Various C preprocessor macros are exposed to assign timeouts to tests or suites
 at definition time. These are:
@@ -65,6 +65,22 @@ at definition time. These are:
 * :c:macro:`CUTE_DFLT_TMOUT`
 * :c:macro:`CUTE_INHR_TMOUT`
 * :c:macro:`CUTE_NONE_TMOUT`
+
+.. index::
+   single: group definition; API
+   single: test group definition; API
+
+Group definition
+================
+
+Various C preprocessor macros are exposed to define test groups. These are:
+
+* :c:macro:`CUTE_REF`
+* :c:macro:`CUTE_GROUP`
+* :c:macro:`CUTE_GROUP_DEFN`
+* :c:macro:`CUTE_GROUP_DECL`
+* :c:macro:`CUTE_GROUP_STATIC`
+* :c:macro:`CUTE_GROUP_EXTERN`
 
 .. index:: API reference, reference
 
@@ -91,6 +107,31 @@ CUTE_DFLT_TMOUT
 ***************
 
 .. doxygendefine:: CUTE_DFLT_TMOUT
+
+CUTE_GROUP
+**********
+
+.. doxygendefine:: CUTE_GROUP
+
+CUTE_GROUP_DEFN
+***************
+
+.. doxygendefine:: CUTE_GROUP_DEFN
+
+CUTE_GROUP_DECL
+***************
+
+.. doxygendefine:: CUTE_GROUP_DECL
+
+CUTE_GROUP_STATIC
+*****************
+
+.. doxygendefine:: CUTE_GROUP_STATIC
+
+CUTE_GROUP_EXTERN
+*****************
+
+.. doxygendefine:: CUTE_GROUP_EXTERN
 
 CUTE_INHR_SETUP
 ***************
@@ -121,6 +162,11 @@ CUTE_NULL_TEARDOWN
 ******************
 
 .. doxygendefine:: CUTE_NULL_TEARDOWN
+
+CUTE_REF
+********
+
+.. doxygendefine:: CUTE_REF
 
 CUTE_TEST
 *********
