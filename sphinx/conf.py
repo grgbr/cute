@@ -51,7 +51,7 @@ master_title = u'CUTe Documentation'
 
 # General information about the project.
 project = u'CUTe'
-copyright = u"Copyright (C) 2017-2033 Grégor Boirie"
+copyright = u"2017-2033 Grégor Boirie"
 author = u"Grégor Boirie"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -116,6 +116,12 @@ html_theme_options = {
         'collapse_navigation': False,
         'sticky_navigation': True,
 }
+
+html_static_path = ['_static']
+
+html_css_files = [
+    'custom.css',
+]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
