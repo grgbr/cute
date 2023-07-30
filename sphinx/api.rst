@@ -1,5 +1,7 @@
 .. include:: _cdefs.rst
 
+.. |timeout| replace:: :ref:`timeout <sect-user-writing_tests-test_timeout>`
+
 .. _sect-api-overview:
 
 Overview
@@ -34,6 +36,9 @@ Various C preprocessor macros are exposed to define test cases. These are:
 * :c:macro:`CUTE_TEST_STATIC`
 * :c:macro:`CUTE_TEST_EXTERN`
 
+See |test case| definition section of :doc:`User guide <user>` for more
+informations.
+
 .. index::
    single: fixture; API
    single: fixture operation; API
@@ -49,6 +54,9 @@ tests or suites at definition time. These are:
 * :c:macro:`CUTE_NULL_TEARDOWN`
 * :c:macro:`CUTE_INHR_SETUP`
 * :c:macro:`CUTE_INHR_TEARDOWN`
+
+See |fixture| operations section of :doc:`User guide <user>` for more
+informations.
 
 .. index::
    single: timeout; API
@@ -66,6 +74,8 @@ at definition time. These are:
 * :c:macro:`CUTE_INHR_TMOUT`
 * :c:macro:`CUTE_NONE_TMOUT`
 
+See |timer| section of :doc:`User guide <user>` for more informations.
+
 .. index::
    single: group definition; API
    single: test group definition; API
@@ -81,6 +91,27 @@ Various C preprocessor macros are exposed to define test groups. These are:
 * :c:macro:`CUTE_GROUP_DECL`
 * :c:macro:`CUTE_GROUP_STATIC`
 * :c:macro:`CUTE_GROUP_EXTERN`
+
+See |group| definition section of :doc:`User guide <user>` for more
+informations.
+
+.. index::
+   single: suite definition; API
+   single: test suite definition; API
+
+Suite definition
+================
+
+Various C preprocessor macros are exposed to define test suites. These are:
+
+* :c:macro:`CUTE_SUITE`
+* :c:macro:`CUTE_SUITE_DEFN`
+* :c:macro:`CUTE_SUITE_DECL`
+* :c:macro:`CUTE_SUITE_STATIC`
+* :c:macro:`CUTE_SUITE_EXTERN`
+
+See |suite| definition section of :doc:`User guide <user>` for more
+informations.
 
 .. index:: API reference, reference
 
@@ -167,6 +198,31 @@ CUTE_REF
 ********
 
 .. doxygendefine:: CUTE_REF
+
+CUTE_SUITE
+**********
+
+.. doxygendefine:: CUTE_SUITE
+
+CUTE_SUITE_DEFN
+***************
+
+.. doxygendefine:: CUTE_SUITE_DEFN
+
+CUTE_SUITE_DECL
+***************
+
+.. doxygendefine:: CUTE_SUITE_DECL
+
+CUTE_SUITE_STATIC
+*****************
+
+.. doxygendefine:: CUTE_SUITE_STATIC
+
+CUTE_SUITE_EXTERN
+*****************
+
+.. doxygendefine:: CUTE_SUITE_EXTERN
 
 CUTE_TEST
 *********

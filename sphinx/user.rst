@@ -12,9 +12,6 @@
 .. |longjmp(3)|     replace:: :manpage:`longjmp(3)`
 .. |fork(2)|        replace:: :manpage:`fork(2)`
 .. |signal(7)|      replace:: :manpage:`signal(7)`
-.. |fixture|        replace:: :ref:`fixture <sect-user-writing_tests-fixture_operations>`
-.. |timer|          replace:: :ref:`timer <sect-user-writing_tests-test_timeout>`
-.. |test case|      replace:: :ref:`test case <sect-user-writing_tests-test_definition>`
 .. |file scope|     replace:: :ref:`file scope <sect-user-writing_tests-file_scope>`
 .. |hierarchy|      replace:: :ref:`hierarchy <sect-user-test_hierarchy>`
 .. |build|          replace:: :ref:`build <sect-user-building_tests>`
@@ -268,6 +265,21 @@ Use the :c:macro:`CUTE_TEST_DEFN` macro to define a fixture'd test case:
                          sample_teardown,
                          CUTE_DFLT_TMOUT);
 
+Fixture functions may be specified at |test case| definition time using either
+of the following alternatives :
+
+* :c:macro:`CUTE_NULL_SETUP`, denoting an empty / NULL setup function ;
+* :c:macro:`CUTE_INHR_SETUP`, requesting a setup fixture operation
+  :ref:`inherited from the parent <sect-user-test_hierarchy-fixture_inheritance>`
+  suite if existing and which falls back to :c:macro:`CUTE_NULL_SETUP`
+  otherwise ;
+* :c:macro:`CUTE_NULL_TEARDOWN`, denoting an empty / NULL teardown function ;
+* :c:macro:`CUTE_INHR_TEARDOWN`, requesting a teardown fixture operation
+  :ref:`inherited from the parent <sect-user-test_hierarchy-fixture_inheritance>`
+  suite if existing and which falls back to :c:macro:`CUTE_NULL_TEARDOWN`
+  otherwise ;
+* the address of a custom function as mentionned above.
+
 .. index:: timeout, test timeout, timer, test timer
 .. _sect-user-writing_tests-test_timeout:
 
@@ -277,7 +289,6 @@ Test timeout
 To protect against situations where a |test case| or |fixture| function hangs,
 |CUTe| may arm a test timer that interrupts current test case execution upon
 expiry.
-
 The timeout may be specified at |test case| definition time using one of the
 following C macros :
 
@@ -289,11 +300,13 @@ All 3 macros take a timeout setting passed as ``_tmout`` argument and which may
 be specified as one of :
 
 * :c:macro:`CUTE_DFLT_TMOUT`, denoting a default timeout of 3 seconds ;
-* :c:macro:`CUTE_INHR_TMOUT`, requesting a timeout inherited from the parent
+* :c:macro:`CUTE_INHR_TMOUT`, requesting a timeout
+  :ref:`inherited from the parent <sect-user-test_hierarchy-timeout_inheritance>`
   suite if existing and which falls back to :c:macro:`CUTE_DFLT_TMOUT`
   otherwise ;
 * :c:macro:`CUTE_NONE_TMOUT`, to disable the timeout mechanism ;
-* or an *unsigned integer*, specifying a timeout value expressed as seconds.
+* or a *non-zero unsigned integer*, specifying a timeout value expressed as
+  seconds.
 
 When the timer expires, the current |test case| or |fixture| function execution
 is *interrupted*, |CUTe| marks the test as *failing* then proceeds to the *next*
@@ -346,7 +359,7 @@ is then restricted to the source file where the suite is defined :
    CUTE_TEST_STATIC(sample_static_test,
                     CUTE_INHR_SETUP,
                     CUTE_INHR_TEARDOWN,
-                    CUTE_INHR_TMOUT);
+                    CUTE_INHR_TMOUT)
    {
         /* Implement testing logic here */
    }
@@ -412,8 +425,8 @@ Test hierarchy is structured around test suites. A suite is basically a
 container for (sub-)tests and / or (sub-)suites.
 Once a
 :ref:`suite has been defined <sect-user-test_hierarchy-suite_definition>`,
-(sub-)tests and / or (sub-)suites may be registered to it thanks to a `group
-definition`_.
+(sub-)tests and / or (sub-)suites may be registered to it thanks to a |group|
+definition.
 
 A test hierarchy `UML class diagram <umlclass_>`_ would barely look like:
 
@@ -447,8 +460,7 @@ A test hierarchy `UML class diagram <umlclass_>`_ would barely look like:
 To create a test hierarchy, follow the typical workflow hereafter :
 
 * define |test case|\s,
-* :ref:`define a group <sect-user-test_hierarchy-group_definition>` referencing
-  tests defined above,
+* define a |group| referencing tests defined above,
 * :ref:`define a suite <sect-user-test_hierarchy-suite_definition>` based on the
   group defined above.
 
@@ -499,19 +511,171 @@ macros that allow to specify a desired global file scope :
 
 Now that a group has been defined, let's see how to use it to define a suite...
 
+.. index:: suite definition, test suite definition
 .. _sect-user-test_hierarchy-suite_definition:
 
 Suite definition
 ----------------
 
+At running time, a suite iterates over tests and / or suites and run each one of
+them sequencially according to the order they are registered to it.
+Tests and / or suites are registered to a parent suite thanks to the |group|
+given in argument at definition time.
+
+To **define a suite**, one is expected to:
+
+* define a |group| of tests and / or suites,
+* define the suite using the |group| created above,
+* optionally specify |fixture| function(s) and / or |timer|.
+
+Using the :c:macro:`CUTE_SUITE` macro is the most straightforward way to define
+a suite:
+
+.. code-block:: c
+
+   CUTE_TEST(sample_test_0)
+   {
+        /* Implement testing logic here */
+   }
+
+   CUTE_TEST(sample_test_1)
+   {
+        /* Implement testing logic here */
+   }
+
+   CUTE_GROUP(sample_group) = {
+        CUTE_REF(sample_test_0),
+        CUTE_REF(sample_test_1)
+   };
+
+   CUTE_SUITE(sample_suite, sample_group);
+
+The code sample above implements a test group named ``sample_group`` which
+aggregates 2 test cases named ``sample_test_0`` and ``sample_test_1``
+respectively.
+A test suite named ``sample_suite`` is defined using the :c:macro:`CUTE_SUITE`
+which is passed the ``sample_group`` test group as argument.
+
+As not specified, no particular |fixture| functions are attached to the
+``sample_suite`` test suite, meaning that it will inherit them from an eventual
+parent suite if explicitly registered.
+
+In addition, as no test |timer| is specified, it will inherit its timeout
+setting from an eventual parent suite if explicitly registered.
+
+For additional flexibility, |CUTe| also allows to :
+
+* attach :ref:`fixture <sect-user-test_hierarchy-fixture_inheritance>` functions
+  to suites ;
+* assign a :ref:`timeout setting <sect-user-test_hierarchy-timeout_inheritance>`
+  to suites ;
+* specify :ref:`global file scope <sect-user-test_hierarchy-file_scope>` for
+  suites.
+
+.. index:: fixture inheritance
+.. _sect-user-test_hierarchy-fixture_inheritance:
+
 Fixture inheritance
 -------------------
+
+A test |suite| may be attached optional |fixture| operations to setup runtime
+preconditions and / or postconditions of |test case|\s registered to it.
+
+.. important::
+
+   |fixture| operations registered to a suite **are not executed prior to /
+   after running the suite** as it would for a |test case|.
+
+   Suite |fixture| operations registering is just a mechanism allowing a |test
+   case| to inherit ``setup()`` and ``teardown()`` operations from its nearest
+   ancestor if it requests it at definition time.
+
+Use the :c:macro:`CUTE_SUITE_DEFN` macro to define a fixture'd test suite:
+
+.. code-block:: c
+
+   static int value;
+
+   static void sample_setup(void)
+   {
+        value = 1;
+   }
+
+   /*
+    * Define `sample_test_0' test case with default inherited fixture operations
+    * and timeout setting.
+    */
+   CUTE_TEST(sample_test_0)
+   {
+        cute_check_assert(value > 0);
+   }
+
+   static void sample_setup_1(void)
+   {
+        value = 5;
+   }
+
+   /*
+    * Define `sample_test_1' test case with `sample_setup_1()` as setup()
+    * fixture operation, inherited teardown() operation and timeout
+    * setting.
+    */
+   CUTE_TEST_STATIC(sample_test_1,
+                    sample_setup_1,
+                    CUTE_INHR_TEARDOWN,
+                    CUTE_INHR_TMOUT)
+   {
+        cute_check_assert(value == 5);
+   }
+
+   CUTE_GROUP(sample_group) = {
+        CUTE_REF(sample_test_0),
+        CUTE_REF(sample_test_1)
+   };
+
+   /*
+    * Define `sample_fixtured_suite' test suite with attached setup() and
+    * teardown() fixture operations as well as default test timeout.
+    */
+   static CUTE_SUITE_DEFN(sample_fixtured_suite,
+                          sample_group,
+                          sample_setup,
+                          CUTE_NULL_TEARDOWN,
+                          CUTE_DFLT_TMOUT);
+
+In the example above, note how the ``sample_test_1`` |test case| is attached the
+``sample_setup_1()`` function as ``setup()`` fixture operation. Conversely, the
+``sample_test_0`` |test case| is defined with |fixture| operations inherited
+from the ``sample_fixtured_suite`` test suite.
+Thereby, running ``sample_fixtured_suite`` carries out the following sequence of
+operations :
+
+1. run ``sample_test_0`` :
+
+   a. execute ``sample_setup()`` function inherited from the
+      ``sample_fixtured_suite`` test suite,
+   b. execute ``sample_setup_0`` test function,
+   c. skip ``teardown()`` operation thanks to the :c:macro:`CUTE_NULL_TEARDOWN`
+      setting inherited from the ``sample_fixtured_suite`` test suite,
+
+2. run ``sample_test_1`` :
+
+   a. execute ``sample_setup_1()``,
+   b. execute ``sample_test_1`` test function,
+   c. skip ``teardown()`` operation thanks to the :c:macro:`CUTE_NULL_TEARDOWN`
+      setting inherited from ``sample_fixtured_suite`` test suite,
+
+.. index:: timeout inheritance
+.. _sect-user-test_hierarchy-timeout_inheritance:
 
 Timeout inheritance
 -------------------
 
-Instantiation
--------------
+.. index:: suite file scope, test suite file scope
+.. _sect-user-test_hierarchy-file_scope:
+
+File scope
+----------
 
 Test assertions
 ===============
@@ -526,10 +690,21 @@ Building tests
 Running tests
 =============
 
-|Build|'ing a test hierarchy which instantiation_ is based upon
-:c:func:`cute_main` and / or :c:macro:`CUTE_MAIN`, should produce an executable
-that allows to run tests and / or suites according to arguments given on the
-command line.
+Initialization
+--------------
+
+Listing suites
+--------------
+
+Running suites
+--------------
+
+Command line
+------------
+
+|Build|'ing a test hierarchy which runs thanks to :c:func:`cute_main` and / or
+:c:macro:`CUTE_MAIN`, should produce an executable that allows to run tests and
+/ or suites according to arguments given on the command line.
 
 Unless command line arguments parsing was modified by the test developper, the
 produced executable should behave like what is shown for the fictional
@@ -564,43 +739,43 @@ described in |regex(7)|.
 
 .. program:: sample-test
 
-.. option:: -d|--debug
+.. option:: -d, --debug
 
    Run in debug mode without neither exception handling nor timeouts.
 
    This may be useful when running a test hierarchy under a debugger (see
    |test case| section).
 
-.. option:: -i|--icase
+.. option:: -i, --icase
 
    Ignore case when matching against <*PATTERN*>.
 
-.. option:: -s|--silent
+.. option:: -s, --silent
 
    Silence all suites and tests console output.
 
    :option:`-s`, :option:`--silent`, :option:`-t`, :option:`--terse`,
    :option:`-v`, and :option:`--verbose` options are exclusive.
 
-.. option:: -t[<COLOR>]|--terse[=<COLOR>]
+.. option:: -t[<COLOR>], --terse[=<COLOR>]
 
    Enable minimal suites and tests console output.
 
    :option:`-s`, :option:`--silent`, :option:`-t`, :option:`--terse`,
    :option:`-v`, and :option:`--verbose` options are exclusive.
 
-.. option:: -v[<COLOR>]|--verbose[=<COLOR>]
+.. option:: -v[<COLOR>], --verbose[=<COLOR>]
 
    Enable verbose suites and tests console output.
 
    :option:`-s`, :option:`--silent`, :option:`-t`, :option:`--terse`,
    :option:`-v`, and :option:`--verbose` options are exclusive.
 
-.. option:: -x[<PATH>]|--xml[=<PATH>]
+.. option:: -x[<PATH>], --xml[=<PATH>]
 
    Generate output to <*PATH*> according to JUnit XML format.
 
-.. option:: -a[<PATH>]|--tap[=<PATH>]
+.. option:: -a[<PATH>], --tap[=<PATH>]
 
    Generate output to <*PATH*> according to Test Anything Protocol format.
 
