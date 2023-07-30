@@ -496,7 +496,7 @@ a group:
 
 The code sample above defines 2 test cases respectively named ``sample_test_0``
 and ``sample_test_1``. The call to :c:macro:`CUTE_GROUP` defines a test group
-name ``sample_group`` that aggregates both test cases created above.
+named ``sample_group`` that aggregates both test cases created above.
 You may later :ref:`define suite(s) <sect-user-test_hierarchy-suite_definition>`
 by using the variable named ``sample_group`` which itself refers to the created
 group.
