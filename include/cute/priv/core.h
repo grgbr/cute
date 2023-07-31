@@ -84,6 +84,13 @@ struct cute_suite {
 		.tests = _tests \
 	}
 
+extern int
+cute_main(int                       argc,
+          char * const              argv[],
+          const struct cute_suite * suite,
+          const char *              package,
+          const char *              version) __cute_export;
+
 extern void
 _cute_skip(const char * reason,
            const char * file,

@@ -985,13 +985,36 @@ cute_init(struct cute_config * config,
 extern void
 cute_fini(void) __cute_export;
 
-extern int
-cute_main(int                       argc,
-          char * const              argv[],
-          const struct cute_suite * suite,
-          const char *              package,
-          const char *              version) __cute_export;
-
+/**
+ * Test hierarchy runner main entry point.
+ *
+ * @param[in] _root    top-level test hierarchy suite
+ * @param[in] _package package name string
+ * @param[in] _version package version string
+ *
+ * Use #CUTE_MAIN as the ``main()`` entry point replacement for a test hierarchy
+ * runner executable.
+ *
+ * @see #CUTE_SUITE
+ *
+ * **Example**
+ * @code
+ * #include <cute/cute.h>
+ *
+ * CUTE_TEST(my_first_failing_test)
+ * {
+ *      cute_fail(NULL);
+ * }
+ *
+ * CUTE_GROUP(my_first_group) = {
+ *      CUTE_REF(my_first_failing_test)
+ * };
+ *
+ * CUTE_SUITE(my_first_suite, my_first_group);
+ *
+ * CUTE_MAIN(my_first_suite, "My first package", "0.1")
+ * @endcode
+ */
 #define CUTE_MAIN(_root, _package, _version) \
 	int main(int argc, char * const argv[]) \
 	{ \

@@ -1,13 +1,15 @@
 .. include:: _cdefs.rst
 
-.. |timeout| replace:: :ref:`timeout <sect-user-writing_tests-test_timeout>`
+.. |timeout|    replace:: :ref:`timeout <sect-user-writing_tests-test_timeout>`
+.. |user guide| replace:: :doc:`User guide <user>`
 
 .. _sect-api-overview:
 
 Overview
 ========
 
-Here is the |CUTe|'s programmatic API reference manual.
+Here is the |CUTe|'s programmatic API reference manual. If you need an in-depth
+description of |CUTe| usage, you should refer to the |user guide| instead.
 
 .. index:: build configuration, configuration macros
 
@@ -36,8 +38,7 @@ Various C preprocessor macros are exposed to define test cases. These are:
 * :c:macro:`CUTE_TEST_STATIC`
 * :c:macro:`CUTE_TEST_EXTERN`
 
-See |test case| definition section of :doc:`User guide <user>` for more
-informations.
+See |test case| definition section of |user guide| for more informations.
 
 .. index::
    single: fixture; API
@@ -113,6 +114,12 @@ Various C preprocessor macros are exposed to define test suites. These are:
 See |suite| definition section of :doc:`User guide <user>` for more
 informations.
 
+Running
+=======
+
+As a shorthand, use :c:macro:`CUTE_MAIN` as replacement for ``main()`` entry
+point of a test hierarchy runner executable.
+
 .. index:: API reference, reference
 
 Reference
@@ -178,6 +185,11 @@ CUTE_INHR_TMOUT
 ***************
 
 .. doxygendefine:: CUTE_INHR_TMOUT
+
+CUTE_MAIN
+*********
+
+.. doxygendefine:: CUTE_MAIN
 
 CUTE_NONE_TMOUT
 ***************
