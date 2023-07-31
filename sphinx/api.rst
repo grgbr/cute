@@ -141,6 +141,11 @@ CONFIG_CUTE_UTEST
 Macros
 ------
 
+CUTE_CONFIG_INIT
+****************
+
+.. doxygendefine:: CUTE_CONFIG_INIT
+
 CUTE_DFLT_TMOUT
 ***************
 
@@ -260,3 +265,37 @@ CUTE_TEST_STATIC
 ****************
 
 .. doxygendefine:: CUTE_TEST_STATIC
+
+Enums
+-----
+
+cute_config_report
+******************
+
+.. doxygenenum:: cute_config_report
+
+cute_config_tty
+***************
+
+.. doxygenenum:: cute_config_tty
+
+Structs
+-------
+
+cute_config
+***********
+
+.. doxygenstruct:: cute_config
+
+Functions
+---------
+
+cute_init
+*********
+
+.. doxygenfunction:: cute_init
+
+cute_fini
+*********
+
+.. doxygenfunction:: cute_fini

@@ -1,5 +1,6 @@
 .. include:: _cdefs.rst
 
+.. |API|            replace:: :doc:`API <api>`
 .. _tdd:            https://en.wikipedia.org/wiki/Test-driven_development
 .. _bdd:            https://en.wikipedia.org/wiki/Behavior-driven_development
 .. _regtest:        https://en.wikipedia.org/wiki/Regression_testing
@@ -44,7 +45,7 @@ designed with the following goals in mind:
 * `JUnit <junit_>`_ XML reporting
 * `Test Anything Protocol <tap_>`_ reporting
 * ease debugging of test failures
-* clear and expressive C API
+* clear and expressive C |API|
 * C library dependency only
 
 .. rubric:: Limitations
@@ -59,7 +60,7 @@ Basic concepts
 ==============
 
 |CUTe| is a framework allowing to write, manage and run unit tests in C. It's
-:ref:`API <sect-api-overview>` provides a set of functions to :
+|API| provides a set of functions to :
 
 * structure test case / suite |hierarchy| ;
 * check strongly typed data against specified constraints ;
@@ -144,9 +145,11 @@ Test definition
 To **define a test**, one is expected to:
 
 * give the test a name,
-* provide a function / block of instructions that defines the testing logic
-  using `test assertions`_,
+* provide a function / block of instructions that defines the testing logic,
 * optionally specify test |fixture| function(s) and / or |timer|.
+
+Most of the time, implementing the testing logic relies upon heavy usage of
+`test assertions`_.
 
 At running time, the test function is executed with the following
 **assumptions** :
@@ -173,6 +176,7 @@ Using the :c:macro:`CUTE_TEST` macro is the most straightforward way to define
 a test:
 
 .. code-block:: c
+   :linenos:
 
    CUTE_TEST(sample_test)
    {
@@ -239,6 +243,8 @@ testing context that existed prior to ``setup()`` execution.
 Use the :c:macro:`CUTE_TEST_DEFN` macro to define a fixture'd test case:
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 23,24
 
    static void sample_setup(void)
    {
@@ -317,6 +323,8 @@ Use the :c:macro:`CUTE_TEST_DEFN` macro to specify a timeout at definition
 time :
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 15
 
    /* `sample_timed_test' test case test function. */
    static void sample_timed_test_exec(void)
@@ -352,6 +360,8 @@ scope. :ref:`Registering <sect-user-test_hierarchy>` the created test to a
 |suite| is then restricted to the source file where the |suite| is defined :
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 5-8
 
    /*
     * Define `sample_static_test' test case with static global file
@@ -371,6 +381,8 @@ Use :c:macro:`CUTE_TEST_EXTERN` to define a test with default global file
 scope, i.e. with external linkage :
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 7-10
 
    #include "test.h"
 
@@ -390,6 +402,8 @@ And use :c:macro:`CUTE_TEST_DECL` to declare the test defined above in a header
 so that it may be referenced from other compilation units :
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 10
 
    #ifndef _TEST_H
    #define _TEST_H
@@ -480,6 +494,8 @@ Using the :c:macro:`CUTE_GROUP` macro is the most straightforward way to define
 a group:
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 11-14
 
    CUTE_TEST(sample_test_0)
    {
@@ -534,6 +550,8 @@ Using the :c:macro:`CUTE_SUITE` macro is the most straightforward way to define
 a suite:
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 16
 
    CUTE_TEST(sample_test_0)
    {
@@ -595,6 +613,8 @@ preconditions and / or postconditions of |test case|\s registered to it.
 Use the :c:macro:`CUTE_SUITE_DEFN` macro to define a fixture'd test suite:
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 46,47
 
    static int value;
 
@@ -714,10 +734,12 @@ When the timer expires, the current |test case| or |fixture| function execution
 is *interrupted*, |CUTe| marks the test as *failing* then proceeds to the *next*
 one in sequence within the current |suite|.
 
-Use the :c:macro:`CUTE_TEST_DEFN` macro to specify a timeout at definition time
+Use the :c:macro:`CUTE_SUITE_DEFN` macro to specify a timeout at definition time
 :
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 35
 
    /*
     * Define `sample_test_0' test case with default inherited fixture operations
@@ -778,6 +800,8 @@ file scope. :ref:`Registering <sect-user-test_hierarchy>` the created |suite| to
 a parent one is then restricted to the source file where the it is defined :
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 9-13
 
    CUTE_GROUP(sample_group) = {
         /* Include a list of references to test cases or suites here. */
@@ -799,6 +823,8 @@ Use :c:macro:`CUTE_SUITE_EXTERN` to define a |suite| with default global file
 scope, i.e. with external linkage :
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 11-15
 
    #include "test.h"
 
@@ -820,6 +846,8 @@ And use :c:macro:`CUTE_SUITE_DECL` to declare the |suite| defined above in a
 header so that it may be referenced from other compilation units :
 
 .. code-block:: c
+   :linenos:
+   :emphasize-lines: 7
 
    #ifndef _TEST_H
    #define _TEST_H
@@ -845,13 +873,13 @@ Running tests
 Once a test |hierarchy| has been defined, some additional glue code is required
 to instantiate and operate it.
 To alleviate test developper workload, |CUTe| provides a single macro to use as
-`main entry point`_ replacement and that implements all the required glue code.
+`main entry point`_ replacement that implements all the required glue code.
 
 Finally, you should :ref:`compile and link <sect-user-building_tests>` the test
 code to provide a standalone executable.
 
-Where you need more flexibility, |CUTe|'s API also exposes functions required to
-instantiate and operate a test |hierarchy| step by step :
+Where you need more flexibility, |CUTe|'s |API| also exposes functions required
+to instantiate and operate a test |hierarchy| step by step :
 
 * :ref:`initialize <sect-user-init>` |CUTe|,
 * :ref:`run <sect-user-run_suite>` test |hierarchy|,
@@ -860,6 +888,50 @@ instantiate and operate a test |hierarchy| step by step :
 
 Main entry point
 ----------------
+
+The :c:macro:`CUTE_MAIN` macro implements all the required steps to run a
+test |hierarchy|.
+
+It should be used as a replacement for a test |hierarchy| runner executable's
+``main()`` entry point :
+
+.. code-block:: c
+   :linenos:
+   :emphasize-lines: 14
+
+   #include <cute/cute.h>
+
+   CUTE_TEST(my_first_failing_test)
+   {
+        cute_fail(NULL);
+   }
+
+   CUTE_GROUP(my_first_group) = {
+        CUTE_REF(my_first_failing_test)
+   };
+
+   CUTE_SUITE(my_first_suite, my_first_group);
+
+   CUTE_MAIN(my_first_suite, "My first package", "0.1")
+
+The code shown above implements a runnable test |hierarchy| composed of a single
+root test |suite| ``my_first_suite`` aggregating a single |test case| named
+``my_first_failing_test``.
+See :c:macro:`CUTE_MAIN` description for details about its argument list.
+
+:ref:`Building <sect-user-building_tests>` this test code should produce an
+executable supporting the following features :
+
+* :ref:`run <sect-user-run_suite>` selectable subsets of the test |hierarchy|,
+* :ref:`show <sect-user-list_suite>` informations about selectable subsets of
+  the test |hierarchy|,
+* produce `test reports`_ according to a specified format,
+* according to options given on the command line as described in section
+  `Command line`_.
+
+Basically, in addition to command line arguments parsing, :c:macro:`CUTE_MAIN`
+makes use of functions publicly exposed by |CUTe| |API| to implement
+its internal logic. These are described in the following sections...
 
 .. _sect-user-init:
 
@@ -889,10 +961,9 @@ Building tests
 Command line
 ------------
 
-|Build|'ing a test hierarchy which runs thanks to :c:func:`cute_main` and / or
-:c:macro:`CUTE_MAIN`, should produce an executable that allows to run tests and
-/ or suites according to arguments given on the command line.
-
+|Build|\ing a test |hierarchy| runner using :c:macro:`CUTE_MAIN` as ``main()``
+entry point replacement should produce an executable that allows to run tests
+and / or suites according to arguments given on the command line.
 Unless command line arguments parsing was modified by the test developper, the
 produced executable should behave like what is shown for the fictional
 :program:`sample-test` program hereafter.

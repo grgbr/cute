@@ -941,25 +941,58 @@ cute_run_suite(const struct cute_suite * suite) __cute_export;
  * Top-level definitions
  ******************************************************************************/
 
+/**
+ * Report type selector.
+ *
+ * Use #cute_config_report from within a #cute_config configuration structure to
+ * select a particular test report format.
+ *
+ * @see #cute_config
+ */
 enum cute_config_report {
+	/** Completly mute console reporting. */
 	CUTE_CONFIG_SILENT_REPORT = (1U << 0),
+	/** Enable minimalist console reporting. */
 	CUTE_CONFIG_TERSE_REPORT  = (1U << 1),
+	/** Enable verbose console reporting. */
 	CUTE_CONFIG_VERB_REPORT   = (1U << 2),
+	/** Enable Test Anything Protocol reporting. */
 	CUTE_CONFIG_TAP_REPORT    = (1U << 3),
+	/** Enable JUnit XML reporting. */
 	CUTE_CONFIG_XML_REPORT    = (1U << 4)
 };
 
+/**
+ * Console terminal probing strategy selector.
+ *
+ * When console reporting is enabled, select the strategy used to probe the
+ * underlying console terminal.
+ * Probing is needed to setup console output colorization.
+ *
+ * @see #cute_config
+ */
 enum cute_config_tty {
+	/** Disable console terminal probing and turn colorization off. */
 	CUTE_CONFIG_FALSE_TTY  = 0,
+	/** Disable console terminal probing and turn colorization on. */
 	CUTE_CONFIG_TRUE_TTY   = 1,
+	/** Enable console terminal probing to autodetect colorization support. */
 	CUTE_CONFIG_PROBE_TTY,
+	/** @internal */
 	CUTE_CONFIG_TTY_NR
 };
 
+/**
+ * Test run configuration.
+ *
+ * Give cute_init() a #cute_config structure as first argument to setup a test
+ * hierarchy runner.
+ */
 struct cute_config {
 	const char *         match;
 	bool                 debug;
 	bool                 icase;
+	/** Test report selector mask. */
 	unsigned int         reports;
 	enum cute_config_tty tty;
 	const char *         tap_path;
@@ -994,6 +1027,12 @@ cute_fini(void) __cute_export;
  *
  * Use #CUTE_MAIN as the ``main()`` entry point replacement for a test hierarchy
  * runner executable.
+ *
+ * @p _package must be given as a string containing the name of the package for
+ * which testing code is written.
+ * @p _version should hold the version string identifying the @p _package
+ * package revision.
+ * Both @p _package and @p _version are optional.
  *
  * @see #CUTE_SUITE
  *
