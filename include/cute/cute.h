@@ -5,7 +5,7 @@
  * @author       Grégor Boirie <gregor.boirie@free.fr>
  * @date         26 Jul 2023
  * @copyright    Copyright (C) 2023 Grégor Boirie.
- * @licensestart GNU Lesser General Public License (LGPL) v3
+ * @licensestart GNU Lesser General Public License (LGPL) v3
  *
  * This file is part of cute
  *
@@ -931,9 +931,43 @@
 	                  CUTE_INHR_TEARDOWN, \
 	                  CUTE_INHR_TMOUT)
 
+/**
+ * Display informations of a test suite.
+ *
+ * @param[in] suite suite to run
+ *
+ * Show informations related to the test @rstsubst{hierarchy} which top-level
+ * @rstsubst{suite} is given in argument.
+ * Informations are displayed according to cute_config::reports setting passed
+ * as argument to cute_init().
+ *
+ * @see
+ * - cute_run_suite()
+ * - cute_init()
+ */
 extern void
 cute_show_suite(const struct cute_suite *  suite) __cute_export;
 
+/**
+ * Run a test suite.
+ *
+ * @param[in] suite suite to run
+ *
+ * @return 0 if successful, an errno-like error code otherwise.
+ *
+ * Run a test @rstsubst{hierarchy} which top-level @rstsubst{suite} is given in
+ * argument. Run is carried out according to cute_config configuration passed as
+ * argument to cute_init().
+ *
+ * cute_run_suite() returns an error when at least one child
+ * @rstsubst{test case} or @rstsubst{suite} has failed or crashed.
+ * See @rstsubst{report} section for more informations about possible test
+ * @rstsubst{hierarchy} outcomes.
+ *
+ * @see
+ * - cute_show_suite()
+ * - cute_init()
+ */
 extern int
 cute_run_suite(const struct cute_suite * suite) __cute_export;
 
@@ -944,32 +978,30 @@ cute_run_suite(const struct cute_suite * suite) __cute_export;
 /**
  * Report type selector.
  *
- * Use #cute_config_report from within a #cute_config configuration structure to
- * select a particular test report format.
+ * Select a particular test @rstsubst{report} format.
  *
- * @see #cute_config
+ * @see cute_config::reports
  */
 enum cute_config_report {
-	/** Completly mute console reporting. */
+	/** Completly mute console report. */
 	CUTE_CONFIG_SILENT_REPORT = (1U << 0),
-	/** Enable minimalist console reporting. */
+	/** Enable minimalist console report. */
 	CUTE_CONFIG_TERSE_REPORT  = (1U << 1),
-	/** Enable verbose console reporting. */
+	/** Enable verbose console report. */
 	CUTE_CONFIG_VERB_REPORT   = (1U << 2),
-	/** Enable Test Anything Protocol reporting. */
+	/** Enable Test Anything Protocol report. */
 	CUTE_CONFIG_TAP_REPORT    = (1U << 3),
-	/** Enable JUnit XML reporting. */
+	/** Enable JUnit XML report. */
 	CUTE_CONFIG_XML_REPORT    = (1U << 4)
 };
 
 /**
  * Console terminal probing strategy selector.
  *
- * When console reporting is enabled, select the strategy used to probe the
- * underlying console terminal.
- * Probing is needed to setup console output colorization.
+ * Select the strategy used to probe the underlying console terminal. Probing
+ * is needed to setup console output colorization.
  *
- * @see #cute_config
+ * @see cute_config::tty
  */
 enum cute_config_tty {
 	/** Disable console terminal probing and turn colorization off. */
@@ -985,36 +1017,196 @@ enum cute_config_tty {
 /**
  * Test run configuration.
  *
- * Give cute_init() a #cute_config structure as first argument to setup a test
- * hierarchy runner.
+ * cute_config is a structure that allows to configure the way a test
+ * @rstsubst{hierarchy} is run.
+ *
+ * @see
+ * - #CUTE_CONFIG_INIT
+ * - cute_init()
  */
 struct cute_config {
-	const char *         match;
-	bool                 debug;
-	bool                 icase;
-	/** Test report selector mask. */
-	unsigned int         reports;
+	/**
+	 * Test hierarchy matching regular expression.
+	 *
+	 * Allows to select a subset of the test @rstsubst{hierarchy} to run.
+	 *
+	 * At run initialization time, each node of the test
+	 * @rstsubst{hierarchy} is compared against the cute_config::match
+	 * regular expression and selected for running if matched. Nodes for
+	 * which the match failed are disabled.
+	 *
+	 * cute_config::match must be specified as a POSIX extended regular
+	 * expression as described in @man{regex(7)}. cute_config::icase
+	 * alters the matching process.
+	 *
+	 * cute_config::match may also be specified as ``NULL`` in which case,
+	 * no matching is performed, meaning that the complete test
+	 * @rstsubst{hierarchy} is selected for running.
+	 *
+	 * @see cute_config::icase
+	 */
+	const char * match;
+	/**
+	 * Ignore case when matching test hierarchy nodes.
+	 *
+	 * When matching a test @rstsubst{hierarchy} node thanks to
+	 * cute_config::match, ignore case distinctions.
+	 *
+	 * cute_config::icase is ignore when cute_config::match is ``NULL``.
+	 *
+	 * @see cute_config::match
+	 */
+	bool icase;
+	/**
+	 * Enable test hierarchy running debug mode.
+	 *
+	 * Enable cute_config::debug to ease the debugging of a test
+	 * |hierarchy|.
+	 *
+	 * When enabled, exception handling and timeouts are disabled so that a
+	 * debugging session is not disturbed by an unexpected
+	 * @rstref{signal <user-signals>} and / or @rstsubst{timer} expiry.
+	 */
+	bool debug;
+	/**
+	 * Test report selector mask.
+	 *
+	 * Request that test results be output according to formats specified by
+	 * @rstsubst{report}.
+	 *
+	 * cute_config::reports must be specified as a mask of
+	 * cute_config_report values according to the **following
+	 * restrictions** :
+	 *
+	 * - #CUTE_CONFIG_SILENT_REPORT, #CUTE_CONFIG_TERSE_REPORT, and
+	 *   #CUTE_CONFIG_VERB_REPORT are exclusive and cannot be simultaneously
+	 *   set within the mask ;
+	 * - when cute_config::tap_path is ``NULL``, #CUTE_CONFIG_TAP_REPORT
+	 *   cannot be simultaneously set with #CUTE_CONFIG_SILENT_REPORT,
+	 *   #CUTE_CONFIG_TERSE_REPORT or #CUTE_CONFIG_VERB_REPORT ;
+	 * - when cute_config::xml_path is ``NULL``, #CUTE_CONFIG_XML_REPORT
+	 *   cannot be simultaneously set with #CUTE_CONFIG_SILENT_REPORT,
+	 *   #CUTE_CONFIG_TERSE_REPORT or #CUTE_CONFIG_VERB_REPORT.
+	 *
+	 * @see
+	 * - cute_config_report
+	 * - cute_config::tap_path
+	 * - cute_config::xml_path
+	 */
+	unsigned int reports;
+	/**
+	* Console terminal probing strategy selector.
+	 *
+	 * Select the strategy used to probe the underlying console terminal for
+	 * output colorization support.
+	 *
+	 * @see cute_config_tty
+	 */
 	enum cute_config_tty tty;
-	const char *         tap_path;
-	const char *         xml_path;
+	/**
+	 * TAP report pathname.
+	 *
+	 * Pathname to the file into which
+	 * @rstref{Test Anything Protocol report <sect-user-tap>} output is
+	 * stored.
+	 *
+	 * cute_config::tap_path is ignored if #CUTE_CONFIG_TAP_REPORT is
+	 * cleared within cute_config::reports mask.
+	 *
+	 * Setting cute_config::tap_path to ``NULL`` requests that @rstref{TAP
+	 * report <sect-user-junit>} output be redirected to standard output
+	 * (but see cute_config::reports for restrictions).
+	 *
+	 * @see cute_config::reports
+	 */
+	const char * tap_path;
+	/**
+	 * JUnit XML report pathname.
+	 *
+	 * Pathname to the file into which
+	 * @rstref{JUnit XML report <sect-user-junit>} output is stored.
+	 *
+	 * cute_config::xml_path is ignored if #CUTE_CONFIG_XML_REPORT is
+	 * cleared within cute_config::reports mask.
+	 *
+	 * Setting cute_config::xml_path to ``NULL`` requests that
+	 * @rstref{JUnit XML report <sect-user-junit>} output be redirected to
+	 * standard output (but see cute_config::reports for restrictions).
+	 *
+	 * @see cute_config::reports
+	 */
+	const char * xml_path;
 };
 
+/**
+ * Test run configuration default initializer.
+ *
+ * Initialize a cute_config with default values such that a test
+ * @rstsubst{hierarchy} runner behaves as following :
+ *
+ * - @rstsubst{test case} and @rstsubst{suite} nodes are all enabled,
+ * - debug mode is off,
+ * - #CUTE_CONFIG_TERSE_REPORT is enabled,
+ * - #CUTE_CONFIG_PROBE_TTY is enabled.
+ */
 #define CUTE_CONFIG_INIT \
 	{ \
 		.match    = NULL, \
-		.debug    = false, \
 		.icase    = false, \
-		.reports  = 0, \
+		.debug    = false, \
+		.reports  = CUTE_CONFIG_TERSE_REPORT, \
 		.tty      = CUTE_CONFIG_PROBE_TTY, \
 		.tap_path = NULL, \
 		.xml_path = NULL \
 	}
 
+/**
+ * Initialize CUTe API.
+ *
+ * @param[inout] config  test hierarchy running configuration
+ * @param[in]    package package name string
+ * @param[in]    version package version string
+ *
+ * @return 0 if successful, an errno-like error code otherwise.
+ *
+ * cute_init() initializes @rstsubst{API} internals and configure the way a
+ * test @rstsubst{hierarchy} runs and outputs @rstsubst{report}.
+ *
+ * @p config argument configures the internal test @rstsubst{hierarchy} runner.
+ * @p package should be given as a string containing the name of the package
+ * for which testing code is written.
+ * @p version should hold the version string identifying the @p package
+ * package revision.
+ * Both @p package and @p version are optional and may be specified as
+ * ``NULL``.
+ *
+ * After a successful call to cute_init() and once no more @rstsubst{API} call
+ * is required, cute_fini() **must** be called to release resources allocated
+ * internally.
+ *
+ * @see
+ * - cute_config
+ * - cute_fini()
+ * - #CUTE_MAIN
+ */
 extern int
 cute_init(struct cute_config * config,
           const char *         package,
           const char *         version) __cute_export;
 
+/**
+ * Close CUTe API.
+ *
+ * Flush / close test @rstsubst{hierarchy} reporting I/O streams and release
+ * @rstsubst{API} resources allocated internally.
+ *
+ * Any @rstsubst{API} usage made after a call to cute_fini() will lead to
+ * unexpected results.
+ *
+ * @see
+ * - cute_init()
+ * - #CUTE_MAIN
+ */
 extern void
 cute_fini(void) __cute_export;
 
@@ -1028,11 +1220,12 @@ cute_fini(void) __cute_export;
  * Use #CUTE_MAIN as the ``main()`` entry point replacement for a test hierarchy
  * runner executable.
  *
- * @p _package must be given as a string containing the name of the package for
- * which testing code is written.
+ * @p _package should be given as a string containing the name of the package
+ * for which testing code is written.
  * @p _version should hold the version string identifying the @p _package
  * package revision.
- * Both @p _package and @p _version are optional.
+ * Both @p _package and @p _version are optional and may be specified as
+ * ``NULL``.
  *
  * @see #CUTE_SUITE
  *

@@ -56,8 +56,7 @@ tests or suites at definition time. These are:
 * :c:macro:`CUTE_INHR_SETUP`
 * :c:macro:`CUTE_INHR_TEARDOWN`
 
-See |fixture| operations section of :doc:`User guide <user>` for more
-informations.
+See |fixture| operations section of |user guide| for more informations.
 
 .. index::
    single: timeout; API
@@ -75,7 +74,7 @@ at definition time. These are:
 * :c:macro:`CUTE_INHR_TMOUT`
 * :c:macro:`CUTE_NONE_TMOUT`
 
-See |timer| section of :doc:`User guide <user>` for more informations.
+See |timer| section of |user guide| for more informations.
 
 .. index::
    single: group definition; API
@@ -93,8 +92,7 @@ Various C preprocessor macros are exposed to define test groups. These are:
 * :c:macro:`CUTE_GROUP_STATIC`
 * :c:macro:`CUTE_GROUP_EXTERN`
 
-See |group| definition section of :doc:`User guide <user>` for more
-informations.
+See |group| definition section of |user guide| for more informations.
 
 .. index::
    single: suite definition; API
@@ -111,14 +109,33 @@ Various C preprocessor macros are exposed to define test suites. These are:
 * :c:macro:`CUTE_SUITE_STATIC`
 * :c:macro:`CUTE_SUITE_EXTERN`
 
-See |suite| definition section of :doc:`User guide <user>` for more
-informations.
+See |suite| definition section of |user guide| for more informations.
 
-Running
-=======
+Running tests
+=============
 
-As a shorthand, use :c:macro:`CUTE_MAIN` as replacement for ``main()`` entry
-point of a test hierarchy runner executable.
+Use :c:macro:`CUTE_MAIN` as replacement for ``main()`` entry point of a test
+runner executable.
+This is the most straightforward way to run a test |hierarchy|. Head to section
+:ref:`main entry point <sect-user-main>` of |user guide| for more informations.
+
+The following low-level |API| is exposed for additional flexibility :
+
+.. hlist::
+
+   * **Run setup** :
+
+     * :c:struct:`cute_config` structure
+     * :c:func:`cute_init`
+     * :c:func:`cute_fini`
+
+   * **Operations** :
+
+     * :c:func:`cute_run_suite`
+     * :c:func:`cute_show_suite`
+
+See section :ref:`Low level runner <sect-user-low_level_runner>` of |user guide|
+for more informations.
 
 .. index:: API reference, reference
 
@@ -286,6 +303,7 @@ cute_config
 ***********
 
 .. doxygenstruct:: cute_config
+   :members:
 
 Functions
 ---------
@@ -299,3 +317,13 @@ cute_fini
 *********
 
 .. doxygenfunction:: cute_fini
+
+cute_run_suite
+**************
+
+.. doxygenfunction:: cute_run_suite
+
+cute_show_suite
+***************
+
+.. doxygenfunction:: cute_show_suite

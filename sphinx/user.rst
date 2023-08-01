@@ -1,6 +1,5 @@
 .. include:: _cdefs.rst
 
-.. |API|            replace:: :doc:`API <api>`
 .. _tdd:            https://en.wikipedia.org/wiki/Test-driven_development
 .. _bdd:            https://en.wikipedia.org/wiki/Behavior-driven_development
 .. _regtest:        https://en.wikipedia.org/wiki/Regression_testing
@@ -14,7 +13,6 @@
 .. |fork(2)|        replace:: :manpage:`fork(2)`
 .. |signal(7)|      replace:: :manpage:`signal(7)`
 .. |test scope|     replace:: :ref:`test global file scope <sect-user-writing_tests-test_file_scope>`
-.. |hierarchy|      replace:: :ref:`hierarchy <sect-user-test_hierarchy>`
 .. |build|          replace:: :ref:`build <sect-user-building_tests>`
 .. |run|            replace:: :ref:`run <sect-user-running_tests>`
 .. |regex(7)|       replace:: :manpage:`regex(7)`
@@ -37,16 +35,16 @@ designed with the following goals in mind:
 
 .. rubric:: Features
 
-* test failure recovery
-* extensive reporting
-* flexible and modular test suite hierarchies
-* `test fixtures <fixture_>`_
-* strict function `mocking <mock_>`_
-* `JUnit <junit_>`_ XML reporting
-* `Test Anything Protocol <tap_>`_ reporting
-* ease debugging of test failures
-* clear and expressive C |API|
-* C library dependency only
+* test failure recovery,
+* extensive reporting,
+* flexible and modular test suite hierarchy,
+* `test fixtures <fixture_>`_,
+* strict function `mocking <mock_>`_,
+* `JUnit <junit_>`_ XML reporting,
+* `Test Anything Protocol <tap_>`_ reporting,
+* easy debugging of test failures,
+* clear and expressive C API,
+* C library dependency only.
 
 .. rubric:: Limitations
 
@@ -62,11 +60,11 @@ Basic concepts
 |CUTe| is a framework allowing to write, manage and run unit tests in C. It's
 |API| provides a set of functions to :
 
-* structure test case / suite |hierarchy| ;
+* structure |test case| / |suite| |hierarchy| ;
 * check strongly typed data against specified constraints ;
 * schecule and verify mock expectations against specified constraints ;
 * |run| test cases and suites according to specified configurations ;
-* report test results onto the console and / or,
+* |report| test results onto the console and / or,
 * into files according to various specified formats.
 
 |CUTe| is built as a static and / or shared library which must be linked with
@@ -105,8 +103,8 @@ proper operation.
 A |suite| is a collection of suites and / or test cases. All suites may
 arbitrarily be selected for a |run|.
 
-Finally, a particular |run| may be setup to :ref:`report
-<sect-user-test_reports>` test results according to a specified configuration.
+Finally, a particular |run| may be setup to |report| test results according to a
+specified configuration.
 
 Typical Workflow
 ================
@@ -150,6 +148,8 @@ To **define a test**, one is expected to:
 
 Most of the time, implementing the testing logic relies upon heavy usage of
 `test assertions`_.
+
+.. _user-signals:
 
 At running time, the test function is executed with the following
 **assumptions** :
@@ -865,6 +865,8 @@ to implement test functions using |CUTe|'s test assertions.
 Test assertions
 ===============
 
+COMPLETE ME!
+
 .. _sect-user-running_tests:
 
 Running tests
@@ -879,12 +881,10 @@ Finally, you should :ref:`compile and link <sect-user-building_tests>` the test
 code to provide a standalone executable.
 
 Where you need more flexibility, |CUTe|'s |API| also exposes functions required
-to instantiate and operate a test |hierarchy| step by step :
+to instantiate and operate a test |hierarchy| step by step. See section
+`Low-level runner`_ for more informations.
 
-* :ref:`initialize <sect-user-init>` |CUTe|,
-* :ref:`run <sect-user-run_suite>` test |hierarchy|,
-* or :ref:`show <sect-user-list_suite>` test |hierarchy|,
-* then :ref:`release <sect-user-release>` |CUTe| resources.
+.. _sect-user-main:
 
 Main entry point
 ----------------
@@ -925,7 +925,7 @@ executable supporting the following features :
 * :ref:`run <sect-user-run_suite>` selectable subsets of the test |hierarchy|,
 * :ref:`show <sect-user-list_suite>` informations about selectable subsets of
   the test |hierarchy|,
-* produce `test reports`_ according to a specified format,
+* produce test |report|\s according to a specified format,
 * according to options given on the command line as described in section
   `Command line`_.
 
@@ -933,30 +933,71 @@ Basically, in addition to command line arguments parsing, :c:macro:`CUTE_MAIN`
 makes use of functions publicly exposed by |CUTe| |API| to implement
 its internal logic. These are described in the following sections...
 
-.. _sect-user-init:
+.. _sect-user-low_level_runner:
 
-Initialization
---------------
+Low-level runner
+----------------
 
-.. _sect-user-release:
+Basically, to instantiate and operate a test |hierarchy| step by step :
 
-Releasing
----------
+* :ref:`initialize <sect-user-setup_run>` |CUTe|,
+* :ref:`run <sect-user-run_suite>` test |hierarchy|,
+* or :ref:`show <sect-user-list_suite>` test |hierarchy|,
+* then :ref:`release <sect-user-setup_run>` |CUTe| resources.
+
+.. _sect-user-setup_run:
+
+.. rubric:: Setting up runner
+
+Any usage of |CUTe|'s library *must* :
+
+* begin with a call to :c:func:`cute_init` to initialize |API| internals,
+* finish with a call to :c:func:`cute_fini` to close |API| I/O streams and
+  release allocated resources.
+
+.. code-block:: c
+   :linenos:
+   :emphasize-lines: 11,16
+
+   #include <cute/cute.h>
+   #include <stdlib.h>
+
+   extern CUTE_SUITE_DECL(my_first_root_suite);
+
+   int main(void)
+   {
+        int                err;
+        struct cute_config config = CUTE_CONFIG_INIT;
+
+        if (cute_init(&config, "My first package", "0.1"))
+                return EXIT_FAILURE;
+
+        err = cute_run_suite(&my_first_root_suite);
+
+        cute_fini();
+
+        return err ? EXIT_FAILURE : EXIT_SUCCESS;
+   }
+
 
 .. _sect-user-run_suite:
 
-Running suites
---------------
+.. rubric:: Running suites
+
+COMPLETE ME!
 
 .. _sect-user-list_suite:
 
-Listing suites
---------------
+.. rubric:: Listing suites
+
+COMPLETE ME!
 
 .. _sect-user-building_tests:
 
 Building tests
 --------------
+
+COMPLETE ME!
 
 Command line
 ------------
@@ -1031,11 +1072,13 @@ described in |regex(7)|.
 
 .. option:: -x[<PATH>], --xml[=<PATH>]
 
-   Generate output to <*PATH*> according to JUnit XML format.
+   Generate output to <*PATH*> according to
+   :ref:`JUnit XML format <sect-user-junit>`.
 
 .. option:: -a[<PATH>], --tap[=<PATH>]
 
-   Generate output to <*PATH*> according to Test Anything Protocol format.
+   Generate output to <*PATH*> according to
+   :ref:`Test Anything Protocol format <sect-user-tap>`.
 
 .. rubric:: PATH
 
@@ -1061,8 +1104,18 @@ Test reports
 Console
 -------
 
+COMPLETE ME!
+
+.. _sect-user-junit:
+
 JUnit XML
 ---------
 
+COMPLETE ME!
+
+.. _sect-user-tap:
+
 TAP
 ---
+
+COMPLETE ME!
