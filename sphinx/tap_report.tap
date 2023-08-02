@@ -1,0 +1,112 @@
+TAP version 14
+1..6
+# Subtest: pass_suite
+    1..5
+    ok 1 - pass_1
+      ---
+      duration_ms: 250.117558
+      ...
+    ok 2 - pass_2
+      ---
+      duration_ms: 250.113843
+      ...
+    ok 3 - pass_3
+      ---
+      duration_ms: 250.115644
+      ...
+    ok 4 - pass_4
+      ---
+      duration_ms: 250.112682
+      ...
+    ok 5 - pass_5
+      ---
+      duration_ms: 250.124600
+      ...
+ok 1 - pass_suite
+  ---
+  duration_ms: 1354.906506
+  ...
+# Subtest: pass_skip_suite
+    1..5
+    ok 1 - pass_1
+      ---
+      duration_ms: 250.113948
+      ...
+    ok 2 - pass_2
+      ---
+      duration_ms: 250.116428
+      ...
+    ok 3 - skip_3 # SKIP exec skipped: explicit skip requested
+      ---
+      source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+      caller: skip()
+      duration_ms: 250.125943
+      ...
+    ok 4 - pass_4
+      ---
+      duration_ms: 250.093096
+      ...
+    ok 5 - skip_5 # SKIP exec skipped: explicit skip requested
+      ---
+      source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+      caller: skip()
+      duration_ms: 250.121722
+      ...
+ok 2 - pass_skip_suite
+  ---
+  duration_ms: 1350.303347
+  ...
+# Subtest: fail_suite
+    1..4
+    ok 1 - pass_1
+      ---
+      duration_ms: 250.118092
+      ...
+    ok 2 - skip_2 # SKIP exec skipped: explicit skip requested
+      ---
+      source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+      caller: skip()
+      duration_ms: 250.120104
+      ...
+    not ok 3 - fail_3
+      ---
+      severity: failure
+      message: exec failed
+      reason: assertion check failed
+      source: /mnt/devel/greg/tidor/cute/sample/full.c:25
+      caller: fail()
+      assert: 0 == 1
+      duration_ms: 250.121183
+      ...
+    ok 4 - pass_4
+      ---
+      duration_ms: 250.114225
+      ...
+not ok 3 - fail_suite
+  ---
+  severity: failure
+  message: exec failed
+  reason: descendants failed
+  source: /mnt/devel/greg/tidor/cute/sample/full.c:143
+  duration_ms: 1092.704318
+  ...
+ok 4 - root_pass
+  ---
+  duration_ms: 250.113013
+  ...
+ok 5 - root_skip # SKIP exec skipped: explicit skip requested
+  ---
+  source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+  caller: skip()
+  duration_ms: 250.145972
+  ...
+not ok 6 - root_fail
+  ---
+  severity: failure
+  message: exec failed
+  reason: explicit fail requested
+  source: /mnt/devel/greg/tidor/cute/sample/full.c:33
+  caller: request_fail()
+  detail: example of an explicit fail request
+  duration_ms: 250.132877
+  ...

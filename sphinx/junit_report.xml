@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<testsuite name="root_suite"
+           failures="2"
+           errors="0"
+           skipped="4"
+           tests="17"
+           disabled="0"
+           time="4.296857"
+           package="CUTe full sample"
+           classname="CUTe full sample"
+           version="1.0"
+           timestamp="2023-08-02T15:51:54+00:00"
+           hostname="gregdesk"
+           file="/mnt/devel/greg/tidor/cute/sample/full.c"
+           line="158">
+    <testsuite name="pass_suite"
+               failures="0"
+               errors="0"
+               skipped="0"
+               tests="5"
+               disabled="0"
+               time="1.271822"
+               package="CUTe full sample"
+               classname="root_suite"
+               version="1.0"
+               id="0"
+               timestamp="2023-08-02T15:51:54+00:00"
+               hostname="gregdesk"
+               file="/mnt/devel/greg/tidor/cute/sample/full.c"
+               line="116">
+        <testcase name="pass_1"
+                  classname="root_suite::pass_suite"
+                  status="passed"
+                  time="0.250117"
+                  timestamp="2023-08-02T15:51:54+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="36" />
+        <testcase name="pass_2"
+                  classname="root_suite::pass_suite"
+                  status="passed"
+                  time="0.250114"
+                  timestamp="2023-08-02T15:51:55+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="42" />
+        <testcase name="pass_3"
+                  classname="root_suite::pass_suite"
+                  status="passed"
+                  time="0.250115"
+                  timestamp="2023-08-02T15:51:55+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="48" />
+        <testcase name="pass_4"
+                  classname="root_suite::pass_suite"
+                  status="passed"
+                  time="0.250116"
+                  timestamp="2023-08-02T15:51:55+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="54" />
+        <testcase name="pass_5"
+                  classname="root_suite::pass_suite"
+                  status="passed"
+                  time="0.250078"
+                  timestamp="2023-08-02T15:51:55+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="60" />
+    </testsuite>
+    <testsuite name="pass_skip_suite"
+               failures="0"
+               errors="0"
+               skipped="2"
+               tests="5"
+               disabled="0"
+               time="1.261026"
+               package="CUTe full sample"
+               classname="root_suite"
+               version="1.0"
+               id="1"
+               timestamp="2023-08-02T15:51:56+00:00"
+               hostname="gregdesk"
+               file="/mnt/devel/greg/tidor/cute/sample/full.c"
+               line="130">
+        <testcase name="pass_1"
+                  classname="root_suite::pass_skip_suite"
+                  status="passed"
+                  time="0.250068"
+                  timestamp="2023-08-02T15:51:56+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="36" />
+        <testcase name="pass_2"
+                  classname="root_suite::pass_skip_suite"
+                  status="passed"
+                  time="0.250086"
+                  timestamp="2023-08-02T15:51:56+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="42" />
+        <testcase name="skip_3"
+                  classname="root_suite::pass_skip_suite"
+                  status="skipped"
+                  time="0.250134"
+                  timestamp="2023-08-02T15:51:56+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="72">
+            <skipped message="exec skipped">
+                reason: explicit skip requested
+                source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+                caller: skip()
+            </skipped>
+        </testcase>
+        <testcase name="pass_4"
+                  classname="root_suite::pass_skip_suite"
+                  status="passed"
+                  time="0.250116"
+                  timestamp="2023-08-02T15:51:56+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="54" />
+        <testcase name="skip_5"
+                  classname="root_suite::pass_skip_suite"
+                  status="skipped"
+                  time="0.250117"
+                  timestamp="2023-08-02T15:51:57+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="78">
+            <skipped message="exec skipped">
+                reason: explicit skip requested
+                source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+                caller: skip()
+            </skipped>
+        </testcase>
+    </testsuite>
+    <testsuite name="fail_suite"
+               failures="1"
+               errors="0"
+               skipped="1"
+               tests="4"
+               disabled="0"
+               time="1.009939"
+               package="CUTe full sample"
+               classname="root_suite"
+               version="1.0"
+               id="2"
+               timestamp="2023-08-02T15:51:57+00:00"
+               hostname="gregdesk"
+               file="/mnt/devel/greg/tidor/cute/sample/full.c"
+               line="143">
+        <testcase name="pass_1"
+                  classname="root_suite::fail_suite"
+                  status="passed"
+                  time="0.250114"
+                  timestamp="2023-08-02T15:51:57+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="36" />
+        <testcase name="skip_2"
+                  classname="root_suite::fail_suite"
+                  status="skipped"
+                  time="0.250117"
+                  timestamp="2023-08-02T15:51:57+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="66">
+            <skipped message="exec skipped">
+                reason: explicit skip requested
+                source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+                caller: skip()
+            </skipped>
+        </testcase>
+        <testcase name="fail_3"
+                  classname="root_suite::fail_suite"
+                  status="failure"
+                  time="0.250119"
+                  timestamp="2023-08-02T15:51:57+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="84">
+            <failure message="exec failed">
+                reason: assertion check failed
+                source: /mnt/devel/greg/tidor/cute/sample/full.c:25
+                caller: fail()
+                assert: 0 == 1
+            </failure>
+        </testcase>
+        <testcase name="pass_4"
+                  classname="root_suite::fail_suite"
+                  status="passed"
+                  time="0.250110"
+                  timestamp="2023-08-02T15:51:58+00:00"
+                  file="/mnt/devel/greg/tidor/cute/sample/full.c"
+                  line="54" />
+    </testsuite>
+    <testcase name="root_pass"
+              classname="root_suite"
+              status="passed"
+              time="0.250115"
+              timestamp="2023-08-02T15:51:58+00:00"
+              file="/mnt/devel/greg/tidor/cute/sample/full.c"
+              line="90" />
+    <testcase name="root_skip"
+              classname="root_suite"
+              status="skipped"
+              time="0.250120"
+              timestamp="2023-08-02T15:51:58+00:00"
+              file="/mnt/devel/greg/tidor/cute/sample/full.c"
+              line="96">
+        <skipped message="exec skipped">
+            reason: explicit skip requested
+            source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+            caller: skip()
+        </skipped>
+    </testcase>
+    <testcase name="root_fail"
+              classname="root_suite"
+              status="failure"
+              time="0.250118"
+              timestamp="2023-08-02T15:51:58+00:00"
+              file="/mnt/devel/greg/tidor/cute/sample/full.c"
+              line="102">
+        <failure message="exec failed">
+            reason: explicit fail requested
+            source: /mnt/devel/greg/tidor/cute/sample/full.c:33
+            caller: request_fail()
+            detail: example of an explicit fail request
+        </failure>
+    </testcase>
+</testsuite>

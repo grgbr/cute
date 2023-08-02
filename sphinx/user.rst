@@ -1168,6 +1168,7 @@ produced executable should behave like what is shown for the fictional
 | **sample-test** [-h|--help] [help]
 
 .. rubric:: DESCRIPTION
+
 When the :option:`show` argument is given, test hierarchy is listed according to
 the specified :option:`PATTERN`.
 
@@ -1252,21 +1253,42 @@ it.
 Test reports
 ============
 
+Test results are output into reports. Reporting may occur onto terminal and / or
+may be stored into files. Multiple reporting formats are supported :
+
+* `console`_ output formats allow progress monitoring ;
+* :ref:`JUnit XML <sect-user-junit>` allows the recording of test results ;
+* :ref:`Test Anything Protocol <sect-user-tap>` allows the streaming and
+  recording of test results.
+
+Reporting formats may be selected thanks to :
+
+* a programmatic scheme allowing to :ref:`setup <sect-user-setup_run>` a test
+  |hierarchy| runner using handcoded settings ;
+* or through `command line`_ arguments when a runner implementation is based
+  upon the :ref:`CUTE_MAIN <sect-user-main>` |API| macro.
+
 Console
 -------
 
-COMPLETE ME!
+.. literalinclude:: terse_report.txt
+   :language: text
+
+.. literalinclude:: verbose_report.txt
+   :language: text
 
 .. _sect-user-junit:
 
 JUnit XML
 ---------
 
-COMPLETE ME!
+.. literalinclude:: junit_report.xml
+   :language: xml
 
 .. _sect-user-tap:
 
 TAP
 ---
 
-COMPLETE ME!
+.. literalinclude:: tap_report.tap
+   :language: tap
