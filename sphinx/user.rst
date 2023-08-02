@@ -9,6 +9,9 @@
 .. _junit:          https://en.wikipedia.org/wiki/JUnit
 .. _glibc:          https://www.gnu.org/software/libc/
 .. _umlclass:       https://en.wikipedia.org/wiki/Class_diagram
+.. _pkgconfig:      https://www.freedesktop.org/wiki/Software/pkg-config
+.. _make:           https://www.gnu.org/software/make/
+.. |pkg-config|     replace:: `pkg-config <pkgconfig_>`_
 .. |longjmp(3)|     replace:: :manpage:`longjmp(3)`
 .. |fork(2)|        replace:: :manpage:`fork(2)`
 .. |signal(7)|      replace:: :manpage:`signal(7)`
@@ -925,7 +928,7 @@ executable supporting the following features :
 * :ref:`run <sect-user-run_suite>` selectable subsets of the test |hierarchy|,
 * :ref:`show <sect-user-list_suite>` informations about selectable subsets of
   the test |hierarchy|,
-* produce test |report|\s according to a specified format,
+* produce test |report|\s according to specified format(s),
 * according to options given on the command line as described in section
   `Command line`_.
 
@@ -957,12 +960,10 @@ Any usage of |CUTe|'s library *must* :
 
 .. code-block:: c
    :linenos:
-   :emphasize-lines: 11,16
+   :emphasize-lines: 9,14
 
    #include <cute/cute.h>
    #include <stdlib.h>
-
-   extern CUTE_SUITE_DECL(my_first_root_suite);
 
    int main(void)
    {
@@ -972,32 +973,183 @@ Any usage of |CUTe|'s library *must* :
         if (cute_init(&config, "My first package", "0.1"))
                 return EXIT_FAILURE;
 
-        err = cute_run_suite(&my_first_root_suite);
+        /* Do something with CUTe... */
 
         cute_fini();
 
         return err ? EXIT_FAILURE : EXIT_SUCCESS;
    }
 
+In the example show above, |API| is initialized thanks to a call to
+:c:func:`cute_init` which is passed :
+
+* as first argument, a default run configuration referenced by ``config`` ;
+* as second argument, the name of the package for which testing code is
+  written ;
+* and the package version string as third argument.
+
+The ``config`` variable is initialized using the :c:macro:`CUTE_CONFIG_INIT`
+macro to configure the way the test |hierarchy| will run using default settings.
+These settings are stored into a :c:struct:`cute_config` structure which
+basically allows to :
+
+* select subset(s) of a test |hierarchy| to run,
+* setup :c:member:`debug mode <cute_config.debug>`,
+* and test |report|\ing.
+
+Finally, :c:func:`cute_fini` function is called to flush and close test
+|hierarchy| reporting I/O streams and release |API| resources allocated
+internally.
 
 .. _sect-user-run_suite:
 
 .. rubric:: Running suites
 
-COMPLETE ME!
+Once |CUTe|'s |API| is :ref:`setup <sect-user-setup_run>` with a run
+:c:struct:`configuration <cute_config>`, running a test |hierarchy| is
+straightforward :
+
+.. code-block:: c
+   :linenos:
+   :emphasize-lines: 14
+
+   #include <cute/cute.h>
+   #include <stdlib.h>
+
+   extern CUTE_SUITE_DECL(my_first_suite);
+
+   int main(void)
+   {
+        int                err;
+        struct cute_config config = CUTE_CONFIG_INIT;
+
+        if (cute_init(&config, "My first package", "0.1"))
+                return EXIT_FAILURE;
+
+        err = cute_run_suite(&my_first_suite);
+
+        cute_fini();
+
+        return err ? EXIT_FAILURE : EXIT_SUCCESS;
+   }
+
+The code above shows how to run the test |hierarchy| which top-level |suite| is
+``my_first_suite`` using a call to :c:func:`cute_run_suite`.
+While running, progress is shown according to :c:struct:`configuration
+<cute_config>` given at :ref:`setup <sect-user-setup_run>` time.
+See |report| section for explanations about displayed informations.
 
 .. _sect-user-list_suite:
 
 .. rubric:: Listing suites
 
-COMPLETE ME!
+Alternatively, you may display informations about the ``my_first_suite`` test
+|hierarchy| as shown below :
+
+.. code-block:: c
+   :linenos:
+   :emphasize-lines: 14
+
+   #include <cute/cute.h>
+   #include <stdlib.h>
+
+   extern CUTE_SUITE_DECL(my_first_suite);
+
+   int main(void)
+   {
+        int                err;
+        struct cute_config config = CUTE_CONFIG_INIT;
+
+        if (cute_init(&config, "My first package", "0.1"))
+                return EXIT_FAILURE;
+
+        cute_show_suite(&my_first_suite);
+
+        cute_fini();
+
+        return EXIT_SUCCESS;
+   }
+
+Calling the :c:func:`cute_show_suite` function above displays informations
+according to the :c:struct:`configuration <cute_config>` given at
+:ref:`setup <sect-user-setup_run>` time.
+Refer to |report| section for explanations about displayed informations.
 
 .. _sect-user-building_tests:
 
 Building tests
 --------------
 
-COMPLETE ME!
+Basically, building a test |hierarchy| runner executable requires to compile and
+link testing code compilation units with |CUTe|'s library. You may choose to
+link against either the *static* library or the *shared* one.
+
+Here is basic `Makefile <make_>`_ examples for building a ``my_first_tests``
+runner executable against *shared* and *static* libraries respectively.
+
+.. code-block:: make
+   :caption: Build against CUTe's shared library with handcoded build flags
+   :linenos:
+
+   CUTE_PREFIX     := /usr/local
+   CUTE_INCLUDEDIR := ${CUTE_PREFIX}/include
+   CUTE_LIBDIR     := ${CUTE_PREFIX}/lib
+
+   CFLAGS          := -I${CUTE_INCLUDEDIR}
+   LDFLAGS         := -L${CUTE_LIBDIR} -lcute
+
+   my_first_tests: my_first_tests.c
+   	${CC} -o $@ $< ${CFLAGS} ${LDFLAGS}
+
+.. code-block:: make
+   :caption: Build against CUTe's static library with handcoded build flags
+   :linenos:
+
+   CUTE_PREFIX     := /usr/local
+   CUTE_INCLUDEDIR := ${CUTE_PREFIX}/include
+   CUTE_LIBDIR     := ${CUTE_PREFIX}/lib
+
+   CFLAGS          := -I${CUTE_INCLUDEDIR}
+   LDFLAGS         := -L${CUTE_LIBDIR} \
+                      -Wl,--push-state,-Bstatic -lcute -Wl,--pop-state
+
+   my_first_tests: my_first_tests.c
+   	${CC} -o $@ $< ${CFLAGS} ${LDFLAGS}
+
+In addition, as |CUTe| is shipped with its own |pkg-config| metadata files, you
+may either choose to make use of handcoded flags as shown above, or
+to retrieve build flags through :program:`pkg-config` tool instead.
+
+You will find below 2 `Makefile <make_>`_ examples for building the same runner
+executable against *shared* and *static* libraries respectively using the
+:program:`pkg-config` tool.
+
+.. code-block:: make
+   :caption: Build against CUTe's shared library with pkg-config tool
+   :linenos:
+
+   PKG_CONFIG := pkg-config
+   CFLAGS     := ${shell ${PKG_CONFIG} --cflags libcute}
+   LDFLAGS    := ${shell ${PKG_CONFIG} --libs libcute}
+
+   my_first_tests: my_first_tests.c
+   	${CC} -o $@ $< ${CFLAGS} ${LDFLAGS}
+
+.. code-block:: make
+   :caption: Build against CUTe's static library with pkg-config tool
+   :linenos:
+
+   PKG_CONFIG := pkg-config
+   CFLAGS     := ${shell ${PKG_CONFIG} --static --cflags libcute}
+   LDFLAGS    := ${shell ${PKG_CONFIG} --static \
+                                       --libs-only-L \
+                                       --libs-only-other libcute} \
+                 -Wl,--push-state,-Bstatic \
+                 ${shell ${PKG_CONFIG} --static --libs-only-l libcute} \
+                 -Wl,--pop-state
+
+   my_first_tests: my_first_tests.c
+   	${CC} -o $@ $< ${CFLAGS} ${LDFLAGS}
 
 Command line
 ------------
@@ -1016,7 +1168,6 @@ produced executable should behave like what is shown for the fictional
 | **sample-test** [-h|--help] [help]
 
 .. rubric:: DESCRIPTION
-
 When the :option:`show` argument is given, test hierarchy is listed according to
 the specified :option:`PATTERN`.
 

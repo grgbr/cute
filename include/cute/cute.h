@@ -1163,7 +1163,7 @@ struct cute_config {
 /**
  * Initialize CUTe API.
  *
- * @param[inout] config  test hierarchy running configuration
+ * @param[inout] config  test hierarchy run configuration
  * @param[in]    package package name string
  * @param[in]    version package version string
  *
