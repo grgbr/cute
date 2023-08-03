@@ -1154,7 +1154,7 @@ struct cute_config {
 		.match    = NULL, \
 		.icase    = false, \
 		.debug    = false, \
-		.reports  = CUTE_CONFIG_TERSE_REPORT, \
+		.reports  = 0, \
 		.tty      = CUTE_CONFIG_PROBE_TTY, \
 		.tap_path = NULL, \
 		.xml_path = NULL \
