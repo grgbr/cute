@@ -23,9 +23,7 @@ eventually refer to the corresponding C macros listed below:
 * :c:macro:`CONFIG_CUTE_INTERN_ASSERT`
 * :c:macro:`CONFIG_CUTE_UTEST`
 
-.. index::
-   single: test definition; API
-   single: test case definition; API
+.. index:: test;API, API;test
 
 Test definition
 ===============
@@ -40,10 +38,7 @@ Various C preprocessor macros are exposed to define test cases. These are:
 
 See |test case| definition section of |user guide| for more informations.
 
-.. index::
-   single: fixture; API
-   single: fixture operation; API
-   single: fixture function; API
+.. index:: fixture;API, API;fixture
 
 Fixture operations
 ==================
@@ -58,11 +53,7 @@ tests or suites at definition time. These are:
 
 See |fixture| operations section of |user guide| for more informations.
 
-.. index::
-   single: timeout; API
-   single: test timeout; API
-   single: timer; API
-   single: test timer; API
+.. index:: timeout;API, API;timeout, timer;API, API;timer
 
 Timeouts
 ========
@@ -76,9 +67,7 @@ at definition time. These are:
 
 See |timer| section of |user guide| for more informations.
 
-.. index::
-   single: group definition; API
-   single: test group definition; API
+.. index:: group;API, API;group
 
 Group definition
 ================
@@ -94,9 +83,7 @@ Various C preprocessor macros are exposed to define test groups. These are:
 
 See |group| definition section of |user guide| for more informations.
 
-.. index::
-   single: suite definition; API
-   single: test suite definition; API
+.. index:: suite;API, API;suite
 
 Suite definition
 ================
@@ -137,7 +124,7 @@ The following low-level |API| is exposed for additional flexibility :
 See section :ref:`Low level runner <sect-user-low_level_runner>` of |user guide|
 for more informations.
 
-.. index:: API reference, reference
+.. index:: API;reference, reference;API
 
 Reference
 =========

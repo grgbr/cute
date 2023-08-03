@@ -1,24 +1,25 @@
 .. include:: _cdefs.rst
 
-.. _tdd:            https://en.wikipedia.org/wiki/Test-driven_development
-.. _bdd:            https://en.wikipedia.org/wiki/Behavior-driven_development
-.. _regtest:        https://en.wikipedia.org/wiki/Regression_testing
-.. _fixture:        https://en.wikipedia.org/wiki/Test_fixture
-.. _mock:           https://en.wikipedia.org/wiki/Mock_object
-.. _tap:            https://testanything.org/
-.. _junit:          https://en.wikipedia.org/wiki/JUnit
-.. _glibc:          https://www.gnu.org/software/libc/
-.. _umlclass:       https://en.wikipedia.org/wiki/Class_diagram
-.. _pkgconfig:      https://www.freedesktop.org/wiki/Software/pkg-config
-.. _make:           https://www.gnu.org/software/make/
-.. |pkg-config|     replace:: `pkg-config <pkgconfig_>`_
-.. |longjmp(3)|     replace:: :manpage:`longjmp(3)`
-.. |fork(2)|        replace:: :manpage:`fork(2)`
-.. |signal(7)|      replace:: :manpage:`signal(7)`
-.. |test scope|     replace:: :ref:`test global file scope <sect-user-writing_tests-test_file_scope>`
-.. |build|          replace:: :ref:`build <sect-user-building_tests>`
-.. |run|            replace:: :ref:`run <sect-user-running_tests>`
-.. |regex(7)|       replace:: :manpage:`regex(7)`
+.. _tdd:        https://en.wikipedia.org/wiki/Test-driven_development
+.. _bdd:        https://en.wikipedia.org/wiki/Behavior-driven_development
+.. _regtest:    https://en.wikipedia.org/wiki/Regression_testing
+.. _fixture:    https://en.wikipedia.org/wiki/Test_fixture
+.. _mock:       https://en.wikipedia.org/wiki/Mock_object
+.. _tap:        https://testanything.org/
+.. _junit:      https://en.wikipedia.org/wiki/JUnit
+.. _glibc:      https://www.gnu.org/software/libc
+.. _stdios:     https://www.gnu.org/software/libc/manual/html_node/Standard-Streams.html
+.. _umlclass:   https://en.wikipedia.org/wiki/Class_diagram
+.. _pkgconfig:  https://www.freedesktop.org/wiki/Software/pkg-config
+.. _make:       https://www.gnu.org/software/make/
+.. |pkg-config| replace:: `pkg-config <pkgconfig_>`_
+.. |longjmp(3)| replace:: :manpage:`longjmp(3)`
+.. |fork(2)|    replace:: :manpage:`fork(2)`
+.. |signal(7)|  replace:: :manpage:`signal(7)`
+.. |test scope| replace:: :ref:`test global file scope <sect-user-writing_tests-test_file_scope>`
+.. |build|      replace:: :ref:`build <sect-user-building_tests>`
+.. |run|        replace:: :ref:`run <sect-user-running_tests>`
+.. |regex(7)|   replace:: :manpage:`regex(7)`
 
 Overview
 ========
@@ -137,7 +138,7 @@ infrastructure.
 Writing tests
 =============
 
-.. index:: test definition, test case definition
+.. index:: test;definition, definition;test
 .. _sect-user-writing_tests-test_definition:
 
 Test definition
@@ -150,7 +151,7 @@ To **define a test**, one is expected to:
 * optionally specify test |fixture| function(s) and / or |timer|.
 
 Most of the time, implementing the testing logic relies upon heavy usage of
-`test assertions`_.
+`test assertion`_.
 
 .. _user-signals:
 
@@ -211,7 +212,7 @@ For additional flexibility, |CUTe| also allows to :
 * assign a |timer| to tests and / or suites ;
 * specify global |test scope| for tests and / or suites.
 
-.. index:: fixture, fixture operation, fixture function
+.. index:: fixture;test, test;fixture
 .. _sect-user-writing_tests-fixture_operations:
 
 Fixture operations
@@ -290,7 +291,7 @@ of the following alternatives :
   otherwise ;
 * the address of a custom function as mentionned above.
 
-.. index:: timeout, test timeout, timer, test timer
+.. index:: timeout;test, timer;test, test;timeout, test;timer
 .. _sect-user-writing_tests-test_timeout:
 
 Test timeout
@@ -345,7 +346,7 @@ time :
                          CUTE_NULL_TEARDOWN,
                          10U);
 
-.. index:: file scope, test scope
+.. index:: file scope;test, test;file scope
 .. _sect-user-writing_tests-test_file_scope:
 
 Test file scope
@@ -484,7 +485,7 @@ To create a test hierarchy, follow the typical workflow hereafter :
 
 Let's see how to define a group...
 
-.. index:: group definition, test group definition
+.. index:: group;definition, definition;group
 .. _sect-user-test_hierarchy-group_definition:
 
 Group definition
@@ -532,7 +533,7 @@ macros that allow to specify a desired global file scope :
 
 Now that a group has been defined, let's see how to use it to define a suite...
 
-.. index:: suite definition, test suite definition
+.. index:: suite;definition, definition;suite
 .. _sect-user-test_hierarchy-suite_definition:
 
 Suite definition
@@ -595,7 +596,7 @@ For additional flexibility, |CUTe| also allows to :
 * specify :ref:`global file scope <sect-user-test_hierarchy-suite_file_scope>`
   for suites.
 
-.. index:: fixture inheritance
+.. index:: fixture;inheritance, fixture;suite, suite;fixture
 .. _sect-user-test_hierarchy-fixture_inheritance:
 
 Fixture inheritance
@@ -696,7 +697,8 @@ operations to |suite|\s :
 * :c:macro:`CUTE_SUITE_STATIC`,
 * :c:macro:`CUTE_SUITE_EXTERN`.
 
-.. index:: timeout inheritance
+.. index:: timeout;inheritance, timeout;suite, suite;timeout,
+           timer;inheritance, timer;suite, suite;timer
 .. _sect-user-test_hierarchy-timeout_inheritance:
 
 Timeout inheritance
@@ -785,7 +787,7 @@ In the example above, note how the ``sample_test_1`` |test case| is assigned a
 is defined with the timeout setting inherited from the ``sample_timed_suite``
 test |suite| of ``10`` seconds.
 
-.. index:: suite file scope, test suite file scope
+.. index:: file scope;suite, suite;file scope
 .. _sect-user-test_hierarchy-suite_file_scope:
 
 Suite file scope
@@ -865,8 +867,10 @@ header so that it may be referenced from other compilation units :
 Now that we know how to instantiate a complete test |hierarchy|, let's see how
 to implement test functions using |CUTe|'s test assertions.
 
-Test assertions
-===============
+.. index:: assertion
+
+Test assertion
+==============
 
 COMPLETE ME!
 
@@ -950,7 +954,8 @@ Basically, to instantiate and operate a test |hierarchy| step by step :
 
 .. _sect-user-setup_run:
 
-.. rubric:: Setting up runner
+Setting up runner
+*****************
 
 Any usage of |CUTe|'s library *must* :
 
@@ -1003,7 +1008,8 @@ internally.
 
 .. _sect-user-run_suite:
 
-.. rubric:: Running suites
+Running suites
+**************
 
 Once |CUTe|'s |API| is :ref:`setup <sect-user-setup_run>` with a run
 :c:struct:`configuration <cute_config>`, running a test |hierarchy| is
@@ -1041,7 +1047,8 @@ See |report| section for explanations about displayed informations.
 
 .. _sect-user-list_suite:
 
-.. rubric:: Listing suites
+Listing suites
+**************
 
 Alternatively, you may display informations about the ``my_first_suite`` test
 |hierarchy| as shown below :
@@ -1161,6 +1168,8 @@ Unless command line arguments parsing was modified by the test developper, the
 produced executable should behave like what is shown for the fictional
 :program:`sample-test` program hereafter.
 
+.. program:: sample-test
+
 .. rubric:: SYNOPSIS
 
 | **sample-test** [<*OPTIONS*>] show [<*PATTERN*>]
@@ -1169,26 +1178,17 @@ produced executable should behave like what is shown for the fictional
 
 .. rubric:: DESCRIPTION
 
-When the :option:`show` argument is given, test hierarchy is listed according to
+When the ``show`` argument is given, test hierarchy is listed according to
 the specified :option:`PATTERN`.
 
-When the :option:`run` argument is given, test hierarchy is executed according
-to the specified :option:`PATTERN`.
+When the ``run`` argument is given, test hierarchy is executed according
+to the specified :option:`PATTERN`. Process exits with an **error status** if
+one of the tests failed or crashed.
 
 Finally, the :option:`-h` and :option:`--help` options as well as the
-:option:`help` argument displays a help message.
-
-.. rubric:: PATTERN
-
-When given, :option:`PATTERN` selects a subset of the test hierarchy. When
-missing, the whole hierarchy is considered.
-
-:option:`PATTERN` should be specified as a POSIX extended regular expression as
-described in |regex(7)|.
+``help`` argument displays a help message.
 
 .. rubric:: OPTIONS
-
-.. program:: sample-test
 
 .. option:: -d, --debug
 
@@ -1197,9 +1197,13 @@ described in |regex(7)|.
    This may be useful when running a test hierarchy under a debugger (see
    |test case| section).
 
+.. option:: -h, --help
+
+   Output a help message.
+
 .. option:: -i, --icase
 
-   Ignore case when matching against <*PATTERN*>.
+   Ignore case when matching against <:option:`PATTERN`>.
 
 .. option:: -s, --silent
 
@@ -1224,36 +1228,48 @@ described in |regex(7)|.
 
 .. option:: -x[<PATH>], --xml[=<PATH>]
 
-   Generate output to <*PATH*> according to
+   Generate output to <:option:`PATH`> according to
    :ref:`JUnit XML format <sect-user-junit>`.
 
 .. option:: -a[<PATH>], --tap[=<PATH>]
 
-   Generate output to <*PATH*> according to
+   Generate output to <:option:`PATH`> according to
    :ref:`Test Anything Protocol format <sect-user-tap>`.
 
-.. rubric:: PATH
+.. option:: COLOR
 
-:option:`PATH` is a pathname to a file where to store generated output.
+   Controls the colorization of console output. When ``on``, it enforces
+   colorization whereas it disables it when ``off``.
 
-When unspecified or specified as ``-``, output is directed to standard output in
-which case this option is exclusive with :option:`-s`, :option:`--silent`,
-:option:`-t`, :option:`--terse`, :option:`-v` and :option:`--verbose`.
+   By default, colorization is automatically enabled if current terminal supports
+   it.
 
-.. rubric:: COLOR
+.. option:: PATH
 
-:option:`COLOR` controls the colorization of console output. When ``on``,
-it enforces colorization whereas it disables it when ``off``.
+   A pathname to a file where to store generated output.
 
-By default, colorization is automatically enabled if current terminal supports
-it.
+   When unspecified or specified as ``-``, output is directed to standard output in
+   which case this option is exclusive with :option:`-s`, :option:`--silent`,
+   :option:`-t`, :option:`--terse`, :option:`-v` and :option:`--verbose`.
+
+.. option:: PATTERN
+
+   When given, selects a subset of the test hierarchy. When missing, the whole
+   hierarchy is considered.
+
+   It should be specified as a POSIX extended regular expression as described in
+   |regex(7)|.
 
 .. _sect-user-test_reports:
 
 Test reports
 ============
 
-Test results are output into reports. Reporting may occur onto terminal and / or
+Test results are output into reports where, for each |test case| or |suite|,
+you may find usefull informations about test outcomes. A more in-depth
+explanation about results may be found into section `test result`_.
+
+Reporting may occur onto terminal and / or
 may be stored into files. Multiple reporting formats are supported :
 
 * `console`_ output formats allow progress monitoring ;
@@ -1268,14 +1284,158 @@ Reporting formats may be selected thanks to :
 * or through `command line`_ arguments when a runner implementation is based
   upon the :ref:`CUTE_MAIN <sect-user-main>` |API| macro.
 
+.. note::
+
+   Console output may be coupled with the ability to report results into files
+   according to :ref:`JUnit XML <sect-user-junit>` and / or
+   :ref:`TAP <sect-user-tap>` formats.
+   See `Command line`_ section for more informations.
+
 Console
 -------
+
+Console reports shows general progress informations as well as details about
+test failures onto `standard streams <stdios_>`_.
+See section `statistics`_ for explainations about output details.
+
+Console reporting may output progress informations in 3 different ways :
+`terse`_, `verbose`_ or `silent`_.
+
+Terse
+*****
+
+When unspecified, *Terse* is the default console output format. It shows :
+
+* a progress bar (on ``stderr``),
+* *failed* test details with fully qualified test names (on ``stdout``),
+* and overall test result statistics_ at end of run (on ``stdout``).
+
+The following command requests the :file:`cute-full-sample` executable shipped
+with |CUTe| to produce **terse console output** in addition to generating a
+:ref:`JUnit XML <sect-user-junit>` report into :file:`full_sample_junit.xml`
+file :
+
+.. code-block:: console
+
+   $ cute-full-sample -t -xfull_sample_junit.xml run
+
+This command should display something like :
 
 .. literalinclude:: terse_report.txt
    :language: text
 
+Verbose
+*******
+
+*Verbose* console outputs informations in a hierarchical manner and shows :
+
+* *passed*, *skipped* and *disabled* test statuses, 
+* *failed* and *crashed* test details,
+* and overall test result statistics_ at end of run.
+
+The following command requests the :file:`cute-full-sample` executable shipped
+with |CUTe| to produce **verbose console output** in addition to generating a
+:ref:`TAP <sect-user-tap>` report into :file:`full_sample.tap`
+file :
+
+.. code-block:: console
+
+   $ cute-full-sample -v -afull_sample.tap run
+
+This command should display something like :
+
 .. literalinclude:: verbose_report.txt
    :language: text
+
+Silent
+******
+
+As its name suggests, *silent* console produces no output (except for internal
+|CUTe| errors).
+
+The following command requests the :file:`cute-full-sample` executable shipped
+with |CUTe| to produce **silent console output** in addition to generating a
+:ref:`JUnit XML <sect-user-junit>` report into :file:`full_sample_junit.xml`
+file :
+
+.. code-block:: console
+
+   $ cute-full-sample -s --xml=full_sample_junit.xml run
+
+Statistics
+**********
+
+`Terse`_ and `verbose`_ console reports show an overall test results sumup at
+end of run where test |hierarchy| :ref:`results <sect-user-result>` are
+aggregated and presented in a hierarchical manner on a per |suite| basis. Here
+is an excerpt of examples shown in previous sections :
+
+.. literalinclude:: terse_report.txt
+   :language: text
+   :linenos:
+   :lines: 28-42
+   :emphasize-lines: 2-9
+
+Lines 2 to 9 above show for each suite, 2 rows of informations according to a
+tabular format which is depicted in the table below.
+
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+
+   * - Column name
+     - Description
+     - First row
+     - Second row
+   * - NAME
+     - name of suite
+     - short name
+     - empty
+   * - STAT
+     - result status
+     - status abbreviation
+     - empty
+   * - TIME
+     - run time elapsed
+     - :token:`seconds` . :token:`microseconds`
+     - empty
+   * - #PASS
+     - number of direct descendants passed
+     - absolute value
+     - ratio computed as :math:`\frac{\#PASS\times100}{\#EXEC}`
+   * - #SKIP
+     - number of direct descendants skipped
+     - absolute value
+     - ratio computed as :math:`\frac{\#SKIP\times100}{\#EXEC}`
+   * - #FAIL
+     - number of direct descendant failures
+     - absolute value
+     - ratio computed as :math:`\frac{\#SKIP\times100}{\#EXEC}`
+   * - #EXCP
+     - number of direct descendant crashes (exceptions)
+     - absolute value
+     - ratio computed as :math:`\frac{\#EXCP\times100}{\#EXEC}`
+   * - #EXEC
+     - number of direct descendants executed, (not off)
+     - absolute value
+     - ratio computed as :math:`\frac{\#EXEC\times100}{\#TOTAL}`
+   * - #TOTAL
+     - total number of direct descendants registered.
+     - absolute value
+     - empty
+
+Report is completed by lines 11 and 12 which present overall aggregated test
+result statistics. Note that values displayed here account for **test case
+related results ONLY**, i.e., suites are excluded from computation.
+
+.. literalinclude:: terse_report.txt
+   :language: text
+   :linenos:
+   :lines: 28-42
+   :emphasize-lines: 11,12
+
+This is the reason why, given a particular column, the sum of absolute values
+found at lines 2 to 9 may differ from absolute value found at line 11.
 
 .. _sect-user-junit:
 
@@ -1292,3 +1452,54 @@ TAP
 
 .. literalinclude:: tap_report.tap
    :language: tap
+
+.. index:: result, test;result, suite;result, assertion:result
+.. _sect-user-result:
+
+Test result
+-----------
+
+For each |test case| or |suite|, result is reported using multiple kinds of
+informations. These are described below.
+
+.. index:: status, test;status, suite;status
+
+status
+  A synthetic *state* depicting the outcome of a test or suite ; possible
+  statuses are :
+
+  * *pass* : a test case or suite passed entirely ;
+  * *skip* : a test case or suite was skipped programmatically, i.e thanks to a
+    call to :c:func:`cute_skip` ;
+  * *fail* : a test case failed or a suite has at least one failed or crashed
+    sub-test / sub-suite ;
+  * *excp* : a test case crashed or all sub-tests / sub-suites of a suite
+    crashed ;
+  * *off* : a test case has been deselected or all sub-tests / sub-suites of a
+    suite have been deselected because of an unsuccessful regular expression
+    matching (see :option:`command line test selection <PATTERN>` and
+    :c:member:`programmatic test selection <cute_config.match>`).
+
+.. index:: issue, test;issue, suite;issue
+
+issue
+  The nature of a particular test event, i.e. *what* happened.
+
+.. index:: reason, test;reason, suite;reason
+
+reason
+  Basically explain *why* a particular test issue happened.
+
+.. index:: source, test;source, suite;source, assertion;source
+
+source
+  Source code location where a particular `test assertion` is called or a |test
+  case| or |suite| is defined; expressed as :token:`pathname`::token:`line`.
+
+.. index:: caller, assertion;caller, expectation;caller
+
+caller
+  Name of the function that called a particular `test assertion`_.
+
+There are additional types of reported informations that are specific to the
+failing `test assertion`_ that procuded them.
