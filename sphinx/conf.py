@@ -57,7 +57,7 @@ master_title = u'CUTe Documentation'
 
 # General information about the project.
 project = u'CUTe'
-copyright = u"2023 Grégor Boirie <gregor.boirie@free.fr>"
+copyright = u"2023 Grégor Boirie"
 author = u"Grégor Boirie"
 
 # The version info for the project you're documenting, acts as replacement for
