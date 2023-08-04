@@ -287,6 +287,9 @@ TAB_SIZE               = 8
 ALIASES = licensestart="@par License^^@parblock^^" \
           licenseend="@endparblock^^"
 
+# A simple one line reference Licensing information alias.
+ALIASES += license="@par License^^"
+
 # Declare an alias command taking one parameter to output a link to a manpage
 # rendered by Sphinx / Breathe logic.
 #

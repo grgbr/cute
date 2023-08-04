@@ -1,11 +1,14 @@
-* documentation !!
+Fixes and cleanup :
+* files licensing
+* README file
 * replace longjmp() with siglongjmp()
-* devise API to run a single test
-* hexdecimal checking / expectations support
-* stack trace upon failures and errors / crashes
-* hexdump upon memory content failures
 * test complex hierarchy setup/teardown
-* refine stringification of check API arguments (prevent from expanding args)
-* implement mem dump support ?
-* fork
 * cleanup cute_term_depth_[v]printf...
+
+Missing features :
+* hexdecimal checking / expectations support
+* hexdump upon memory content failures
+* refine stringification of check API arguments (prevent from expanding args)
+* stack trace upon failures and errors / crashes
+* devise API to run a single test
+* fork

@@ -872,7 +872,7 @@ to implement test functions using |CUTe|'s test assertions.
 Test assertion
 ==============
 
-COMPLETE ME!
+.. todo:: document test assertions and expectations.
 
 .. _sect-user-running_tests:
 
