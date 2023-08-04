@@ -3,7 +3,10 @@
    This file is part of CUTe.
    Copyright (C) 2023 Grégor Boirie <gregor.boirie@free.fr>
 
-Todo
-====
+*********
+Licensing
+*********
 
-.. todolist::
+.. include:: license/lgpl.rst
+.. include:: license/gpl.rst
+.. include:: license/gfdl.rst

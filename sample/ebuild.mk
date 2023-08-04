@@ -1,3 +1,10 @@
+################################################################################
+# SPDX-License-Identifier: LGPL-3.0-only
+#
+# This file is part of CUTe.
+# Copyright (C) 2023 Grégor Boirie <gregor.boirie@free.fr>
+################################################################################
+
 sample-cflags             := -Wall \
                              -Wextra \
                              -Wformat=2 \
@@ -31,4 +38,4 @@ cute-mock-sample-objs     := mock.o
 cute-mock-sample-cflags   := $(sample-cflags)
 cute-mock-sample-ldflags  := $(sample-ldflags) -lcute
 
-# vim: filetype=make :
+# ex: filetype=make :

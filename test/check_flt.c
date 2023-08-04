@@ -1,3 +1,10 @@
+/******************************************************************************
+ * SPDX-License-Identifier: LGPL-3.0-only
+ *
+ * This file is part of CUTe.
+ * Copyright (C) 2023 Grégor Boirie <gregor.boirie@free.fr>
+ ******************************************************************************/
+
 #include "cute/cute.h"
 #include "cute/check.h"
 #include <math.h>

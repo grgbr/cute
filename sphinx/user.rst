@@ -1,3 +1,8 @@
+.. SPDX-License-Identifier: GFDL-1.3-only
+
+   This file is part of CUTe.
+   Copyright (C) 2023 Grégor Boirie <gregor.boirie@free.fr>
+
 .. include:: _cdefs.rst
 
 .. _tdd:        https://en.wikipedia.org/wiki/Test-driven_development
@@ -57,6 +62,8 @@ designed with the following goals in mind:
 * no |fork(2)| based test isolation
 * no parameterizable test support
 * custom check assertion not supported
+  
+|CUTe| is distributed under the :ref:`GNU Lesser General Public License <lgpl>`.
 
 Basic concepts
 ==============
