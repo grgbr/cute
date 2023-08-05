@@ -28,9 +28,9 @@ Overview
 ========
 
 This guide mainly focuses upon the construction process required to install
-|CUTe|.
+CUTe_.
 
-|CUTe|'s build logic is based upon |eBuild|. In addition to the build process
+CUTe_'s build logic is based upon |eBuild|. In addition to the build process
 description explained below, you may refer to the |eBuild User Guide|
 for further detailed informations.
 
@@ -38,7 +38,7 @@ Prerequisites
 =============
 
 In addition to the standard |eBuild Prerequisites|, no particular packages are
-required to build |CUTe|.
+required to build CUTe_.
 
 Optionally, you will need :command:`awk`, :command:`cmp` and a :command:`sh`
 Bourne shell at runtime when unit testsuite is enabled (see
@@ -46,7 +46,7 @@ Bourne shell at runtime when unit testsuite is enabled (see
 
 Optionally, you will need multiple packages installed to build the
 documentation. In addition to packages listed into |eBuild Prerequisites|,
-|CUTe|'s documentation generation process requires :
+CUTe_'s documentation generation process requires :
 
 * breathe_,
 * graphviz_,
@@ -56,7 +56,7 @@ documentation. In addition to packages listed into |eBuild Prerequisites|,
 Getting help
 ============
 
-From |CUTe| source tree root, enter:
+From CUTe_ source tree root, enter:
 
 .. code-block:: console
 
@@ -78,8 +78,8 @@ section also contains valuable informations.
 Build Workflow
 ==============
 
-As mentioned earlier, |CUTe|'s build logic is based on |eBuild|, a |GNU make|
-based build system. To build and install |CUTe|, the typical workflow is:
+As mentioned earlier, CUTe_'s build logic is based on |eBuild|, a |GNU make|
+based build system. To build and install CUTe_, the typical workflow is:
 
 #. Prepare and collect workflow requirements,
 #. |Configure| the construction logic,
@@ -89,7 +89,7 @@ based build system. To build and install |CUTe|, the typical workflow is:
 
 Alternatively, you may replace the last step mentioned above with a |Staged
 Install|. You will find below a **quick starting guide** showing how to build
-|CUTe|.
+CUTe_.
 
 Preparation phase
 -----------------
@@ -154,7 +154,7 @@ instead:
 Documentation generation
 ------------------------
 
-You may generate |CUTe| documentation by running the `doc` target like so:
+You may generate CUTe_ documentation by running the `doc` target like so:
 
 .. code-block:: console
 

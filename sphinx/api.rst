@@ -13,8 +13,8 @@
 Overview
 ========
 
-Here is the |CUTe|'s programmatic API reference manual. If you need an in-depth
-description of |CUTe| usage, you should refer to the |user guide| instead.
+Here is the CUTe_'s programmatic API reference manual. If you need an in-depth
+description of CUTe_ usage, you should refer to the |user guide| instead.
 
 .. index:: build configuration, configuration macros
 
@@ -22,7 +22,7 @@ Build configuration
 ===================
 
 At :ref:`Build configuration time <workflow-configure-phase>`, multiple build
-options are available to customize final |CUTe| build. From client code, you may
+options are available to customize final CUTe_ build. From client code, you may
 eventually refer to the corresponding C macros listed below:
 
 * :c:macro:`CONFIG_CUTE_INTERN_ASSERT`

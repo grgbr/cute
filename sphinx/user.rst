@@ -17,61 +17,76 @@
 .. |build|      replace:: :ref:`build <sect-user-building_tests>`
 .. |run|        replace:: :ref:`run <sect-user-running_tests>`
 .. |regex(7)|   replace:: :manpage:`regex(7)`
+.. |longjmp(3)| replace:: :manpage:`longjmp(3)`
+.. |fork(2)|    replace:: :manpage:`fork(2)`
 
+.. _mock: https://en.wikipedia.org/wiki/Mock_object
+.. _mocking: mock_
+   
+.. _regtest: https://en.wikipedia.org/wiki/Regression_testing
+.. _regression testing: regtest_
+
+.. _test anything protocol: tap_
+.. _tap home page: tap_
+.. _test fixtures: fixture_
+
+.. _utest: https://en.wikipedia.org/wiki/Unit_testing
+.. _unit tests: utest_
+.. _unit testing: utest_
+ 
 Overview
 ========
 
-|CUTe| is a lightweight `unit testing <utest_>`_ and `mocking <mock_>`_
-framework for C.
+CUTe_ is a lightweight `unit testing`_ and mocking_ framework for C.
 
-`Unit testing <utest_>`_ is a software development practice where small units of
+`Unit testing`_ is a software development practice where small units of
 code are tested for proper operation. The technique is carried out as part of
 software development process testing activities.
 `Test-Driven Development (TDD) <tdd_>`_ and
 `Behavior-Driven Development (BDD) <bdd_>`_ are well known examples of such
-development processes making heavy usage of `unit testing <utest_>`_.
+development processes making heavy usage of `unit testing`_.
 
-|CUTe| is meant to ease the process of writing `unit tests <utest_>`_ and make
-them suitable for test automation and `regression testing <regtest_>`_
-activities. It is designed with the following goals in mind:
+CUTe_ is meant to ease the process of writing `unit tests`_ and make
+them suitable for test automation and `regression testing`_ activities. It is
+designed with the following goals in mind:
 
 .. rubric:: Features
 
 * test failure recovery,
 * extensive reporting,
 * flexible and modular test suite hierarchy,
-* `test fixtures <fixture_>`_,
-* strict function `mocking <mock_>`_,
-* `JUnit <junit_>`_ XML reporting,
-* `Test Anything Protocol <tap_>`_ reporting,
+* `test fixtures`_,
+* strict function mocking_,
+* JUnit_ XML reporting,
+* `Test Anything Protocol`_ reporting,
 * easy debugging of test failures,
 * clear and expressive C API,
 * C library dependency only.
 
 .. rubric:: Limitations
 
-* GNU / Linux / `Glibc <glibc_>`_ userspace C `unit testing <utest_>`_ only
+* GNU / Linux / `Glibc`_ userspace C `unit testing`_ only
 * |longjmp(3)| based test failure recovery only
 * no |fork(2)| based test isolation
 * no parameterizable test support
 * custom check assertion not yet supported.
   
-|CUTe| is distributed under the :ref:`GNU Lesser General Public License <lgpl>`.
+CUTe_ is distributed under the :ref:`GNU Lesser General Public License <lgpl>`.
 
 Basic concepts
 ==============
 
-|CUTe| is a framework allowing to write, manage and run unit tests in C. It's
+CUTe_ is a framework allowing to write, manage and run unit tests in C. It's
 |API| provides a set of functions to :
 
 * structure |test case| / |suite| |hierarchy| ;
 * check strongly typed data against specified constraints ;
-* schecule and verify mock expectations against specified constraints ;
+* schecule and verify mock_ expectations against specified constraints ;
 * |run| test cases and suites according to specified configurations ;
 * |report| test results onto the console and / or,
 * into files according to various specified formats.
 
-|CUTe| is built as a static and / or shared library which must be linked with
+CUTe_ is built as a static and / or shared library which must be linked with
 the user's testing code.
 
 Tests are organized in a hierarchical manner as shown in the example diagram
@@ -166,15 +181,15 @@ At running time, the test function is executed with the following
   traps / crashes,
 * the ``teardown()`` |fixture| function (if any) is always executed after test
   function has completed.
-* the test function does not alter |CUTe|'s internal state consistency.
+* the test function does not alter CUTe_'s internal state consistency.
 
-As state above, result is unpredictable when the test function alters |CUTe|'s
+As state above, result is unpredictable when the test function alters CUTe_'s
 internal state consistency. In particular, the **test function is not allowed
 to** :
 
 * modify test |hierarchy| ;
 * |run| tests or |suite|\s ;
-* alter |signal(7)| dispositions installed by |CUTe|.
+* alter |signal(7)| dispositions installed by CUTe_.
 
 Using the :c:macro:`CUTE_TEST` macro is the most straightforward way to define
 a test:
@@ -206,7 +221,7 @@ the ``sample_test`` test case as following :
 
    static void sample_test__cute_exec(void);
 
-For additional flexibility, |CUTe| also allows to :
+For additional flexibility, CUTe_ also allows to :
 
 * attach |fixture| functions to tests and / or suites ;
 * assign a |timer| to tests and / or suites ;
@@ -298,7 +313,7 @@ Test timeout
 ------------
 
 To protect against situations where a |test case| or |fixture| function hangs,
-|CUTe| may arm a test timer that interrupts current test case execution upon
+CUTe_ may arm a test timer that interrupts current test case execution upon
 expiry.
 The timeout may be specified at |test case| definition time using one of the
 following C macros :
@@ -320,7 +335,7 @@ be specified as one of :
   seconds.
 
 When the timer expires, the current |test case| or |fixture| function execution
-is *interrupted*, |CUTe| marks the test as *failing* then proceeds to the *next*
+is *interrupted*, CUTe_ marks the test as *failing* then proceeds to the *next*
 one in sequence.
 
 Use the :c:macro:`CUTE_TEST_DEFN` macro to specify a timeout at definition
@@ -352,7 +367,7 @@ time :
 Test file scope
 ---------------
 
-To enhance test case reusability, |CUTe| allows to specify global file scope
+To enhance test case reusability, CUTe_ allows to specify global file scope
 at test definition time. 2 shorthand macros allow to minimize test developper
 workload compared to :c:macro:`CUTE_TEST_DEFN` usage. These are :
 
@@ -524,7 +539,7 @@ by using the variable named ``sample_group`` which itself refers to the created
 group.
 
 This test group variable is defined with *static global file scope*. However,
-for additional flexibility and reusability, |CUTe| also provides the following
+for additional flexibility and reusability, CUTe_ also provides the following
 macros that allow to specify a desired global file scope :
 
 * :c:macro:`CUTE_GROUP_STATIC`,
@@ -587,7 +602,7 @@ parent suite if explicitly registered.
 In addition, as no test |timer| is specified, it will inherit its timeout
 setting from an eventual parent suite if explicitly registered.
 
-For additional flexibility, |CUTe| also allows to :
+For additional flexibility, CUTe_ also allows to :
 
 * attach :ref:`fixture <sect-user-test_hierarchy-fixture_inheritance>` functions
   to suites ;
@@ -705,7 +720,7 @@ Timeout inheritance
 -------------------
 
 To protect against situations where a |test case| or |fixture| function hangs,
-|CUTe| may arm a test |timer| that interrupts current test case execution upon
+CUTe_ may arm a test |timer| that interrupts current test case execution upon
 expiry.
 
 As for a |test case| |timer| setting, the timeout may be specified at |suite|
@@ -736,7 +751,7 @@ be specified as one of :
    definition time.
 
 When the timer expires, the current |test case| or |fixture| function execution
-is *interrupted*, |CUTe| marks the test as *failing* then proceeds to the *next*
+is *interrupted*, CUTe_ marks the test as *failing* then proceeds to the *next*
 one in sequence within the current |suite|.
 
 Use the :c:macro:`CUTE_SUITE_DEFN` macro to specify a timeout at definition time
@@ -793,7 +808,7 @@ test |suite| of ``10`` seconds.
 Suite file scope
 ----------------
 
-To enhance |suite| reusability, |CUTe| allows to specify global
+To enhance |suite| reusability, CUTe_ allows to specify global
 file scope at |suite| definition time. 2 shorthand macros allow to minimize test
 developper workload compared to :c:macro:`CUTE_SUITE_DEFN` usage. These are :
 
@@ -865,7 +880,7 @@ header so that it may be referenced from other compilation units :
    #endif /* _TEST_H */
 
 Now that we know how to instantiate a complete test |hierarchy|, let's see how
-to implement test functions using |CUTe|'s test assertions.
+to implement test functions using CUTe_'s test assertions.
 
 .. index:: assertion
 
@@ -881,13 +896,13 @@ Running tests
 
 Once a test |hierarchy| has been defined, some additional glue code is required
 to instantiate and operate it.
-To alleviate test developper workload, |CUTe| provides a single macro to use as
+To alleviate test developper workload, CUTe_ provides a single macro to use as
 `main entry point`_ replacement that implements all the required glue code.
 
 Finally, you should :ref:`compile and link <sect-user-building_tests>` the test
 code to provide a standalone executable.
 
-Where you need more flexibility, |CUTe|'s |API| also exposes functions required
+Where you need more flexibility, CUTe_'s |API| also exposes functions required
 to instantiate and operate a test |hierarchy| step by step. See section
 `Low-level runner`_ for more informations.
 
@@ -937,7 +952,7 @@ executable supporting the following features :
   `Command line`_.
 
 Basically, in addition to command line arguments parsing, :c:macro:`CUTE_MAIN`
-makes use of functions publicly exposed by |CUTe| |API| to implement
+makes use of functions publicly exposed by CUTe_ |API| to implement
 its internal logic. These are described in the following sections...
 
 .. _sect-user-low_level_runner:
@@ -947,17 +962,17 @@ Low-level runner
 
 Basically, to instantiate and operate a test |hierarchy| step by step :
 
-* :ref:`initialize <sect-user-setup_run>` |CUTe|,
+* :ref:`initialize <sect-user-setup_run>` CUTe_,
 * :ref:`run <sect-user-run_suite>` test |hierarchy|,
 * or :ref:`show <sect-user-list_suite>` test |hierarchy|,
-* then :ref:`release <sect-user-setup_run>` |CUTe| resources.
+* then :ref:`release <sect-user-setup_run>` CUTe_ resources.
 
 .. _sect-user-setup_run:
 
 Setting up runner
 *****************
 
-Any usage of |CUTe|'s library *must* :
+Any usage of CUTe_'s library *must* :
 
 * begin with a call to :c:func:`cute_init` to initialize |API| internals,
 * finish with a call to :c:func:`cute_fini` to close |API| I/O streams and
@@ -1011,7 +1026,7 @@ internally.
 Running suites
 **************
 
-Once |CUTe|'s |API| is :ref:`setup <sect-user-setup_run>` with a run
+Once CUTe_'s |API| is :ref:`setup <sect-user-setup_run>` with a run
 :c:struct:`configuration <cute_config>`, running a test |hierarchy| is
 straightforward :
 
@@ -1088,7 +1103,7 @@ Building tests
 --------------
 
 Basically, building a test |hierarchy| runner executable requires to compile and
-link testing code compilation units with |CUTe|'s library. You may choose to
+link testing code compilation units with CUTe_'s library. You may choose to
 link against either the *static* library or the *shared* one.
 
 Here is basic `Makefile <make_>`_ examples for building a ``my_first_tests``
@@ -1123,7 +1138,7 @@ runner executable against *shared* and *static* libraries respectively.
    my_first_tests: my_first_tests.c
    	${CC} -o $@ $< ${CFLAGS} ${LDFLAGS}
 
-In addition, as |CUTe| is shipped with its own |pkg-config| metadata files, you
+In addition, as CUTe_ is shipped with its own |pkg-config| metadata files, you
 may either choose to make use of handcoded flags as shown above, or
 to retrieve build flags through :program:`pkg-config` tool instead.
 
@@ -1311,7 +1326,7 @@ When unspecified, *Terse* is the default console output format. It shows :
 * and overall test result statistics_ at end of run (on ``stdout``).
 
 The following command requests the :file:`cute-full-sample` executable shipped
-with |CUTe| to produce **terse console output** in addition to generating a
+with CUTe_ to produce **terse console output** in addition to generating a
 :ref:`JUnit XML <sect-user-junit>` report into :file:`full_sample_junit.xml`
 file :
 
@@ -1340,7 +1355,7 @@ Verbose
 * and overall test result statistics_ at end of run.
 
 The following command requests the :file:`cute-full-sample` executable shipped
-with |CUTe| to produce **verbose console output** in addition to generating a
+with CUTe_ to produce **verbose console output** in addition to generating a
 :ref:`TAP <sect-user-tap>` report into :file:`full_sample.tap`
 file :
 
@@ -1363,10 +1378,10 @@ Silent
 ******
 
 As its name suggests, *silent* console produces no output (except for internal
-|CUTe| errors).
+CUTe_ errors).
 
 The following command requests the :file:`cute-full-sample` executable shipped
-with |CUTe| to produce **silent console output** in addition to generating a
+with CUTe_ to produce **silent console output** in addition to generating a
 :ref:`JUnit XML <sect-user-junit>` report into :file:`full_sample_junit.xml`
 file :
 
@@ -1462,7 +1477,7 @@ found at lines 2 to 9 may differ from absolute value found at line 11.
 JUnit XML
 ---------
 
-Reports may be generated according to `JUnit <junit_>`_ XML format. As stated
+Reports may be generated according to JUnit_ XML format. As stated
 onto `Testmo's junitxml Github <https://github.com/testmoapp/junitxml>`_ :
 
    The JUnit XML file format has been made popular by the JUnit and has since
@@ -1478,13 +1493,13 @@ onto `Testmo's junitxml Github <https://github.com/testmoapp/junitxml>`_ :
    produces or consumes JUnit-style XML files, this project might be a good
    starting point to learn about the format.
 
-JUnit XML format is quite descriptive and allows the recording of test results
+JUnit_ XML format is quite descriptive and allows the recording of test results
 for long-term statistical analysis. In addition, it allows for merging test
 results from multiple files across multiple test
 :ref:`hierarchies <sect-user-test_hierarchy>`.
 
 The following command requests the :file:`cute-full-sample` executable shipped
-with |CUTe| to produce **JUnit XML output onto the console** :
+with CUTe_ to produce **JUnit XML output onto the console** :
 
 .. code-block:: console
 
@@ -1511,7 +1526,7 @@ TAP
 ---
 
 Reports may also be generated according to *Test Anything Protocol* format
-*version 14*. As stated onto `TAP home page <tap_>`_ :
+*version 14*. As stated onto `TAP home page`_ :
 
    TAP, the Test Anything Protocol, is a simple text-based interface between
    testing modules in a test harness. It decouples the reporting of errors from
@@ -1534,7 +1549,7 @@ progress. On the other hand, the results storage ability is required for
 long-term statistical analysis.
 
 The following command requests the :file:`cute-full-sample` executable shipped
-with |CUTe| to produce **TAP output onto the console** :
+with CUTe_ to produce **TAP output onto the console** :
 
 .. code-block:: console
 
