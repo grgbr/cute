@@ -7,19 +7,11 @@
 
 .. _tdd:        https://en.wikipedia.org/wiki/Test-driven_development
 .. _bdd:        https://en.wikipedia.org/wiki/Behavior-driven_development
-.. _regtest:    https://en.wikipedia.org/wiki/Regression_testing
-.. _fixture:    https://en.wikipedia.org/wiki/Test_fixture
-.. _mock:       https://en.wikipedia.org/wiki/Mock_object
-.. _tap:        https://testanything.org/
-.. _junit:      https://en.wikipedia.org/wiki/JUnit
-.. _glibc:      https://www.gnu.org/software/libc
 .. _stdios:     https://www.gnu.org/software/libc/manual/html_node/Standard-Streams.html
 .. _umlclass:   https://en.wikipedia.org/wiki/Class_diagram
 .. _pkgconfig:  https://www.freedesktop.org/wiki/Software/pkg-config
 .. _make:       https://www.gnu.org/software/make/
 .. |pkg-config| replace:: `pkg-config <pkgconfig_>`_
-.. |longjmp(3)| replace:: :manpage:`longjmp(3)`
-.. |fork(2)|    replace:: :manpage:`fork(2)`
 .. |signal(7)|  replace:: :manpage:`signal(7)`
 .. |test scope| replace:: :ref:`test global file scope <sect-user-writing_tests-test_file_scope>`
 .. |build|      replace:: :ref:`build <sect-user-building_tests>`
@@ -29,18 +21,19 @@
 Overview
 ========
 
-|CUTe| is a lightweight unit testing and mocking framework for C.
+|CUTe| is a lightweight `unit testing <utest_>`_ and `mocking <mock_>`_
+framework for C.
 
-Unit testing is a software development practice where small units of code are
-tested for proper operation. The technique is carried out as part of software
-development process testing activities.
+`Unit testing <utest_>`_ is a software development practice where small units of
+code are tested for proper operation. The technique is carried out as part of
+software development process testing activities.
 `Test-Driven Development (TDD) <tdd_>`_ and
 `Behavior-Driven Development (BDD) <bdd_>`_ are well known examples of such
-development processes making heavy usage of unit testing.
+development processes making heavy usage of `unit testing <utest_>`_.
 
-|CUTe| is meant to ease the process of writing unit tests and make them suitable
-for test automation and `regression testing <regtest_>`_ activities. It is
-designed with the following goals in mind:
+|CUTe| is meant to ease the process of writing `unit tests <utest_>`_ and make
+them suitable for test automation and `regression testing <regtest_>`_
+activities. It is designed with the following goals in mind:
 
 .. rubric:: Features
 
@@ -57,11 +50,11 @@ designed with the following goals in mind:
 
 .. rubric:: Limitations
 
-* GNU / Linux / `Glibc <glibc_>`_ userspace C unit testing only
+* GNU / Linux / `Glibc <glibc_>`_ userspace C `unit testing <utest_>`_ only
 * |longjmp(3)| based test failure recovery only
 * no |fork(2)| based test isolation
 * no parameterizable test support
-* custom check assertion not supported
+* custom check assertion not yet supported.
   
 |CUTe| is distributed under the :ref:`GNU Lesser General Public License <lgpl>`.
 
