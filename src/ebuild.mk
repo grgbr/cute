@@ -48,8 +48,6 @@ libcute.so-cflags  := $(filter-out -fpie -fPIE,$(common-cflags)) -fpic
 libcute.so-ldflags := $(filter-out -fpie -fPIE,$(common-cflags)) \
                       -shared -fpic -Bsymbolic -Wl,-soname,libcute.so
 
--include $(BUILDDIR)/shared/*.d
-
 arlibs             := libcute.a
 libcute.a-objs     += \
 	static/init.o \
@@ -70,6 +68,4 @@ libcute.a-objs     += \
 	static/util.o
 libcute.a-cflags   := $(common-cflags)
 
--include $(BUILDDIR)/static/*.d
-
-# vim: filetype=make :
+# ex: filetype=make :
