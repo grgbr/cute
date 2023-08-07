@@ -89,7 +89,7 @@ cute_test_setup(struct cute_run * run)
 	cute_assert_intern(!run->what);
 	cute_assert_intern(!run->why);
 
-	int          ret = -EPERM;
+	volatile int ret = -EPERM;
 	volatile int issue;
 
 	if (run->state == CUTE_OFF_STATE) {

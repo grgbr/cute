@@ -10,7 +10,10 @@
 #include "cute/expect.h"
 
 static void
-expect_sint_value_callee(char byte, short hword, int word, long long dword)
+expect_sint_value_callee(signed char byte,
+                         short       hword,
+                         int         word,
+                         long long   dword)
 {
 	cute_mock_sint_parm(byte);
 	cute_mock_sint_parm(hword);
@@ -19,7 +22,10 @@ expect_sint_value_callee(char byte, short hword, int word, long long dword)
 }
 
 static void
-expect_sint_value_caller(char byte, short hword, int word, long long dword)
+expect_sint_value_caller(signed char byte,
+                         short       hword,
+                         int         word,
+                         long long   dword)
 {
 	expect_sint_value_callee(byte, hword, word, dword);
 }
@@ -47,10 +53,10 @@ CUTE_TEST(expect_sint_parm_fail_test)
 
 CUTE_TEST(expect_sint_equal_pass_test)
 {
-	char      bref = SCHAR_MIN;
-	short     href = SHRT_MAX;
-	int       wref = INT_MIN;
-	long long dref = LLONG_MAX;
+	signed char bref = SCHAR_MIN;
+	short       href = SHRT_MAX;
+	int         wref = INT_MIN;
+	long long   dref = LLONG_MAX;
 
 	cute_expect_sint_parm(expect_sint_value_callee, byte, equal,  0);
 	cute_expect_sint_parm(expect_sint_value_callee, hword, equal, -1);
@@ -75,7 +81,7 @@ CUTE_TEST(expect_sint_literal_equal_fail_test)
 
 CUTE_TEST(expect_sint_var_equal_fail_test)
 {
-	char bref = -1;
+	signed char bref = -1;
 
 	cute_expect_sint_parm(expect_sint_value_callee, byte, equal, bref);
 	expect_sint_value_caller(0, -1, 2, -3);
@@ -83,10 +89,10 @@ CUTE_TEST(expect_sint_var_equal_fail_test)
 
 CUTE_TEST(expect_sint_unequal_pass_test)
 {
-	char      bref = SCHAR_MIN + 1;
-	short     href = SHRT_MAX - 1;
-	int       wref = INT_MIN + 1;
-	long long dref = LLONG_MAX - 1;
+	signed char bref = SCHAR_MIN + 1;
+	short       href = SHRT_MAX - 1;
+	int         wref = INT_MIN + 1;
+	long long   dref = LLONG_MAX - 1;
 
 	cute_expect_sint_parm(expect_sint_value_callee, byte, unequal,  -1);
 	cute_expect_sint_parm(expect_sint_value_callee, hword, unequal, 1);
@@ -119,10 +125,10 @@ CUTE_TEST(expect_sint_var_unequal_fail_test)
 
 CUTE_TEST(expect_sint_greater_pass_test)
 {
-	char      bref = SCHAR_MAX;
-	short     href = SHRT_MAX;
-	int       wref = INT_MAX;
-	long long dref = LLONG_MAX;
+	signed char bref = SCHAR_MAX;
+	short       href = SHRT_MAX;
+	int         wref = INT_MAX;
+	long long   dref = LLONG_MAX;
 
 	cute_expect_sint_parm(expect_sint_value_callee, byte, greater,  -1);
 	cute_expect_sint_parm(expect_sint_value_callee, hword, greater, 1);
@@ -167,10 +173,10 @@ CUTE_TEST(expect_sint_var_greater_fail_test)
 
 CUTE_TEST(expect_sint_greater_equal_pass_test)
 {
-	char      bref = SCHAR_MAX;
-	short     href = SHRT_MAX;
-	int       wref = INT_MAX;
-	long long dref = LLONG_MAX;
+	signed char bref = SCHAR_MAX;
+	short       href = SHRT_MAX;
+	int         wref = INT_MAX;
+	long long   dref = LLONG_MAX;
 
 	cute_expect_sint_parm(expect_sint_value_callee,
 	                      byte,
@@ -227,10 +233,10 @@ CUTE_TEST(expect_sint_var_greater_equal_fail_test)
 
 CUTE_TEST(expect_sint_lower_pass_test)
 {
-	char      bref = SCHAR_MIN;
-	short     href = SHRT_MIN;
-	int       wref = INT_MIN;
-	long long dref = LLONG_MIN;
+	signed char bref = SCHAR_MIN;
+	short       href = SHRT_MIN;
+	int         wref = INT_MIN;
+	long long   dref = LLONG_MIN;
 
 	cute_expect_sint_parm(expect_sint_value_callee, byte, lower,  -1);
 	cute_expect_sint_parm(expect_sint_value_callee, hword, lower, 1);
@@ -263,10 +269,10 @@ CUTE_TEST(expect_sint_var_lower_fail_test)
 
 CUTE_TEST(expect_sint_lower_equal_pass_test)
 {
-	char      bref = SCHAR_MIN;
-	short     href = SHRT_MIN;
-	int       wref = INT_MIN;
-	long long dref = LLONG_MIN;
+	signed char bref = SCHAR_MIN;
+	short       href = SHRT_MIN;
+	int         wref = INT_MIN;
+	long long   dref = LLONG_MIN;
 
 	cute_expect_sint_parm(expect_sint_value_callee, byte, lower_equal,  -1);
 	cute_expect_sint_parm(expect_sint_value_callee, hword, lower_equal, 1);
@@ -303,7 +309,7 @@ CUTE_TEST(expect_sint_literal_lower_equal_fail_test)
 
 CUTE_TEST(expect_sint_var_lower_equal_fail_test)
 {
-	char bref = 0;
+	signed char bref = 0;
 
 	cute_expect_sint_parm(expect_sint_value_callee,
 	                      byte,
