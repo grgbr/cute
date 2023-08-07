@@ -173,16 +173,16 @@ cute_thr_create(pthread_t *       hndl,
 static char * __attribute__((format(printf, 1, 0)))
 cute_vasprintf(const char * format, va_list args)
 {
-	va_list tmp;
 	char *  str;
+	va_list tmp;
 	int     len;
-
-	va_copy(tmp, args);
 
 #define CUTE_ASPRINTF_ERROR_MSG  "cannot create formatted string"
 	str = cute_malloc(sizeof(CUTE_ASPRINTF_ERROR_MSG));
 
+	va_copy(tmp, args);
 	len = vsnprintf(str, sizeof(CUTE_ASPRINTF_ERROR_MSG), format, tmp);
+	va_end(tmp);
 	if (len < 0)
 		goto err;
 
