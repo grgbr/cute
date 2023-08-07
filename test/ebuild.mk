@@ -162,16 +162,17 @@ expect-mem-utest-path              := $(LIBEXECDIR)/cute/expect-mem-utest
 
 build: $(BUILDDIR)/cute-utest.sh
 
-$(BUILDDIR)/cute-utest.sh: $(SRCDIR)/cute-utest.sh | $(BUILDDIR)
+$(BUILDDIR)/cute-utest.sh: $(SRCDIR)/cute-utest.sh | $(BUILDDIR)/
 	sed 's;@@LIBEXECDIR@@;$(LIBEXECDIR);g' $(<) > $(@)
 
-install: $(BINDIR)/cute-utest.sh \
-         $(foreach b,$(bins),$(LIBEXECDIR)/cute/$(b)-outref.txt)
+install: $(DESTDIR)$(BINDIR)/cute-utest.sh \
+         $(foreach b,$(bins),$(DESTDIR)$(LIBEXECDIR)/cute/$(b)-outref.txt)
 
-$(BINDIR)/cute-utest.sh: $(BUILDDIR)/cute-utest.sh | $(BINDIR)
+$(DESTDIR)$(BINDIR)/cute-utest.sh: $(BUILDDIR)/cute-utest.sh \
+                                   | $(DESTDIR)$(BINDIR)
 	$(call install_recipe,--mode=755,$(<),$(@))
 
-$(LIBEXECDIR)/cute/%-utest-outref.txt: $(SRCDIR)/%-outref.txt
+$(DESTDIR)$(LIBEXECDIR)/cute/%-utest-outref.txt: $(SRCDIR)/%-outref.txt
 	$(call install_recipe,--mode=644,$(<),$(@))
 
 uninstall: uninstall-tests
@@ -180,7 +181,7 @@ uninstall-tests:
 	$(foreach b, \
 	          $(bins), \
 	          $(call rmr_recipe, \
-	                 $(LIBEXECDIR)/cute/$(b)-outref.txt)$(newline))
-	$(call rm_recipe,$(BINDIR)/cute-utest.sh)
+	                 $(DESTDIR)$(LIBEXECDIR)/cute/$(b)-outref.txt)$(newline))
+	$(call rm_recipe,$(DESTDIR)$(BINDIR)/cute-utest.sh)
 
-# vim: filetype=make :
+# ex: filetype=make :
