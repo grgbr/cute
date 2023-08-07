@@ -173,17 +173,17 @@ Most of the time, implementing the testing logic relies upon heavy usage of
 At running time, the test function is executed with the following
 **assumptions** :
 
-* the ``setup()`` |fixture| function (if any) has completed,
+* the ``setup()`` |fixture| function (if any) has completed ;
 * a |timer| has been armed to protect against situations where testing
-  logic hangs,
+  logic hangs ;
 * ``SIGFPE``, ``SIGILL``, ``SIGSEGV``, ``SIGBUS`` and ``SIGSYS`` |signal(7)|
   dispositions have been setup to catch potential testing logic exceptions /
-  traps / crashes,
+  traps / crashes ;
 * the ``teardown()`` |fixture| function (if any) is always executed after test
-  function has completed.
+  function has completed ;
 * the test function does not alter CUTe_'s internal state consistency.
 
-As state above, result is unpredictable when the test function alters CUTe_'s
+As stated above, result is unpredictable when the test function alters CUTe_'s
 internal state consistency. In particular, the **test function is not allowed
 to** :
 
@@ -214,8 +214,8 @@ In addition, as no test |timer| is specified, it will also inherit from its
 parent |suite| timeout settings at registering time.
 
 Just in case you need to debug the testing logic, you should remind that
-the block of instructions above is used to define a test function assigned to
-the ``sample_test`` test case as following :
+the block of instructions above is used to assign the ``sample_test`` test case
+a test function defined as following :
 
 .. code-block:: c
 
