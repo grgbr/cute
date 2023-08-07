@@ -1,7 +1,4 @@
 Fixes and cleanup :
-* files licensing
-* README file
-* replace longjmp() with siglongjmp()
 * test complex hierarchy setup/teardown
 * cleanup cute_term_depth_[v]printf...
 
