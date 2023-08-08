@@ -867,7 +867,9 @@ cute_assess_cmp_ptr_not_in_set(const struct cute_assess *      assess,
 	return !cute_assess_cmp_ptr_in_set(assess, value);
 }
 
-#define PTRMAX_DIGITS ((unsigned int)sizeof(void *) * 2)
+#define PTRMAX_DIGITS \
+	((unsigned int)sizeof("0x") - 1 + \
+	 ((unsigned int)sizeof(void *) * 2))
 
 char *
 cute_assess_ptr_set_str(const void ** items, unsigned int count)
