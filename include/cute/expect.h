@@ -78,13 +78,13 @@ cute_expect_check_call(const char * file, int line, const char * function)
 	                                     __LINE__, \
 	                                     # _func, \
 	                                     # _parm, \
-		                             &__CUTE_VALUE(sint, _xpct))
+		                             &__CUTE_VALUE(sint, # _xpct, _xpct))
 
 #define cute_mock_sint_parm(_parm) \
 	cute_expect_check_sint_parm(__FILE__, \
 	                            __LINE__, \
 	                            __func__, \
-	                            &__CUTE_VALUE(sint, _parm))
+	                            &__CUTE_VALUE(sint, # _parm, _parm))
 
 extern void
 cute_expect_check_sint_parm(const char *             file,
@@ -203,7 +203,7 @@ cute_expect_sched_sint_retval(const char *             file,
 	cute_expect_sched_sint_retval(__FILE__, \
 	                              __LINE__, \
 	                              # _func, \
-	                              &__CUTE_VALUE(sint, _retval))
+	                              &__CUTE_VALUE(sint, # _retval, _retval))
 
 extern intmax_t
 cute_expect_check_sint_retval(const char * file,
@@ -223,13 +223,13 @@ cute_expect_check_sint_retval(const char * file,
 	                                     __LINE__, \
 	                                     # _func, \
 	                                     # _parm, \
-	                                     &__CUTE_VALUE(uint, _xpct))
+	                                     &__CUTE_VALUE(uint, # _xpct, _xpct))
 
 #define cute_mock_uint_parm(_parm) \
 	cute_expect_check_uint_parm(__FILE__, \
 	                            __LINE__, \
 	                            __func__, \
-	                            &__CUTE_VALUE(uint, _parm))
+	                            &__CUTE_VALUE(uint, # _parm, _parm))
 
 extern void
 cute_expect_check_uint_parm(const char *             file,
@@ -348,7 +348,7 @@ cute_expect_sched_uint_retval(const char *             file,
 	cute_expect_sched_uint_retval(__FILE__, \
 	                              __LINE__, \
 	                              # _func, \
-	                              &__CUTE_VALUE(uint, _retval))
+	                              &__CUTE_VALUE(uint, # _retval, _retval))
 
 extern uintmax_t
 cute_expect_check_uint_retval(const char * file,
@@ -368,13 +368,13 @@ cute_expect_check_uint_retval(const char * file,
 	                                    __LINE__, \
 	                                    # _func, \
 	                                    # _parm, \
-	                                    &__CUTE_VALUE(flt, _xpct))
+	                                    &__CUTE_VALUE(flt, # _xpct, _xpct))
 
 #define cute_mock_flt_parm(_parm) \
 	cute_expect_check_flt_parm(__FILE__, \
 	                           __LINE__, \
 	                           __func__, \
-	                           &__CUTE_VALUE(flt, _parm))
+	                           &__CUTE_VALUE(flt, # _parm, _parm))
 
 extern void
 cute_expect_check_flt_parm(const char *            file,
@@ -493,7 +493,7 @@ cute_expect_sched_flt_retval(const char *            file,
 	cute_expect_sched_flt_retval(__FILE__, \
 	                             __LINE__, \
 	                             # _func, \
-	                             &__CUTE_VALUE(flt, _retval))
+	                             &__CUTE_VALUE(flt, # _retval, _retval))
 
 extern long double
 cute_expect_check_flt_retval(const char * file,
@@ -513,13 +513,13 @@ cute_expect_check_flt_retval(const char * file,
 	                                    __LINE__, \
 	                                    # _func, \
 	                                    # _parm, \
-		                            &__CUTE_VALUE(str, _xpct))
+		                            &__CUTE_VALUE(str, # _xpct, _xpct))
 
 #define cute_mock_str_parm(_parm) \
 	cute_expect_check_str_parm(__FILE__, \
 	                           __LINE__, \
 	                           __func__, \
-	                           &__CUTE_VALUE(str, _parm))
+	                           &__CUTE_VALUE(str, # _parm, _parm))
 
 extern void
 cute_expect_check_str_parm(const char *            file,
@@ -630,7 +630,7 @@ cute_expect_sched_str_retval(const char *            file,
 	cute_expect_sched_str_retval(__FILE__, \
 	                             __LINE__, \
 	                             # _func, \
-	                             &__CUTE_VALUE(str, _retval))
+	                             &__CUTE_VALUE(str, # _retval, _retval))
 
 extern char *
 cute_expect_check_str_retval(const char * file,
@@ -650,13 +650,13 @@ cute_expect_check_str_retval(const char * file,
 	                                    __LINE__, \
 	                                    # _func, \
 	                                    # _parm, \
-	                                    &__CUTE_VALUE(ptr, _xpct))
+	                                    &__CUTE_VALUE(ptr, # _xpct, _xpct))
 
 #define cute_mock_ptr_parm(_parm) \
 	cute_expect_check_ptr_parm(__FILE__, \
 	                           __LINE__, \
 	                           __func__, \
-	                           &__CUTE_VALUE(ptr, _parm))
+	                           &__CUTE_VALUE(ptr, # _parm, _parm))
 
 extern void
 cute_expect_check_ptr_parm(const char *            file,
@@ -775,7 +775,7 @@ cute_expect_sched_ptr_retval(const char *            file,
 	cute_expect_sched_ptr_retval(__FILE__, \
 	                             __LINE__, \
 	                             # _func, \
-	                             &__CUTE_VALUE(ptr, _retval))
+	                             &__CUTE_VALUE(ptr, # _retval, _retval))
 
 extern void *
 cute_expect_check_ptr_retval(const char * file,
@@ -795,13 +795,16 @@ cute_expect_check_ptr_retval(const char * file,
 	                                    __LINE__, \
 	                                    # _func, \
 	                                    # _parm, \
-		                            &__CUTE_MEM(_ptr, _sz))
+	                                    &__CUTE_MEM("{@ " # _ptr \
+	                                                ":" # _sz "}", \
+	                                                _ptr, \
+	                                                _sz))
 
 #define cute_mock_mem_parm(_parm) \
 	cute_expect_check_mem_parm(__FILE__, \
 	                           __LINE__, \
 	                           __func__, \
-	                           &__CUTE_VALUE(ptr, _parm))
+	                           &__CUTE_VALUE(ptr, # _parm, _parm))
 
 extern void
 cute_expect_check_mem_parm(const char *            file,

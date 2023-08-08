@@ -4,23 +4,23 @@
 check_dbl_suite::check_dbl_literal_equal_nan_fail_test ........................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:18
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:26
 caller: check_dbl_literal_equal_nan_fail_test__cute_exec()
-wanted: 0 == (__builtin_nanf (""))
+wanted: 0 == NAN
 found:  [0] != [nan]
 
 check_dbl_suite::check_dbl_literal_equal_inf_fail_test ........................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:23
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:31
 caller: check_dbl_literal_equal_inf_fail_test__cute_exec()
-wanted: 0 == -(__builtin_inff ())
+wanted: 0 == -INFINITY
 found:  [0] != [-inf]
 
 check_dbl_suite::check_dbl_literal_equal_fail_test ............................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:28
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:36
 caller: check_dbl_literal_equal_fail_test__cute_exec()
 wanted: 0 == 1.0
 found:  [0] != [1]
@@ -28,7 +28,7 @@ found:  [0] != [1]
 check_dbl_suite::check_dbl_var_equal_fail_test ................................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:35
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:43
 caller: check_dbl_var_equal_fail_test__cute_exec()
 wanted: chk == -1.0
 found:  [2.005] != [-1]
@@ -36,7 +36,7 @@ found:  [2.005] != [-1]
 check_dbl_suite::check_dbl_equal_ref_fail_test ................................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:42
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:50
 caller: check_dbl_equal_ref_fail_test__cute_exec()
 wanted: -1.0 == ref
 found:  [-1] != [2.005]
@@ -44,7 +44,7 @@ found:  [-1] != [2.005]
 check_dbl_suite::check_dbl_var_equal_ref_fail_test ............................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:50
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:58
 caller: check_dbl_var_equal_ref_fail_test__cute_exec()
 wanted: chk == ref
 found:  [2.005] != [3.1]
@@ -52,7 +52,7 @@ found:  [2.005] != [3.1]
 check_dbl_suite::check_dbl_literal_unequal_fail_test ............................................. fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:67
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:75
 caller: check_dbl_literal_unequal_fail_test__cute_exec()
 wanted: 1.0 != 1.0
 found:  [1] == [1]
@@ -60,7 +60,7 @@ found:  [1] == [1]
 check_dbl_suite::check_dbl_var_unequal_fail_test ................................................. fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:74
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:82
 caller: check_dbl_var_unequal_fail_test__cute_exec()
 wanted: chk != 2.005
 found:  [2.005] == [2.005]
@@ -68,7 +68,7 @@ found:  [2.005] == [2.005]
 check_dbl_suite::check_dbl_unequal_ref_fail_test ................................................. fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:81
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:89
 caller: check_dbl_unequal_ref_fail_test__cute_exec()
 wanted: 2.005 != ref
 found:  [2.005] == [2.005]
@@ -76,7 +76,7 @@ found:  [2.005] == [2.005]
 check_dbl_suite::check_dbl_var_unequal_ref_fail_test ............................................. fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:89
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:97
 caller: check_dbl_var_unequal_ref_fail_test__cute_exec()
 wanted: chk != ref
 found:  [2.005] == [2.005]
@@ -84,7 +84,7 @@ found:  [2.005] == [2.005]
 check_dbl_suite::check_dbl_literal_greater_fail_test ............................................. fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:105
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:113
 caller: check_dbl_literal_greater_fail_test__cute_exec()
 wanted: 1.0 > 1.0
 found:  [1] <= [1]
@@ -92,7 +92,7 @@ found:  [1] <= [1]
 check_dbl_suite::check_dbl_var_greater_fail_test ................................................. fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:112
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:120
 caller: check_dbl_var_greater_fail_test__cute_exec()
 wanted: chk > 1.0
 found:  [-1] <= [1]
@@ -100,7 +100,7 @@ found:  [-1] <= [1]
 check_dbl_suite::check_dbl_greater_ref_fail_test ................................................. fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:119
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:127
 caller: check_dbl_greater_ref_fail_test__cute_exec()
 wanted: -1.0 > ref
 found:  [-1] <= [1]
@@ -108,7 +108,7 @@ found:  [-1] <= [1]
 check_dbl_suite::check_dbl_var_greater_ref_fail_test ............................................. fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:127
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:135
 caller: check_dbl_var_greater_ref_fail_test__cute_exec()
 wanted: chk > ref
 found:  [-1] <= [-1]
@@ -116,7 +116,7 @@ found:  [-1] <= [-1]
 check_dbl_suite::check_dbl_literal_greater_equal_fail_test ....................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:146
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:154
 caller: check_dbl_literal_greater_equal_fail_test__cute_exec()
 wanted: 0 >= 1.0
 found:  [0] < [1]
@@ -124,7 +124,7 @@ found:  [0] < [1]
 check_dbl_suite::check_dbl_var_greater_equal_fail_test ........................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:153
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:161
 caller: check_dbl_var_greater_equal_fail_test__cute_exec()
 wanted: chk >= 1.0
 found:  [-1] < [1]
@@ -132,7 +132,7 @@ found:  [-1] < [1]
 check_dbl_suite::check_dbl_greater_equal_ref_fail_test ........................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:160
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:168
 caller: check_dbl_greater_equal_ref_fail_test__cute_exec()
 wanted: -1.0 >= ref
 found:  [-1] < [1]
@@ -140,7 +140,7 @@ found:  [-1] < [1]
 check_dbl_suite::check_dbl_var_greater_equal_ref_fail_test ....................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:168
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:176
 caller: check_dbl_var_greater_equal_ref_fail_test__cute_exec()
 wanted: chk >= ref
 found:  [-1] < [0]
@@ -148,7 +148,7 @@ found:  [-1] < [0]
 check_dbl_suite::check_dbl_literal_lower_fail_test ............................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:184
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:192
 caller: check_dbl_literal_lower_fail_test__cute_exec()
 wanted: 0 < 0
 found:  [0] >= [0]
@@ -156,7 +156,7 @@ found:  [0] >= [0]
 check_dbl_suite::check_dbl_var_lower_fail_test ................................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:191
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:199
 caller: check_dbl_var_lower_fail_test__cute_exec()
 wanted: chk < -1.0
 found:  [1] >= [-1]
@@ -164,7 +164,7 @@ found:  [1] >= [-1]
 check_dbl_suite::check_dbl_lower_ref_fail_test ................................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:198
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:206
 caller: check_dbl_lower_ref_fail_test__cute_exec()
 wanted: -1.0 < ref
 found:  [-1] >= [-1]
@@ -172,7 +172,7 @@ found:  [-1] >= [-1]
 check_dbl_suite::check_dbl_var_lower_ref_fail_test ............................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:206
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:214
 caller: check_dbl_var_lower_ref_fail_test__cute_exec()
 wanted: chk < ref
 found:  [0] >= [-1]
@@ -180,7 +180,7 @@ found:  [0] >= [-1]
 check_dbl_suite::check_dbl_literal_lower_equal_fail_test ......................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:225
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:233
 caller: check_dbl_literal_lower_equal_fail_test__cute_exec()
 wanted: 1.0 <= 0
 found:  [1] > [0]
@@ -188,7 +188,7 @@ found:  [1] > [0]
 check_dbl_suite::check_dbl_var_lower_equal_fail_test ............................................. fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:232
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:240
 caller: check_dbl_var_lower_equal_fail_test__cute_exec()
 wanted: chk <= -1.0
 found:  [1] > [-1]
@@ -196,7 +196,7 @@ found:  [1] > [-1]
 check_dbl_suite::check_dbl_lower_equal_ref_fail_test ............................................. fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:239
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:247
 caller: check_dbl_lower_equal_ref_fail_test__cute_exec()
 wanted: 0 <= ref
 found:  [0] > [-1]
@@ -204,7 +204,7 @@ found:  [0] > [-1]
 check_dbl_suite::check_dbl_var_lower_equal_ref_fail_test ......................................... fail
 issue:  exec failed
 reason: floating point value check failed
-source: cute/test/check_dbl.c:247
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:255
 caller: check_dbl_var_lower_equal_ref_fail_test__cute_exec()
 wanted: chk <= ref
 found:  [0] > [-1]
@@ -212,7 +212,7 @@ found:  [0] > [-1]
 check_dbl_suite::check_dbl_literal_in_range_fail_test ............................................ fail
 issue:  exec failed
 reason: floating point number range check failed
-source: cute/test/check_dbl.c:267
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:275
 caller: check_dbl_literal_in_range_fail_test__cute_exec()
 wanted: 0 in range {1.0 ... 1.0}
 found:  [0] not in range {1 ... 1}
@@ -220,7 +220,7 @@ found:  [0] not in range {1 ... 1}
 check_dbl_suite::check_dbl_var_in_range_fail_test ................................................ fail
 issue:  exec failed
 reason: floating point number range check failed
-source: cute/test/check_dbl.c:274
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:282
 caller: check_dbl_var_in_range_fail_test__cute_exec()
 wanted: chk in range {1.0 ... 1.0}
 found:  [10] not in range {1 ... 1}
@@ -228,7 +228,7 @@ found:  [10] not in range {1 ... 1}
 check_dbl_suite::check_dbl_in_range_ref_fail_test ................................................ fail
 issue:  exec failed
 reason: floating point number range check failed
-source: cute/test/check_dbl.c:283
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:291
 caller: check_dbl_in_range_ref_fail_test__cute_exec()
 wanted: 0 in range {min_ref ... max_ref}
 found:  [0] not in range {0.005 ... 0.005}
@@ -236,7 +236,7 @@ found:  [0] not in range {0.005 ... 0.005}
 check_dbl_suite::check_dbl_var_in_range_ref_fail_test ............................................ fail
 issue:  exec failed
 reason: floating point number range check failed
-source: cute/test/check_dbl.c:294
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:302
 caller: check_dbl_var_in_range_ref_fail_test__cute_exec()
 wanted: chk in range {min_ref ... max_ref}
 found:  [6] not in range {0.005 ... 0.005}
@@ -244,7 +244,7 @@ found:  [6] not in range {0.005 ... 0.005}
 check_dbl_suite::check_dbl_literal_not_in_range_fail_test ........................................ fail
 issue:  exec failed
 reason: floating point number range check failed
-source: cute/test/check_dbl.c:314
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:322
 caller: check_dbl_literal_not_in_range_fail_test__cute_exec()
 wanted: 1.0 not in range {1.0 ... 1.0}
 found:  [1] in range {1 ... 1}
@@ -252,7 +252,7 @@ found:  [1] in range {1 ... 1}
 check_dbl_suite::check_dbl_var_not_in_range_fail_test ............................................ fail
 issue:  exec failed
 reason: floating point number range check failed
-source: cute/test/check_dbl.c:321
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:329
 caller: check_dbl_var_not_in_range_fail_test__cute_exec()
 wanted: chk not in range {1.0 ... 1.0}
 found:  [1] in range {1 ... 1}
@@ -260,7 +260,7 @@ found:  [1] in range {1 ... 1}
 check_dbl_suite::check_dbl_not_in_range_ref_fail_test ............................................ fail
 issue:  exec failed
 reason: floating point number range check failed
-source: cute/test/check_dbl.c:330
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:338
 caller: check_dbl_not_in_range_ref_fail_test__cute_exec()
 wanted: 1.0 not in range {min_ref ... max_ref}
 found:  [1] in range {1 ... 1}
@@ -268,7 +268,7 @@ found:  [1] in range {1 ... 1}
 check_dbl_suite::check_dbl_var_not_in_range_ref_fail_test ........................................ fail
 issue:  exec failed
 reason: floating point number range check failed
-source: cute/test/check_dbl.c:341
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:349
 caller: check_dbl_var_not_in_range_ref_fail_test__cute_exec()
 wanted: chk not in range {min_ref ... max_ref}
 found:  [0.005] in range {0.005 ... 0.005}
@@ -276,7 +276,7 @@ found:  [0.005] in range {0.005 ... 0.005}
 check_dbl_suite::check_dbl_literal_in_set_fail_test .............................................. fail
 issue:  exec failed
 reason: floating point number set check failed
-source: cute/test/check_dbl.c:386
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:394
 caller: check_dbl_literal_in_set_fail_test__cute_exec()
 wanted: -1.0 in set {0, 1.0, 2.005, 3.1, 5e-3, 8.26}
 found:  [-1] not in set {0, 1, 2.005, 3.1, 0.005, 8.26}
@@ -284,7 +284,7 @@ found:  [-1] not in set {0, 1, 2.005, 3.1, 0.005, 8.26}
 check_dbl_suite::check_dbl_var_in_set_fail_test .................................................. fail
 issue:  exec failed
 reason: floating point number set check failed
-source: cute/test/check_dbl.c:398
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:406
 caller: check_dbl_var_in_set_fail_test__cute_exec()
 wanted: chk in set {0, 1.0, 2.005, 3.1, 5e-3, 8.26}
 found:  [4] not in set {0, 1, 2.005, 3.1, 0.005, 8.26}
@@ -292,7 +292,7 @@ found:  [4] not in set {0, 1, 2.005, 3.1, 0.005, 8.26}
 check_dbl_suite::check_dbl_in_set_ref_fail_test .................................................. fail
 issue:  exec failed
 reason: floating point number set check failed
-source: cute/test/check_dbl.c:418
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:426
 caller: check_dbl_in_set_ref_fail_test__cute_exec()
 wanted: 4 in set {ref0, 1.0, 2.005, 3.1, ref5, 8.26}
 found:  [4] not in set {0, 1, 2.005, 3.1, 0.005, 8.26}
@@ -300,7 +300,7 @@ found:  [4] not in set {0, 1, 2.005, 3.1, 0.005, 8.26}
 check_dbl_suite::check_dbl_var_in_set_ref_fail_test .............................................. fail
 issue:  exec failed
 reason: floating point number set check failed
-source: cute/test/check_dbl.c:435
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:443
 caller: check_dbl_var_in_set_ref_fail_test__cute_exec()
 wanted: chk in set {ref0, 1.0, 2.005, 3.1, ref5, 8.26}
 found:  [1.01] not in set {0, 1, 2.005, 3.1, 0.005, 8.26}
@@ -308,7 +308,7 @@ found:  [1.01] not in set {0, 1, 2.005, 3.1, 0.005, 8.26}
 check_dbl_suite::check_dbl_literal_not_in_set_fail_test .......................................... fail
 issue:  exec failed
 reason: floating point number set check failed
-source: cute/test/check_dbl.c:480
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:488
 caller: check_dbl_literal_not_in_set_fail_test__cute_exec()
 wanted: 1.0 not in set {0, 1.0, 2.005, 3.1, 5e-3, 8.26}
 found:  [1] in set {0, 1, 2.005, 3.1, 0.005, 8.26}
@@ -316,7 +316,7 @@ found:  [1] in set {0, 1, 2.005, 3.1, 0.005, 8.26}
 check_dbl_suite::check_dbl_var_not_in_set_fail_test .............................................. fail
 issue:  exec failed
 reason: floating point number set check failed
-source: cute/test/check_dbl.c:492
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:500
 caller: check_dbl_var_not_in_set_fail_test__cute_exec()
 wanted: chk not in set {0, 1.0, 2.005, 3.1, 5e-3, 8.26}
 found:  [8.26] in set {0, 1, 2.005, 3.1, 0.005, 8.26}
@@ -324,7 +324,7 @@ found:  [8.26] in set {0, 1, 2.005, 3.1, 0.005, 8.26}
 check_dbl_suite::check_dbl_not_in_set_ref_fail_test .............................................. fail
 issue:  exec failed
 reason: floating point number set check failed
-source: cute/test/check_dbl.c:512
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:520
 caller: check_dbl_not_in_set_ref_fail_test__cute_exec()
 wanted: 0 not in set {ref0, 1.0, 2.005, 3.1, ref5, 8.26}
 found:  [0] in set {0, 1, 2.005, 3.1, 0.005, 8.26}
@@ -332,7 +332,7 @@ found:  [0] in set {0, 1, 2.005, 3.1, 0.005, 8.26}
 check_dbl_suite::check_dbl_var_not_in_set_ref_fail_test .......................................... fail
 issue:  exec failed
 reason: floating point number set check failed
-source: cute/test/check_dbl.c:527
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:535
 caller: check_dbl_var_not_in_set_ref_fail_test__cute_exec()
 wanted: chk not in set {ref0, 1.0, 2.005, 3.1, ref5, 8.26}
 found:  [1] in set {0, 1, 2.005, 3.1, 0.005, 8.26}
@@ -340,13 +340,13 @@ found:  [1] in set {0, 1, 2.005, 3.1, 0.005, 8.26}
 check_dbl_suite .................................................................................. fail
 issue:  exec failed
 reason: descendants failed
-source: cute/test/check_dbl.c:596
+source: /mnt/devel/greg/tidor/cute/test/check_dbl.c:604
 
 NAME                                         STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-check_dbl_suite                              fail    0.213130     10      0     42      0     52     52
+check_dbl_suite                              fail    1.206663     10      0     42      0     52     52
                                                                  19%     0%    80%     0%   100%
 -------------------------------------------------------------------------------------------------------
-Total                                        fail    0.213130     10      0     42      0     52     52
+Total                                        fail    1.206663     10      0     42      0     52     52
                                                                  19%     0%    80%     0%   100%
 
                                  ###           SUMMARY            ###

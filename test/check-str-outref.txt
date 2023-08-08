@@ -4,15 +4,15 @@
 check_str_suite::check_str_null_equal_fail_test ................................................ fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:17
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:25
 caller: check_str_null_equal_fail_test__cute_exec()
-wanted: ((void *)0) == ""
+wanted: NULL == ""
 found:  (null) != ""
 
 check_str_suite::check_str_literal_equal_fail_test ............................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:22
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:30
 caller: check_str_literal_equal_fail_test__cute_exec()
 wanted: "Lorem ipsum" == ""
 found:  "Lorem ipsum" != ""
@@ -20,7 +20,7 @@ found:  "Lorem ipsum" != ""
 check_str_suite::check_str_var_equal_fail_test ................................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:29
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:37
 caller: check_str_var_equal_fail_test__cute_exec()
 wanted: chk == ""
 found:  "Lorem ipsum" != ""
@@ -28,7 +28,7 @@ found:  "Lorem ipsum" != ""
 check_str_suite::check_str_equal_ref_fail_test ................................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:36
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:44
 caller: check_str_equal_ref_fail_test__cute_exec()
 wanted: "" == ref
 found:  "" != "Lorem ipsum"
@@ -36,7 +36,7 @@ found:  "" != "Lorem ipsum"
 check_str_suite::check_str_var_equal_ref_fail_test ............................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:44
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:52
 caller: check_str_var_equal_ref_fail_test__cute_exec()
 wanted: chk == ref
 found:  "Lorem" != "Lorem ipsum"
@@ -44,7 +44,7 @@ found:  "Lorem" != "Lorem ipsum"
 check_str_suite::check_str_literal_unequal_fail_test ........................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:66
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:74
 caller: check_str_literal_unequal_fail_test__cute_exec()
 wanted: "Lorem ipsum" != "Lorem ipsum"
 found:  "Lorem ipsum" == "Lorem ipsum"
@@ -52,7 +52,7 @@ found:  "Lorem ipsum" == "Lorem ipsum"
 check_str_suite::check_str_var_unequal_fail_test ............................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:73
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:81
 caller: check_str_var_unequal_fail_test__cute_exec()
 wanted: chk != "Lorem ipsum"
 found:  "Lorem ipsum" == "Lorem ipsum"
@@ -60,7 +60,7 @@ found:  "Lorem ipsum" == "Lorem ipsum"
 check_str_suite::check_str_unequal_ref_fail_test ............................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:80
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:88
 caller: check_str_unequal_ref_fail_test__cute_exec()
 wanted: "Lorem ipsum" != ref
 found:  "Lorem ipsum" == "Lorem ipsum"
@@ -68,7 +68,7 @@ found:  "Lorem ipsum" == "Lorem ipsum"
 check_str_suite::check_str_var_unequal_ref_fail_test ........................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:88
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:96
 caller: check_str_var_unequal_ref_fail_test__cute_exec()
 wanted: chk != ref
 found:  "Lorem ipsum" == "Lorem ipsum"
@@ -76,15 +76,15 @@ found:  "Lorem ipsum" == "Lorem ipsum"
 check_str_suite::check_str_null_begin_fail_test ................................................ fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:106
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:114
 caller: check_str_null_begin_fail_test__cute_exec()
-wanted: ((void *)0) begins with ""
+wanted: NULL begins with ""
 found:  (null) doesn't begin with ""
 
 check_str_suite::check_str_literal_begin_fail_test ............................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:111
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:119
 caller: check_str_literal_begin_fail_test__cute_exec()
 wanted: "Lorem ipsum" begins with "ipsum"
 found:  "Lorem ipsum" doesn't begin with "ipsum"
@@ -92,7 +92,7 @@ found:  "Lorem ipsum" doesn't begin with "ipsum"
 check_str_suite::check_str_var_begin_fail_test ................................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:118
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:126
 caller: check_str_var_begin_fail_test__cute_exec()
 wanted: chk begins with "ipsum"
 found:  "Lorem ipsum" doesn't begin with "ipsum"
@@ -100,7 +100,7 @@ found:  "Lorem ipsum" doesn't begin with "ipsum"
 check_str_suite::check_str_begin_ref_fail_test ................................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:125
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:133
 caller: check_str_begin_ref_fail_test__cute_exec()
 wanted: "Lorem ipsum" begins with ref
 found:  "Lorem ipsum" doesn't begin with "ipsum"
@@ -108,7 +108,7 @@ found:  "Lorem ipsum" doesn't begin with "ipsum"
 check_str_suite::check_str_var_begin_ref_fail_test ............................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:133
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:141
 caller: check_str_var_begin_ref_fail_test__cute_exec()
 wanted: chk begins with ref
 found:  "Lorem ipsum" doesn't begin with "ipsum"
@@ -116,7 +116,7 @@ found:  "Lorem ipsum" doesn't begin with "ipsum"
 check_str_suite::check_str_literal_not_begin_fail_test ......................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:155
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:163
 caller: check_str_literal_not_begin_fail_test__cute_exec()
 wanted: "Lorem ipsum" doesn't begin with "Lorem"
 found:  "Lorem ipsum" begins with "Lorem"
@@ -124,7 +124,7 @@ found:  "Lorem ipsum" begins with "Lorem"
 check_str_suite::check_str_var_not_begin_fail_test ............................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:162
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:170
 caller: check_str_var_not_begin_fail_test__cute_exec()
 wanted: chk doesn't begin with "Lorem"
 found:  "Lorem ipsum" begins with "Lorem"
@@ -132,7 +132,7 @@ found:  "Lorem ipsum" begins with "Lorem"
 check_str_suite::check_str_not_begin_ref_fail_test ............................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:169
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:177
 caller: check_str_not_begin_ref_fail_test__cute_exec()
 wanted: "Lorem ipsum" doesn't begin with ref
 found:  "Lorem ipsum" begins with "Lorem"
@@ -140,7 +140,7 @@ found:  "Lorem ipsum" begins with "Lorem"
 check_str_suite::check_str_var_not_begin_ref_fail_test ......................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:177
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:185
 caller: check_str_var_not_begin_ref_fail_test__cute_exec()
 wanted: chk doesn't begin with ref
 found:  "Lorem ipsum" begins with "Lorem"
@@ -148,15 +148,15 @@ found:  "Lorem ipsum" begins with "Lorem"
 check_str_suite::check_str_null_end_fail_test .................................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:195
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:203
 caller: check_str_null_end_fail_test__cute_exec()
-wanted: ((void *)0) ends with ""
+wanted: NULL ends with ""
 found:  (null) doesn't end with ""
 
 check_str_suite::check_str_literal_end_fail_test ............................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:200
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:208
 caller: check_str_literal_end_fail_test__cute_exec()
 wanted: "Lorem ipsum" ends with "Lorem"
 found:  "Lorem ipsum" doesn't end with "Lorem"
@@ -164,7 +164,7 @@ found:  "Lorem ipsum" doesn't end with "Lorem"
 check_str_suite::check_str_var_end_fail_test ................................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:207
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:215
 caller: check_str_var_end_fail_test__cute_exec()
 wanted: chk ends with "Lorem ipsum"
 found:  "Lorem" doesn't end with "Lorem ipsum"
@@ -172,7 +172,7 @@ found:  "Lorem" doesn't end with "Lorem ipsum"
 check_str_suite::check_str_end_ref_fail_test ................................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:214
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:222
 caller: check_str_end_ref_fail_test__cute_exec()
 wanted: "Lorem ipsum" ends with ref
 found:  "Lorem ipsum" doesn't end with "Lorem"
@@ -180,7 +180,7 @@ found:  "Lorem ipsum" doesn't end with "Lorem"
 check_str_suite::check_str_var_end_ref_fail_test ............................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:222
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:230
 caller: check_str_var_end_ref_fail_test__cute_exec()
 wanted: chk ends with ref
 found:  "Lorem ipsum" doesn't end with "Lorem"
@@ -188,7 +188,7 @@ found:  "Lorem ipsum" doesn't end with "Lorem"
 check_str_suite::check_str_literal_not_end_fail_test ........................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:244
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:252
 caller: check_str_literal_not_end_fail_test__cute_exec()
 wanted: "Lorem ipsum" doesn't end with "ipsum"
 found:  "Lorem ipsum" ends with "ipsum"
@@ -196,7 +196,7 @@ found:  "Lorem ipsum" ends with "ipsum"
 check_str_suite::check_str_var_not_end_fail_test ............................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:251
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:259
 caller: check_str_var_not_end_fail_test__cute_exec()
 wanted: chk doesn't end with "ipsum"
 found:  "Lorem ipsum" ends with "ipsum"
@@ -204,7 +204,7 @@ found:  "Lorem ipsum" ends with "ipsum"
 check_str_suite::check_str_not_end_ref_fail_test ............................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:258
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:266
 caller: check_str_not_end_ref_fail_test__cute_exec()
 wanted: "Lorem ipsum" doesn't end with ref
 found:  "Lorem ipsum" ends with "ipsum"
@@ -212,7 +212,7 @@ found:  "Lorem ipsum" ends with "ipsum"
 check_str_suite::check_str_var_not_end_ref_fail_test ........................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:266
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:274
 caller: check_str_var_not_end_ref_fail_test__cute_exec()
 wanted: chk doesn't end with ref
 found:  "Lorem ipsum" ends with "ipsum"
@@ -220,15 +220,15 @@ found:  "Lorem ipsum" ends with "ipsum"
 check_str_suite::check_str_null_contain_fail_test .............................................. fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:284
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:292
 caller: check_str_null_contain_fail_test__cute_exec()
-wanted: ((void *)0) contains "dolor"
+wanted: NULL contains "dolor"
 found:  (null) doesn't contain "dolor"
 
 check_str_suite::check_str_literal_contain_fail_test ........................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:289
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:297
 caller: check_str_literal_contain_fail_test__cute_exec()
 wanted: "Lorem ipsum" contains "dolor"
 found:  "Lorem ipsum" doesn't contain "dolor"
@@ -236,7 +236,7 @@ found:  "Lorem ipsum" doesn't contain "dolor"
 check_str_suite::check_str_var_contain_fail_test ............................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:296
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:304
 caller: check_str_var_contain_fail_test__cute_exec()
 wanted: chk contains "dolor"
 found:  "Lorem ipsum" doesn't contain "dolor"
@@ -244,7 +244,7 @@ found:  "Lorem ipsum" doesn't contain "dolor"
 check_str_suite::check_str_contain_ref_fail_test ............................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:303
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:311
 caller: check_str_contain_ref_fail_test__cute_exec()
 wanted: "Lorem ipsum" contains ref
 found:  "Lorem ipsum" doesn't contain "dolor"
@@ -252,7 +252,7 @@ found:  "Lorem ipsum" doesn't contain "dolor"
 check_str_suite::check_str_var_contain_ref_fail_test ........................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:311
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:319
 caller: check_str_var_contain_ref_fail_test__cute_exec()
 wanted: chk contains ref
 found:  "Lorem ipsum" doesn't contain "Lorem ipsum dolor sit amet."
@@ -260,7 +260,7 @@ found:  "Lorem ipsum" doesn't contain "Lorem ipsum dolor sit amet."
 check_str_suite::check_str_literal_not_contain_fail_test ....................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:333
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:341
 caller: check_str_literal_not_contain_fail_test__cute_exec()
 wanted: "Lorem ipsum dolor sit amet." doesn't contain "dolor"
 found:  "Lorem ipsum dolor sit amet." contains "dolor"
@@ -268,7 +268,7 @@ found:  "Lorem ipsum dolor sit amet." contains "dolor"
 check_str_suite::check_str_var_not_contain_fail_test ........................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:340
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:348
 caller: check_str_var_not_contain_fail_test__cute_exec()
 wanted: chk doesn't contain "dolor"
 found:  "Lorem ipsum dolor sit amet." contains "dolor"
@@ -276,7 +276,7 @@ found:  "Lorem ipsum dolor sit amet." contains "dolor"
 check_str_suite::check_str_not_contain_ref_fail_test ........................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:347
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:355
 caller: check_str_not_contain_ref_fail_test__cute_exec()
 wanted: "Lorem ipsum dolor sit amet." doesn't contain ref
 found:  "Lorem ipsum dolor sit amet." contains "dolor"
@@ -284,7 +284,7 @@ found:  "Lorem ipsum dolor sit amet." contains "dolor"
 check_str_suite::check_str_var_not_contain_ref_fail_test ....................................... fail
 issue:  exec failed
 reason: string content check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:355
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:363
 caller: check_str_var_not_contain_ref_fail_test__cute_exec()
 wanted: chk doesn't contain ref
 found:  "Lorem ipsum" contains "Lorem ipsum"
@@ -292,15 +292,15 @@ found:  "Lorem ipsum" contains "Lorem ipsum"
 check_str_suite::check_str_null_in_set_fail_test ............................................... fail
 issue:  exec failed
 reason: string content set check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:375
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:383
 caller: check_str_null_in_set_fail_test__cute_exec()
-wanted: ((void *)0) in set {"Lorem", "ipsum", "dolor"}
+wanted: NULL in set {"Lorem", "ipsum", "dolor"}
 found:  (null) not in set {"Lorem", "ipsum", "dolor"}
 
 check_str_suite::check_str_literal_in_set_fail_test ............................................ fail
 issue:  exec failed
 reason: string content set check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:380
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:388
 caller: check_str_literal_in_set_fail_test__cute_exec()
 wanted: "sit" in set {"Lorem", "ipsum", "dolor"}
 found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
@@ -308,7 +308,7 @@ found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
 check_str_suite::check_str_var_in_set_fail_test ................................................ fail
 issue:  exec failed
 reason: string content set check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:387
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:395
 caller: check_str_var_in_set_fail_test__cute_exec()
 wanted: sit in set {"Lorem", "ipsum", "dolor"}
 found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
@@ -316,7 +316,7 @@ found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
 check_str_suite::check_str_in_set_ref_fail_test ................................................ fail
 issue:  exec failed
 reason: string content set check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:397
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:405
 caller: check_str_in_set_ref_fail_test__cute_exec()
 wanted: "sit" in set {lorem, "ipsum", dolor}
 found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
@@ -324,7 +324,7 @@ found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
 check_str_suite::check_str_var_in_set_ref_fail_test ............................................ fail
 issue:  exec failed
 reason: string content set check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:408
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:416
 caller: check_str_var_in_set_ref_fail_test__cute_exec()
 wanted: sit in set {lorem, "ipsum", dolor}
 found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
@@ -332,7 +332,7 @@ found:  "sit" not in set {"Lorem", "ipsum", "dolor"}
 check_str_suite::check_str_literal_not_in_set_fail_test ........................................ fail
 issue:  exec failed
 reason: string content set check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:435
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:443
 caller: check_str_literal_not_in_set_fail_test__cute_exec()
 wanted: "ipsum" not in set {"Lorem", "ipsum", "dolor"}
 found:  "ipsum" in set {"Lorem", "ipsum", "dolor"}
@@ -340,7 +340,7 @@ found:  "ipsum" in set {"Lorem", "ipsum", "dolor"}
 check_str_suite::check_str_var_not_in_set_fail_test ............................................ fail
 issue:  exec failed
 reason: string content set check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:444
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:452
 caller: check_str_var_not_in_set_fail_test__cute_exec()
 wanted: ipsum not in set {"Lorem", "ipsum", "dolor"}
 found:  "ipsum" in set {"Lorem", "ipsum", "dolor"}
@@ -348,7 +348,7 @@ found:  "ipsum" in set {"Lorem", "ipsum", "dolor"}
 check_str_suite::check_str_not_in_set_ref_fail_test ............................................ fail
 issue:  exec failed
 reason: string content set check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:456
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:464
 caller: check_str_not_in_set_ref_fail_test__cute_exec()
 wanted: "Lorem" not in set {lorem, "ipsum", dolor}
 found:  "Lorem" in set {"Lorem", "ipsum", "dolor"}
@@ -356,7 +356,7 @@ found:  "Lorem" in set {"Lorem", "ipsum", "dolor"}
 check_str_suite::check_str_var_not_in_set_ref_fail_test ........................................ fail
 issue:  exec failed
 reason: string content set check failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:467
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:475
 caller: check_str_var_not_in_set_ref_fail_test__cute_exec()
 wanted: lorem not in set {lorem, "ipsum", dolor}
 found:  "Lorem" in set {"Lorem", "ipsum", "dolor"}
@@ -364,13 +364,13 @@ found:  "Lorem" in set {"Lorem", "ipsum", "dolor"}
 check_str_suite ................................................................................ fail
 issue:  exec failed
 reason: descendants failed
-source: /mnt/devel/greg/tidor/cute/test/check_str.c:542
+source: /mnt/devel/greg/tidor/cute/test/check_str.c:550
 
 NAME                                       STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-check_str_suite                            fail    1.159072     15      0     45      0     60     60
+check_str_suite                            fail    1.182813     15      0     45      0     60     60
                                                                25%     0%    75%     0%   100%
 -----------------------------------------------------------------------------------------------------
-Total                                      fail    1.159072     15      0     45      0     60     60
+Total                                      fail    1.182813     15      0     45      0     60     60
                                                                25%     0%    75%     0%   100%
 
                                 ###           SUMMARY            ###

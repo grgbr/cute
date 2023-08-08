@@ -42,13 +42,13 @@ __cute_check_assert(bool         fail,
  ******************************************************************************/
 
 #define cute_check_sint(_chk, _op, _xpct) \
-	__CUTE_CHECK_VALUE(sint, _chk, _op, _xpct)
+	__CUTE_CHECK_VALUE(sint, # _chk, _chk, _op, # _xpct, _xpct)
 
 #define cute_check_sint_range(_chk, _op, _xpct) \
-	__CUTE_CHECK_RANGE(sint, _chk, _op, _xpct)
+	__CUTE_CHECK_RANGE(sint, # _chk, _chk, _op, _xpct)
 
 #define cute_check_sint_set(_chk, _op, _xpct) \
-	__CUTE_CHECK_SET(sint, _chk, _op, _xpct)
+	__CUTE_CHECK_SET(sint, # _chk, _chk, _op, _xpct)
 
 extern void
 cute_check_sint_equal(const char *             file,
@@ -126,13 +126,13 @@ cute_check_sint_not_in_set(const char *                 file,
  ******************************************************************************/
 
 #define cute_check_uint(_chk, _op, _xpct) \
-	__CUTE_CHECK_VALUE(uint, _chk, _op, _xpct)
+	__CUTE_CHECK_VALUE(uint, # _chk, _chk, _op, # _xpct, _xpct)
 
 #define cute_check_uint_range(_chk, _op, _xpct) \
-	__CUTE_CHECK_RANGE(uint, _chk, _op, _xpct)
+	__CUTE_CHECK_RANGE(uint, # _chk, _chk, _op, _xpct)
 
 #define cute_check_uint_set(_chk, _op, _xpct) \
-	__CUTE_CHECK_SET(uint, _chk, _op, _xpct)
+	__CUTE_CHECK_SET(uint, # _chk, _chk, _op, _xpct)
 
 extern void
 cute_check_uint_equal(const char *             file,
@@ -210,13 +210,13 @@ cute_check_uint_not_in_set(const char *                 file,
  ******************************************************************************/
 
 #define cute_check_flt(_chk, _op, _xpct) \
-	__CUTE_CHECK_VALUE(flt, _chk, _op, _xpct)
+	__CUTE_CHECK_VALUE(flt, # _chk, _chk, _op, # _xpct, _xpct)
 
 #define cute_check_flt_range(_chk, _op, _xpct) \
-	__CUTE_CHECK_RANGE(flt, _chk, _op, _xpct)
+	__CUTE_CHECK_RANGE(flt, # _chk, _chk, _op, _xpct)
 
 #define cute_check_flt_set(_chk, _op, _xpct) \
-	__CUTE_CHECK_SET(flt, _chk, _op, _xpct)
+	__CUTE_CHECK_SET(flt, # _chk, _chk, _op, _xpct)
 
 extern void
 cute_check_flt_equal(const char *            file,
@@ -294,10 +294,10 @@ cute_check_flt_not_in_set(const char *                file,
  ******************************************************************************/
 
 #define cute_check_str(_chk, _op, _xpct) \
-	__CUTE_CHECK_VALUE(str, _chk, _op, _xpct)
+	__CUTE_CHECK_VALUE(str, # _chk, _chk, _op, # _xpct, _xpct)
 
 #define cute_check_str_set(_chk, _op, _xpct) \
-	__CUTE_CHECK_SET(str, _chk, _op, _xpct)
+	__CUTE_CHECK_SET(str, # _chk, _chk, _op, _xpct)
 
 extern void
 cute_check_str_equal(const char *            file,
@@ -374,13 +374,13 @@ cute_check_str_not_in_set(const char *                file,
  ******************************************************************************/
 
 #define cute_check_ptr(_chk, _op, _xpct) \
-	__CUTE_CHECK_VALUE(ptr, _chk, _op, _xpct)
+	__CUTE_CHECK_VALUE(ptr, # _chk, _chk, _op, # _xpct, _xpct)
 
 #define cute_check_ptr_range(_chk, _op, _xpct) \
-	__CUTE_CHECK_RANGE(ptr, _chk, _op, _xpct)
+	__CUTE_CHECK_RANGE(ptr, # _chk, _chk, _op, _xpct)
 
 #define cute_check_ptr_set(_chk, _op, _xpct) \
-	__CUTE_CHECK_SET(ptr, _chk, _op, _xpct)
+	__CUTE_CHECK_SET(ptr, # _chk, _chk, _op, _xpct)
 
 extern void
 cute_check_ptr_equal(const char *             file,
@@ -461,8 +461,11 @@ cute_check_ptr_not_in_set(const char *                file,
 	cute_check_mem_ ## _op(__FILE__, \
 	                       __LINE__, \
 	                       __func__, \
-	                       &__CUTE_VALUE(ptr, _chk), \
-	                       &__CUTE_MEM(_xpct, _sz))
+	                       &__CUTE_VALUE(ptr, # _chk, _chk), \
+	                       &__CUTE_MEM("{@ " # _xpct ":" # _sz "}", \
+	                                   _xpct, \
+	                                   _sz))
+
 
 extern void
 cute_check_mem_equal(const char *             file,

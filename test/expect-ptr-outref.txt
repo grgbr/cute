@@ -17,11 +17,11 @@ reason: pointer mock parameter name mismatch
 wanted:
     source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:23
     caller: expect_ptr_value_callee()
-    expect: nonexistent_parm == ((void *)0)
+    expect: nonexistent_parm == NULL
 found:
     source: /mnt/devel/greg/tidor/cute/test/expect_ptr.c:6
     caller: expect_ptr_value_callee()
-    expect: ptr == ((void *)0)
+    expect: ptr == NULL
 
 expect_ptr_suite::expect_ptr_literal_equal_fail_test .............................................. fail
 issue:  exec failed

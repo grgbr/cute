@@ -5,7 +5,6 @@ Fixes and cleanup :
 Missing features :
 * hexdecimal checking / expectations support
 * hexdump upon memory content failures
-* refine stringification of check API arguments (prevent from expanding args)
 * stack trace upon failures and errors / crashes
 * devise API to run a single test
 * fork

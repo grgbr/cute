@@ -33,7 +33,7 @@ struct cute_sint_range {
 };
 
 #define CUTE_SINT_RANGE(_min, _max) \
-	__CUTE_RANGE(sint, _min, _max)
+	__CUTE_RANGE(sint, "{" # _min " ... " # _max "}", _min, _max)
 
 struct cute_sint_set {
 	const char *     expr;
@@ -42,7 +42,7 @@ struct cute_sint_set {
 };
 
 #define CUTE_SINT_SET(...) \
-	__CUTE_SET(sint, __VA_ARGS__)
+	__CUTE_SET(sint, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 
 struct cute_uint {
 	const char * expr;
@@ -56,7 +56,7 @@ struct cute_uint_range {
 };
 
 #define CUTE_UINT_RANGE(_min, _max) \
-	__CUTE_RANGE(uint, _min, _max)
+	__CUTE_RANGE(uint, "{" # _min " ... " # _max "}", _min, _max)
 
 struct cute_uint_set {
 	const char *      expr;
@@ -65,7 +65,7 @@ struct cute_uint_set {
 };
 
 #define CUTE_UINT_SET(...) \
-	__CUTE_SET(uint, __VA_ARGS__)
+	__CUTE_SET(uint, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 
 struct cute_flt {
 	const char * expr;
@@ -79,7 +79,7 @@ struct cute_flt_range {
 };
 
 #define CUTE_FLT_RANGE(_min, _max) \
-	__CUTE_RANGE(flt, _min, _max)
+	__CUTE_RANGE(flt, "{" # _min " ... " # _max "}", _min, _max)
 
 struct cute_flt_set {
 	const char *        expr;
@@ -88,7 +88,7 @@ struct cute_flt_set {
 };
 
 #define CUTE_FLT_SET(...) \
-	__CUTE_SET(flt, __VA_ARGS__)
+	__CUTE_SET(flt, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 
 struct cute_str {
 	const char * expr;
@@ -102,7 +102,7 @@ struct cute_str_set {
 };
 
 #define CUTE_STR_SET(...) \
-	__CUTE_SET(str, __VA_ARGS__)
+	__CUTE_SET(str, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 
 struct cute_ptr {
 	const char * expr;
@@ -116,7 +116,7 @@ struct cute_ptr_range {
 };
 
 #define CUTE_PTR_RANGE(_min, _max) \
-	__CUTE_RANGE(ptr, _min, _max)
+	__CUTE_RANGE(ptr, "{" # _min " ... " # _max "}", _min, _max)
 
 struct cute_ptr_set {
 	const char *  expr;
@@ -125,7 +125,7 @@ struct cute_ptr_set {
 };
 
 #define CUTE_PTR_SET(...) \
-	__CUTE_SET(ptr, __VA_ARGS__)
+	__CUTE_SET(ptr, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 
 struct cute_mem {
 	const char * expr;
