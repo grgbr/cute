@@ -142,4 +142,6 @@ run_testcase "expect-ptr-utest" 1 || ret=1
 run_testcase "expect-mem-utest" 1 || ret=1
 run_testcase "expect-assert-utest" 1 || ret=1
 
+rmdir --ignore-fail-on-non-empty ${testdir}
+
 exit $ret
