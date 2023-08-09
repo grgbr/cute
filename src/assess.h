@@ -264,6 +264,13 @@ extern void
 cute_assess_release_uint_set(struct cute_assess * assess);
 
 /******************************************************************************
+ * Unsigned integer hexadecimal numbers handling
+ ******************************************************************************/
+
+extern char *
+cute_assess_hex_set_str(const uintmax_t * items, unsigned int count);
+
+/******************************************************************************
  * Floating point numbers handling
  ******************************************************************************/
 

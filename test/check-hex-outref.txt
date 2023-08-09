@@ -1,0 +1,338 @@
+
+#######################################  Running CUTe test(s)  ########################################
+
+check_hex_suite::check_hex_literal_equal_fail_test ............................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:25
+caller: check_hex_literal_equal_fail_test__cute_exec()
+wanted: 0 == 1
+found:  [0x0] != [0x1]
+
+check_hex_suite::check_hex_var_equal_fail_test ................................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:32
+caller: check_hex_var_equal_fail_test__cute_exec()
+wanted: chk == 1
+found:  [0x2] != [0x1]
+
+check_hex_suite::check_hex_equal_ref_fail_test ................................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:39
+caller: check_hex_equal_ref_fail_test__cute_exec()
+wanted: 1 == ref
+found:  [0x1] != [0x2]
+
+check_hex_suite::check_hex_var_equal_ref_fail_test ............................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:47
+caller: check_hex_var_equal_ref_fail_test__cute_exec()
+wanted: chk == ref
+found:  [0x2] != [0x3]
+
+check_hex_suite::check_hex_literal_unequal_fail_test ............................................. fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:64
+caller: check_hex_literal_unequal_fail_test__cute_exec()
+wanted: 1 != 1
+found:  [0x1] == [0x1]
+
+check_hex_suite::check_hex_var_unequal_fail_test ................................................. fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:71
+caller: check_hex_var_unequal_fail_test__cute_exec()
+wanted: chk != 2
+found:  [0x2] == [0x2]
+
+check_hex_suite::check_hex_unequal_ref_fail_test ................................................. fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:78
+caller: check_hex_unequal_ref_fail_test__cute_exec()
+wanted: 2 != ref
+found:  [0x2] == [0x2]
+
+check_hex_suite::check_hex_var_unequal_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:86
+caller: check_hex_var_unequal_ref_fail_test__cute_exec()
+wanted: chk != ref
+found:  [0x2] == [0x2]
+
+check_hex_suite::check_hex_literal_greater_fail_test ............................................. fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:102
+caller: check_hex_literal_greater_fail_test__cute_exec()
+wanted: 1 > 1
+found:  [0x1] <= [0x1]
+
+check_hex_suite::check_hex_var_greater_fail_test ................................................. fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:109
+caller: check_hex_var_greater_fail_test__cute_exec()
+wanted: chk > 1
+found:  [0x0] <= [0x1]
+
+check_hex_suite::check_hex_greater_ref_fail_test ................................................. fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:116
+caller: check_hex_greater_ref_fail_test__cute_exec()
+wanted: 0 > ref
+found:  [0x0] <= [0x1]
+
+check_hex_suite::check_hex_var_greater_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:124
+caller: check_hex_var_greater_ref_fail_test__cute_exec()
+wanted: chk > ref
+found:  [0x1] <= [0xa]
+
+check_hex_suite::check_hex_literal_greater_equal_fail_test ....................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:143
+caller: check_hex_literal_greater_equal_fail_test__cute_exec()
+wanted: 0 >= 1
+found:  [0x0] < [0x1]
+
+check_hex_suite::check_hex_var_greater_equal_fail_test ........................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:150
+caller: check_hex_var_greater_equal_fail_test__cute_exec()
+wanted: chk >= 1
+found:  [0x0] < [0x1]
+
+check_hex_suite::check_hex_greater_equal_ref_fail_test ........................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:157
+caller: check_hex_greater_equal_ref_fail_test__cute_exec()
+wanted: 0 >= ref
+found:  [0x0] < [0x1]
+
+check_hex_suite::check_hex_var_greater_equal_ref_fail_test ....................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:165
+caller: check_hex_var_greater_equal_ref_fail_test__cute_exec()
+wanted: chk >= ref
+found:  [0x0] < [0xa]
+
+check_hex_suite::check_hex_literal_lower_fail_test ............................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:181
+caller: check_hex_literal_lower_fail_test__cute_exec()
+wanted: 0 < 0
+found:  [0x0] >= [0x0]
+
+check_hex_suite::check_hex_var_lower_fail_test ................................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:188
+caller: check_hex_var_lower_fail_test__cute_exec()
+wanted: chk < 0
+found:  [0x1] >= [0x0]
+
+check_hex_suite::check_hex_lower_ref_fail_test ................................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:195
+caller: check_hex_lower_ref_fail_test__cute_exec()
+wanted: 10 < ref
+found:  [0xa] >= [0xa]
+
+check_hex_suite::check_hex_var_lower_ref_fail_test ............................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:203
+caller: check_hex_var_lower_ref_fail_test__cute_exec()
+wanted: chk < ref
+found:  [0x1] >= [0x0]
+
+check_hex_suite::check_hex_literal_lower_equal_fail_test ......................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:222
+caller: check_hex_literal_lower_equal_fail_test__cute_exec()
+wanted: 1 <= 0
+found:  [0x1] > [0x0]
+
+check_hex_suite::check_hex_var_lower_equal_fail_test ............................................. fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:229
+caller: check_hex_var_lower_equal_fail_test__cute_exec()
+wanted: chk <= 0
+found:  [0x1] > [0x0]
+
+check_hex_suite::check_hex_lower_equal_ref_fail_test ............................................. fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:236
+caller: check_hex_lower_equal_ref_fail_test__cute_exec()
+wanted: 10 <= ref
+found:  [0xa] > [0x1]
+
+check_hex_suite::check_hex_var_lower_equal_ref_fail_test ......................................... fail
+issue:  exec failed
+reason: unsigned integer value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:244
+caller: check_hex_var_lower_equal_ref_fail_test__cute_exec()
+wanted: chk <= ref
+found:  [0xa] > [0x0]
+
+check_hex_suite::check_hex_literal_in_range_fail_test ............................................ fail
+issue:  exec failed
+reason: unsigned integer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:264
+caller: check_hex_literal_in_range_fail_test__cute_exec()
+wanted: 0 in range {1 ... 10}
+found:  [0x0] not in range {0x1 ... 0xa}
+
+check_hex_suite::check_hex_var_in_range_fail_test ................................................ fail
+issue:  exec failed
+reason: unsigned integer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:271
+caller: check_hex_var_in_range_fail_test__cute_exec()
+wanted: chk in range {1 ... 10}
+found:  [0xb] not in range {0x1 ... 0xa}
+
+check_hex_suite::check_hex_in_range_ref_fail_test ................................................ fail
+issue:  exec failed
+reason: unsigned integer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:280
+caller: check_hex_in_range_ref_fail_test__cute_exec()
+wanted: 0 in range {min_ref ... max_ref}
+found:  [0x0] not in range {0x5 ... 0x5}
+
+check_hex_suite::check_hex_var_in_range_ref_fail_test ............................................ fail
+issue:  exec failed
+reason: unsigned integer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:291
+caller: check_hex_var_in_range_ref_fail_test__cute_exec()
+wanted: chk in range {min_ref ... max_ref}
+found:  [0x6] not in range {0x5 ... 0x5}
+
+check_hex_suite::check_hex_literal_not_in_range_fail_test ........................................ fail
+issue:  exec failed
+reason: unsigned integer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:311
+caller: check_hex_literal_not_in_range_fail_test__cute_exec()
+wanted: 1 not in range {1 ... 10}
+found:  [0x1] in range {0x1 ... 0xa}
+
+check_hex_suite::check_hex_var_not_in_range_fail_test ............................................ fail
+issue:  exec failed
+reason: unsigned integer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:318
+caller: check_hex_var_not_in_range_fail_test__cute_exec()
+wanted: chk not in range {1 ... 10}
+found:  [0xa] in range {0x1 ... 0xa}
+
+check_hex_suite::check_hex_not_in_range_ref_fail_test ............................................ fail
+issue:  exec failed
+reason: unsigned integer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:327
+caller: check_hex_not_in_range_ref_fail_test__cute_exec()
+wanted: 5 not in range {min_ref ... max_ref}
+found:  [0x5] in range {0x1 ... 0xa}
+
+check_hex_suite::check_hex_var_not_in_range_ref_fail_test ........................................ fail
+issue:  exec failed
+reason: unsigned integer range check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:338
+caller: check_hex_var_not_in_range_ref_fail_test__cute_exec()
+wanted: chk not in range {min_ref ... max_ref}
+found:  [0x5] in range {0x5 ... 0x5}
+
+check_hex_suite::check_hex_literal_in_set_fail_test .............................................. fail
+issue:  exec failed
+reason: unsigned integer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:358
+caller: check_hex_literal_in_set_fail_test__cute_exec()
+wanted: 10 in set {0, 1, 2, 3, 5, 8}
+found:  [0xa] not in set {0x0, 0x1, 0x2, 0x3, 0x5, 0x8}
+
+check_hex_suite::check_hex_var_in_set_fail_test .................................................. fail
+issue:  exec failed
+reason: unsigned integer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:365
+caller: check_hex_var_in_set_fail_test__cute_exec()
+wanted: chk in set {0, 1, 2, 3, 5, 8}
+found:  [0x4] not in set {0x0, 0x1, 0x2, 0x3, 0x5, 0x8}
+
+check_hex_suite::check_hex_in_set_ref_fail_test .................................................. fail
+issue:  exec failed
+reason: unsigned integer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:375
+caller: check_hex_in_set_ref_fail_test__cute_exec()
+wanted: 4 in set {ref0, 1, 2, 3, ref5, 8}
+found:  [0x4] not in set {0x0, 0x1, 0x2, 0x3, 0x5, 0x8}
+
+check_hex_suite::check_hex_var_in_set_ref_fail_test .............................................. fail
+issue:  exec failed
+reason: unsigned integer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:387
+caller: check_hex_var_in_set_ref_fail_test__cute_exec()
+wanted: chk in set {ref0, 1, 2, 3, ref5, 8}
+found:  [0xa] not in set {0x0, 0x1, 0x2, 0x3, 0x5, 0x8}
+
+check_hex_suite::check_hex_literal_not_in_set_fail_test .......................................... fail
+issue:  exec failed
+reason: unsigned integer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:407
+caller: check_hex_literal_not_in_set_fail_test__cute_exec()
+wanted: 1 not in set {0, 1, 2, 3, 5, 8}
+found:  [0x1] in set {0x0, 0x1, 0x2, 0x3, 0x5, 0x8}
+
+check_hex_suite::check_hex_var_not_in_set_fail_test .............................................. fail
+issue:  exec failed
+reason: unsigned integer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:414
+caller: check_hex_var_not_in_set_fail_test__cute_exec()
+wanted: chk not in set {0, 1, 2, 3, 5, 8}
+found:  [0x8] in set {0x0, 0x1, 0x2, 0x3, 0x5, 0x8}
+
+check_hex_suite::check_hex_not_in_set_ref_fail_test .............................................. fail
+issue:  exec failed
+reason: unsigned integer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:424
+caller: check_hex_not_in_set_ref_fail_test__cute_exec()
+wanted: 0 not in set {ref0, 1, 2, 3, ref5, 8}
+found:  [0x0] in set {0x0, 0x1, 0x2, 0x3, 0x5, 0x8}
+
+check_hex_suite::check_hex_var_not_in_set_ref_fail_test .......................................... fail
+issue:  exec failed
+reason: unsigned integer set check failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:436
+caller: check_hex_var_not_in_set_ref_fail_test__cute_exec()
+wanted: chk not in set {ref0, 1, 2, 3, ref5, 8}
+found:  [0x5] in set {0x0, 0x1, 0x2, 0x3, 0x5, 0x8}
+
+check_hex_suite .................................................................................. fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/check_hex.c:501
+
+NAME                                         STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+check_hex_suite                              fail    1.017626     10      0     40      0     50     50
+                                                                 20%     0%    80%     0%   100%
+-------------------------------------------------------------------------------------------------------
+Total                                        fail    1.017626     10      0     40      0     50     50
+                                                                 20%     0%    80%     0%   100%
+
+                                 ###           SUMMARY            ###
+                                 ###  40/50 (80%) test(s) FAILED  ###
+

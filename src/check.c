@@ -1067,6 +1067,405 @@ cute_check_uint_not_in_set(const char *                 file,
 }
 
 /******************************************************************************
+ * Unsigned integral hexadecimal numbers checking
+ ******************************************************************************/
+
+static struct cute_text_block *
+cute_check_desc_hex(const struct cute_assess * assess,
+                    const char *               oper,
+                    const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->check.uint.expr);
+	cute_assert_intern(assess->check.uint.expr[0]);
+	cute_assert_intern(assess->expect.uint.scal.expr);
+	cute_assert_intern(assess->expect.uint.scal.expr[0]);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block * blk;
+
+	blk = cute_assess_desc_source(assess,
+	                              3 +
+	                              (unsigned int)!!assess->func);
+
+	cute_text_asprintf(blk,
+	                   "wanted: %s %s %s",
+	                   assess->check.uint.expr,
+	                   oper,
+	                   assess->expect.uint.scal.expr);
+
+	cute_text_asprintf(blk,
+	                   "found:  [0x%" PRIxMAX "] %s [0x%" PRIxMAX "]",
+	                   assess->check.uint.value,
+	                   inv,
+	                   assess->expect.uint.scal.value);
+
+	return blk;
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_equal(const struct cute_assess * assess)
+{
+	return cute_check_desc_hex(assess, "==", "!=");
+}
+
+static const struct cute_assess_ops cute_assess_hex_equal_ops = {
+	.cmp     = cute_assess_cmp_uint_equal,
+	.desc    = cute_check_desc_hex_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_hex_equal(const char *             file,
+                     int                      line,
+                     const char *             function,
+                     const struct cute_uint * check,
+                     const struct cute_uint * expect)
+{
+	cute_check_assess_uint(file,
+	                       line,
+	                       function,
+	                       &cute_assess_hex_equal_ops,
+	                       check,
+	                       expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_unequal(const struct cute_assess * assess)
+{
+	return cute_check_desc_hex(assess, "!=", "==");
+}
+
+static const struct cute_assess_ops cute_assess_hex_unequal_ops = {
+	.cmp     = cute_assess_cmp_uint_unequal,
+	.desc    = cute_check_desc_hex_unequal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_hex_unequal(const char *             file,
+                       int                      line,
+                       const char *             function,
+                       const struct cute_uint * check,
+                       const struct cute_uint * expect)
+{
+	cute_check_assess_uint(file,
+	                       line,
+	                       function,
+	                       &cute_assess_hex_unequal_ops,
+	                       check,
+	                       expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_greater(const struct cute_assess * assess)
+{
+	return cute_check_desc_hex(assess, ">", "<=");
+}
+
+static const struct cute_assess_ops cute_assess_hex_greater_ops = {
+	.cmp     = cute_assess_cmp_uint_greater,
+	.desc    = cute_check_desc_hex_greater,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_hex_greater(const char *             file,
+                       int                      line,
+                       const char *             function,
+                       const struct cute_uint * check,
+                       const struct cute_uint * expect)
+{
+	cute_check_assess_uint(file,
+	                       line,
+	                       function,
+	                       &cute_assess_hex_greater_ops,
+	                       check,
+	                       expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_greater_equal(const struct cute_assess * assess)
+{
+	return cute_check_desc_hex(assess, ">=", "<");
+}
+
+static const struct cute_assess_ops cute_assess_hex_greater_equal_ops = {
+	.cmp     = cute_assess_cmp_uint_greater_equal,
+	.desc    = cute_check_desc_hex_greater_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_hex_greater_equal(const char *             file,
+                             int                      line,
+                             const char *             function,
+                             const struct cute_uint * check,
+                             const struct cute_uint * expect)
+{
+	cute_check_assess_uint(file,
+	                       line,
+	                       function,
+	                       &cute_assess_hex_greater_equal_ops,
+	                       check,
+	                       expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_lower(const struct cute_assess * assess)
+{
+	return cute_check_desc_hex(assess, "<", ">=");
+}
+
+static const struct cute_assess_ops cute_assess_hex_lower_ops = {
+	.cmp     = cute_assess_cmp_uint_lower,
+	.desc    = cute_check_desc_hex_lower,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_hex_lower(const char *             file,
+                     int                      line,
+                     const char *             function,
+                     const struct cute_uint * check,
+                     const struct cute_uint * expect)
+{
+	cute_check_assess_uint(file,
+	                       line,
+	                       function,
+	                       &cute_assess_hex_lower_ops,
+	                       check,
+	                       expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_lower_equal(const struct cute_assess * assess)
+{
+	return cute_check_desc_hex(assess, "<=", ">");
+}
+
+static const struct cute_assess_ops cute_assess_hex_lower_equal_ops = {
+	.cmp     = cute_assess_cmp_uint_lower_equal,
+	.desc    = cute_check_desc_hex_lower_equal,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_hex_lower_equal(const char *             file,
+                           int                      line,
+                           const char *             function,
+                           const struct cute_uint * check,
+                           const struct cute_uint * expect)
+{
+	cute_check_assess_uint(file,
+	                       line,
+	                       function,
+	                       &cute_assess_hex_lower_equal_ops,
+	                       check,
+	                       expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_range(const struct cute_assess * assess,
+                          const char *               oper,
+                          const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->check.uint.expr);
+	cute_assert_intern(assess->check.uint.expr[0]);
+	cute_assert_intern(assess->expect.uint.range.expr);
+	cute_assert_intern(assess->expect.uint.range.expr[0]);
+	cute_assert_intern(assess->expect.uint.range.min <=
+	                   assess->expect.uint.range.max);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block * blk;
+
+	blk = cute_assess_desc_source(assess,
+	                              3 +
+	                              (unsigned int)!!assess->func);
+
+	cute_text_asprintf(blk,
+	                   "wanted: %s %s range %s",
+	                   assess->check.uint.expr,
+	                   oper,
+	                   assess->expect.uint.range.expr);
+
+	cute_text_asprintf(blk,
+	                   "found:  [0x%" PRIxMAX "] "
+	                   "%s "
+	                   "range {0x%" PRIxMAX " ... 0x%" PRIxMAX "}",
+	                   assess->check.uint.value,
+	                   inv,
+	                   assess->expect.uint.range.min,
+	                   assess->expect.uint.range.max);
+
+	return blk;
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_in_range(const struct cute_assess * assess)
+{
+	return cute_check_desc_hex_range(assess, "in", "not in");
+}
+
+static const struct cute_assess_ops cute_assess_hex_in_range_ops = {
+	.cmp     = cute_assess_cmp_uint_in_range,
+	.desc    = cute_check_desc_hex_in_range,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_hex_in_range(const char *                   file,
+                        int                            line,
+                        const char *                   function,
+                        const struct cute_uint *       check,
+                        const struct cute_uint_range * expect)
+{
+	cute_check_assess_uint_range(file,
+	                             line,
+	                             function,
+	                             &cute_assess_hex_in_range_ops,
+	                             check,
+	                             expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_not_in_range(const struct cute_assess * assess)
+{
+	return cute_check_desc_hex_range(assess, "not in", "in");
+}
+
+static const struct cute_assess_ops cute_assess_hex_not_in_range_ops = {
+	.cmp     = cute_assess_cmp_uint_not_in_range,
+	.desc    = cute_check_desc_hex_not_in_range,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_hex_not_in_range(const char *                   file,
+                            int                            line,
+                            const char *                   function,
+                            const struct cute_uint *       check,
+                            const struct cute_uint_range * expect)
+{
+	cute_check_assess_uint_range(file,
+	                             line,
+	                             function,
+	                             &cute_assess_hex_not_in_range_ops,
+	                             check,
+	                             expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_set(const struct cute_assess * assess,
+                        const char *               oper,
+                        const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->check.uint.expr);
+	cute_assert_intern(assess->check.uint.expr[0]);
+	cute_assert_intern(assess->expect.uint.set.expr);
+	cute_assert_intern(assess->expect.uint.set.expr[0]);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block *     blk;
+	const struct cute_uint_set * set = &assess->expect.uint.set;
+
+	blk = cute_assess_desc_source(assess,
+	                              3 +
+	                              (unsigned int)!!assess->func);
+
+	cute_text_asprintf(blk,
+	                   "wanted: %s %s set %s",
+	                   assess->check.uint.expr,
+	                   oper,
+	                   set->expr);
+
+	if (set->count) {
+		char * items;
+
+		items = cute_assess_hex_set_str(set->items, set->count);
+		cute_text_asprintf(blk,
+		                   "found:  [0x%" PRIxMAX "] %s set {%s}",
+		                   assess->check.uint.value,
+		                   inv,
+		                   items);
+		cute_free(items);
+	}
+	else
+		cute_text_asprintf(blk,
+		                   "found:  [0x%" PRIxMAX "] %s set {}",
+		                   assess->check.uint.value,
+		                   inv);
+
+	return blk;
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_in_set(const struct cute_assess * assess)
+{
+	return cute_check_desc_hex_set(assess, "in", "not in");
+}
+
+static const struct cute_assess_ops cute_assess_hex_in_set_ops = {
+	.cmp     = cute_assess_cmp_uint_in_set,
+	.desc    = cute_check_desc_hex_in_set,
+	.release = cute_assess_release_uint_set
+};
+
+void
+cute_check_hex_in_set(const char *                 file,
+                      int                          line,
+                      const char *                 function,
+                      const struct cute_uint *     check,
+                      const struct cute_uint_set * expect)
+{
+	cute_check_assess_uint_set(file,
+	                           line,
+	                           function,
+	                           &cute_assess_hex_in_set_ops,
+	                           check,
+	                           expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_hex_not_in_set(const struct cute_assess * assess)
+{
+	return cute_check_desc_hex_set(assess, "not in", "in");
+}
+
+static const struct cute_assess_ops cute_assess_hex_not_in_set_ops = {
+	.cmp     = cute_assess_cmp_uint_not_in_set,
+	.desc    = cute_check_desc_hex_not_in_set,
+	.release = cute_assess_release_uint_set
+};
+
+void
+cute_check_hex_not_in_set(const char *                 file,
+                          int                          line,
+                          const char *                 function,
+                          const struct cute_uint *     check,
+                          const struct cute_uint_set * expect)
+{
+	cute_check_assess_uint_set(file,
+	                           line,
+	                           function,
+	                           &cute_assess_hex_not_in_set_ops,
+	                           check,
+	                           expect);
+}
+
+/******************************************************************************
  * Floating point numbers handling
  ******************************************************************************/
 

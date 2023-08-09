@@ -88,6 +88,12 @@ check-uint-utest-cflags            := $(test-cflags)
 check-uint-utest-ldflags           := $(test-ldflags) -lcute
 check-uint-utest-path              := $(LIBEXECDIR)/cute/check-uint-utest
 
+bins                               += check-hex-utest
+check-hex-utest-objs               := check_hex.o
+check-hex-utest-cflags             := $(test-cflags)
+check-hex-utest-ldflags            := $(test-ldflags) -lcute
+check-hex-utest-path               := $(LIBEXECDIR)/cute/check-hex-utest
+
 bins                               += check-flt-utest
 check-flt-utest-objs               := check_flt.o
 check-flt-utest-cflags             := $(test-cflags)

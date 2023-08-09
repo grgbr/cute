@@ -206,6 +206,90 @@ cute_check_uint_not_in_set(const char *                 file,
                            const struct cute_uint_set * expect) __cute_export;
 
 /******************************************************************************
+ * Unsigned integral hexadecimal numbers checking
+ ******************************************************************************/
+
+#define cute_check_hex(_chk, _op, _xpct) \
+	__CUTE_CHECK_HEX(# _chk, _chk, _op, # _xpct, _xpct)
+
+#define cute_check_hex_range(_chk, _op, _xpct) \
+	__CUTE_CHECK_HEX_RANGE(# _chk, _chk, _op, _xpct)
+
+#define cute_check_hex_set(_chk, _op, _xpct) \
+	__CUTE_CHECK_HEX_SET(# _chk, _chk, _op, _xpct)
+
+extern void
+cute_check_hex_equal(const char *             file,
+                     int                      line,
+                     const char *             function,
+                     const struct cute_uint * check,
+                     const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_unequal(const char *             file,
+                       int                      line,
+                       const char *             function,
+                       const struct cute_uint * check,
+                       const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_greater(const char *             file,
+                       int                      line,
+                       const char *             function,
+                       const struct cute_uint * check,
+                       const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_greater_equal(const char *             file,
+                             int                      line,
+                             const char *             function,
+                             const struct cute_uint * check,
+                             const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_lower(const char *             file,
+                     int                      line,
+                     const char *             function,
+                     const struct cute_uint * check,
+                     const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_lower_equal(const char *             file,
+                           int                      line,
+                           const char *             function,
+                           const struct cute_uint * check,
+                           const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_in_range(const char *                   file,
+                        int                            line,
+                        const char *                   function,
+                        const struct cute_uint *       check,
+                        const struct cute_uint_range * expect) __cute_export;
+
+extern void
+cute_check_hex_not_in_range(const char *                   file,
+                            int                            line,
+                            const char *                   function,
+                            const struct cute_uint *       check,
+                            const struct cute_uint_range * expect)
+	__cute_export;
+
+extern void
+cute_check_hex_in_set(const char *                 file,
+                      int                          line,
+                      const char *                 function,
+                      const struct cute_uint *     check,
+                      const struct cute_uint_set * expect) __cute_export;
+
+extern void
+cute_check_hex_not_in_set(const char *                 file,
+                          int                          line,
+                          const char *                 function,
+                          const struct cute_uint *     check,
+                          const struct cute_uint_set * expect) __cute_export;
+
+/******************************************************************************
  * Floating point numbers checking
  ******************************************************************************/
 

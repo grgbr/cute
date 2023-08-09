@@ -271,9 +271,7 @@ cute_assess_cmp_sint_not_in_set(const struct cute_assess *      assess,
 }
 
 #define INTMAX_BITS          ((unsigned int)(sizeof(intmax_t) * CHAR_BIT) - 1U)
-#define INTMAX_BASE8_DIGITS  BASE8_DIGITS(INTMAX_BITS)
 #define INTMAX_BASE10_DIGITS BASE10_DIGITS(INTMAX_BITS)
-#define INTMAX_BASE16_DIGITS BASE16_DIGITS(INTMAX_BITS)
 
 char *
 cute_assess_sint_set_str(const intmax_t * items, unsigned int count)
@@ -406,9 +404,7 @@ cute_assess_cmp_uint_not_in_set(const struct cute_assess *      assess,
 }
 
 #define UINTMAX_BITS          ((unsigned int)sizeof(uintmax_t) * CHAR_BIT)
-#define UINTMAX_BASE8_DIGITS  BASE8_DIGITS(UINTMAX_BITS)
 #define UINTMAX_BASE10_DIGITS BASE10_DIGITS(UINTMAX_BITS)
-#define UINTMAX_BASE16_DIGITS BASE16_DIGITS(UINTMAX_BITS)
 
 char *
 cute_assess_uint_set_str(const uintmax_t * items, unsigned int count)
@@ -454,6 +450,42 @@ cute_assess_release_uint_set(struct cute_assess * assess)
 		cute_free((void *)assess->expect.uint.set.items);
 #pragma GCC diagnostic pop
 	}
+}
+
+/******************************************************************************
+ * Unsigned integer hexadecimal numbers handling
+ ******************************************************************************/
+
+#define UINTMAX_BASE16_DIGITS \
+	((unsigned int)sizeof("0x") - 1 + BASE16_DIGITS(UINTMAX_BITS))
+
+char *
+cute_assess_hex_set_str(const uintmax_t * items, unsigned int count)
+{
+	cute_assert_intern(items);
+	cute_assert_intern(count);
+
+	/* Compute space needed to show something like: "-2, 0, 4, -100"... */
+	unsigned int len = UINTMAX_BASE16_DIGITS    /* number of digits */
+	                   +
+	                   ((1 +                    /* comma char */
+	                     1 +                    /* space char */
+	                     UINTMAX_BASE16_DIGITS) /* number of digits */
+	                    *                       /* number of integer */
+	                    (count - 1));           /* prefixed with ", " */
+	char *       str;
+	unsigned int i;
+	int          sz;
+
+	str = cute_malloc(len + 1);
+
+	sz = sprintf(str, "0x%" PRIxMAX, items[0]);
+	for (i = 1; i < count; i++) {
+		cute_assert_intern((unsigned int)sz < (len + 1));
+		sz += sprintf(&str[sz], ", 0x%" PRIxMAX, items[i]);
+	}
+
+	return str;
 }
 
 /******************************************************************************

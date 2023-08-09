@@ -27,6 +27,13 @@
 	                                 &__CUTE_VALUE(_type, _cexpr, _chk), \
 	                                 &__CUTE_VALUE(_type, _xexpr, _xpct))
 
+#define __CUTE_CHECK_HEX(_cexpr, _chk, _op, _xexpr, _xpct) \
+	cute_check_hex_ ## _op(__FILE__, \
+	                       __LINE__, \
+	                       __func__, \
+	                       &__CUTE_VALUE(uint, _cexpr, _chk), \
+	                       &__CUTE_VALUE(uint, _xexpr, _xpct))
+
 #define __CUTE_RANGE(_type, _expr, _min, _max) \
 	((const struct cute_ ## _type ## _range) { \
 		.expr = _expr, \
@@ -42,6 +49,15 @@
 	                                                         _cexpr, \
 	                                                         _chk), \
 	                                           &(_xpct))
+
+#define __CUTE_CHECK_HEX_RANGE(_cexpr, _chk, _op, _xpct) \
+	cute_check_hex_ ## _op ## _range(__FILE__, \
+	                                 __LINE__, \
+	                                 __func__, \
+	                                 &__CUTE_VALUE(uint, \
+	                                               _cexpr, \
+	                                               _chk), \
+	                                 &(_xpct))
 
 #define __CUTE_SET_TYPE(_type) \
 	cute_typeof_member(struct cute_ ## _type ## _set, items[0])
@@ -65,6 +81,15 @@
 	                                                       _cexpr, \
 	                                                       _chk), \
 	                                         &(_xpct))
+
+#define __CUTE_CHECK_HEX_SET(_cexpr, _chk, _op, _xpct) \
+	cute_check_hex_ ## _op ## _set(__FILE__, \
+	                               __LINE__, \
+	                               __func__, \
+	                               &__CUTE_VALUE(uint, \
+	                                             _cexpr, \
+	                                             _chk), \
+	                               &(_xpct))
 
 #define __CUTE_MEM(_expr, _ptr, _sz) \
 	((const struct cute_mem) { \
