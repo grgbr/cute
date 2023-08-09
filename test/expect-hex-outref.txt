@@ -1,0 +1,311 @@
+
+########################################  Running CUTe test(s)  ########################################
+
+expect_hex_suite::expect_hex_caller_fail_test ..................................................... fail
+issue:  exec failed
+reason: mock caller function mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:35
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+
+expect_hex_suite::expect_hex_parm_fail_test ....................................................... fail
+issue:  exec failed
+reason: unsigned integer mock parameter name mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:46
+    caller: expect_hex_value_callee()
+    expect: nonexistent_parm == 2
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:20
+    caller: expect_hex_value_callee()
+    expect: word == 2
+
+expect_hex_suite::expect_hex_literal_equal_fail_test .............................................. fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:78
+    caller: expect_hex_value_callee()
+    expect: byte == 1
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] != [0x1]
+
+expect_hex_suite::expect_hex_var_equal_fail_test .................................................. fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:86
+    caller: expect_hex_value_callee()
+    expect: byte == bref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] != [0x1]
+
+expect_hex_suite::expect_hex_literal_unequal_fail_test ............................................ fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:120
+    caller: expect_hex_value_callee()
+    expect: byte != 0
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] == [0x0]
+
+expect_hex_suite::expect_hex_var_unequal_fail_test ................................................ fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:128
+    caller: expect_hex_value_callee()
+    expect: byte != bref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] == [0x0]
+
+expect_hex_suite::expect_hex_literal_greater_fail_test ............................................ fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:168
+    caller: expect_hex_value_callee()
+    expect: byte > 1
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] <= [0x1]
+
+expect_hex_suite::expect_hex_var_greater_fail_test ................................................ fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:176
+    caller: expect_hex_value_callee()
+    expect: byte > bref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] <= [0x1]
+
+expect_hex_suite::expect_hex_literal_greater_equal_fail_test ...................................... fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:228
+    caller: expect_hex_value_callee()
+    expect: byte >= 1
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] < [0x1]
+
+expect_hex_suite::expect_hex_var_greater_equal_fail_test .......................................... fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:236
+    caller: expect_hex_value_callee()
+    expect: byte > bref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] <= [0x1]
+
+expect_hex_suite::expect_hex_literal_lower_fail_test .............................................. fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:270
+    caller: expect_hex_value_callee()
+    expect: byte < 0
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] >= [0x0]
+
+expect_hex_suite::expect_hex_var_lower_fail_test .................................................. fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:278
+    caller: expect_hex_value_callee()
+    expect: byte < bref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x1] >= [0x0]
+
+expect_hex_suite::expect_hex_literal_lower_equal_fail_test ........................................ fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:318
+    caller: expect_hex_value_callee()
+    expect: byte <= 0
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x1] > [0x0]
+
+expect_hex_suite::expect_hex_var_lower_equal_fail_test ............................................ fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:326
+    caller: expect_hex_value_callee()
+    expect: byte <= bref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x1] > [0x0]
+
+expect_hex_suite::expect_hex_literal_in_range_fail_test ........................................... fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:362
+    caller: expect_hex_value_callee()
+    expect: byte in range {1 ... 10}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] not in range {0x1 ... 0xa}
+
+expect_hex_suite::expect_hex_var_in_range_fail_test ............................................... fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:374
+    caller: expect_hex_value_callee()
+    expect: byte in range {rmin ... rmax}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] not in range {0x1 ... 0xa}
+
+expect_hex_suite::expect_hex_literal_not_in_range_fail_test ....................................... fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:408
+    caller: expect_hex_value_callee()
+    expect: byte not in range {5 ... 9}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x5] in range {0x5 ... 0x9}
+
+expect_hex_suite::expect_hex_var_not_in_range_fail_test ........................................... fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:420
+    caller: expect_hex_value_callee()
+    expect: byte not in range {rmin ... rmax}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x5] in range {0x5 ... 0x9}
+
+expect_hex_suite::expect_hex_literal_in_set_fail_test ............................................. fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:453
+    caller: expect_hex_value_callee()
+    expect: byte in set {1, 5, 10, 15}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] not in set {0x1, 0x5, 0xa, 0xf}
+
+expect_hex_suite::expect_hex_var_in_set_fail_test ................................................. fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:466
+    caller: expect_hex_value_callee()
+    expect: byte in set {ref0, 5, ref2, 15}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x0] not in set {0x1, 0x5, 0xa, 0xf}
+
+expect_hex_suite::expect_hex_literal_not_in_set_fail_test ......................................... fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:500
+    caller: expect_hex_value_callee()
+    expect: byte not in set {1, 5, 10, 15}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x1] in set {0x1, 0x5, 0xa, 0xf}
+
+expect_hex_suite::expect_hex_var_not_in_set_fail_test ............................................. fail
+issue:  exec failed
+reason: unsigned integer mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:513
+    caller: expect_hex_value_callee()
+    expect: byte not in set {ref0, 5, ref2, 15}
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:18
+    caller: expect_hex_value_callee()
+    actual: [0x1] in set {0x1, 0x5, 0xa, 0xf}
+
+expect_hex_suite::expect_hex_retval_caller_fail_test .............................................. fail
+issue:  exec failed
+reason: mock caller function mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:549
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:521
+    caller: expect_hex_retval_callee()
+
+expect_hex_suite::expect_xcess_uint_retval_fail_test .............................................. fail
+issue:  teardown failed
+reason: extra mock expectation left
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:562
+    caller: expect_hex_retval_callee()
+    expect: mock function return value
+found:  none
+
+expect_hex_suite::expect_hex_inval_retval_fail_test ............................................... fail
+issue:  exec failed
+reason: mock expectation type mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:572
+    caller: expect_hex_retval_callee()
+    expect: mock function parameter
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:521
+    caller: expect_hex_retval_callee()
+    found:  mock function return value
+
+expect_hex_suite .................................................................................. fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/expect_hex.c:629
+
+NAME                                          STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+expect_hex_suite                              fail    0.651404     11      0     25      0     36     36
+                                                                  30%     0%    69%     0%   100%
+--------------------------------------------------------------------------------------------------------
+Total                                         fail    0.651404     11      0     25      0     36     36
+                                                                  30%     0%    69%     0%   100%
+
+                                  ###           SUMMARY            ###
+                                  ###  25/36 (69%) test(s) FAILED  ###
+

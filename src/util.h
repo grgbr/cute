@@ -11,6 +11,7 @@
 #include "cute/cute.h"
 #include <time.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <regex.h>
 #include <errno.h>
 #include <unistd.h>
@@ -274,6 +275,12 @@ struct cute_text_block {
 
 extern void
 cute_text_enroll(struct cute_text_block * block, char * string, bool own);
+
+extern void
+cute_text_vasprintf(struct cute_text_block * block,
+                    const char *             format,
+                    va_list                  args)
+	__attribute__((format(printf, 2, 0)));
 
 extern void
 cute_text_asprintf(struct cute_text_block * block, const char * format, ...)

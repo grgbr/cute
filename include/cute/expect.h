@@ -223,7 +223,9 @@ cute_expect_check_sint_retval(const char * file,
 	                                     __LINE__, \
 	                                     # _func, \
 	                                     # _parm, \
-	                                     &__CUTE_VALUE(uint, # _xpct, _xpct))
+	                                     &__CUTE_VALUE(uint, \
+	                                                   # _xpct, \
+	                                                   _xpct))
 
 #define cute_mock_uint_parm(_parm) \
 	cute_expect_check_uint_parm(__FILE__, \
@@ -358,6 +360,120 @@ cute_expect_check_uint_retval(const char * file,
 
 #define cute_mock_uint_retval() \
 	cute_expect_check_uint_retval(__FILE__, __LINE__, __func__)
+
+/******************************************************************************
+ * Unsigned hexadecimal integer mock parameter expectation handling
+ ******************************************************************************/
+
+#define cute_expect_hex_parm(_func, _parm, _op, _xpct) \
+	cute_expect_sched_hex_parm_ ##  _op(__FILE__, \
+	                                    __LINE__, \
+	                                    # _func, \
+	                                    # _parm, \
+	                                    &__CUTE_VALUE(uint, \
+	                                                  # _xpct, \
+	                                                  _xpct))
+
+#define cute_mock_hex_parm(_parm) \
+	cute_expect_check_uint_parm(__FILE__, \
+	                            __LINE__, \
+	                            __func__, \
+	                            &__CUTE_VALUE(uint, # _parm, _parm))
+
+extern void
+cute_expect_sched_hex_parm_equal(const char *             file,
+                                 int                      line,
+                                 const char *             function,
+                                 const char *             parm,
+                                 const struct cute_uint * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_hex_parm_unequal(const char *             file,
+                                   int                      line,
+                                   const char *             function,
+                                   const char *             parm,
+                                   const struct cute_uint * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_hex_parm_greater(const char *             file,
+                                   int                      line,
+                                   const char *             function,
+                                   const char *             parm,
+                                   const struct cute_uint * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_hex_parm_greater_equal(const char *             file,
+                                         int                      line,
+                                         const char *             function,
+                                         const char *             parm,
+                                         const struct cute_uint * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_hex_parm_lower(const char *             file,
+                                 int                      line,
+                                 const char *             function,
+                                 const char *             parm,
+                                 const struct cute_uint * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_hex_parm_lower_equal(const char *             file,
+                                       int                      line,
+                                       const char *             function,
+                                       const char *             parm,
+                                       const struct cute_uint * expect)
+	__cute_export;
+
+#define cute_expect_hex_range(_func, _parm, _op, _xpct) \
+	cute_expect_sched_hex_parm_ ##  _op ## _range(__FILE__, \
+	                                              __LINE__, \
+	                                              # _func, \
+	                                              # _parm, \
+	                                              &(_xpct))
+
+extern void
+cute_expect_sched_hex_parm_in_range(const char *                   file,
+                                    int                            line,
+                                    const char *                   function,
+                                    const char *                   parm,
+                                    const struct cute_uint_range * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_hex_parm_not_in_range(
+	const char *                   file,
+	int                            line,
+	const char *                   function,
+	const char *                   parm,
+	const struct cute_uint_range * expect)
+	__cute_export;
+
+#define cute_expect_hex_set(_func, _parm, _op, _xpct) \
+	cute_expect_sched_hex_parm_ ##  _op ## _set(__FILE__, \
+	                                            __LINE__, \
+	                                            # _func, \
+	                                            # _parm, \
+	                                            &(_xpct))
+
+extern void
+cute_expect_sched_hex_parm_in_set(const char *                 file,
+                                  int                          line,
+                                  const char *                 function,
+                                  const char *                 parm,
+                                  const struct cute_uint_set * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_hex_parm_not_in_set(const char *                 file,
+                                      int                          line,
+                                      const char *                 function,
+                                      const char *                 parm,
+                                      const struct cute_uint_set * expect)
+	__cute_export;
 
 /******************************************************************************
  * Floating point number mock parameter expectation handling

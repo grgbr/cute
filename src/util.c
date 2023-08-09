@@ -10,7 +10,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <unistd.h>
-#include <stdarg.h>
 
 void
 cute_fail_assert(const char * message,
@@ -226,7 +225,9 @@ cute_text_enroll(struct cute_text_block * block, char * string, bool own)
 }
 
 void
-cute_text_asprintf(struct cute_text_block * block, const char * format, ...)
+cute_text_vasprintf(struct cute_text_block * block,
+                    const char *             format,
+                    va_list                  args)
 {
 	cute_assert_intern(block);
 	cute_assert_intern(block->nr);
@@ -235,15 +236,19 @@ cute_text_asprintf(struct cute_text_block * block, const char * format, ...)
 	cute_assert_intern(format[0]);
 
 	struct cute_text_atom * atom = &block->atoms[block->count++];
-	va_list                 args;
-	char *                  str;
+
+	atom->str = cute_vasprintf(format, args);
+	atom->own = true;
+}
+
+void
+cute_text_asprintf(struct cute_text_block * block, const char * format, ...)
+{
+	va_list args;
 
 	va_start(args, format);
-	str = cute_vasprintf(format, args);
+	cute_text_vasprintf(block, format, args);
 	va_end(args);
-
-	atom->str = str;
-	atom->own = true;
 }
 
 struct cute_text_block *

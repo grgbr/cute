@@ -515,10 +515,10 @@ CUTE_TEST(expect_uint_var_not_in_set_fail_test)
 	expect_uint_value_caller(1, 6, 11, 16);
 }
 
-static int
+static unsigned int
 expect_uint_retval_callee(void)
 {
-	return (int)cute_mock_uint_retval();
+	return (unsigned int)cute_mock_uint_retval();
 }
 
 static void
@@ -527,7 +527,7 @@ expect_uint_retval_caller(unsigned int * result, size_t size)
 	unsigned int c;
 
 	for (c = 0; c < size; c++)
-		result[c] = (unsigned int)expect_uint_retval_callee();
+		result[c] = expect_uint_retval_callee();
 }
 
 CUTE_TEST(expect_uint_retval_pass_test)

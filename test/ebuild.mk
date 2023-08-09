@@ -136,6 +136,12 @@ expect-uint-utest-cflags           := $(test-cflags)
 expect-uint-utest-ldflags          := $(test-ldflags) -lcute
 expect-uint-utest-path             := $(LIBEXECDIR)/cute/expect-uint-utest
 
+bins                               += expect-hex-utest
+expect-hex-utest-objs              := expect_hex.o
+expect-hex-utest-cflags            := $(test-cflags)
+expect-hex-utest-ldflags           := $(test-ldflags) -lcute
+expect-hex-utest-path              := $(LIBEXECDIR)/cute/expect-hex-utest
+
 bins                               += expect-flt-utest
 expect-flt-utest-objs              := expect_flt.o
 expect-flt-utest-cflags            := $(test-cflags)

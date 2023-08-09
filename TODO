@@ -3,7 +3,6 @@ Fixes and cleanup :
 * cleanup cute_term_depth_[v]printf...
 
 Missing features :
-* hexdecimal expectations support
 * hexdump upon memory content failures
 * stack trace upon failures and errors / crashes
 * devise API to run a single test ?
