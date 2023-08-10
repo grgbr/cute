@@ -140,26 +140,66 @@
 #define cute_check_sint(_chk, _op, _xpct) \
 	__CUTE_CHECK_VALUE(sint, # _chk, _chk, _op, # _xpct, _xpct)
 
+/**
+ * Check a signed integer against a range.
+ *
+ * @param[in] _chk  signed integer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference signed integer range to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct range using the @p _op comparison operator
+ * results in a failure. Comparison is performed according to the following
+ * formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`,
+ * - `not_in`.
+ *
+ * @p _chk *MUST* be a signed integer, i.e., either :
+ * - `signed char`,
+ * - `signed short`,
+ * - `signed int`,
+ * - `signed long`,
+ * - `signed long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a ::cute_sint_range signed integer range as defined by
+ * the #CUTE_SINT_RANGE macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0 is included withint the [-10, 10] range** :
+ * @code
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_sint_range(0, in, CUTE_SINT_RANGE(-10, 10));
+ * }
+ * @endcode
+ *
+ * **Ensure that -10 is not included within the [0, 10] range** :
+ * @code
+ * CUTE_TEST(mytest)
+ * {
+ *      struct cute_sint_range range = CUTE_SINT_RANGE(0, 10);
+ *      
+ *      cute_check_sint(-10, not_in, range);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_SINT_RANGE
+ * - ::cute_sint_range
+ * - #CUTE_TEST
+ */
 #define cute_check_sint_range(_chk, _op, _xpct) \
 	__CUTE_CHECK_RANGE(sint, # _chk, _chk, _op, _xpct)
 
 #define cute_check_sint_set(_chk, _op, _xpct) \
 	__CUTE_CHECK_SET(sint, # _chk, _chk, _op, _xpct)
-
-extern void
-cute_check_sint_in_range(const char *                   file,
-                         int                            line,
-                         const char *                   function,
-                         const struct cute_sint *       check,
-                         const struct cute_sint_range * expect) __cute_export;
-
-extern void
-cute_check_sint_not_in_range(const char *                   file,
-                             int                            line,
-                             const char *                   function,
-                             const struct cute_sint *       check,
-                             const struct cute_sint_range * expect)
-	__cute_export;
 
 extern void
 cute_check_sint_in_set(const char *                 file,

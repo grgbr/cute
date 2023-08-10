@@ -112,9 +112,22 @@ Test assertion
 
 Multiple test assertions are exposed as C preprocessor macros to implement
 testing logic. These are:
+  
+.. hlist::
 
-* :c:macro:`cute_check_assert`
-* :c:macro:`cute_check_sint`
+   * **Basic assertion** :
+
+      * :c:macro:`cute_check_assert`
+
+   * **Value assertion** :
+
+      * :c:macro:`cute_check_sint`
+
+   * **Range assertion** :
+
+     * :c:struct:`cute_sint_range` structure
+     * :c:macro:`CUTE_SINT_RANGE`
+     * :c:macro:`cute_check_sint_range`
 
 See :ref:`sect-user-assertion` section of |user guide| for more informations.
 
@@ -240,6 +253,11 @@ CUTE_REF
 
 .. doxygendefine:: CUTE_REF
 
+CUTE_SINT_RANGE
+***************
+
+.. doxygendefine:: CUTE_SINT_RANGE
+
 CUTE_SUITE
 **********
 
@@ -300,6 +318,11 @@ cute_check_sint
 
 .. doxygendefine:: cute_check_sint
 
+cute_check_sint_range
+*********************
+
+.. doxygendefine:: cute_check_sint_range
+
 Enums
 -----
 
@@ -320,6 +343,12 @@ cute_config
 ***********
 
 .. doxygenstruct:: cute_config
+   :members:
+   
+cute_sint_range
+***************
+
+.. doxygenstruct:: cute_sint_range
    :members:
 
 Functions

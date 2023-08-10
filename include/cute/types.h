@@ -26,12 +26,58 @@ struct cute_sint {
 	intmax_t     value;
 };
 
+/**
+ * Signed integer range descriptor.
+ *
+ * Use ::cute_sint_range to define a range of signed integers in combination
+ * with the #CUTE_SINT_RANGE macro.
+ *
+ * The range is defined by minimum and maximum signed integer values
+ * (inclusive). Suitable types are one of :
+ * - `signed char`,
+ * - `signed short`,
+ * - `signed int`,
+ * - `signed long`,
+ * - `signed long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @see
+ * - #CUTE_SINT_RANGE
+ * - cute_check_sint_range
+*/
 struct cute_sint_range {
+	/** Range description string. */
 	const char * expr;
+	/** Range's minimum value. */
 	intmax_t     min;
+	/** Range's maximum value. */
 	intmax_t     max;
 };
 
+/**
+ * Define a signed integer range.
+ *
+ * @param[in] _min range's minimum value (inclusive)
+ * @param[in] _max range's maximum value (inclusive)
+ *
+ * Initialize a ::cute_sint_range variable that defines a range of signed
+ * integers.
+ *
+ * **Example**
+ * @code
+ * CUTE_TEST(mytest)
+ * {
+ *      struct cute_sint_range range = CUTE_SINT_RANGE(-5, 20);
+ *
+ *      cute_check_sint_range(0,  in,     range);
+ *      cute_check_sint_range(10, not_in, CUTE_SINT_RANGE(-5, 5));
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_check_sint_range
+ * - ::cute_sint_range
+ */
 #define CUTE_SINT_RANGE(_min, _max) \
 	__CUTE_RANGE(sint, "{" # _min " ... " # _max "}", _min, _max)
 
