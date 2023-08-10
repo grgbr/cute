@@ -5,8 +5,12 @@
 
 .. include:: _cdefs.rst
 
-.. |timeout|    replace:: :ref:`timeout <sect-user-writing_tests-test_timeout>`
-.. |user guide| replace:: :doc:`User guide <user>`
+.. |timeout|           replace:: :ref:`timeout <sect-user-writing_tests-test_timeout>`
+.. |user guide|        replace:: :doc:`User guide <user>`
+
+.. |failed|            replace:: :ref:`failed <sect-user-result>`
+.. |fixture functions| replace:: :ref:`fixture functions <sect-user-writing_tests-fixture_operations>`
+.. |test functions|    replace:: :ref:`test functions <sect-user-writing_tests-test_definition>`
 
 .. _sect-api-overview:
 
@@ -102,6 +106,17 @@ Various C preprocessor macros are exposed to define test suites. These are:
 * :c:macro:`CUTE_SUITE_EXTERN`
 
 See |suite| definition section of |user guide| for more informations.
+
+Test assertion
+==============
+
+Multiple test assertions are exposed as C preprocessor macros to implement
+testing logic. These are:
+
+* :c:macro:`cute_check_assert`
+* :c:macro:`cute_check_sint`
+
+See :ref:`sect-user-assertion` section of |user guide| for more informations.
 
 Running tests
 =============
@@ -274,6 +289,16 @@ CUTE_TEST_STATIC
 ****************
 
 .. doxygendefine:: CUTE_TEST_STATIC
+
+cute_check_assert
+*****************
+
+.. doxygendefine:: cute_check_assert
+
+cute_check_sint
+***************
+
+.. doxygendefine:: cute_check_sint
 
 Enums
 -----

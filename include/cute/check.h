@@ -19,21 +19,34 @@
 #ifndef _CUTE_CHECK_H
 #define _CUTE_CHECK_H
 
-#include <cute/types.h>
-#include <cute/priv/core.h>
-#include <stdbool.h>
+#include <cute/priv/check.h>
 
 /******************************************************************************
  * Assertion checking
  ******************************************************************************/
 
-extern void
-__cute_check_assert(bool         fail,
-                    const char * file,
-                    int          line,
-                    const char * function,
-                    const char * expr) __cute_export;
-
+/**
+ * Check that a test assertion is true.
+ *
+ * @param[in] _expr expression
+ *
+ * Abort current test and mark it as @rstsubst{failed} if @p _expr is false
+ * (i.e., compares equal to zero).
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_assert(0 == 0);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST
+ */
 #define cute_check_assert(_expr) \
 	__cute_check_assert(!(_expr), __FILE__, __LINE__, __func__, # _expr)
 
@@ -41,6 +54,89 @@ __cute_check_assert(bool         fail,
  * Signed integral numbers checking
  ******************************************************************************/
 
+/**
+ * Check a signed integer.
+ *
+ * @param[in] _chk  signed integer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct expected signed integer value to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk and @p _xpct using the @p _op comparison operator results in a
+ * failure. Comparison is performed according to the following formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal`,
+ * - `unequal`,
+ * - `greater`,
+ * - `greater_equal`,
+ * - `lower`,
+ * - `lower_equal`.
+ *
+ * Both @p _chk and @p _xpct *MUST* be signed integers, i.e., either :
+ * - `signed char`,
+ * - `signed short`,
+ * - `signed int`,
+ * - `signed long`,
+ * - `signed long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0 equals 0** :
+ * @code
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_sint(0, equal, 0);
+ * }
+ * @endcode
+ *
+ * **Ensure that 0 unequals 1** :
+ * @code
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_sint(0, unequal, 1);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is greater than 0** :
+ * @code
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_sint(1, greater, 0);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is greater than or equal to 1** :
+ * @code
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_sint(1, greater_equal, 1);
+ * }
+ * @endcode
+ *
+ * **Ensure that 0 is lower than 1** :
+ * @code
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_sint(0, lower, 1);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is lower than or equal to 1** :
+ * @code
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_sint(1, lower_equal, 1);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST
+ */
 #define cute_check_sint(_chk, _op, _xpct) \
 	__CUTE_CHECK_VALUE(sint, # _chk, _chk, _op, # _xpct, _xpct)
 
@@ -49,48 +145,6 @@ __cute_check_assert(bool         fail,
 
 #define cute_check_sint_set(_chk, _op, _xpct) \
 	__CUTE_CHECK_SET(sint, # _chk, _chk, _op, _xpct)
-
-extern void
-cute_check_sint_equal(const char *             file,
-                      int                      line,
-                      const char *             function,
-                      const struct cute_sint * check,
-                      const struct cute_sint * expect) __cute_export;
-
-extern void
-cute_check_sint_unequal(const char *             file,
-                        int                      line,
-                        const char *             function,
-                        const struct cute_sint * check,
-                        const struct cute_sint * expect) __cute_export;
-
-extern void
-cute_check_sint_greater(const char *             file,
-                        int                      line,
-                        const char *             function,
-                        const struct cute_sint * check,
-                        const struct cute_sint * expect) __cute_export;
-
-extern void
-cute_check_sint_greater_equal(const char *             file,
-                              int                      line,
-                              const char *             function,
-                              const struct cute_sint * check,
-                              const struct cute_sint * expect) __cute_export;
-
-extern void
-cute_check_sint_lower(const char *             file,
-                      int                      line,
-                      const char *             function,
-                      const struct cute_sint * check,
-                      const struct cute_sint * expect) __cute_export;
-
-extern void
-cute_check_sint_lower_equal(const char *             file,
-                            int                      line,
-                            const char *             function,
-                            const struct cute_sint * check,
-                            const struct cute_sint * expect) __cute_export;
 
 extern void
 cute_check_sint_in_range(const char *                   file,

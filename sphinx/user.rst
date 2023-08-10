@@ -883,6 +883,7 @@ Now that we know how to instantiate a complete test |hierarchy|, let's see how
 to implement test functions using CUTe_'s test assertions.
 
 .. index:: assertion
+.. _sect-user-assertion:
 
 Test assertion
 ==============
