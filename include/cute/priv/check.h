@@ -76,4 +76,18 @@ cute_check_sint_not_in_range(const char *                   file,
                              const struct cute_sint_range * expect)
 	__cute_export;
 
+extern void
+cute_check_sint_in_set(const char *                 file,
+                       int                          line,
+                       const char *                 function,
+                       const struct cute_sint *     check,
+                       const struct cute_sint_set * expect) __cute_export;
+
+extern void
+cute_check_sint_not_in_set(const char *                 file,
+                           int                          line,
+                           const char *                 function,
+                           const struct cute_sint *     check,
+                           const struct cute_sint_set * expect) __cute_export;
+
 #endif /* _CUTE_PRIV_CHECK_H */

@@ -132,7 +132,7 @@
  * referencing defined test cases from multiple compilation units.
  *
  * **Example**
- * @code
+ * @code{.h}
  * #ifndef _SAMPLE_TEST_H
  * #define _SAMPLE_TEST_H
  *
@@ -164,14 +164,14 @@
  *
  * @p _exec is a test function that should implement the testing logic. It
  * should be defined according to the following signature:
- * @code
+ * @code{.c}
  * void test_exec(void)
  * @endcode
  *
  * @p _setup is a setup() @rstsubst{fixture} function that should initialize the
  * testing context. It is run before @p _exec function and should be defined
  * according to the following signature:
- * @code
+ * @code{.c}
  * void test_setup(void)
  * @endcode
  *
@@ -184,7 +184,7 @@
  * the testing context established by @p _setup. It is run if @p _setup has
  * completed and after @p _exec function. It should be defined according to the
  * following signature:
- * @code
+ * @code{.c}
  * void test_teardown(void)
  * @endcode
  *
@@ -209,7 +209,7 @@
  * - #CUTE_TEST_DECL
  *
  * **Example**
- * @code
+ * @code{.c}
  * static int value;
  *
  * static void sample_setup(void)
@@ -263,7 +263,7 @@
  * - #CUTE_TEST_EXTERN
  *
  * **Example**
- * @code
+ * @code{.c}
  * CUTE_TEST_STATIC(sample_test,
  *                  CUTE_NULL_SETUP,
  *                  CUTE_NULL_TEARDOWN,
@@ -313,7 +313,7 @@
  * - #CUTE_TEST_STATIC
  *
  * **Example definition**
- * @code
+ * @code{.c}
  * #include "sample_test.h"
  *
  * CUTE_TEST_EXTERN(sample_test,
@@ -326,7 +326,7 @@
  * @endcode
  *
  * **Example declaration** in a sample_test.h header file
- * @code
+ * @code{.h}
  * #ifndef _SAMPLE_TEST_H
  * #define _SAMPLE_TEST_H
  *
@@ -372,7 +372,7 @@
  * - #CUTE_TEST_DEFN
  *
  * **Example**
- * @code
+ * @code{.c}
  * CUTE_TEST(sample_test)
  * {
  *      cute_check_assert(0 == 0);
@@ -404,7 +404,7 @@
  * - #CUTE_GROUP_DEFN
  *
  * **Example**
- * @code
+ * @code{.c}
  * CUTE_TEST(sample_subtest)
  * {
  *      cute_check_assert(0 == 0);
@@ -444,7 +444,7 @@
  * referencing defined test group from multiple compilation units.
  *
  * **Example**
- * @code
+ * @code{.h}
  * #ifndef _SAMPLE_TEST_H
  * #define _SAMPLE_TEST_H
  *
@@ -483,7 +483,7 @@
  * - #CUTE_SUITE
  *
  * **Example**
- * @code
+ * @code{.c}
  * CUTE_TEST(sample_test_0)
  * {
  *      cute_check_assert(0 == 0);
@@ -524,7 +524,7 @@
  * - #CUTE_GROUP_DEFN
  *
  * **Example**
- * @code
+ * @code{.c}
  * CUTE_TEST(sample_test_0)
  * {
  *      cute_check_assert(0 == 0);
@@ -570,7 +570,7 @@
  * - #CUTE_GROUP_DECL
  *
  * **Example definition**
- * @code
+ * @code{.c}
  * CUTE_TEST(sample_test_0)
  * {
  *      cute_check_assert(0 == 0);
@@ -588,7 +588,7 @@
  * @endcode
  *
  * **Example declaration** in a sample_test.h header file
- * @code
+ * @code{.h}
  * #ifndef _SAMPLE_TEST_H
  * #define _SAMPLE_TEST_H
  *
@@ -622,7 +622,7 @@
  * - #CUTE_GROUP_DEFN
  *
  * **Example**
- * @code
+ * @code{.c}
  * CUTE_TEST(sample_test_0)
  * {
  *      cute_check_assert(0 == 0);
@@ -659,7 +659,7 @@
  * referencing defined test suite from multiple compilation units.
  *
  * **Example**
- * @code
+ * @code{.h}
  * #ifndef _SAMPLE_TEST_H
  * #define _SAMPLE_TEST_H
  *
@@ -716,7 +716,7 @@
  * - #CUTE_TEST_DEFN
  *
  * **Example**
- * @code
+ * @code{.c}
  * static int value;
  *
  * static void sample_setup(void)
@@ -772,7 +772,7 @@
  * - #CUTE_SUITE_EXTERN
  *
  * **Example**
- * @code
+ * @code{.c}
  * CUTE_TEST(sample_test_0)
  * {
  *      cute_check_assert(value > 0);
@@ -827,7 +827,7 @@
  * - #CUTE_SUITE_STATIC
  *
  * **Example definition**
- * @code
+ * @code{.c}
  * #include "sample_test.h"
  *
  * CUTE_TEST(sample_test_0)
@@ -853,7 +853,7 @@
  * @endcode
  *
  * **Example declaration** in a sample_test.h header file
- * @code
+ * @code{.h}
  * #ifndef _SAMPLE_TEST_H
  * #define _SAMPLE_TEST_H
  *
@@ -898,7 +898,7 @@
  * - #CUTE_SUITE_DEFN
  *
  * **Example**
- * @code
+ * @code{.c}
  * CUTE_TEST(sample_test_0)
  * {
  *      cute_check_assert(0 == 0);
@@ -1223,7 +1223,7 @@ cute_fini(void) __cute_export;
  * @see #CUTE_SUITE
  *
  * **Example**
- * @code
+ * @code{.c}
  * #include <cute/cute.h>
  *
  * CUTE_TEST(my_first_failing_test)

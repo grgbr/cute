@@ -37,7 +37,7 @@
  * @rstsubst{test functions}.
  *
  * **Example**
- * @code
+ * @code{.c}
  * CUTE_TEST(mytest)
  * {
  *      cute_check_assert(0 == 0);
@@ -68,12 +68,12 @@
  *     _chk <_op> _xpct
  *
  * Where @p _op *MUST* be one of :
- * - `equal`,
- * - `unequal`,
- * - `greater`,
- * - `greater_equal`,
- * - `lower`,
- * - `lower_equal`.
+ * - `equal` to ensure that @p _chk == @p _xpct ;
+ * - `unequal` to ensure that @p _chk != @p _xpct ;
+ * - `greater`, to ensure that @p _chk > @p _xpct ;
+ * - `greater_equal`, to ensure that @p _chk >= @p _xpct ;
+ * - `lower`, to ensure that @p _chk < @p _xpct ;
+ * - `lower_equal`, to ensure that @p _chk <= @p _xpct.
  *
  * Both @p _chk and @p _xpct *MUST* be signed integers, i.e., either :
  * - `signed char`,
@@ -87,7 +87,7 @@
  * @rstsubst{test functions}.
  *
  * **Ensure that 0 equals 0** :
- * @code
+ * @code{.c}
  * CUTE_TEST(mytest)
  * {
  *      cute_check_sint(0, equal, 0);
@@ -95,7 +95,7 @@
  * @endcode
  *
  * **Ensure that 0 unequals 1** :
- * @code
+ * @code{.c}
  * CUTE_TEST(mytest)
  * {
  *      cute_check_sint(0, unequal, 1);
@@ -103,7 +103,7 @@
  * @endcode
  *
  * **Ensure that 1 is greater than 0** :
- * @code
+ * @code{.c}
  * CUTE_TEST(mytest)
  * {
  *      cute_check_sint(1, greater, 0);
@@ -111,7 +111,7 @@
  * @endcode
  *
  * **Ensure that 1 is greater than or equal to 1** :
- * @code
+ * @code{.c}
  * CUTE_TEST(mytest)
  * {
  *      cute_check_sint(1, greater_equal, 1);
@@ -119,7 +119,7 @@
  * @endcode
  *
  * **Ensure that 0 is lower than 1** :
- * @code
+ * @code{.c}
  * CUTE_TEST(mytest)
  * {
  *      cute_check_sint(0, lower, 1);
@@ -127,7 +127,7 @@
  * @endcode
  *
  * **Ensure that 1 is lower than or equal to 1** :
- * @code
+ * @code{.c}
  * CUTE_TEST(mytest)
  * {
  *      cute_check_sint(1, lower_equal, 1);
@@ -155,8 +155,8 @@
  *     _chk <_op> _xpct
  *
  * Where @p _op *MUST* be one of :
- * - `in`,
- * - `not_in`.
+ * - `in`, to ensure that @p _xpct.min <= @p _chk <= @p _xpct.max ;
+ * - `not_in` to ensure that @p _chk < @p _xpct.min or @p _chk > @p _xpct.max.
  *
  * @p _chk *MUST* be a signed integer, i.e., either :
  * - `signed char`,
@@ -173,7 +173,7 @@
  * @rstsubst{test functions}.
  *
  * **Ensure that 0 is included withint the [-10, 10] range** :
- * @code
+ * @code{.c}
  * CUTE_TEST(mytest)
  * {
  *      cute_check_sint_range(0, in, CUTE_SINT_RANGE(-10, 10));
@@ -181,39 +181,81 @@
  * @endcode
  *
  * **Ensure that -10 is not included within the [0, 10] range** :
- * @code
+ * @code{.c}
  * CUTE_TEST(mytest)
  * {
- *      struct cute_sint_range range = CUTE_SINT_RANGE(0, 10);
+ *      const struct cute_sint_range range = CUTE_SINT_RANGE(0, 10);
  *      
- *      cute_check_sint(-10, not_in, range);
+ *      cute_check_sint_range(-10, not_in, range);
  * }
  * @endcode
  *
  * @see
  * - #CUTE_SINT_RANGE
- * - ::cute_sint_range
+ * - cute_sint_range
  * - #CUTE_TEST
  */
 #define cute_check_sint_range(_chk, _op, _xpct) \
 	__CUTE_CHECK_RANGE(sint, # _chk, _chk, _op, _xpct)
 
+/**
+ * Check a signed integer against a set.
+ *
+ * @param[in] _chk  signed integer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference set of signed integers to perform the check
+ *                  against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct set using the @p _op comparison operator
+ * results in a failure. Comparison is performed according to the following
+ * formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _chk equals to one the @p _xpct set values ;
+ * - `not_in` to ensure that @p _chk equals to none of the @p _xpct set values.
+ *
+ * @p _chk *MUST* be a signed integer, i.e., either :
+ * - `signed char`,
+ * - `signed short`,
+ * - `signed int`,
+ * - `signed long`,
+ * - `signed long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a ::cute_sint_set signed integer set as defined by
+ * the #CUTE_SINT_SET macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0 is included withint the {-10, -5, 0, 5, 10} set** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_sint_set(0, in, CUTE_SINT_SET(-10, -5, 0, 5, 10));
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is not included within the {-5, 0, 5} set** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_sint_set set = CUTE_SINT_SET(-5, 0, 5);
+ *
+ *      cute_check_sint_set(1, not_in, set);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_SINT_SET
+ * - cute_sint_set
+ * - #CUTE_TEST
+ */
 #define cute_check_sint_set(_chk, _op, _xpct) \
 	__CUTE_CHECK_SET(sint, # _chk, _chk, _op, _xpct)
-
-extern void
-cute_check_sint_in_set(const char *                 file,
-                       int                          line,
-                       const char *                 function,
-                       const struct cute_sint *     check,
-                       const struct cute_sint_set * expect) __cute_export;
-
-extern void
-cute_check_sint_not_in_set(const char *                 file,
-                           int                          line,
-                           const char *                 function,
-                           const struct cute_sint *     check,
-                           const struct cute_sint_set * expect) __cute_export;
 
 /******************************************************************************
  * Unsigned integral numbers checking

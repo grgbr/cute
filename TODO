@@ -1,6 +1,7 @@
 Fixes and cleanup :
 * test complex hierarchy setup/teardown
 * cleanup cute_term_depth_[v]printf...
+* cleanup internal assertions
 
 Missing features :
 * hexdump upon memory content failures

@@ -29,11 +29,11 @@ struct cute_sint {
 /**
  * Signed integer range descriptor.
  *
- * Use ::cute_sint_range to define a range of signed integers in combination
+ * Use cute_sint_range to define a range of signed integers in combination
  * with the #CUTE_SINT_RANGE macro.
  *
  * The range is defined by minimum and maximum signed integer values
- * (inclusive). Suitable types are one of :
+ * (inclusive). Suitable value types are one of :
  * - `signed char`,
  * - `signed short`,
  * - `signed int`,
@@ -60,11 +60,11 @@ struct cute_sint_range {
  * @param[in] _min range's minimum value (inclusive)
  * @param[in] _max range's maximum value (inclusive)
  *
- * Initialize a ::cute_sint_range variable that defines a range of signed
+ * Initialize a cute_sint_range variable that defines a range of signed
  * integers.
  *
  * **Example**
- * @code
+ * @code{.c}
  * CUTE_TEST(mytest)
  * {
  *      struct cute_sint_range range = CUTE_SINT_RANGE(-5, 20);
@@ -76,17 +76,65 @@ struct cute_sint_range {
  *
  * @see
  * - cute_check_sint_range
- * - ::cute_sint_range
+ * - cute_sint_range
  */
 #define CUTE_SINT_RANGE(_min, _max) \
 	__CUTE_RANGE(sint, "{" # _min " ... " # _max "}", _min, _max)
 
+/**
+ * Signed integer set descriptor.
+ *
+ * Use cute_sint_set to define a set of signed integers in combination
+ * with the #CUTE_SINT_SET macro.
+ *
+ * The set is defined by an unordered list of signed integer values. Suitable
+ * value types are one of :
+ * - `signed char`,
+ * - `signed short`,
+ * - `signed int`,
+ * - `signed long`,
+ * - `signed long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @see
+ * - #CUTE_SINT_SET
+ * - cute_check_sint_set
+*/
 struct cute_sint_set {
+	/** Set description string. */
 	const char *     expr;
+	/** Count of set values stored into cute_sint_set::items */
 	unsigned int     count;
+	/** Array of set values */
 	const intmax_t * items;
 };
 
+/**
+ * Define a signed integer set.
+ *
+ * @param[in] ... list of set values
+ *
+ * Initialize a cute_sint_set variable that defines a set of signed
+ * integers.
+ *
+ * The `...` variable argument list is an unordered list of signed integer
+ * values separated by commas that composes the set.
+ *
+ * **Example**
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      struct cute_sint_set set = CUTE_SINT_SET(-5, 0, 5);
+ *
+ *      cute_check_sint_set(0, in,     set);
+ *      cute_check_sint_set(7, not_in, CUTE_SINT_SET(-10, -5, 0, 5, 10));
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_check_sint_set
+ * - cute_sint_set
+ */
 #define CUTE_SINT_SET(...) \
 	__CUTE_SET(sint, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 

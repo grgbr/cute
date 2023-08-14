@@ -129,6 +129,12 @@ testing logic. These are:
      * :c:macro:`CUTE_SINT_RANGE`
      * :c:macro:`cute_check_sint_range`
 
+   * **Set assertion** :
+
+     * :c:struct:`cute_sint_set` structure
+     * :c:macro:`CUTE_SINT_SET`
+     * :c:macro:`cute_check_sint_set`
+
 See :ref:`sect-user-assertion` section of |user guide| for more informations.
 
 Running tests
@@ -258,6 +264,11 @@ CUTE_SINT_RANGE
 
 .. doxygendefine:: CUTE_SINT_RANGE
 
+CUTE_SINT_SET
+*************
+
+.. doxygendefine:: CUTE_SINT_SET
+
 CUTE_SUITE
 **********
 
@@ -323,6 +334,11 @@ cute_check_sint_range
 
 .. doxygendefine:: cute_check_sint_range
 
+cute_check_sint_set
+*******************
+
+.. doxygendefine:: cute_check_sint_set
+
 Enums
 -----
 
@@ -349,6 +365,12 @@ cute_sint_range
 ***************
 
 .. doxygenstruct:: cute_sint_range
+   :members:
+
+cute_sint_set
+*************
+
+.. doxygenstruct:: cute_sint_set
    :members:
 
 Functions
