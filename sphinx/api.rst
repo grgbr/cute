@@ -110,14 +110,24 @@ See |suite| definition section of |user guide| for more informations.
 Test assertion
 ==============
 
-Multiple test assertions are exposed as C preprocessor macros to implement
-testing logic. These are:
-  
+Multiple test assertions are exposed to implement testing logic. These are
+described in the following sections.
+
+You may also refer to :ref:`sect-user-assertion` section of |user guide| for
+more informations.
+
+Basic assertion
+---------------
+
+:c:macro:`cute_check_assert` implements a basic versatile test assertion 
+exposed as a C preprocessor macros.
+
+Signed integers
+---------------
+
+Signed integer values may be verified using so-called `sint` definitions :
+
 .. hlist::
-
-   * **Basic assertion** :
-
-      * :c:macro:`cute_check_assert`
 
    * **Value assertion** :
 
@@ -126,16 +136,40 @@ testing logic. These are:
    * **Range assertion** :
 
      * :c:struct:`cute_sint_range` structure
-     * :c:macro:`CUTE_SINT_RANGE`
-     * :c:macro:`cute_check_sint_range`
+     * :c:macro:`CUTE_SINT_RANGE` initializer
+     * :c:macro:`cute_check_sint_range` function-like macro
 
    * **Set assertion** :
 
-     * :c:struct:`cute_sint_set` structure
-     * :c:macro:`CUTE_SINT_SET`
-     * :c:macro:`cute_check_sint_set`
+     * :c:struct:`cute_uint_set` structure
+     * :c:macro:`CUTE_UINT_SET` initializer
+     * :c:macro:`cute_check_uint_set` function-like macro
 
-See :ref:`sect-user-assertion` section of |user guide| for more informations.
+Unsigned integers
+-----------------
+
+Unsigned integer values may be verified using so-called `uint` definitions :
+
+.. hlist::
+
+   * **Value assertion** :
+
+      * :c:macro:`cute_check_uint`
+      * :c:macro:`cute_check_hex`
+
+   * **Range assertion** :
+
+     * :c:struct:`cute_uint_range` structure
+     * :c:macro:`CUTE_UINT_RANGE` initializer
+     * :c:macro:`cute_check_uint_range` function-like macro
+     * :c:macro:`cute_check_hex_range` function-like macro
+
+   * **Set assertion** :
+
+     * :c:struct:`cute_uint_set` structure
+     * :c:macro:`CUTE_UINT_SET` initializer
+     * :c:macro:`cute_check_uint_set` function-like macro
+     * :c:macro:`cute_check_hex_set` function-like macro
 
 Running tests
 =============
@@ -319,10 +353,35 @@ CUTE_TEST_STATIC
 
 .. doxygendefine:: CUTE_TEST_STATIC
 
+CUTE_UINT_RANGE
+***************
+
+.. doxygendefine:: CUTE_UINT_RANGE
+
+CUTE_UINT_SET
+*************
+
+.. doxygendefine:: CUTE_UINT_SET
+
 cute_check_assert
 *****************
 
 .. doxygendefine:: cute_check_assert
+
+cute_check_hex
+**************
+
+.. doxygendefine:: cute_check_hex
+
+cute_check_hex_range
+********************
+
+.. doxygendefine:: cute_check_hex_range
+
+cute_check_hex_set
+******************
+
+.. doxygendefine:: cute_check_hex_set
 
 cute_check_sint
 ***************
@@ -338,6 +397,21 @@ cute_check_sint_set
 *******************
 
 .. doxygendefine:: cute_check_sint_set
+
+cute_check_uint
+***************
+
+.. doxygendefine:: cute_check_uint
+
+cute_check_uint_range
+*********************
+
+.. doxygendefine:: cute_check_uint_range
+
+cute_check_uint_set
+*******************
+
+.. doxygendefine:: cute_check_uint_set
 
 Enums
 -----
@@ -371,6 +445,18 @@ cute_sint_set
 *************
 
 .. doxygenstruct:: cute_sint_set
+   :members:
+
+cute_uint_range
+***************
+
+.. doxygenstruct:: cute_uint_range
+   :members:
+
+cute_uint_set
+*************
+
+.. doxygenstruct:: cute_uint_set
    :members:
 
 Functions

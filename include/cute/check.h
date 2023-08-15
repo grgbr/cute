@@ -166,8 +166,8 @@
  * - `signed long long`,
  * - or equivalent *typedef*'ed types.
  *
- * @p _xpct *MUST* be a ::cute_sint_range signed integer range as defined by
- * the #CUTE_SINT_RANGE macro.
+ * @p _xpct *MUST* be a cute_sint_range signed integer range as defined by the
+ * #CUTE_SINT_RANGE macro.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -225,7 +225,7 @@
  * - `signed long long`,
  * - or equivalent *typedef*'ed types.
  *
- * @p _xpct *MUST* be a ::cute_sint_set signed integer set as defined by
+ * @p _xpct *MUST* be a cute_sint_set signed integer set as defined by
  * the #CUTE_SINT_SET macro.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
@@ -261,169 +261,437 @@
  * Unsigned integral numbers checking
  ******************************************************************************/
 
+/**
+ * Check an unsigned integer.
+ *
+ * @param[in] _chk  unsigned integer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct expected unsigned integer value to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk and @p _xpct using the @p _op comparison operator results in a
+ * failure. Comparison is performed according to the following formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that @p _chk == @p _xpct ;
+ * - `unequal` to ensure that @p _chk != @p _xpct ;
+ * - `greater`, to ensure that @p _chk > @p _xpct ;
+ * - `greater_equal`, to ensure that @p _chk >= @p _xpct ;
+ * - `lower`, to ensure that @p _chk < @p _xpct ;
+ * - `lower_equal`, to ensure that @p _chk <= @p _xpct.
+ *
+ * Both @p _chk and @p _xpct *MUST* be unsigned integers, i.e., either :
+ * - `unsigned char`,
+ * - `unsigned short`,
+ * - `unsigned int`,
+ * - `unsigned long`,
+ * - `unsigned long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0 equals 0** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_uint(0, equal, 0);
+ * }
+ * @endcode
+ *
+ * **Ensure that 0 unequals 1** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_uint(0, unequal, 1);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is greater than 0** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_uint(1, greater, 0);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is greater than or equal to 1** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_uint(1, greater_equal, 1);
+ * }
+ * @endcode
+ *
+ * **Ensure that 0 is lower than 1** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_uint(0, lower, 1);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is lower than or equal to 1** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_uint(1, lower_equal, 1);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST
+ */
 #define cute_check_uint(_chk, _op, _xpct) \
 	__CUTE_CHECK_VALUE(uint, # _chk, _chk, _op, # _xpct, _xpct)
 
+/**
+ * Check a unsigned integer against a range.
+ *
+ * @param[in] _chk  unsigned integer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference unsigned integer range to perform the check
+ *                  against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct range using the @p _op comparison operator
+ * results in a failure. Comparison is performed according to the following
+ * formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _xpct.min <= @p _chk <= @p _xpct.max ;
+ * - `not_in` to ensure that @p _chk < @p _xpct.min or @p _chk > @p _xpct.max.
+ *
+ * @p _chk *MUST* be a unsigned integer, i.e., either :
+ * - `unsigned char`,
+ * - `unsigned short`,
+ * - `unsigned int`,
+ * - `unsigned long`,
+ * - `unsigned long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a cute_uint_range unsigned integer range as defined by
+ * the #CUTE_UINT_RANGE macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0 is included withint the [0, 10] range** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_uint_range(0, in, CUTE_UINT_RANGE(0, 10));
+ * }
+ * @endcode
+ *
+ * **Ensure that 11 is not included within the [0, 10] range** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_uint_range range = CUTE_UINT_RANGE(0, 10);
+ *
+ *      cute_check_uint_range(11, not_in, range);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_UINT_RANGE
+ * - cute_uint_range
+ * - #CUTE_TEST
+ */
 #define cute_check_uint_range(_chk, _op, _xpct) \
 	__CUTE_CHECK_RANGE(uint, # _chk, _chk, _op, _xpct)
 
+/**
+ * Check a unsigned integer against a set.
+ *
+ * @param[in] _chk  unsigned integer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference set of unsigned integers to perform the check
+ *                  against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct set using the @p _op comparison operator
+ * results in a failure. Comparison is performed according to the following
+ * formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _chk equals to one the @p _xpct set values ;
+ * - `not_in` to ensure that @p _chk equals to none of the @p _xpct set values.
+ *
+ * @p _chk *MUST* be a unsigned integer, i.e., either :
+ * - `unsigned char`,
+ * - `unsigned short`,
+ * - `unsigned int`,
+ * - `unsigned long`,
+ * - `unsigned long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a cute_uint_set unsigned integer set as defined by
+ * the #CUTE_UINT_SET macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0 is included withint the {0, 1, 2, 3, 5, 8} set** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_uint_set(0, in, CUTE_UINT_SET(0, 1, 2, 3, 5, 8));
+ * }
+ * @endcode
+ *
+ * **Ensure that 4 is not included within the {0, 1, 2, 3, 5, 8} set** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_uint_set set = CUTE_UINT_SET(0, 1, 2, 3, 5, 8);
+ *
+ *      cute_check_uint_set(4, not_in, set);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_UINT_SET
+ * - cute_uint_set
+ * - #CUTE_TEST
+ */
 #define cute_check_uint_set(_chk, _op, _xpct) \
 	__CUTE_CHECK_SET(uint, # _chk, _chk, _op, _xpct)
-
-extern void
-cute_check_uint_equal(const char *             file,
-                      int                      line,
-                      const char *             function,
-                      const struct cute_uint * check,
-                      const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_uint_unequal(const char *             file,
-                        int                      line,
-                        const char *             function,
-                        const struct cute_uint * check,
-                        const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_uint_greater(const char *             file,
-                        int                      line,
-                        const char *             function,
-                        const struct cute_uint * check,
-                        const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_uint_greater_equal(const char *             file,
-                              int                      line,
-                              const char *             function,
-                              const struct cute_uint * check,
-                              const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_uint_lower(const char *             file,
-                      int                      line,
-                      const char *             function,
-                      const struct cute_uint * check,
-                      const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_uint_lower_equal(const char *             file,
-                            int                      line,
-                            const char *             function,
-                            const struct cute_uint * check,
-                            const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_uint_in_range(const char *                   file,
-                         int                            line,
-                         const char *                   function,
-                         const struct cute_uint *       check,
-                         const struct cute_uint_range * expect) __cute_export;
-
-extern void
-cute_check_uint_not_in_range(const char *                   file,
-                             int                            line,
-                             const char *                   function,
-                             const struct cute_uint *       check,
-                             const struct cute_uint_range * expect)
-	__cute_export;
-
-extern void
-cute_check_uint_in_set(const char *                 file,
-                       int                          line,
-                       const char *                 function,
-                       const struct cute_uint *     check,
-                       const struct cute_uint_set * expect) __cute_export;
-
-extern void
-cute_check_uint_not_in_set(const char *                 file,
-                           int                          line,
-                           const char *                 function,
-                           const struct cute_uint *     check,
-                           const struct cute_uint_set * expect) __cute_export;
 
 /******************************************************************************
  * Unsigned integral hexadecimal numbers checking
  ******************************************************************************/
 
+/**
+ * Check an hexadecimal unsigned integer.
+ *
+ * @param[in] _chk  unsigned integer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct expected unsigned integer value to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk and @p _xpct using the @p _op comparison operator results in a
+ * failure. It is similar to the #cute_check_uint macro with the ability to
+ * **display values as hexadecimal numbers** when producing failure
+ * @rstsubst{report}.
+ *
+ * Comparison is performed according to the following formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that @p _chk == @p _xpct ;
+ * - `unequal` to ensure that @p _chk != @p _xpct ;
+ * - `greater`, to ensure that @p _chk > @p _xpct ;
+ * - `greater_equal`, to ensure that @p _chk >= @p _xpct ;
+ * - `lower`, to ensure that @p _chk < @p _xpct ;
+ * - `lower_equal`, to ensure that @p _chk <= @p _xpct.
+ *
+ * Both @p _chk and @p _xpct *MUST* be unsigned integers, i.e., either :
+ * - `unsigned char`,
+ * - `unsigned short`,
+ * - `unsigned int`,
+ * - `unsigned long`,
+ * - `unsigned long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0 equals 0** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_hex(0, equal, 0);
+ * }
+ * @endcode
+ *
+ * **Ensure that 0 unequals 1** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_hex(0, unequal, 1);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is greater than 0** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_hex(1, greater, 0);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is greater than or equal to 1** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_hex(1, greater_equal, 1);
+ * }
+ * @endcode
+ *
+ * **Ensure that 0 is lower than 1** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_hex(0, lower, 1);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is lower than or equal to 1** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_hex(1, lower_equal, 1);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST
+ * - #cute_check_uint
+ */
 #define cute_check_hex(_chk, _op, _xpct) \
 	__CUTE_CHECK_HEX(# _chk, _chk, _op, # _xpct, _xpct)
 
+/**
+ * Check an hexadecimal unsigned integer against a range.
+ *
+ * @param[in] _chk  unsigned integer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference unsigned integer range to perform the check
+ *                  against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct range using the @p _op comparison operator
+ * results in a failure. It is similar to the #cute_check_uint_range macro with
+ * the ability to **display values as hexadecimal numbers** when producing
+ * failure @rstsubst{report}.
+ *
+ * Comparison is performed according to the following formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _xpct.min <= @p _chk <= @p _xpct.max ;
+ * - `not_in` to ensure that @p _chk < @p _xpct.min or @p _chk > @p _xpct.max.
+ *
+ * @p _chk *MUST* be a unsigned integer, i.e., either :
+ * - `unsigned char`,
+ * - `unsigned short`,
+ * - `unsigned int`,
+ * - `unsigned long`,
+ * - `unsigned long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a cute_uint_range unsigned integer range as defined by
+ * the #CUTE_UINT_RANGE macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0xf is included withint the [0x0, 0xff] range** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_hex_range(0xf, in, CUTE_UINT_RANGE(0x0, 0xff));
+ * }
+ * @endcode
+ *
+ * **Ensure that 0xffff is not included within the [0x0, 0xff] range** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_uint_range range = CUTE_UINT_RANGE(0x0, 0xff);
+ *
+ *      cute_check_hex_range(0xffff, not_in, range);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_UINT_RANGE
+ * - cute_uint_range
+ * - #cute_check_uint_range
+ * - #CUTE_TEST
+ */
 #define cute_check_hex_range(_chk, _op, _xpct) \
 	__CUTE_CHECK_HEX_RANGE(# _chk, _chk, _op, _xpct)
 
+/**
+ * Check an hexadecimal unsigned integer against a set.
+ *
+ * @param[in] _chk  unsigned integer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference set of unsigned integers to perform the check
+ *                  against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct set using the @p _op comparison operator
+ * results in a failure. It is similar to the #cute_check_uint_set macro with
+ * the ability to **display values as hexadecimal numbers** when producing
+ * failure @rstsubst{report}.
+ *
+ * Comparison is performed according to the following formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _chk equals to one the @p _xpct set values ;
+ * - `not_in` to ensure that @p _chk equals to none of the @p _xpct set values.
+ *
+ * @p _chk *MUST* be a unsigned integer, i.e., either :
+ * - `unsigned char`,
+ * - `unsigned short`,
+ * - `unsigned int`,
+ * - `unsigned long`,
+ * - `unsigned long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a cute_uint_set unsigned integer set as defined by
+ * the #CUTE_UINT_SET macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0xbeef is included withint the {0xdead, 0xbeef, 0xbabe, 0xcode}
+ * set** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_hex_set(0,
+ *                         in,
+ *                         CUTE_UINT_SET(0xdead, 0xbeef, 0xbabe, 0xcode));
+ * }
+ * @endcode
+ *
+ * **Ensure that 0xf is not included within the {0xdead, 0xbeef, 0xbabe, 0xcode}
+ * set** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_uint_set set = CUTE_UINT_SET(0xdead,
+ *                                                     0xbeef,
+ *                                                     0xbabe,
+ *                                                     0xcode);
+ *
+ *      cute_check_hex_set(0xf, not_in, set);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_UINT_SET
+ * - cute_uint_set
+ * - #cute_check_uint_set
+ * - #CUTE_TEST
+ */
 #define cute_check_hex_set(_chk, _op, _xpct) \
 	__CUTE_CHECK_HEX_SET(# _chk, _chk, _op, _xpct)
-
-extern void
-cute_check_hex_equal(const char *             file,
-                     int                      line,
-                     const char *             function,
-                     const struct cute_uint * check,
-                     const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_hex_unequal(const char *             file,
-                       int                      line,
-                       const char *             function,
-                       const struct cute_uint * check,
-                       const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_hex_greater(const char *             file,
-                       int                      line,
-                       const char *             function,
-                       const struct cute_uint * check,
-                       const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_hex_greater_equal(const char *             file,
-                             int                      line,
-                             const char *             function,
-                             const struct cute_uint * check,
-                             const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_hex_lower(const char *             file,
-                     int                      line,
-                     const char *             function,
-                     const struct cute_uint * check,
-                     const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_hex_lower_equal(const char *             file,
-                           int                      line,
-                           const char *             function,
-                           const struct cute_uint * check,
-                           const struct cute_uint * expect) __cute_export;
-
-extern void
-cute_check_hex_in_range(const char *                   file,
-                        int                            line,
-                        const char *                   function,
-                        const struct cute_uint *       check,
-                        const struct cute_uint_range * expect) __cute_export;
-
-extern void
-cute_check_hex_not_in_range(const char *                   file,
-                            int                            line,
-                            const char *                   function,
-                            const struct cute_uint *       check,
-                            const struct cute_uint_range * expect)
-	__cute_export;
-
-extern void
-cute_check_hex_in_set(const char *                 file,
-                      int                          line,
-                      const char *                 function,
-                      const struct cute_uint *     check,
-                      const struct cute_uint_set * expect) __cute_export;
-
-extern void
-cute_check_hex_not_in_set(const char *                 file,
-                          int                          line,
-                          const char *                 function,
-                          const struct cute_uint *     check,
-                          const struct cute_uint_set * expect) __cute_export;
 
 /******************************************************************************
  * Floating point numbers checking

@@ -143,21 +143,112 @@ struct cute_uint {
 	uintmax_t    value;
 };
 
+/**
+ * Unsigned integer range descriptor.
+ *
+ * Use cute_uint_range to define a range of unsigned integers in combination
+ * with the #CUTE_UINT_RANGE macro.
+ *
+ * The range is defined by minimum and maximum unsigned integer values
+ * (inclusive). Suitable value types are one of :
+ * - `unsigned char`,
+ * - `unsigned short`,
+ * - `unsigned int`,
+ * - `unsigned long`,
+ * - `unsigned long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @see
+ * - #CUTE_UINT_RANGE
+ * - cute_check_uint_range
+*/
 struct cute_uint_range {
+	/** Range description string. */
 	const char * expr;
+	/** Range's minimum value. */
 	uintmax_t    min;
+	/** Range's maximum value. */
 	uintmax_t    max;
 };
 
+/**
+ * Define a unsigned integer range.
+ *
+ * @param[in] _min range's minimum value (inclusive)
+ * @param[in] _max range's maximum value (inclusive)
+ *
+ * Initialize a cute_uint_range variable that defines a range of unsigned
+ * integers.
+ *
+ * **Example**
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      struct cute_uint_range range = CUTE_UINT_RANGE(-5, 20);
+ *
+ *      cute_check_uint_range(0,  in,     range);
+ *      cute_check_uint_range(10, not_in, CUTE_UINT_RANGE(-5, 5));
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_check_uint_range
+ * - cute_uint_range
+ */
 #define CUTE_UINT_RANGE(_min, _max) \
 	__CUTE_RANGE(uint, "{" # _min " ... " # _max "}", _min, _max)
 
+/**
+ * Unsigned integer set descriptor.
+ *
+ * Use cute_uint_set to define a set of unsigned integers in combination
+ * with the #CUTE_UINT_SET macro.
+ *
+ * The set is defined by an unordered list of unsigned integer values. Suitable
+ * value types are one of :
+ * - `unsigned char`,
+ * - `unsigned short`,
+ * - `unsigned int`,
+ * - `unsigned long`,
+ * - `unsigned long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @see
+ * - #CUTE_UINT_SET
+ * - cute_check_uint_set
+*/
 struct cute_uint_set {
 	const char *      expr;
 	unsigned int      count;
 	const uintmax_t * items;
 };
 
+/**
+ * Define a unsigned integer set.
+ *
+ * @param[in] ... list of set values
+ *
+ * Initialize a cute_uint_set variable that defines a set of unsigned
+ * integers.
+ *
+ * The `...` variable argument list is an unordered list of unsigned integer
+ * values separated by commas that composes the set.
+ *
+ * **Example**
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      struct cute_uint_set set = CUTE_UINT_SET(-5, 0, 5);
+ *
+ *      cute_check_uint_set(0, in,     set);
+ *      cute_check_uint_set(7, not_in, CUTE_UINT_SET(-10, -5, 0, 5, 10));
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_check_uint_set
+ * - cute_uint_set
+ */
 #define CUTE_UINT_SET(...) \
 	__CUTE_SET(uint, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 

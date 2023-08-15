@@ -90,4 +90,146 @@ cute_check_sint_not_in_set(const char *                 file,
                            const struct cute_sint *     check,
                            const struct cute_sint_set * expect) __cute_export;
 
+extern void
+cute_check_uint_equal(const char *             file,
+                      int                      line,
+                      const char *             function,
+                      const struct cute_uint * check,
+                      const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_uint_unequal(const char *             file,
+                        int                      line,
+                        const char *             function,
+                        const struct cute_uint * check,
+                        const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_uint_greater(const char *             file,
+                        int                      line,
+                        const char *             function,
+                        const struct cute_uint * check,
+                        const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_uint_greater_equal(const char *             file,
+                              int                      line,
+                              const char *             function,
+                              const struct cute_uint * check,
+                              const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_uint_lower(const char *             file,
+                      int                      line,
+                      const char *             function,
+                      const struct cute_uint * check,
+                      const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_uint_lower_equal(const char *             file,
+                            int                      line,
+                            const char *             function,
+                            const struct cute_uint * check,
+                            const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_uint_in_range(const char *                   file,
+                         int                            line,
+                         const char *                   function,
+                         const struct cute_uint *       check,
+                         const struct cute_uint_range * expect) __cute_export;
+
+extern void
+cute_check_uint_not_in_range(const char *                   file,
+                             int                            line,
+                             const char *                   function,
+                             const struct cute_uint *       check,
+                             const struct cute_uint_range * expect)
+	__cute_export;
+
+extern void
+cute_check_uint_in_set(const char *                 file,
+                       int                          line,
+                       const char *                 function,
+                       const struct cute_uint *     check,
+                       const struct cute_uint_set * expect) __cute_export;
+
+extern void
+cute_check_uint_not_in_set(const char *                 file,
+                           int                          line,
+                           const char *                 function,
+                           const struct cute_uint *     check,
+                           const struct cute_uint_set * expect) __cute_export;
+
+extern void
+cute_check_hex_equal(const char *             file,
+                     int                      line,
+                     const char *             function,
+                     const struct cute_uint * check,
+                     const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_unequal(const char *             file,
+                       int                      line,
+                       const char *             function,
+                       const struct cute_uint * check,
+                       const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_greater(const char *             file,
+                       int                      line,
+                       const char *             function,
+                       const struct cute_uint * check,
+                       const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_greater_equal(const char *             file,
+                             int                      line,
+                             const char *             function,
+                             const struct cute_uint * check,
+                             const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_lower(const char *             file,
+                     int                      line,
+                     const char *             function,
+                     const struct cute_uint * check,
+                     const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_lower_equal(const char *             file,
+                           int                      line,
+                           const char *             function,
+                           const struct cute_uint * check,
+                           const struct cute_uint * expect) __cute_export;
+
+extern void
+cute_check_hex_in_range(const char *                   file,
+                        int                            line,
+                        const char *                   function,
+                        const struct cute_uint *       check,
+                        const struct cute_uint_range * expect) __cute_export;
+
+extern void
+cute_check_hex_not_in_range(const char *                   file,
+                            int                            line,
+                            const char *                   function,
+                            const struct cute_uint *       check,
+                            const struct cute_uint_range * expect)
+	__cute_export;
+
+extern void
+cute_check_hex_in_set(const char *                 file,
+                      int                          line,
+                      const char *                 function,
+                      const struct cute_uint *     check,
+                      const struct cute_uint_set * expect) __cute_export;
+
+extern void
+cute_check_hex_not_in_set(const char *                 file,
+                          int                          line,
+                          const char *                 function,
+                          const struct cute_uint *     check,
+                          const struct cute_uint_set * expect) __cute_export;
+
 #endif /* _CUTE_PRIV_CHECK_H */
