@@ -185,7 +185,7 @@
  * CUTE_TEST(mytest)
  * {
  *      const struct cute_sint_range range = CUTE_SINT_RANGE(0, 10);
- *      
+ *
  *      cute_check_sint_range(-10, not_in, range);
  * }
  * @endcode
@@ -697,85 +697,215 @@
  * Floating point numbers checking
  ******************************************************************************/
 
+/**
+ * Check a floating point number.
+ *
+ * @param[in] _chk  floating point value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct expected floating point value to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk and @p _xpct using the @p _op comparison operator results in a
+ * failure. Comparison is performed according to the following formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that @p _chk == @p _xpct ;
+ * - `unequal` to ensure that @p _chk != @p _xpct ;
+ * - `greater`, to ensure that @p _chk > @p _xpct ;
+ * - `greater_equal`, to ensure that @p _chk >= @p _xpct ;
+ * - `lower`, to ensure that @p _chk < @p _xpct ;
+ * - `lower_equal`, to ensure that @p _chk <= @p _xpct.
+ *
+ * Both @p _chk and @p _xpct *MUST* be floating point numbers, i.e., either :
+ * - `float`,
+ * - `double`,
+ * - `long double`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @note
+ * Quad-precision floating point numbers (`__float128`) are not yet supported.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0.5 equals 0.5 (single precision)** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_flt(0.5f, equal, 0.5f);
+ * }
+ * @endcode
+ *
+ * **Ensure that 0.5 unequals 1.5 (single precision)** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_flt(0.5f, unequal, 1.5f);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1.5 is greater than 0.5 (double precision)** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_flt(1.5, greater, 0.5);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1 is greater than or equal to 1 (double precision)** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_flt(1.5, greater_equal, 1.5);
+ * }
+ * @endcode
+ *
+ * **Ensure that 0.5 is lower than 1.5 (extended precision)** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_flt(0.5L, lower, 1.5L);
+ * }
+ * @endcode
+ *
+ * **Ensure that 1.5 is lower than or equal to 1.5 (extended precision)** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_flt(1.5L, lower_equal, 1.5L);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST
+ */
 #define cute_check_flt(_chk, _op, _xpct) \
 	__CUTE_CHECK_VALUE(flt, # _chk, _chk, _op, # _xpct, _xpct)
 
+/**
+ * Check a floating point number against a range.
+ *
+ * @param[in] _chk  floating point value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference floating point range to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct range using the @p _op comparison operator
+ * results in a failure. Comparison is performed according to the following
+ * formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _xpct.min <= @p _chk <= @p _xpct.max ;
+ * - `not_in` to ensure that @p _chk < @p _xpct.min or @p _chk > @p _xpct.max.
+ *
+ * @p _chk *MUST* be a floating point number, i.e., either :
+ * - `float`,
+ * - `double`,
+ * - `long double`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a cute_flt_range floating point number range as defined by
+ * the #CUTE_FLT_RANGE macro.
+ *
+ * @note
+ * Quad-precision floating point numbers (`__float128`) are not yet supported.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0.5 is included withint the [-10.5, 10.5] range
+ * (single precision)** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_flt_range(0.5f, in, CUTE_FLT_RANGE(-10.5f, 10.5f));
+ * }
+ * @endcode
+ *
+ * **Ensure that -10 is not included within the [0.5, 10.5] range
+ * (double precision)** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_flt_range range = CUTE_FLT_RANGE(0.5, 10.5);
+ *
+ *      cute_check_flt_range(-10, not_in, range);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_FLT_RANGE
+ * - cute_flt_range
+ * - #CUTE_TEST
+ */
 #define cute_check_flt_range(_chk, _op, _xpct) \
 	__CUTE_CHECK_RANGE(flt, # _chk, _chk, _op, _xpct)
 
+/**
+ * Check a floating point number against a set.
+ *
+ * @param[in] _chk  floating point value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference set of floating point numbers to perform the check
+ *                  against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct set using the @p _op comparison operator
+ * results in a failure. Comparison is performed according to the following
+ * formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _chk equals to one the @p _xpct set values ;
+ * - `not_in` to ensure that @p _chk equals to none of the @p _xpct set values.
+ *
+ * @p _chk *MUST* be a floating point number, i.e., either :
+ * - `float`,
+ * - `double`,
+ * - `long double`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @note
+ * Quad-precision floating point numbers (`__float128`) are not yet supported.
+ *
+ * @p _xpct *MUST* be a cute_flt_set floating point number set as defined by
+ * the #CUTE_FLT_SET macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that 0.5 is included withint the {0.5, 1.5, 2.0, 3.5} set
+ * (single precision)** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_flt_set(0.5f, in, CUTE_FLT_SET(0.5f, 1.5f, 2.0f, 3.5f));
+ * }
+ * @endcode
+ *
+ * **Ensure that 4.5 is not included within the {0.5, 1.5, 2.0, 3.5, 5.5} set
+ * (double precision)** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_flt_set set = CUTE_FLT_SET(0.5, 1.5, 2.0, 3.5, 5.5);
+ *
+ *      cute_check_flt_set(4.5, not_in, set);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_FLT_SET
+ * - cute_flt_set
+ * - #CUTE_TEST
+ */
 #define cute_check_flt_set(_chk, _op, _xpct) \
 	__CUTE_CHECK_SET(flt, # _chk, _chk, _op, _xpct)
-
-extern void
-cute_check_flt_equal(const char *            file,
-                     int                     line,
-                     const char *            function,
-                     const struct cute_flt * check,
-                     const struct cute_flt * expect) __cute_export;
-
-extern void
-cute_check_flt_unequal(const char *            file,
-                       int                     line,
-                       const char *            function,
-                       const struct cute_flt * check,
-                       const struct cute_flt * expect) __cute_export;
-
-extern void
-cute_check_flt_greater(const char *            file,
-                       int                     line,
-                       const char *            function,
-                       const struct cute_flt * check,
-                       const struct cute_flt * expect) __cute_export;
-
-extern void
-cute_check_flt_greater_equal(const char *            file,
-                             int                     line,
-                             const char *            function,
-                             const struct cute_flt * check,
-                             const struct cute_flt * expect) __cute_export;
-
-extern void
-cute_check_flt_lower(const char *            file,
-                     int                     line,
-                     const char *            function,
-                     const struct cute_flt * check,
-                     const struct cute_flt * expect) __cute_export;
-
-extern void
-cute_check_flt_lower_equal(const char *            file,
-                           int                     line,
-                           const char *            function,
-                           const struct cute_flt * check,
-                           const struct cute_flt * expect) __cute_export;
-
-extern void
-cute_check_flt_in_range(const char *                  file,
-                        int                           line,
-                        const char *                  function,
-                        const struct cute_flt *       check,
-                        const struct cute_flt_range * expect) __cute_export;
-
-extern void
-cute_check_flt_not_in_range(const char *                  file,
-                            int                           line,
-                            const char *                  function,
-                            const struct cute_flt *       check,
-                            const struct cute_flt_range * expect)
-	__cute_export;
-
-extern void
-cute_check_flt_in_set(const char *                file,
-                      int                         line,
-                      const char *                function,
-                      const struct cute_flt *     check,
-                      const struct cute_flt_set * expect) __cute_export;
-
-extern void
-cute_check_flt_not_in_set(const char *                file,
-                          int                         line,
-                          const char *                function,
-                          const struct cute_flt *     check,
-                          const struct cute_flt_set * expect) __cute_export;
 
 /******************************************************************************
  * Strings checking

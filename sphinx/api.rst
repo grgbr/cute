@@ -141,9 +141,9 @@ Signed integer values may be verified using so-called `sint` definitions :
 
    * **Set assertion** :
 
-     * :c:struct:`cute_uint_set` structure
-     * :c:macro:`CUTE_UINT_SET` initializer
-     * :c:macro:`cute_check_uint_set` function-like macro
+     * :c:struct:`cute_sint_set` structure
+     * :c:macro:`CUTE_SINT_SET` initializer
+     * :c:macro:`cute_check_sint_set` function-like macro
 
 Unsigned integers
 -----------------
@@ -170,6 +170,29 @@ Unsigned integer values may be verified using so-called `uint` definitions :
      * :c:macro:`CUTE_UINT_SET` initializer
      * :c:macro:`cute_check_uint_set` function-like macro
      * :c:macro:`cute_check_hex_set` function-like macro
+
+Floating point numbers
+----------------------
+
+Floating point values may be verified using so-called `flt` definitions :
+
+.. hlist::
+
+   * **Value assertion** :
+
+      * :c:macro:`cute_check_flt`
+
+   * **Range assertion** :
+
+     * :c:struct:`cute_flt_range` structure
+     * :c:macro:`CUTE_FLT_RANGE` initializer
+     * :c:macro:`cute_check_flt_range` function-like macro
+
+   * **Set assertion** :
+
+     * :c:struct:`cute_flt_set` structure
+     * :c:macro:`CUTE_FLT_SET` initializer
+     * :c:macro:`cute_check_flt_set` function-like macro
 
 Running tests
 =============
@@ -227,6 +250,16 @@ CUTE_DFLT_TMOUT
 ***************
 
 .. doxygendefine:: CUTE_DFLT_TMOUT
+
+CUTE_FLT_RANGE
+***************
+
+.. doxygendefine:: CUTE_FLT_RANGE
+
+CUTE_FLT_SET
+*************
+
+.. doxygendefine:: CUTE_FLT_SET
 
 CUTE_GROUP
 **********
@@ -368,6 +401,21 @@ cute_check_assert
 
 .. doxygendefine:: cute_check_assert
 
+cute_check_flt
+**************
+
+.. doxygendefine:: cute_check_flt
+
+cute_check_flt_range
+********************
+
+.. doxygendefine:: cute_check_flt_range
+
+cute_check_flt_set
+******************
+
+.. doxygendefine:: cute_check_flt_set
+
 cute_check_hex
 **************
 
@@ -434,7 +482,19 @@ cute_config
 
 .. doxygenstruct:: cute_config
    :members:
-   
+
+cute_flt_range
+**************
+
+.. doxygenstruct:: cute_flt_range
+   :members:
+
+cute_flt_set
+************
+
+.. doxygenstruct:: cute_flt_set
+   :members:
+
 cute_sint_range
 ***************
 

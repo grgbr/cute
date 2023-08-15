@@ -67,7 +67,7 @@ struct cute_sint_range {
  * @code{.c}
  * CUTE_TEST(mytest)
  * {
- *      struct cute_sint_range range = CUTE_SINT_RANGE(-5, 20);
+ *      const struct cute_sint_range range = CUTE_SINT_RANGE(-5, 20);
  *
  *      cute_check_sint_range(0,  in,     range);
  *      cute_check_sint_range(10, not_in, CUTE_SINT_RANGE(-5, 5));
@@ -124,7 +124,7 @@ struct cute_sint_set {
  * @code{.c}
  * CUTE_TEST(mytest)
  * {
- *      struct cute_sint_set set = CUTE_SINT_SET(-5, 0, 5);
+ *      const struct cute_sint_set set = CUTE_SINT_SET(-5, 0, 5);
  *
  *      cute_check_sint_set(0, in,     set);
  *      cute_check_sint_set(7, not_in, CUTE_SINT_SET(-10, -5, 0, 5, 10));
@@ -184,7 +184,7 @@ struct cute_uint_range {
  * @code{.c}
  * CUTE_TEST(mytest)
  * {
- *      struct cute_uint_range range = CUTE_UINT_RANGE(-5, 20);
+ *      const struct cute_uint_range range = CUTE_UINT_RANGE(-5, 20);
  *
  *      cute_check_uint_range(0,  in,     range);
  *      cute_check_uint_range(10, not_in, CUTE_UINT_RANGE(-5, 5));
@@ -216,7 +216,7 @@ struct cute_uint_range {
  * @see
  * - #CUTE_UINT_SET
  * - cute_check_uint_set
-*/
+ */
 struct cute_uint_set {
 	const char *      expr;
 	unsigned int      count;
@@ -238,7 +238,7 @@ struct cute_uint_set {
  * @code{.c}
  * CUTE_TEST(mytest)
  * {
- *      struct cute_uint_set set = CUTE_UINT_SET(-5, 0, 5);
+ *      const struct cute_uint_set set = CUTE_UINT_SET(-5, 0, 5);
  *
  *      cute_check_uint_set(0, in,     set);
  *      cute_check_uint_set(7, not_in, CUTE_UINT_SET(-10, -5, 0, 5, 10));
@@ -257,21 +257,111 @@ struct cute_flt {
 	long double  value;
 };
 
+/**
+ * Floating point number range descriptor.
+ *
+ * Use cute_flt_range to define a range of floating point numbers in combination
+ * with the #CUTE_FLT_RANGE macro.
+ *
+ * The range is defined by minimum and maximum floating point values
+ * (inclusive). Suitable value types are one of :
+ * - `float`,
+ * - `double`,
+ * - `long double`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @note
+ * Quad-precision floating point numbers (`__float128`) are not yet supported.
+ *
+ * @see
+ * - #CUTE_FLT_RANGE
+ * - cute_check_flt_range
+*/
 struct cute_flt_range {
 	const char * expr;
 	long double  min;
 	long double  max;
 };
 
+/**
+ * Define a floating point number range.
+ *
+ * @param[in] _min range's minimum value (inclusive)
+ * @param[in] _max range's maximum value (inclusive)
+ *
+ * Initialize a cute_flt_range variable that defines a range of floating point
+ * numbers.
+ *
+ * **Example**
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_flt_range range = CUTE_FLT_RANGE(-5.5f, 20.5f);
+ *
+ *      cute_check_flt_range(0.5f, in,     range);
+ *      cute_check_flt_range(10,   not_in, CUTE_FLT_RANGE(-5.5, 5.5));
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_check_flt_range
+ * - cute_flt_range
+ */
 #define CUTE_FLT_RANGE(_min, _max) \
 	__CUTE_RANGE(flt, "{" # _min " ... " # _max "}", _min, _max)
 
+/**
+ * Floating point number set descriptor.
+ *
+ * Use cute_flt_set to define a set of floating point numbers in combination
+ * with the #CUTE_FLT_SET macro.
+ *
+ * The set is defined by an unordered list of floating point values. Suitable
+ * value types are one of :
+ * - `float`,
+ * - `double`,
+ * - `long double`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @note
+ * Quad-precision floating point numbers (`__float128`) are not yet supported.
+ *
+ * @see
+ * - #CUTE_FLT_SET
+ * - cute_check_flt_set
+ */
 struct cute_flt_set {
 	const char *        expr;
 	unsigned int        count;
 	const long double * items;
 };
 
+/**
+ * Define a floating point number set.
+ *
+ * @param[in] ... list of set values
+ *
+ * Initialize a cute_flt_set variable that defines a set of floating point
+ * numbers.
+ *
+ * The `...` variable argument list is an unordered list of floating point
+ * values separated by commas that composes the set.
+ *
+ * **Example**
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_flt_set set = CUTE_FLT_SET(-5.5f, 0.5f, 5.5f);
+ *
+ *      cute_check_flt_set(0.5f, in,     set);
+ *      cute_check_flt_set(7,    not_in, CUTE_FLT_SET(-10.5, 0.5, 10.0));
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_check_flt_set
+ * - cute_flt_set
+ */
 #define CUTE_FLT_SET(...) \
 	__CUTE_SET(flt, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 

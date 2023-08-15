@@ -232,4 +232,75 @@ cute_check_hex_not_in_set(const char *                 file,
                           const struct cute_uint *     check,
                           const struct cute_uint_set * expect) __cute_export;
 
+extern void
+cute_check_flt_equal(const char *            file,
+                     int                     line,
+                     const char *            function,
+                     const struct cute_flt * check,
+                     const struct cute_flt * expect) __cute_export;
+
+extern void
+cute_check_flt_unequal(const char *            file,
+                       int                     line,
+                       const char *            function,
+                       const struct cute_flt * check,
+                       const struct cute_flt * expect) __cute_export;
+
+extern void
+cute_check_flt_greater(const char *            file,
+                       int                     line,
+                       const char *            function,
+                       const struct cute_flt * check,
+                       const struct cute_flt * expect) __cute_export;
+
+extern void
+cute_check_flt_greater_equal(const char *            file,
+                             int                     line,
+                             const char *            function,
+                             const struct cute_flt * check,
+                             const struct cute_flt * expect) __cute_export;
+
+extern void
+cute_check_flt_lower(const char *            file,
+                     int                     line,
+                     const char *            function,
+                     const struct cute_flt * check,
+                     const struct cute_flt * expect) __cute_export;
+
+extern void
+cute_check_flt_lower_equal(const char *            file,
+                           int                     line,
+                           const char *            function,
+                           const struct cute_flt * check,
+                           const struct cute_flt * expect) __cute_export;
+
+extern void
+cute_check_flt_in_range(const char *                  file,
+                        int                           line,
+                        const char *                  function,
+                        const struct cute_flt *       check,
+                        const struct cute_flt_range * expect) __cute_export;
+
+extern void
+cute_check_flt_not_in_range(const char *                  file,
+                            int                           line,
+                            const char *                  function,
+                            const struct cute_flt *       check,
+                            const struct cute_flt_range * expect)
+	__cute_export;
+
+extern void
+cute_check_flt_in_set(const char *                file,
+                      int                         line,
+                      const char *                function,
+                      const struct cute_flt *     check,
+                      const struct cute_flt_set * expect) __cute_export;
+
+extern void
+cute_check_flt_not_in_set(const char *                file,
+                          int                         line,
+                          const char *                function,
+                          const struct cute_flt *     check,
+                          const struct cute_flt_set * expect) __cute_export;
+
 #endif /* _CUTE_PRIV_CHECK_H */
