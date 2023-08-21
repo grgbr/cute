@@ -218,8 +218,11 @@ struct cute_uint_range {
  * - cute_check_uint_set
  */
 struct cute_uint_set {
+	/** Set description string. */
 	const char *      expr;
+	/** Count of set values stored into cute_uint_set::items */
 	unsigned int      count;
+	/** Array of set values */
 	const uintmax_t * items;
 };
 
@@ -278,8 +281,11 @@ struct cute_flt {
  * - cute_check_flt_range
 */
 struct cute_flt_range {
+	/** Range description string. */
 	const char * expr;
+	/** Range's minimum value. */
 	long double  min;
+	/** Range's maximum value. */
 	long double  max;
 };
 
@@ -331,8 +337,11 @@ struct cute_flt_range {
  * - cute_check_flt_set
  */
 struct cute_flt_set {
+	/** Set description string. */
 	const char *        expr;
+	/** Count of set values stored into cute_flt_set::items */
 	unsigned int        count;
+	/** Array of set values */
 	const long double * items;
 };
 
@@ -370,12 +379,53 @@ struct cute_str {
 	const char * value;
 };
 
+/**
+ * String content set descriptor.
+ *
+ * Use cute_str_set to define a set of strings in combination
+ * with the #CUTE_STR_SET macro.
+ *
+ * The set is defined by an unordered list of `NULL` terminated C strings.
+ *
+ * @see
+ * - #CUTE_STR_SET
+ * - cute_check_str_set
+ */
 struct cute_str_set {
+	/** Set description string. */
 	const char *  expr;
+	/** Count of set values stored into cute_str_set::items */
 	unsigned int  count;
+	/** Array of set values */
 	const char ** items;
 };
 
+/**
+ * Define set of strings.
+ *
+ * @param[in] ... list of set strings
+ *
+ * Initialize a cute_str_set variable that defines a set of strings.
+ *
+ * The `...` variable argument list is an unordered list of `NULL` terminated C
+ * strings separated by commas that composes the set.
+ *
+ * **Example**
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_str_set set = CUTE_STR_SET("Lorem", "ipsum", "dolor");
+ *
+ *      cute_check_str_set("ipsum", in,     set);
+ *      cute_check_str_set("Lorem", not_in, CUTE_FLT_SET("amet, ",
+ *                                                       "consectetur");
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_check_str_set
+ * - cute_str_set
+ */
 #define CUTE_STR_SET(...) \
 	__CUTE_SET(str, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 
@@ -385,8 +435,11 @@ struct cute_ptr {
 };
 
 struct cute_ptr_range {
+	/** Range description string. */
 	const char * expr;
+	/** Range's minimum value. */
 	const void * min;
+	/** Range's maximum value. */
 	const void * max;
 };
 
@@ -394,8 +447,11 @@ struct cute_ptr_range {
 	__CUTE_RANGE(ptr, "{" # _min " ... " # _max "}", _min, _max)
 
 struct cute_ptr_set {
+	/** Set description string. */
 	const char *  expr;
+	/** Count of set values stored into cute_ptr_set::items */
 	unsigned int  count;
+	/** Array of set values */
 	const void ** items;
 };
 

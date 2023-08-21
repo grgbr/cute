@@ -911,81 +911,133 @@
  * Strings checking
  ******************************************************************************/
 
+/**
+ * Check string content.
+ *
+ * @param[in] _chk  string content to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct expected string content to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk and @p _xpct using the @p _op comparison operator results in a
+ * failure. Comparison is performed according to the following formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that @p _chk content equals to @p _xpct content;
+ * - `unequal` to ensure that @p _chk content differs from @p _xpct content;
+ * - `begin`, to ensure that @p _chk content begins with @p _xpct content;
+ * - `end`, to ensure that @p _chk content ends with @p _xpct content;
+ * - `contain`, to ensure that @p _chk content contains @p _xpct content, i.e.,
+ *   @p _xpct is a substring of @p _chk;
+ * - `not_contain`, to ensure that @p _chk content does not containt @p _xpct
+ *   content, i.e., @p _xpct is not a substring of @p _chk.
+ *
+ * Both @p _chk and @p _xpct *MUST* be `NULL` terminated C strings.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that "zero" string equals to "zero" string** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_str("zero", equal, "zero");
+ * }
+ * @endcode
+ *
+ * **Ensure that "zero" string begins with "ze" string** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_str("zero", begin, "ze");
+ * }
+ * @endcode
+ *
+ * **Ensure that "zero" string ends with "ro" string** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_str("zero", end, "ro");
+ * }
+ * @endcode
+ *
+ * **Ensure that "er" is a substring of "zero" string** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_str("zero", contain, "er");
+ * }
+ * @endcode
+ *
+ * **Ensure that "era" is not a substring of "zero" string** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_str("zero", not_contain, "era");
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST
+ */
 #define cute_check_str(_chk, _op, _xpct) \
 	__CUTE_CHECK_VALUE(str, # _chk, _chk, _op, # _xpct, _xpct)
 
+/**
+ * Check string content against a set of strings.
+ *
+ * @param[in] _chk  string content to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference set of strings to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct set using the @p _op comparison operator
+ * results in a failure. Comparison is performed according to the following
+ * formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _chk equals to one the @p _xpct set strings ;
+ * - `not_in` to ensure that @p _chk equals to none of the @p _xpct set strings.
+ *
+ * @p _chk *MUST* be a `NULL` terminated C string.
+ *
+ * @p _xpct *MUST* be a cute_str_set set of `NULL` terminated C strings as
+ * defined by the #CUTE_STR_SET macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that "one" string is included withint the {"zero", "one", "two"} set
+ * of strings** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_str_set("one", in, CUTE_STR_SET("zero", "one", "two"));
+ * }
+ * @endcode
+ *
+ * **Ensure that "three" string is not included withint the
+ * {"zero", "one", "two"} set of strings** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_str_set set = CUTE_STR_SET("zero", "one", "two");
+ *
+ *      cute_check_str_set("three", not_in, set);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_STR_SET
+ * - cute_str_set
+ * - #CUTE_TEST
+ */
 #define cute_check_str_set(_chk, _op, _xpct) \
 	__CUTE_CHECK_SET(str, # _chk, _chk, _op, _xpct)
-
-extern void
-cute_check_str_equal(const char *            file,
-                     int                     line,
-                     const char *            function,
-                     const struct cute_str * check,
-                     const struct cute_str * expect) __cute_export;
-
-extern void
-cute_check_str_unequal(const char *            file,
-                       int                     line,
-                       const char *            function,
-                       const struct cute_str * check,
-                       const struct cute_str * expect) __cute_export;
-
-extern void
-cute_check_str_begin(const char *            file,
-                     int                     line,
-                     const char *            function,
-                     const struct cute_str * check,
-                     const struct cute_str * expect) __cute_export;
-
-extern void
-cute_check_str_not_begin(const char *            file,
-                         int                     line,
-                         const char *            function,
-                         const struct cute_str * check,
-                         const struct cute_str * expect) __cute_export;
-
-extern void
-cute_check_str_end(const char *            file,
-                   int                     line,
-                   const char *            function,
-                   const struct cute_str * check,
-                   const struct cute_str * expect) __cute_export;
-
-extern void
-cute_check_str_not_end(const char *            file,
-                       int                     line,
-                       const char *            function,
-                       const struct cute_str * check,
-                       const struct cute_str * expect) __cute_export;
-
-extern void
-cute_check_str_contain(const char *            file,
-                       int                     line,
-                       const char *            function,
-                       const struct cute_str * check,
-                       const struct cute_str * expect) __cute_export;
-
-extern void
-cute_check_str_not_contain(const char *            file,
-                           int                     line,
-                           const char *            function,
-                           const struct cute_str * check,
-                           const struct cute_str * expect) __cute_export;
-
-extern void
-cute_check_str_in_set(const char *                file,
-                      int                         line,
-                      const char *                function,
-                      const struct cute_str *     check,
-                      const struct cute_str_set * expect) __cute_export;
-
-extern void
-cute_check_str_not_in_set(const char *                file,
-                          int                         line,
-                          const char *                function,
-                          const struct cute_str *     check,
-                          const struct cute_str_set * expect) __cute_export;
 
 /******************************************************************************
  * Pointer checking

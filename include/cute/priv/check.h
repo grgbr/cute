@@ -303,4 +303,74 @@ cute_check_flt_not_in_set(const char *                file,
                           const struct cute_flt *     check,
                           const struct cute_flt_set * expect) __cute_export;
 
+extern void
+cute_check_str_equal(const char *            file,
+                     int                     line,
+                     const char *            function,
+                     const struct cute_str * check,
+                     const struct cute_str * expect) __cute_export;
+
+extern void
+cute_check_str_unequal(const char *            file,
+                       int                     line,
+                       const char *            function,
+                       const struct cute_str * check,
+                       const struct cute_str * expect) __cute_export;
+
+extern void
+cute_check_str_begin(const char *            file,
+                     int                     line,
+                     const char *            function,
+                     const struct cute_str * check,
+                     const struct cute_str * expect) __cute_export;
+
+extern void
+cute_check_str_not_begin(const char *            file,
+                         int                     line,
+                         const char *            function,
+                         const struct cute_str * check,
+                         const struct cute_str * expect) __cute_export;
+
+extern void
+cute_check_str_end(const char *            file,
+                   int                     line,
+                   const char *            function,
+                   const struct cute_str * check,
+                   const struct cute_str * expect) __cute_export;
+
+extern void
+cute_check_str_not_end(const char *            file,
+                       int                     line,
+                       const char *            function,
+                       const struct cute_str * check,
+                       const struct cute_str * expect) __cute_export;
+
+extern void
+cute_check_str_contain(const char *            file,
+                       int                     line,
+                       const char *            function,
+                       const struct cute_str * check,
+                       const struct cute_str * expect) __cute_export;
+
+extern void
+cute_check_str_not_contain(const char *            file,
+                           int                     line,
+                           const char *            function,
+                           const struct cute_str * check,
+                           const struct cute_str * expect) __cute_export;
+
+extern void
+cute_check_str_in_set(const char *                file,
+                      int                         line,
+                      const char *                function,
+                      const struct cute_str *     check,
+                      const struct cute_str_set * expect) __cute_export;
+
+extern void
+cute_check_str_not_in_set(const char *                file,
+                          int                         line,
+                          const char *                function,
+                          const struct cute_str *     check,
+                          const struct cute_str_set * expect) __cute_export;
+
 #endif /* _CUTE_PRIV_CHECK_H */

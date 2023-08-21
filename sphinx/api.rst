@@ -194,6 +194,24 @@ Floating point values may be verified using so-called `flt` definitions :
      * :c:macro:`CUTE_FLT_SET` initializer
      * :c:macro:`cute_check_flt_set` function-like macro
 
+Strings
+-------
+
+`NULL` terminated C string contents may be verified using so-called `str`
+definitions :
+
+.. hlist::
+
+   * **Value assertion** :
+
+      * :c:macro:`cute_check_str`
+
+   * **Set assertion** :
+
+     * :c:struct:`cute_str_set` structure
+     * :c:macro:`CUTE_STR_SET` initializer
+     * :c:macro:`cute_check_str_set` function-like macro
+
 Running tests
 =============
 
@@ -336,6 +354,11 @@ CUTE_SINT_SET
 
 .. doxygendefine:: CUTE_SINT_SET
 
+CUTE_STR_SET
+*************
+
+.. doxygendefine:: CUTE_STR_SET
+
 CUTE_SUITE
 **********
 
@@ -446,6 +469,16 @@ cute_check_sint_set
 
 .. doxygendefine:: cute_check_sint_set
 
+cute_check_str
+**************
+
+.. doxygendefine:: cute_check_str
+
+cute_check_str_set
+******************
+
+.. doxygendefine:: cute_check_str_set
+
 cute_check_uint
 ***************
 
@@ -505,6 +538,12 @@ cute_sint_set
 *************
 
 .. doxygenstruct:: cute_sint_set
+   :members:
+
+cute_str_set
+************
+
+.. doxygenstruct:: cute_str_set
    :members:
 
 cute_uint_range
