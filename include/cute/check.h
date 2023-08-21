@@ -172,7 +172,7 @@
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
  *
- * **Ensure that 0 is included withint the [-10, 10] range** :
+ * **Ensure that 0 is included within the [-10, 10] range** :
  * @code{.c}
  * CUTE_TEST(mytest)
  * {
@@ -231,7 +231,7 @@
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
  *
- * **Ensure that 0 is included withint the {-10, -5, 0, 5, 10} set** :
+ * **Ensure that 0 is included within the {-10, -5, 0, 5, 10} set** :
  * @code{.c}
  * CUTE_TEST(mytest)
  * {
@@ -380,7 +380,7 @@
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
  *
- * **Ensure that 0 is included withint the [0, 10] range** :
+ * **Ensure that 0 is included within the [0, 10] range** :
  * @code{.c}
  * CUTE_TEST(mytest)
  * {
@@ -439,7 +439,7 @@
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
  *
- * **Ensure that 0 is included withint the {0, 1, 2, 3, 5, 8} set** :
+ * **Ensure that 0 is included within the {0, 1, 2, 3, 5, 8} set** :
  * @code{.c}
  * CUTE_TEST(mytest)
  * {
@@ -596,7 +596,7 @@
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
  *
- * **Ensure that 0xf is included withint the [0x0, 0xff] range** :
+ * **Ensure that 0xf is included within the [0x0, 0xff] range** :
  * @code{.c}
  * CUTE_TEST(mytest)
  * {
@@ -659,7 +659,7 @@
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
  *
- * **Ensure that 0xbeef is included withint the {0xdead, 0xbeef, 0xbabe, 0xcode}
+ * **Ensure that 0xbeef is included within the {0xdead, 0xbeef, 0xbabe, 0xcode}
  * set** :
  * @code{.c}
  * CUTE_TEST(mytest)
@@ -817,7 +817,7 @@
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
  *
- * **Ensure that 0.5 is included withint the [-10.5, 10.5] range
+ * **Ensure that 0.5 is included within the [-10.5, 10.5] range
  * (single precision)** :
  * @code{.c}
  * CUTE_TEST(mytest)
@@ -879,7 +879,7 @@
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
  *
- * **Ensure that 0.5 is included withint the {0.5, 1.5, 2.0, 3.5} set
+ * **Ensure that 0.5 is included within the {0.5, 1.5, 2.0, 3.5} set
  * (single precision)** :
  * @code{.c}
  * CUTE_TEST(mytest)
@@ -1011,7 +1011,7 @@
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
  *
- * **Ensure that "one" string is included withint the {"zero", "one", "two"} set
+ * **Ensure that "one" string is included within the {"zero", "one", "two"} set
  * of strings** :
  * @code{.c}
  * CUTE_TEST(mytest)
@@ -1020,7 +1020,7 @@
  * }
  * @endcode
  *
- * **Ensure that "three" string is not included withint the
+ * **Ensure that "three" string is not included within the
  * {"zero", "one", "two"} set of strings** :
  * @code{.c}
  * CUTE_TEST(mytest)
@@ -1043,85 +1043,228 @@
  * Pointer checking
  ******************************************************************************/
 
+/**
+ * Check a pointer.
+ *
+ * @param[in] _chk  pointer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct expected pointer value to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk and @p _xpct using the @p _op comparison operator results in a
+ * failure. It is similar to the #cute_check_uint macro with the ability to
+ * **display pointer values as hexadecimal numbers** when producing failure
+ * @rstsubst{report}.
+ *
+ * Comparison is performed according to the following formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that @p _chk == @p _xpct ;
+ * - `unequal` to ensure that @p _chk != @p _xpct ;
+ * - `greater`, to ensure that @p _chk > @p _xpct ;
+ * - `greater_equal`, to ensure that @p _chk >= @p _xpct ;
+ * - `lower`, to ensure that @p _chk < @p _xpct ;
+ * - `lower_equal`, to ensure that @p _chk <= @p _xpct.
+ *
+ * Both @p _chk and @p _xpct *MUST* be pointers, i.e., either `void *` or
+ * equivalent *typedef*'ed types.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that (void *)0xdeadbeef pointer equals to (void *)0xdeadbeef
+ * pointer** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_ptr((const void *)0xdeadbeef,
+ *                     equal,
+ *                     (const void *)0xdeadbeef);
+ * }
+ * @endcode
+ *
+ * **Ensure that (void *)0xdeadbeef pointer differs from (void *)0xdeafbabe
+ * pointer** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_ptr((const void *)0xdeadbeef,
+ *                     unequal,
+ *                     (const void *)0xdeafbabe);
+ * }
+ * @endcode
+ *
+ * **Ensure that (void *)0xdeafbabe pointer is higher than (void *)0xdeadbeef
+ * pointer** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_ptr((const void *)0xdeafbabe,
+ *                     greater,
+ *                     (const void *)0xdeadbeef);
+ * }
+ * @endcode
+ *
+ * **Ensure that (void *)0xdeadbeef pointer is higher than or equal to
+ * (void *)0xdeadbeef pointer** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_ptr((const void *)0xdeadbeef,
+ *                     greater_equal,
+ *                     (const void *)0xdeadbeef);
+ * }
+ * @endcode
+ *
+ * **Ensure that (void *)0xdeadbeef pointer is lower than (void *)0xdeafbabe
+ * pointer** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_ptr((const void *)0xdeadbeef,
+ *                     lower,
+ *                     (const void *)0xdeafbabe);
+ * }
+ * @endcode
+ *
+ * **Ensure that (void *)0xdeadbeef pointer is lower than or equal to
+ * (void *)0xdeadbeef pointer** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_ptr((const void *)0xdeadbeef,
+ *                     lower_equal,
+ *                     (const void *)0xdeadbeef);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST
+ */
 #define cute_check_ptr(_chk, _op, _xpct) \
 	__CUTE_CHECK_VALUE(ptr, # _chk, _chk, _op, # _xpct, _xpct)
 
+/**
+ * Check a pointer against a range.
+ *
+ * @param[in] _chk  pointer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference pointer range to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct range using the @p _op comparison operator
+ * results in a failure. Comparison is performed according to the following
+ * formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _xpct.min <= @p _chk <= @p _xpct.max ;
+ * - `not_in` to ensure that @p _chk < @p _xpct.min or @p _chk > @p _xpct.max.
+ *
+ * @p _chk *MUST* be a pointer, i.e., either a `void *` or an equivalent
+ * *typedef*'ed type.
+ * @p _xpct *MUST* be a cute_ptr_range pointer range as defined by the
+ * #CUTE_PTR_RANGE macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that (void *)0xbabeface is included within the
+ * [0xbabaface, 0xdeafbabe] range** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_ptr_range((const void *)0xbabeface,
+ *                           in,
+ *                           CUTE_PTR_RANGE((const void *)0xbabaface,
+ *                                          (const void *)0xdeafbabe));
+ * }
+ * @endcode
+ *
+ * **Ensure that (void *)0xdeafbabe is not included within the
+ * [0xbabaface, 0xdeadc0de] range** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_uint_range range =
+ *              CUTE_PTR_RANGE((const void *)0xbabaface,
+ *                             (const void *)0xdeadc0de));
+ *
+ *      cute_check_ptr_range((const void *)0xdeafbabe, not_in, range);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_PTR_RANGE
+ * - cute_ptr_range
+ * - #CUTE_TEST
+ */
 #define cute_check_ptr_range(_chk, _op, _xpct) \
 	__CUTE_CHECK_RANGE(ptr, # _chk, _chk, _op, _xpct)
 
+/**
+ * Check a pointer against a set.
+ *
+ * @param[in] _chk  pointer value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct reference set of pointers to perform the check
+ *                  against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk against the @p _xpct set using the @p _op comparison operator
+ * results in a failure. Comparison is performed according to the following
+ * formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _chk equals to one the @p _xpct set values ;
+ * - `not_in` to ensure that @p _chk equals to none of the @p _xpct set values.
+ *
+ * @p _chk *MUST* be a pointer, i.e., either a `void *` or an equivalent
+ * *typedef*'ed type.
+ * @p _xpct *MUST* be a cute_ptr_set pointer set as defined by
+ * the #CUTE_PTR_SET macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that (void *)0xdeadc0de is included within the
+ * {0xbabaface, 0xdeadc0de, 0xdeadbeef} set** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_ptr_set((const void *)0xdeadc0de,
+ *                         in,
+ *                         CUTE_PTR_SET((const void *)0xbabaface,
+ *                                      (const void *)0xdeadc0de,
+ *                                      (const void *)0xdeadbeef));
+ * }
+ * @endcode
+ *
+ * **Ensure that (void *)0xdeafbabe is not included within the
+ * {0xbabaface, 0xdeadc0de, 0xdeadbeef} set** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_ptr_set((const void *)0xdeafbabe,
+ *                         not_in,
+ *                         CUTE_PTR_SET((const void *)0xbabaface,
+ *                                      (const void *)0xdeadc0de,
+ *                                      (const void *)0xdeadbeef));
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_PTR_SET
+ * - cute_ptr_set
+ * - #CUTE_TEST
+ */
 #define cute_check_ptr_set(_chk, _op, _xpct) \
 	__CUTE_CHECK_SET(ptr, # _chk, _chk, _op, _xpct)
-
-extern void
-cute_check_ptr_equal(const char *             file,
-                     int                      line,
-                     const char *             function,
-                     const struct cute_ptr *  check,
-                     const struct cute_ptr *  expect) __cute_export;
-
-extern void
-cute_check_ptr_unequal(const char *             file,
-                       int                      line,
-                       const char *             function,
-                       const struct cute_ptr *  check,
-                       const struct cute_ptr *  expect) __cute_export;
-
-extern void
-cute_check_ptr_greater(const char *            file,
-                       int                     line,
-                       const char *            function,
-                       const struct cute_ptr * check,
-                       const struct cute_ptr * expect) __cute_export;
-
-extern void
-cute_check_ptr_greater_equal(const char *            file,
-                             int                     line,
-                             const char *            function,
-                             const struct cute_ptr * check,
-                             const struct cute_ptr * expect) __cute_export;
-
-extern void
-cute_check_ptr_lower(const char *            file,
-                     int                     line,
-                     const char *            function,
-                     const struct cute_ptr * check,
-                     const struct cute_ptr * expect) __cute_export;
-
-extern void
-cute_check_ptr_lower_equal(const char *            file,
-                           int                     line,
-                           const char *            function,
-                           const struct cute_ptr * check,
-                           const struct cute_ptr * expect) __cute_export;
-
-extern void
-cute_check_ptr_in_range(const char *                  file,
-                        int                           line,
-                        const char *                  function,
-                        const struct cute_ptr *       check,
-                        const struct cute_ptr_range * expect) __cute_export;
-
-extern void
-cute_check_ptr_not_in_range(const char *                  file,
-                            int                           line,
-                            const char *                  function,
-                            const struct cute_ptr *       check,
-                            const struct cute_ptr_range * expect)
-	__cute_export;
-
-extern void
-cute_check_ptr_in_set(const char *                file,
-                      int                         line,
-                      const char *                function,
-                      const struct cute_ptr *     check,
-                      const struct cute_ptr_set * expect) __cute_export;
-
-extern void
-cute_check_ptr_not_in_set(const char *                file,
-                          int                         line,
-                          const char *                function,
-                          const struct cute_ptr *     check,
-                          const struct cute_ptr_set * expect) __cute_export;
 
 /******************************************************************************
  * Memory area checking

@@ -212,6 +212,29 @@ definitions :
      * :c:macro:`CUTE_STR_SET` initializer
      * :c:macro:`cute_check_str_set` function-like macro
 
+Pointers
+--------
+
+Pointer values may be verified using so-called `ptr` definitions :
+
+.. hlist::
+
+   * **Value assertion** :
+
+      * :c:macro:`cute_check_ptr`
+
+   * **Range assertion** :
+
+     * :c:struct:`cute_ptr_range` structure
+     * :c:macro:`CUTE_PTR_RANGE` initializer
+     * :c:macro:`cute_check_ptr_range` function-like macro
+
+   * **Set assertion** :
+
+     * :c:struct:`cute_ptr_set` structure
+     * :c:macro:`CUTE_PTR_SET` initializer
+     * :c:macro:`cute_check_ptr_set` function-like macro
+
 Running tests
 =============
 
@@ -339,6 +362,16 @@ CUTE_NULL_TEARDOWN
 
 .. doxygendefine:: CUTE_NULL_TEARDOWN
 
+CUTE_PTR_RANGE
+**************
+
+.. doxygendefine:: CUTE_PTR_RANGE
+
+CUTE_PTR_SET
+************
+
+.. doxygendefine:: CUTE_PTR_SET
+
 CUTE_REF
 ********
 
@@ -454,6 +487,21 @@ cute_check_hex_set
 
 .. doxygendefine:: cute_check_hex_set
 
+cute_check_ptr
+**************
+
+.. doxygendefine:: cute_check_ptr
+
+cute_check_ptr_range
+********************
+
+.. doxygendefine:: cute_check_ptr_range
+
+cute_check_ptr_set
+******************
+
+.. doxygendefine:: cute_check_ptr_set
+
 cute_check_sint
 ***************
 
@@ -526,6 +574,18 @@ cute_flt_set
 ************
 
 .. doxygenstruct:: cute_flt_set
+   :members:
+
+cute_ptr_range
+**************
+
+.. doxygenstruct:: cute_ptr_range
+   :members:
+
+cute_ptr_set
+************
+
+.. doxygenstruct:: cute_ptr_set
    :members:
 
 cute_sint_range

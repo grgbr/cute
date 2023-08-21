@@ -161,7 +161,7 @@ struct cute_uint {
  * @see
  * - #CUTE_UINT_RANGE
  * - cute_check_uint_range
-*/
+ */
 struct cute_uint_range {
 	/** Range description string. */
 	const char * expr;
@@ -434,6 +434,20 @@ struct cute_ptr {
 	const void * value;
 };
 
+/**
+ * Pointer range descriptor.
+ *
+ * Use cute_ptr_range to define a range of pointers in combination with the
+ * #CUTE_PTR_RANGE macro.
+ *
+ * The range is defined by minimum and maximum pointer values
+ * (inclusive). Suitable value type is `void *` or equivalent *typedef*'ed
+ * types.
+ *
+ * @see
+ * - #CUTE_PTR_RANGE
+ * - cute_check_ptr_range
+ */
 struct cute_ptr_range {
 	/** Range description string. */
 	const char * expr;
@@ -443,9 +457,52 @@ struct cute_ptr_range {
 	const void * max;
 };
 
+/**
+ * Define a pointer range.
+ *
+ * @param[in] _min range's minimum value (inclusive)
+ * @param[in] _max range's maximum value (inclusive)
+ *
+ * Initialize a cute_ptr_range variable that defines a range of pointers.
+ *
+ * **Example**
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_ptr_range range =
+ *              CUTE_PTR_RANGE((const void *)0xdeadbeef,
+ *                             (const void *)0xdeadc0de);
+ *
+ *      cute_check_ptr_range((const void *)0xdeadc0de,
+ *                           in,
+ *                           range);
+ *      cute_check_ptr_range((const void *)0x0,
+ *                           not_in,
+ *                           CUTE_PTR_RANGE((const void *)0xbabaface,
+ *                                          (const void *)0xdeafbabe));
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_check_ptr_range
+ * - cute_ptr_range
+ */
 #define CUTE_PTR_RANGE(_min, _max) \
 	__CUTE_RANGE(ptr, "{" # _min " ... " # _max "}", _min, _max)
 
+/**
+ * Pointer set descriptor.
+ *
+ * Use cute_ptr_set to define a set of pointers in combination
+ * with the #CUTE_PTR_SET macro.
+ *
+ * The set is defined by an unordered list of pointer values.  Suitable value
+ * type is `void *` or equivalent *typedef*'ed types.
+ *
+ * @see
+ * - #CUTE_PTR_SET
+ * - cute_check_ptr_set
+ */
 struct cute_ptr_set {
 	/** Set description string. */
 	const char *  expr;
@@ -455,6 +512,39 @@ struct cute_ptr_set {
 	const void ** items;
 };
 
+/**
+ * Define a pointer set.
+ *
+ * @param[in] ... list of set values
+ *
+ * Initialize a cute_ptr_set variable that defines a set of pointers.
+ *
+ * The `...` variable argument list is an unordered list of pointer
+ * values separated by commas that composes the set.
+ *
+ * **Example**
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const int                 array[4];
+ *      const struct cute_ptr_set set = CUTE_PTR_SET((const void *)&array[0],
+ *                                                   (const void *)&array[2]);
+ *
+ *      cute_check_ptr_set((const void *)&array[0],
+ *                         in,
+ *                         set);
+ *      cute_check_ptr_set((const void *)0xdeadbeef,
+ *                         not_in,
+ *                         CUTE_PTR_SET((const void *)&array[0],
+ *                                      (const void *)&array[3],
+ *                                      (const void *)&array[1]);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_check_ptr_set
+ * - cute_ptr_set
+ */
 #define CUTE_PTR_SET(...) \
 	__CUTE_SET(ptr, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 
