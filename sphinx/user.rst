@@ -153,11 +153,14 @@ infrastructure.
 Writing tests
 =============
 
+Test case
+---------
+
 .. index:: test;definition, definition;test
 .. _sect-user-writing_tests-test_definition:
 
 Test definition
----------------
+***************
 
 To **define a test**, one is expected to:
 
@@ -231,7 +234,7 @@ For additional flexibility, CUTe_ also allows to :
 .. _sect-user-writing_tests-fixture_operations:
 
 Fixture operations
-------------------
+******************
 
 A test case may be attached optional |fixture| operations to setup runtime
 preconditions and / or postconditions of the unit of code under test.
@@ -310,7 +313,7 @@ of the following alternatives :
 .. _sect-user-writing_tests-test_timeout:
 
 Test timeout
-------------
+************
 
 To protect against situations where a |test case| or |fixture| function hangs,
 CUTe_ may arm a test timer that interrupts current test case execution upon
@@ -365,7 +368,7 @@ time :
 .. _sect-user-writing_tests-test_file_scope:
 
 Test file scope
----------------
+***************
 
 To enhance test case reusability, CUTe_ allows to specify global file scope
 at test definition time. 2 shorthand macros allow to minimize test developper
@@ -453,7 +456,7 @@ complete test |hierarchy|.
 .. _sect-user-test_hierarchy:
 
 Test hierarchy
-==============
+--------------
 
 Test hierarchy is structured around test suites. A |suite| is basically a
 container for (sub-)tests and / or (sub-)suites.
@@ -504,7 +507,7 @@ Let's see how to define a group...
 .. _sect-user-test_hierarchy-group_definition:
 
 Group definition
-----------------
+****************
 
 A test group is basically an ordered collection of test cases and / or
 |suite|\s.
@@ -552,7 +555,7 @@ Now that a group has been defined, let's see how to use it to define a suite...
 .. _sect-user-test_hierarchy-suite_definition:
 
 Suite definition
-----------------
+****************
 
 At running time, a suite iterates over tests and / or suites and run each one of
 them sequencially according to the order they are registered to it.
@@ -615,7 +618,7 @@ For additional flexibility, CUTe_ also allows to :
 .. _sect-user-test_hierarchy-fixture_inheritance:
 
 Fixture inheritance
--------------------
+*******************
 
 A test |suite| may be attached optional |fixture| operations to setup runtime
 preconditions and / or postconditions of |test case|\s registered to it.
@@ -717,7 +720,7 @@ operations to |suite|\s :
 .. _sect-user-test_hierarchy-timeout_inheritance:
 
 Timeout inheritance
--------------------
+*******************
 
 To protect against situations where a |test case| or |fixture| function hangs,
 CUTe_ may arm a test |timer| that interrupts current test case execution upon
@@ -806,7 +809,7 @@ test |suite| of ``10`` seconds.
 .. _sect-user-test_hierarchy-suite_file_scope:
 
 Suite file scope
-----------------
+****************
 
 To enhance |suite| reusability, CUTe_ allows to specify global
 file scope at |suite| definition time. 2 shorthand macros allow to minimize test
@@ -886,14 +889,14 @@ to implement test functions using CUTe_'s test assertions.
 .. _sect-user-assertion:
 
 Test assertion
-==============
+--------------
 
 .. todo:: document test assertions and expectations.
 
 .. _sect-user-running_tests:
 
 Running tests
-=============
+-------------
 
 Once a test |hierarchy| has been defined, some additional glue code is required
 to instantiate and operate it.
@@ -910,7 +913,7 @@ to instantiate and operate a test |hierarchy| step by step. See section
 .. _sect-user-main:
 
 Main entry point
-----------------
+****************
 
 The :c:macro:`CUTE_MAIN` macro implements all the required steps to run a
 test |hierarchy|.
@@ -959,7 +962,7 @@ its internal logic. These are described in the following sections...
 .. _sect-user-low_level_runner:
 
 Low-level runner
-----------------
+****************
 
 Basically, to instantiate and operate a test |hierarchy| step by step :
 
@@ -971,7 +974,7 @@ Basically, to instantiate and operate a test |hierarchy| step by step :
 .. _sect-user-setup_run:
 
 Setting up runner
-*****************
+^^^^^^^^^^^^^^^^^
 
 Any usage of CUTe_'s library *must* :
 
@@ -1025,7 +1028,7 @@ internally.
 .. _sect-user-run_suite:
 
 Running suites
-**************
+^^^^^^^^^^^^^^
 
 Once CUTe_'s |API| is :ref:`setup <sect-user-setup_run>` with a run
 :c:struct:`configuration <cute_config>`, running a test |hierarchy| is
@@ -1064,7 +1067,7 @@ See |report| section for explanations about displayed informations.
 .. _sect-user-list_suite:
 
 Listing suites
-**************
+^^^^^^^^^^^^^^
 
 Alternatively, you may display informations about the ``my_first_suite`` test
 |hierarchy| as shown below :
@@ -1101,7 +1104,7 @@ Refer to |report| section for explanations about displayed informations.
 .. _sect-user-building_tests:
 
 Building tests
---------------
+**************
 
 Basically, building a test |hierarchy| runner executable requires to compile and
 link testing code compilation units with CUTe_'s library. You may choose to
@@ -1175,7 +1178,7 @@ executable against *shared* and *static* libraries respectively using the
    	${CC} -o $@ $< ${CFLAGS} ${LDFLAGS}
 
 Command line
-------------
+************
 
 |Build|\ing a test |hierarchy| runner using :c:macro:`CUTE_MAIN` as ``main()``
 entry point replacement should produce an executable that allows to run tests
