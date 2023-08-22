@@ -9,6 +9,7 @@
 .. |user guide|        replace:: :doc:`User guide <user>`
 
 .. |failed|            replace:: :ref:`failed <sect-user-result>`
+.. |skipped|           replace:: :ref:`skipped <sect-user-result>`
 .. |fixture functions| replace:: :ref:`fixture functions <sect-user-writing_tests-fixture_operations>`
 .. |test functions|    replace:: :ref:`test functions <sect-user-writing_tests-test_definition>`
 
@@ -253,14 +254,14 @@ Pointer values may be verified using so-called `ptr` definitions :
      * :c:struct:`cute_ptr_set` structure
      * :c:macro:`CUTE_PTR_SET` initializer
      * :c:macro:`cute_check_ptr_set` function-like macro
-       
+
 .. index:: memory area;API, mem;API, API;memory area, API;mem
 
 Memory areas
 ************
 
 Use :c:macro:`cute_check_mem` to verify content of memory areas.
- 
+
 .. index:: main;API, API;main
 
 Running tests
@@ -574,6 +575,16 @@ cute_check_uint_set
 *******************
 
 .. doxygendefine:: cute_check_uint_set
+
+cute_fail
+*********
+
+.. doxygendefine:: cute_fail
+
+cute_skip
+*********
+
+.. doxygendefine:: cute_skip
 
 Enums
 -----

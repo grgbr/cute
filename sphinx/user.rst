@@ -1588,7 +1588,8 @@ status
   * *skip* : a test case or suite was skipped programmatically, i.e thanks to a
     call to :c:func:`cute_skip` ;
   * *fail* : a test case failed or a suite has at least one failed or crashed
-    sub-test / sub-suite ;
+    sub-test / sub-suite ; may also happen when :c:func:`cute_fail` is called
+    explicitly ;
   * *excp* : a test case crashed or all sub-tests / sub-suites of a suite
     crashed ;
   * *off* : a test case has been deselected or all sub-tests / sub-suites of a

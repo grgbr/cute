@@ -28,9 +28,64 @@
  * Test case implementation primitives
  ******************************************************************************/
 
+/**
+ * Skip current test.
+ *
+ * @param[in] _reason reason description string
+ *
+ * Stop running current @rstsubst{test case} or @rstsubst{suite} and mark it as
+ * @rstsubst{skipped}.
+ *
+ * When non `NULL`, the @p _reason argument should be a string describing the
+ * reason why the test has been skipped.
+ *
+ * See @rstsubst{report} section for more informations about possible test
+ * @rstsubst{hierarchy} outcomes.
+ *
+ * @see cute_fail()
+ *
+ * **Example**
+ * @code{.c}
+ * #if defined(CONFIG_FEATURE_ENABLED)
+ * CUTE_TEST(feature_test)
+ * {
+ *      ...
+ * }
+ * #else
+ * CUTE_TEST(feature_test)
+ * {
+ *      cute_skip("feature disabled");
+ * }
+ * #endif
+ * @endcode
+ */
 #define cute_skip(_reason) \
 	_cute_skip(_reason, __FILE__, __LINE__, __func__)
 
+/**
+ * Mark current test as failed.
+ *
+ * @param[in] _reason reason description string
+ *
+ * Stop running current @rstsubst{test case} or @rstsubst{suite} and mark it as
+ * @rstsubst{failed}.
+ *
+ * When non `NULL`, the @p _reason argument should be a string describing the
+ * reason why the test has failed.
+ *
+ * See @rstsubst{report} section for more informations about possible test
+ * @rstsubst{hierarchy} outcomes.
+ *
+ * @see cute_skip()
+ *
+ * **Example**
+ * @code{.c}
+ * CUTE_TEST(sample_test)
+ * {
+ *      cute_fail(NULL);
+ * }
+ * @endcode
+ */
 #define cute_fail(_reason) \
 	_cute_fail(_reason, __FILE__, __LINE__, __func__)
 
