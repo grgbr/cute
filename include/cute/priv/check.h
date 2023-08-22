@@ -444,4 +444,18 @@ cute_check_ptr_not_in_set(const char *                file,
                           const struct cute_ptr *     check,
                           const struct cute_ptr_set * expect) __cute_export;
 
+extern void
+cute_check_mem_equal(const char *             file,
+                     int                      line,
+                     const char *             function,
+                     const struct cute_ptr *  check,
+                     const struct cute_mem *  expect) __cute_export;
+
+extern void
+cute_check_mem_unequal(const char *             file,
+                       int                      line,
+                       const char *             function,
+                       const struct cute_ptr *  check,
+                       const struct cute_mem *  expect) __cute_export;
+
 #endif /* _CUTE_PRIV_CHECK_H */

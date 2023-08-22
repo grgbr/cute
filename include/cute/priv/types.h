@@ -14,6 +14,31 @@
 #define cute_typeof_member(_type, _member) \
 	typeof(((_type *)0)->_member)
 
+struct cute_sint {
+	const char * expr;
+	intmax_t     value;
+};
+
+struct cute_uint {
+	const char * expr;
+	uintmax_t    value;
+};
+
+struct cute_flt {
+	const char * expr;
+	long double  value;
+};
+
+struct cute_str {
+	const char * expr;
+	const char * value;
+};
+
+struct cute_ptr {
+	const char * expr;
+	const void * value;
+};
+
 #define __CUTE_VALUE(_type, _expr, _val) \
 	((const struct cute_ ## _type) { \
 		.expr  = _expr, \
@@ -90,6 +115,12 @@
 	                                             _cexpr, \
 	                                             _chk), \
 	                               &(_xpct))
+
+struct cute_mem {
+	const char * expr;
+	const void * ptr;
+	size_t       size;
+};
 
 #define __CUTE_MEM(_expr, _ptr, _sz) \
 	((const struct cute_mem) { \

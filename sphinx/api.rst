@@ -32,10 +32,13 @@ eventually refer to the corresponding C macros listed below:
 * :c:macro:`CONFIG_CUTE_INTERN_ASSERT`
 * :c:macro:`CONFIG_CUTE_UTEST`
 
+Functional domains
+==================
+
 .. index:: test;API, API;test
 
 Test definition
-===============
+---------------
 
 Various C preprocessor macros are exposed to define test cases. These are:
 
@@ -50,7 +53,7 @@ See |test case| definition section of |user guide| for more informations.
 .. index:: fixture;API, API;fixture
 
 Fixture operations
-==================
+------------------
 
 Various C preprocessor macros are exposed to attach test fixture functions to
 tests or suites at definition time. These are:
@@ -65,7 +68,7 @@ See |fixture| operations section of |user guide| for more informations.
 .. index:: timeout;API, API;timeout, timer;API, API;timer
 
 Timeouts
-========
+--------
 
 Various C preprocessor macros are exposed to assign timeouts to tests or suites
 at definition time. These are:
@@ -79,7 +82,7 @@ See |timer| section of |user guide| for more informations.
 .. index:: group;API, API;group
 
 Group definition
-================
+----------------
 
 Various C preprocessor macros are exposed to define test groups. These are:
 
@@ -95,7 +98,7 @@ See |group| definition section of |user guide| for more informations.
 .. index:: suite;API, API;suite
 
 Suite definition
-================
+----------------
 
 Various C preprocessor macros are exposed to define test suites. These are:
 
@@ -107,8 +110,10 @@ Various C preprocessor macros are exposed to define test suites. These are:
 
 See |suite| definition section of |user guide| for more informations.
 
+.. index:: assertion;API, API;assertion
+
 Test assertion
-==============
+--------------
 
 Multiple test assertions are exposed to implement testing logic. These are
 described in the following sections.
@@ -117,13 +122,16 @@ You may also refer to :ref:`sect-user-assertion` section of |user guide| for
 more informations.
 
 Basic assertion
----------------
+***************
 
 :c:macro:`cute_check_assert` implements a basic versatile test assertion 
 exposed as a C preprocessor macros.
 
+.. index:: signed integer;API, sint;API, API;signed integer, API;sint,
+           integer;signed
+
 Signed integers
----------------
+***************
 
 Signed integer values may be verified using so-called `sint` definitions :
 
@@ -145,10 +153,15 @@ Signed integer values may be verified using so-called `sint` definitions :
      * :c:macro:`CUTE_SINT_SET` initializer
      * :c:macro:`cute_check_sint_set` function-like macro
 
-Unsigned integers
------------------
+.. index:: unsigned integer;API, uint;API, API;unsigned integer, API;uint,
+           hexadecimal;API, hex;API, API;hexadecimal, API;hex,
+           integer;unsigned
 
-Unsigned integer values may be verified using so-called `uint` definitions :
+Unsigned integers
+*****************
+
+Unsigned integer values may be verified using so-called `uint` and / or `hex`
+definitions :
 
 .. hlist::
 
@@ -171,8 +184,10 @@ Unsigned integer values may be verified using so-called `uint` definitions :
      * :c:macro:`cute_check_uint_set` function-like macro
      * :c:macro:`cute_check_hex_set` function-like macro
 
+.. index:: floating point;API, flt;API, API;floating point, API;flt
+
 Floating point numbers
-----------------------
+**********************
 
 Floating point values may be verified using so-called `flt` definitions :
 
@@ -194,8 +209,10 @@ Floating point values may be verified using so-called `flt` definitions :
      * :c:macro:`CUTE_FLT_SET` initializer
      * :c:macro:`cute_check_flt_set` function-like macro
 
+.. index:: string;API, str;API, API;string, API;str
+
 Strings
--------
+*******
 
 `NULL` terminated C string contents may be verified using so-called `str`
 definitions :
@@ -212,8 +229,10 @@ definitions :
      * :c:macro:`CUTE_STR_SET` initializer
      * :c:macro:`cute_check_str_set` function-like macro
 
+.. index:: pointer;API, ptr;API, API;pointer, API;ptr
+
 Pointers
---------
+********
 
 Pointer values may be verified using so-called `ptr` definitions :
 
@@ -234,9 +253,18 @@ Pointer values may be verified using so-called `ptr` definitions :
      * :c:struct:`cute_ptr_set` structure
      * :c:macro:`CUTE_PTR_SET` initializer
      * :c:macro:`cute_check_ptr_set` function-like macro
+       
+.. index:: memory area;API, mem;API, API;memory area, API;mem
+
+Memory areas
+************
+
+Use :c:macro:`cute_check_mem` to verify content of memory areas.
+ 
+.. index:: main;API, API;main
 
 Running tests
-=============
+-------------
 
 Use :c:macro:`CUTE_MAIN` as replacement for ``main()`` entry point of a test
 runner executable.
@@ -486,6 +514,11 @@ cute_check_hex_set
 ******************
 
 .. doxygendefine:: cute_check_hex_set
+
+cute_check_mem
+**************
+
+.. doxygendefine:: cute_check_mem
 
 cute_check_ptr
 **************

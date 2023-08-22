@@ -1155,8 +1155,11 @@
  *
  * Abort current test and mark it as @rstsubst{failed} if the comparison of
  * @p _chk against the @p _xpct range using the @p _op comparison operator
- * results in a failure. Comparison is performed according to the following
- * formula :
+ * results in a failure. It is similar to the #cute_check_uint_range macro with
+ * the ability to **display pointers as hexadecimal numbers** when producing
+ * failure @rstsubst{report}.
+ *
+ * Comparison is performed according to the following formula :
  *
  *     _chk <_op> _xpct
  *
@@ -1215,8 +1218,11 @@
  *
  * Abort current test and mark it as @rstsubst{failed} if the comparison of
  * @p _chk against the @p _xpct set using the @p _op comparison operator
- * results in a failure. Comparison is performed according to the following
- * formula :
+ * results in a failure. It is similar to the #cute_check_uint_set macro with
+ * the ability to **display pointers as hexadecimal numbers** when producing
+ * failure @rstsubst{report}.
+ *
+ * Comparison is performed according to the following formula :
  *
  *     _chk <_op> _xpct
  *
@@ -1270,6 +1276,63 @@
  * Memory area checking
  ******************************************************************************/
 
+/**
+ * Check a memory area.
+ *
+ * @param[in] _chk  memory area to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct address of expected memory area to perform the check against
+ * @param[in] _sz   size of expected memory area to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk and @p _xpct contents using the @p _op comparison operator results in
+ * a failure.
+ * Comparison is performed according to the following formula over @p _sz size
+ * bytes :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that @p _chk == @p _xpct ;
+ * - `unequal` to ensure that @p _chk != @p _xpct.
+ *
+ * Both @p _chk and @p _xpct *MUST* be pointers, i.e., either `void *` or
+ * equivalent *typedef*'ed types.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Ensure that content of 2 memory areas are equal** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const int check[] = { 0, 1, 2, 3 };
+ *      const int expect[] =  { 0, 1, 2, 3 };
+ *
+ *      cute_check_mem((const void *)check,
+ *                     equal,
+ *                     (const void *)expect,
+ *                     sizeof(expect));
+ * }
+ * @endcode
+ *
+ * **Ensure that content of 2 memory areas differ** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      const int check[] = { 3, 2, 1, 0 };
+ *      const int expect[] =  { 0, 1, 2, 3 };
+ *
+ *      cute_check_mem((const void *)check,
+ *                     unequal,
+ *                     (const void *)expect,
+ *                     sizeof(expect));
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST
+ */
 #define cute_check_mem(_chk, _op, _xpct, _sz) \
 	cute_check_mem_ ## _op(__FILE__, \
 	                       __LINE__, \
@@ -1278,20 +1341,5 @@
 	                       &__CUTE_MEM("{@ " # _xpct ":" # _sz "}", \
 	                                   _xpct, \
 	                                   _sz))
-
-
-extern void
-cute_check_mem_equal(const char *             file,
-                     int                      line,
-                     const char *             function,
-                     const struct cute_ptr *  check,
-                     const struct cute_mem *  expect) __cute_export;
-
-extern void
-cute_check_mem_unequal(const char *             file,
-                       int                      line,
-                       const char *             function,
-                       const struct cute_ptr *  check,
-                       const struct cute_mem *  expect) __cute_export;
 
 #endif /* _CUTE_CHECK_H */

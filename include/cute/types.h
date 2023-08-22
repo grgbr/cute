@@ -21,11 +21,6 @@
 
 #include <cute/priv/types.h>
 
-struct cute_sint {
-	const char * expr;
-	intmax_t     value;
-};
-
 /**
  * Signed integer range descriptor.
  *
@@ -138,11 +133,6 @@ struct cute_sint_set {
 #define CUTE_SINT_SET(...) \
 	__CUTE_SET(sint, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 
-struct cute_uint {
-	const char * expr;
-	uintmax_t    value;
-};
-
 /**
  * Unsigned integer range descriptor.
  *
@@ -254,11 +244,6 @@ struct cute_uint_set {
  */
 #define CUTE_UINT_SET(...) \
 	__CUTE_SET(uint, "{" # __VA_ARGS__ "}", __VA_ARGS__)
-
-struct cute_flt {
-	const char * expr;
-	long double  value;
-};
 
 /**
  * Floating point number range descriptor.
@@ -374,11 +359,6 @@ struct cute_flt_set {
 #define CUTE_FLT_SET(...) \
 	__CUTE_SET(flt, "{" # __VA_ARGS__ "}", __VA_ARGS__)
 
-struct cute_str {
-	const char * expr;
-	const char * value;
-};
-
 /**
  * String content set descriptor.
  *
@@ -428,11 +408,6 @@ struct cute_str_set {
  */
 #define CUTE_STR_SET(...) \
 	__CUTE_SET(str, "{" # __VA_ARGS__ "}", __VA_ARGS__)
-
-struct cute_ptr {
-	const char * expr;
-	const void * value;
-};
 
 /**
  * Pointer range descriptor.
@@ -547,11 +522,5 @@ struct cute_ptr_set {
  */
 #define CUTE_PTR_SET(...) \
 	__CUTE_SET(ptr, "{" # __VA_ARGS__ "}", __VA_ARGS__)
-
-struct cute_mem {
-	const char * expr;
-	const void * ptr;
-	size_t       size;
-};
 
 #endif /* _CUTE_TYPES_H */
