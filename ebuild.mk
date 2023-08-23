@@ -15,6 +15,8 @@ headers     += $(PACKAGE)/check.h
 headers     += $(PACKAGE)/expect.h
 headers     += $(PACKAGE)/priv/core.h
 headers     += $(PACKAGE)/priv/types.h
+headers     += $(PACKAGE)/priv/check.h
+headers     += $(PACKAGE)/priv/expect.h
 
 subdirs     := src
 

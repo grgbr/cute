@@ -891,7 +891,15 @@ to implement test functions using CUTe_'s test assertions.
 Test assertion
 --------------
 
-.. todo:: document test assertions and expectations.
+.. todo:: document test assertions.
+
+.. index:: mocking, expectation
+.. _sect-user-mocking:
+
+Mocking
+-------
+
+.. todo:: document mocking expectations.
 
 .. _sect-user-running_tests:
 

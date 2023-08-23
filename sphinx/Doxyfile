@@ -315,6 +315,10 @@ ALIASES += rstref{1}="@verbatim embed:rst:inline :ref:`\1` @endverbatim"
 # substitution directive given in argument.
 ALIASES += rstsubst{1}="@verbatim embed:rst:inline |\1| @endverbatim"
 
+# Declare an alias allowing to use the predefined Sphinx / reStructuredText
+# hyperlink given in argument.
+ALIASES += rstlnk{1}="@verbatim embed:rst:inline `\1`_ @endverbatim"
+
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
 # instance, some of the names that are used will be different. The list of all

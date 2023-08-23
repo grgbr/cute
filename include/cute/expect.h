@@ -20,21 +20,60 @@
 #define _CUTE_EXPECT_H
 
 #include <cute/types.h>
-#include <cute/priv/core.h>
-#include <stdbool.h>
-#include <setjmp.h>
+#include <cute/priv/expect.h>
 
 /******************************************************************************
  * Assertion mock expectation handling
  ******************************************************************************/
 
-extern sigjmp_buf cute_expect_assert_env __cute_export;
-extern bool       cute_expect_assert __cute_export;
-
-extern void
-cute_expect_fail_assert(const char * file, int line, const char * function)
-	__cute_noreturn __cute_export;
-
+/**
+ * Check that an assertion failure has been thrown.
+ *
+ * @param[in] _call function call expression
+ *
+ * Abort current test and mark it as @rstsubst{failed} if @p _call expression
+ * does not call cute_mock_assert() to ensure that an assertion failure has been
+ * thrown.
+ *
+ * As shown in the example below, the @rstlnk{glibc}'s `__assert_fail()`
+ * function is overridden using cute_mock_assert() so that a call to
+ * cute_expect_assertion() may check that `function_to_test()` function causes
+ * an @man{assert(3)} failure.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <assert.h>
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ *
+ * void  __attribute__((noreturn))
+ * __assert_fail(const char * expression,
+ *               const char * file,
+ *               unsigned int line,
+ *               const char * function)
+ * {
+ * 	cute_mock_assert(expression, file, line, function);
+ * }
+ *
+ * static void
+ * function_to_test(void)
+ * {
+ *      assert(0);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_assertion(function_to_test());
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_assert()
+ * - #CUTE_TEST
+ */
 #define cute_expect_assertion(_call) \
 	{ \
 		cute_expect_assert = true; \
@@ -44,6 +83,21 @@ cute_expect_fail_assert(const char * file, int line, const char * function)
 		} \
 	}
 
+/**
+ * Catch an assertion failure.
+ *
+ * @param[in] expression assertion expression
+ * @param[in] file       assertion source file pathname
+ * @param[in] line       assertion source file line
+ * @param[in] function   assertion function calling function name
+ *
+ * Use this in combination with cute_expect_assertion() to test assertion
+ * failures.
+ *
+ * @see
+ * - cute_expect_assertion()
+ * - #CUTE_TEST
+ */
 extern void
 cute_mock_assert(const char * expression,
                  const char * file,
@@ -55,17 +109,65 @@ cute_mock_assert(const char * expression,
  * Mock call expectation handling
  ******************************************************************************/
 
-extern void
-cute_expect_sched_call(const char * file, int line, const char * function)
-	__cute_export;
-
+/**
+ * Schedule a function call mock expectation.
+ *
+ * @param[in] _func function name
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_call() is called.
+ * The check performed ensures that the function which name is given as @p _func
+ * argument is called according to the expected schedule order.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ *
+ * static void
+ * callee(void)
+ * {
+ *      cute_mock_call();
+ * }
+ *
+ * static void
+ * caller(void)
+ * {
+ *      callee();
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_call(callee);
+ *      caller();
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_call()
+ * - #CUTE_TEST
+ */
 #define cute_expect_call(_func) \
 	cute_expect_sched_call(__FILE__, __LINE__, # _func)
 
-extern void
-cute_expect_check_call(const char * file, int line, const char * function)
-	__cute_export;
-
+/**
+ * Check a function call mock expectation.
+ *
+ * Ensure that a function call mock @rstsubst{expectation} scheduled by
+ * cute_expect_call() is called according to the expected schedule order.
+ *
+ * Current test is aborted and marked as @rstsubst{failed} when the check fails.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * @see
+ * - cute_expect_call()
+ * - #CUTE_TEST
+ */
 #define cute_mock_call() \
 	cute_expect_check_call(__FILE__, __LINE__, __func__)
 

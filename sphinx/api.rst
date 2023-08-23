@@ -12,6 +12,7 @@
 .. |skipped|           replace:: :ref:`skipped <sect-user-result>`
 .. |fixture functions| replace:: :ref:`fixture functions <sect-user-writing_tests-fixture_operations>`
 .. |test functions|    replace:: :ref:`test functions <sect-user-writing_tests-test_definition>`
+.. |expectation|       replace:: :ref:`expectation <sect-user-mocking>`
 
 .. _sect-api-overview:
 
@@ -261,6 +262,29 @@ Memory areas
 ************
 
 Use :c:macro:`cute_check_mem` to verify content of memory areas.
+
+.. index:: mocking;API, API;mocking, expectation;API, API:expectation
+
+Mocking
+-------
+
+Multiple types of mocking expectations are supported to implement testing logic.
+These are described in the following sections.
+
+You may also refer to :ref:`sect-user-mocking` section of |user guide| for
+more informations.
+
+Assertion expectation
+*********************
+
+Combine :c:macro:`cute_expect_assertion()` and :c:func:`cute_mock_assert()`
+to ensure that an assertion failure has been thrown.
+
+Call expectation
+****************
+
+Combine :c:macro:`cute_expect_call()` and :c:func:`cute_mock_call()`
+to ensure that a function is called according to the expected schedule order.
 
 .. index:: main;API, API;main
 
@@ -576,10 +600,25 @@ cute_check_uint_set
 
 .. doxygendefine:: cute_check_uint_set
 
+cute_expect_assertion
+*********************
+
+.. doxygendefine:: cute_expect_assertion
+
+cute_expect_call
+****************
+
+.. doxygendefine:: cute_expect_call
+
 cute_fail
 *********
 
 .. doxygendefine:: cute_fail
+
+cute_mock_call
+**************
+
+.. doxygendefine:: cute_mock_call
 
 cute_skip
 *********
@@ -674,6 +713,11 @@ cute_fini
 *********
 
 .. doxygenfunction:: cute_fini
+
+cute_mock_assert
+****************
+
+.. doxygenfunction:: cute_mock_assert
 
 cute_run_suite
 **************
