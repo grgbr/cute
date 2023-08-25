@@ -83,4 +83,50 @@ cute_expect_sched_sint_parm_lower_equal(const char *             file,
                                         const struct cute_sint * expect)
 	__cute_export;
 
+extern void
+cute_expect_sched_sint_parm_in_range(const char *                   file,
+                                     int                            line,
+                                     const char *                   function,
+                                     const char *                   parm,
+                                     const struct cute_sint_range * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_sint_parm_not_in_range(
+	const char *                   file,
+	int                            line,
+	const char *                   function,
+	const char *                   parm,
+	const struct cute_sint_range * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_sint_parm_in_set(const char *                 file,
+                                   int                          line,
+                                   const char *                 function,
+                                   const char *                 parm,
+                                   const struct cute_sint_set * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_sint_parm_not_in_set(const char *                 file,
+                                       int                          line,
+                                       const char *                 function,
+                                       const char *                 parm,
+                                       const struct cute_sint_set * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_sint_retval(const char *             file,
+                              int                      line,
+                              const char *             function,
+                              const struct cute_sint * retval)
+	__cute_export;
+
+extern intmax_t
+cute_expect_check_sint_retval(const char * file,
+                              int          line,
+                              const char * function)
+	__cute_export;
+
 #endif /* _CUTE_PRIV_EXPECT_H */

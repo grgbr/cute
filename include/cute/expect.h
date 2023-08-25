@@ -257,13 +257,16 @@ cute_mock_assert(const char * expression,
  * @param[in] _parm function parameter name
  *
  * Check the value of a signed integer function parameter expectation scheduled
- * using cute_expect_sint_parm().
+ * using cute_expect_sint_parm(), cute_expect_sint_range() or
+ * cute_expect_sint_set().
  *
  * This macro must be called from within the mocked function which is given the
  * parameter to verify.
  *
  * @see
  * - cute_expect_sint_parm()
+ * - cute_expect_sint_range()
+ * - cute_expect_sint_set()
  * - #CUTE_TEST
  */
 #define cute_mock_sint_parm(_parm) \
@@ -272,6 +275,77 @@ cute_mock_assert(const char * expression,
 	                            __func__, \
 	                            &__CUTE_VALUE(sint, # _parm, _parm))
 
+/**
+ * Schedule a signed integer range function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct reference signed integer range to perform the check against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_sint_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed}
+ * if the comparison of @p _parm against the @p _xpct range using the @p _op
+ * comparison operator results in a failure. Comparison is performed according
+ * to the following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _xpct.min <= @p _parm <= @p _xpct.max ;
+ * - `not_in` to ensure that @p _parm < @p _xpct.min or @p _parm > @p _xpct.max.
+ *
+ * @p _parm *MUST* be a signed integer, i.e., either :
+ * - `signed char`,
+ * - `signed short`,
+ * - `signed int`,
+ * - `signed long`,
+ * - `signed long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a cute_sint_range signed integer range as defined by the
+ * #CUTE_SINT_RANGE macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(int word, short half)
+ * {
+ *      cute_mock_sint_parm(word);
+ *      cute_mock_sint_parm(half);
+ * }
+ *
+ * static void
+ * caller(int word, short half)
+ * {
+ *      callee(word, half);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_sint_range range = CUTE_SINT_RANGE(0, SHRT_MAX);
+ *
+ *      cute_expect_sint_parm(callee, word, in,     CUTE_SINT_RANGE(-10, 10));
+ *      cute_expect_sint_parm(callee, half, not_in, range);
+ *      caller(-5, SHRT_MIN);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_sint_parm()
+ * - #CUTE_SINT_RANGE
+ * - cute_sint_range
+ * - #CUTE_TEST
+ */
 #define cute_expect_sint_range(_func, _parm, _op, _xpct) \
 	cute_expect_sched_sint_parm_ ##  _op ## _range(__FILE__, \
 	                                               __LINE__, \
@@ -279,23 +353,77 @@ cute_mock_assert(const char * expression,
 	                                               # _parm, \
 	                                               &(_xpct))
 
-extern void
-cute_expect_sched_sint_parm_in_range(const char *                   file,
-                                     int                            line,
-                                     const char *                   function,
-                                     const char *                   parm,
-                                     const struct cute_sint_range * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_sint_parm_not_in_range(
-	const char *                   file,
-	int                            line,
-	const char *                   function,
-	const char *                   parm,
-	const struct cute_sint_range * expect)
-	__cute_export;
-
+/**
+ * Schedule a signed integer set function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct reference signed integer set to perform the check against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_sint_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed}
+ * if the comparison of @p _parm against the @p _xpct set using the @p _op
+ * comparison operator results in a failure. Comparison is performed according
+ * to the following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _parm equals to one the @p _xpct set values ;
+ * - `not_in` to ensure that @p _parm equals to none of the @p _xpct set values.
+ *
+ * @p _parm *MUST* be a signed integer, i.e., either :
+ * - `signed char`,
+ * - `signed short`,
+ * - `signed int`,
+ * - `signed long`,
+ * - `signed long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a cute_sint_set signed integer set as defined by
+ * the #CUTE_SINT_SET macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(int word, short half)
+ * {
+ *      cute_mock_sint_parm(word);
+ *      cute_mock_sint_parm(half);
+ * }
+ *
+ * static void
+ * caller(int word, short half)
+ * {
+ *      callee(word, half);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_sint_set set = CUTE_SINT_SET(0, 10, SHRT_MAX);
+ *
+ *      cute_expect_sint_parm(callee, word, in,     CUTE_SINT_SET(-10, 0, 10));
+ *      cute_expect_sint_parm(callee, half, not_in, set);
+ *      caller(10, SHRT_MIN);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_sint_parm()
+ * - #CUTE_SINT_SET
+ * - cute_sint_set
+ * - #CUTE_TEST
+ */
 #define cute_expect_sint_set(_func, _parm, _op, _xpct) \
 	cute_expect_sched_sint_parm_ ##  _op ## _set(__FILE__, \
 	                                             __LINE__, \
@@ -303,45 +431,80 @@ cute_expect_sched_sint_parm_not_in_range(
 	                                             # _parm, \
 	                                             &(_xpct))
 
-extern void
-cute_expect_sched_sint_parm_in_set(const char *                 file,
-                                   int                          line,
-                                   const char *                 function,
-                                   const char *                 parm,
-                                   const struct cute_sint_set * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_sint_parm_not_in_set(const char *                 file,
-                                       int                          line,
-                                       const char *                 function,
-                                       const char *                 parm,
-                                       const struct cute_sint_set * expect)
-	__cute_export;
-
 /******************************************************************************
  * Signed integer return value expectation handling
  ******************************************************************************/
 
-extern void
-cute_expect_sched_sint_retval(const char *             file,
-                              int                      line,
-                              const char *             function,
-                              const struct cute_sint * retval)
-	__cute_export;
-
+/**
+ * Schedule a signed integer function return value mock expectation.
+ *
+ * @param[in] _func   function name
+ * @param[in] _retval value to be returned from mocked function
+ *
+ * Define and schedule an @rstsubst{expectation} which value is returned when
+ * cute_mock_sint_retval() is called.
+ *
+ * @p _retval *MUST* be a signed integer, i.e., either :
+ * - `signed char`,
+ * - `signed short`,
+ * - `signed int`,
+ * - `signed long`,
+ * - `signed long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static int
+ * callee(void)
+ * {
+ *      return (int)cute_mock_sint_retval();
+ * }
+ *
+ * static int
+ * caller(void)
+ * {
+ *      return callee();
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_sint_retval(callee, 1);
+ *      cute_check_sint(caller(), equal, 1);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_sint_retval()
+ * - #CUTE_TEST
+ */
 #define cute_expect_sint_retval(_func, _retval) \
 	cute_expect_sched_sint_retval(__FILE__, \
 	                              __LINE__, \
 	                              # _func, \
 	                              &__CUTE_VALUE(sint, # _retval, _retval))
 
-extern intmax_t
-cute_expect_check_sint_retval(const char * file,
-                              int          line,
-                              const char * function)
-	__cute_export;
-
+/**
+ * Return a signed integer function return value mock expectation.
+ *
+ * @return scheduled return value cast as an `intmax_t`
+ *
+ * Extract and return a a signed integer value scheduled using
+ * cute_expect_sint_retval().
+ *
+ * This macro must be called from within the mocked function that returns the
+ * scheduled value.
+ *
+ * @see
+ * - cute_expect_sint_retval()
+ * - #CUTE_TEST
+ */
 #define cute_mock_sint_retval() \
 	cute_expect_check_sint_retval(__FILE__, __LINE__, __func__)
 

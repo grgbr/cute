@@ -129,8 +129,9 @@ Basic assertion
 :c:macro:`cute_check_assert` implements a basic versatile test assertion 
 exposed as a C preprocessor macros.
 
-.. index:: signed integer;API, sint;API, API;signed integer, API;sint,
-           integer;signed
+.. index:: signed integer assertion;API, sint;API,
+           API;signed integer assertion, API;sint assertion,
+           integer;signed assertion
 
 Signed integers
 ***************
@@ -155,9 +156,11 @@ Signed integer values may be verified using so-called `sint` definitions :
      * :c:macro:`CUTE_SINT_SET` initializer
      * :c:macro:`cute_check_sint_set` function-like macro
 
-.. index:: unsigned integer;API, uint;API, API;unsigned integer, API;uint,
-           hexadecimal;API, hex;API, API;hexadecimal, API;hex,
-           integer;unsigned
+.. index:: unsigned integer assertion;API, uint assertion;API,
+           API;unsigned integer assertion, API;uint assertion,
+           hexadecimal assertion;API, hex assertion;API,
+           API;hexadecimal assertion, API;hex assertion,
+           integer;unsigned assertion
 
 Unsigned integers
 *****************
@@ -186,7 +189,8 @@ definitions :
      * :c:macro:`cute_check_uint_set` function-like macro
      * :c:macro:`cute_check_hex_set` function-like macro
 
-.. index:: floating point;API, flt;API, API;floating point, API;flt
+.. index:: floating point assertion;API, flt assertion;API,
+           API;floating point assertion, API;flt assertion
 
 Floating point numbers
 **********************
@@ -211,7 +215,8 @@ Floating point values may be verified using so-called `flt` definitions :
      * :c:macro:`CUTE_FLT_SET` initializer
      * :c:macro:`cute_check_flt_set` function-like macro
 
-.. index:: string;API, str;API, API;string, API;str
+.. index:: string assertion;API, str assertion;API,
+           API;string assertion, API;str assertion
 
 Strings
 *******
@@ -231,7 +236,8 @@ definitions :
      * :c:macro:`CUTE_STR_SET` initializer
      * :c:macro:`cute_check_str_set` function-like macro
 
-.. index:: pointer;API, ptr;API, API;pointer, API;ptr
+.. index:: pointer assertion;API, ptr assertion;API,
+           API;pointer assertion, API;ptr assertion
 
 Pointers
 ********
@@ -256,14 +262,15 @@ Pointer values may be verified using so-called `ptr` definitions :
      * :c:macro:`CUTE_PTR_SET` initializer
      * :c:macro:`cute_check_ptr_set` function-like macro
 
-.. index:: memory area;API, mem;API, API;memory area, API;mem
+.. index:: memory area assertion;API, mem assertion;API,
+           API;memory area assertion, API;mem assertion
 
 Memory areas
 ************
 
 Use :c:macro:`cute_check_mem` to verify content of memory areas.
 
-.. index:: mocking;API, API;mocking, expectation;API, API:expectation
+.. index:: mocking;API, API;mocking, expectation;API, API;expectation
 
 Mocking
 -------
@@ -274,11 +281,16 @@ These are described in the following sections.
 You may also refer to :ref:`sect-user-mocking` section of |user guide| for
 more informations.
 
+.. index:: assertion expectation;API, API;assertion expectation
+
 Assertion expectation
 *********************
 
 Combine :c:macro:`cute_expect_assertion()` and :c:func:`cute_mock_assert()`
 to ensure that an assertion failure has been thrown.
+
+.. index:: function call expectation;API, call expectation;API,
+           API;function call expectation, API;call expectation
 
 Call expectation
 ****************
@@ -286,11 +298,18 @@ Call expectation
 Combine :c:macro:`cute_expect_call()` and :c:func:`cute_mock_call()`
 to ensure that a function is called according to the expected schedule order.
 
+.. index:: function parameter expectation;API, parameter expectation;API,
+           API;function parameter expectation, API;parameter expectation
+
 Parameter expectation
 *********************
 
 Multiple types of function parameter expectations are supported to implement
-testing logic.  These are described in the following sections.
+testing logic. These are described in the following sections.
+
+.. index:: signed integer expectation;API, sint expectation;API,
+           API;signed integer expectation, API;sint expectation,
+           integer;signed expectation
 
 Signed integers
 ^^^^^^^^^^^^^^^
@@ -319,6 +338,22 @@ Signed integer function parameter expectations may be verified using so-called
    * **Parameter check**:
 
       * :c:macro:`cute_mock_sint_parm()` function-like macro
+
+.. index:: function return value expectation;API, return value expectation;API,
+           API;return value expectation, API;return value expectation
+
+Return value expectation
+************************
+
+Multiple types of function return value expectations are supported to implement
+testing logic :
+
+.. hlist::
+
+   * **Signed integers** :
+
+     * :c:macro:`cute_expect_sint_retval` function-like macro
+     * :c:macro:`cute_mock_sint_retval` function-like macro
 
 .. index:: main;API, API;main
 
@@ -649,6 +684,21 @@ cute_expect_sint_parm
 
 .. doxygendefine:: cute_expect_sint_parm
 
+cute_expect_sint_range
+**********************
+
+.. doxygendefine:: cute_expect_sint_range
+
+cute_expect_sint_retval
+***********************
+
+.. doxygendefine:: cute_expect_sint_retval
+
+cute_expect_sint_set
+********************
+
+.. doxygendefine:: cute_expect_sint_set
+
 cute_fail
 *********
 
@@ -663,6 +713,11 @@ cute_mock_sint_parm
 *******************
 
 .. doxygendefine:: cute_mock_sint_parm
+
+cute_mock_sint_retval
+*********************
+
+.. doxygendefine:: cute_mock_sint_retval
 
 cute_skip
 *********
