@@ -19,7 +19,6 @@
 #ifndef _CUTE_EXPECT_H
 #define _CUTE_EXPECT_H
 
-#include <cute/types.h>
 #include <cute/priv/expect.h>
 
 /******************************************************************************
@@ -55,7 +54,7 @@
  *               unsigned int line,
  *               const char * function)
  * {
- * 	cute_mock_assert(expression, file, line, function);
+ *      cute_mock_assert(expression, file, line, function);
  * }
  *
  * static void
@@ -175,73 +174,103 @@ cute_mock_assert(const char * expression,
  * Signed integer mock parameter expectation handling
  ******************************************************************************/
 
+/**
+ * Schedule a signed integer function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct expected signed integer value to perform the check against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_sint_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed} if
+ * the comparison of @p _parm against @p _xpct using the @p _op comparison
+ * operator results in a failure. Comparison is performed according to the
+ * following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that @p _parm == @p _xpct ;
+ * - `unequal` to ensure that @p _parm != @p _xpct ;
+ * - `greater`, to ensure that @p _parm > @p _xpct ;
+ * - `greater_equal`, to ensure that @p _parm >= @p _xpct ;
+ * - `lower`, to ensure that @p _parm < @p _xpct ;
+ * - `lower_equal`, to ensure that @p _parm <= @p _xpct.
+ *
+ * Both @p _parm and @p _xpct *MUST* be signed integers, i.e., either :
+ * - `signed char`,
+ * - `signed short`,
+ * - `signed int`,
+ * - `signed long`,
+ * - `signed long long`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(int word, short half)
+ * {
+ *      cute_mock_sint_parm(word);
+ *      cute_mock_sint_parm(half);
+ * }
+ *
+ * static void
+ * caller(int word, short half)
+ * {
+ *      callee(word, half);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_sint_parm(callee, word, equal,   INT_MAX);
+ *      cute_expect_sint_parm(callee, half, greater, SHRT_MAX / 2);
+ *      caller(INT_MAX, SHRT_MAX);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_sint_parm()
+ * - #CUTE_TEST
+ */
 #define cute_expect_sint_parm(_func, _parm, _op, _xpct) \
 	cute_expect_sched_sint_parm_ ##  _op(__FILE__, \
 	                                     __LINE__, \
 	                                     # _func, \
 	                                     # _parm, \
-		                             &__CUTE_VALUE(sint, # _xpct, _xpct))
+	                                     &__CUTE_VALUE(sint, \
+	                                                   # _xpct, \
+	                                                   _xpct))
 
+/**
+ * Check a signed integer function parameter mock expectation.
+ *
+ * @param[in] _parm function parameter name
+ *
+ * Check the value of a signed integer function parameter expectation scheduled
+ * using cute_expect_sint_parm().
+ *
+ * This macro must be called from within the mocked function which is given the
+ * parameter to verify.
+ *
+ * @see
+ * - cute_expect_sint_parm()
+ * - #CUTE_TEST
+ */
 #define cute_mock_sint_parm(_parm) \
 	cute_expect_check_sint_parm(__FILE__, \
 	                            __LINE__, \
 	                            __func__, \
 	                            &__CUTE_VALUE(sint, # _parm, _parm))
-
-extern void
-cute_expect_check_sint_parm(const char *             file,
-                            int                      line,
-                            const char *             function,
-                            const struct cute_sint * check)
-	__cute_export;
-
-extern void
-cute_expect_sched_sint_parm_equal(const char *             file,
-                                  int                      line,
-                                  const char *             function,
-                                  const char *             parm,
-                                  const struct cute_sint * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_sint_parm_unequal(const char *             file,
-                                    int                      line,
-                                    const char *             function,
-                                    const char *             parm,
-                                    const struct cute_sint * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_sint_parm_greater(const char *             file,
-                                    int                      line,
-                                    const char *             function,
-                                    const char *             parm,
-                                    const struct cute_sint * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_sint_parm_greater_equal(const char *             file,
-                                          int                      line,
-                                          const char *             function,
-                                          const char *             parm,
-                                          const struct cute_sint * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_sint_parm_lower(const char *             file,
-                                  int                      line,
-                                  const char *             function,
-                                  const char *             parm,
-                                  const struct cute_sint * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_sint_parm_lower_equal(const char *             file,
-                                        int                      line,
-                                        const char *             function,
-                                        const char *             parm,
-                                        const struct cute_sint * expect)
-	__cute_export;
 
 #define cute_expect_sint_range(_func, _parm, _op, _xpct) \
 	cute_expect_sched_sint_parm_ ##  _op ## _range(__FILE__, \

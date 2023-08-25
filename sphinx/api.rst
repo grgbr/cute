@@ -286,6 +286,40 @@ Call expectation
 Combine :c:macro:`cute_expect_call()` and :c:func:`cute_mock_call()`
 to ensure that a function is called according to the expected schedule order.
 
+Parameter expectation
+*********************
+
+Multiple types of function parameter expectations are supported to implement
+testing logic.  These are described in the following sections.
+
+Signed integers
+^^^^^^^^^^^^^^^
+
+Signed integer function parameter expectations may be verified using so-called
+`sint` definitions :
+
+.. hlist::
+
+   * **Parameter value expectation** :
+
+      * :c:macro:`cute_expect_sint_parm`
+
+   * **Parameter range expectation** :
+
+     * :c:struct:`cute_sint_range` structure
+     * :c:macro:`CUTE_SINT_RANGE` initializer
+     * :c:macro:`cute_expect_sint_range` function-like macro
+
+   * **Parameter set expectation** :
+
+     * :c:struct:`cute_sint_set` structure
+     * :c:macro:`CUTE_SINT_SET` initializer
+     * :c:macro:`cute_expect_sint_set` function-like macro
+
+   * **Parameter check**:
+
+      * :c:macro:`cute_mock_sint_parm()` function-like macro
+
 .. index:: main;API, API;main
 
 Running tests
@@ -610,6 +644,11 @@ cute_expect_call
 
 .. doxygendefine:: cute_expect_call
 
+cute_expect_sint_parm
+*********************
+
+.. doxygendefine:: cute_expect_sint_parm
+
 cute_fail
 *********
 
@@ -619,6 +658,11 @@ cute_mock_call
 **************
 
 .. doxygendefine:: cute_mock_call
+
+cute_mock_sint_parm
+*******************
+
+.. doxygendefine:: cute_mock_sint_parm
 
 cute_skip
 *********
