@@ -311,4 +311,105 @@ cute_expect_sched_hex_parm_not_in_set(const char *                 file,
                                       const struct cute_uint_set * expect)
 	__cute_export;
 
+extern void
+cute_expect_check_flt_parm(const char *            file,
+                           int                     line,
+                           const char *            function,
+                           const struct cute_flt * check)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_parm_equal(const char *            file,
+                                 int                     line,
+                                 const char *            function,
+                                 const char *            parm,
+                                 const struct cute_flt * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_parm_unequal(const char *            file,
+                                   int                     line,
+                                   const char *            function,
+                                   const char *            parm,
+                                   const struct cute_flt * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_parm_greater(const char *            file,
+                                   int                     line,
+                                   const char *            function,
+                                   const char *            parm,
+                                   const struct cute_flt * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_parm_greater_equal(const char *            file,
+                                         int                     line,
+                                         const char *            function,
+                                         const char *            parm,
+                                         const struct cute_flt * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_parm_lower(const char *            file,
+                                 int                     line,
+                                 const char *            function,
+                                 const char *            parm,
+                                 const struct cute_flt * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_parm_lower_equal(const char *            file,
+                                       int                     line,
+                                       const char *            function,
+                                       const char *            parm,
+                                       const struct cute_flt * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_parm_in_range(const char *                  file,
+                                    int                           line,
+                                    const char *                  function,
+                                    const char *                  parm,
+                                    const struct cute_flt_range * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_parm_not_in_range(
+	const char *                  file,
+	int                           line,
+	const char *                  function,
+	const char *                  parm,
+	const struct cute_flt_range * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_parm_in_set(const char *                file,
+                                  int                         line,
+                                  const char *                function,
+                                  const char *                parm,
+                                  const struct cute_flt_set * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_parm_not_in_set(const char *                file,
+                                      int                         line,
+                                      const char *                function,
+                                      const char *                parm,
+                                      const struct cute_flt_set * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_flt_retval(const char *            file,
+                             int                     line,
+                             const char *            function,
+                             const struct cute_flt * retval)
+	__cute_export;
+
+extern long double
+cute_expect_check_flt_retval(const char * file,
+                             int          line,
+                             const char * function)
+	__cute_export;
+
 #endif /* _CUTE_PRIV_EXPECT_H */

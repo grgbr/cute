@@ -800,13 +800,13 @@ cute_mock_assert(const char * expression,
  * #include <cute/expect.h>
  * #include <limits.h>
  *
- * static int
+ * static unsigned int
  * callee(void)
  * {
- *      return (int)cute_mock_uint_retval();
+ *      return (unsigned int)cute_mock_uint_retval();
  * }
  *
- * static int
+ * static unsigned int
  * caller(void)
  * {
  *      return callee();
@@ -814,8 +814,8 @@ cute_mock_assert(const char * expression,
  *
  * CUTE_TEST(mytest)
  * {
- *      cute_expect_uint_retval(callee, 1);
- *      cute_check_uint(caller(), equal, 1);
+ *      cute_expect_uint_retval(callee, 1U);
+ *      cute_check_uint(caller(), equal, 1U);
  * }
  * @endcode
  *
@@ -1126,6 +1126,72 @@ cute_mock_assert(const char * expression,
  * Floating point number mock parameter expectation handling
  ******************************************************************************/
 
+/**
+ * Schedule a floating point number function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct expected floating point value to perform the check against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_flt_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed} if
+ * the comparison of @p _parm against @p _xpct using the @p _op comparison
+ * operator results in a failure. Comparison is performed according to the
+ * following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that @p _parm == @p _xpct ;
+ * - `unequal` to ensure that @p _parm != @p _xpct ;
+ * - `greater`, to ensure that @p _parm > @p _xpct ;
+ * - `greater_equal`, to ensure that @p _parm >= @p _xpct ;
+ * - `lower`, to ensure that @p _parm < @p _xpct ;
+ * - `lower_equal`, to ensure that @p _parm <= @p _xpct.
+ *
+ * Both @p _parm and @p _xpct *MUST* be floating point numbers, i.e., either :
+ * - `float`,
+ * - `double`,
+ * - `long double`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(float float_value, double double_value)
+ * {
+ *      cute_mock_flt_parm(float_value);
+ *      cute_mock_flt_parm(double_value);
+ * }
+ *
+ * static void
+ * caller(float float_value, double double_value)
+ * {
+ *      callee(float_value, double_value);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_flt_parm(callee, float_value, equal,    1.5f);
+ *      cute_expect_flt_parm(callee, double_value, greater, 10.005);
+ *      caller(1.5f, 5.7);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_flt_parm()
+ * - #CUTE_TEST
+ */
 #define cute_expect_flt_parm(_func, _parm, _op, _xpct) \
 	cute_expect_sched_flt_parm_ ##  _op(__FILE__, \
 	                                    __LINE__, \
@@ -1133,67 +1199,106 @@ cute_mock_assert(const char * expression,
 	                                    # _parm, \
 	                                    &__CUTE_VALUE(flt, # _xpct, _xpct))
 
+/**
+ * Check a floating point number function parameter mock expectation.
+ *
+ * @param[in] _parm function parameter name
+ *
+ * Check the value of a floating point number function parameter expectation scheduled
+ * using cute_expect_flt_parm(), cute_expect_flt_range() or
+ * cute_expect_flt_set().
+ *
+ * This macro must be called from within the mocked function which is given the
+ * parameter to verify.
+ *
+ * @see
+ * - cute_expect_flt_parm()
+ * - cute_expect_flt_range()
+ * - cute_expect_flt_set()
+ * - #CUTE_TEST
+ */
 #define cute_mock_flt_parm(_parm) \
 	cute_expect_check_flt_parm(__FILE__, \
 	                           __LINE__, \
 	                           __func__, \
 	                           &__CUTE_VALUE(flt, # _parm, _parm))
 
-extern void
-cute_expect_check_flt_parm(const char *            file,
-                           int                     line,
-                           const char *            function,
-                           const struct cute_flt * check)
-	__cute_export;
-
-extern void
-cute_expect_sched_flt_parm_equal(const char *            file,
-                                 int                     line,
-                                 const char *            function,
-                                 const char *            parm,
-                                 const struct cute_flt * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_flt_parm_unequal(const char *            file,
-                                   int                     line,
-                                   const char *            function,
-                                   const char *            parm,
-                                   const struct cute_flt * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_flt_parm_greater(const char *            file,
-                                   int                     line,
-                                   const char *            function,
-                                   const char *            parm,
-                                   const struct cute_flt * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_flt_parm_greater_equal(const char *            file,
-                                         int                     line,
-                                         const char *            function,
-                                         const char *            parm,
-                                         const struct cute_flt * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_flt_parm_lower(const char *            file,
-                                 int                     line,
-                                 const char *            function,
-                                 const char *            parm,
-                                 const struct cute_flt * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_flt_parm_lower_equal(const char *            file,
-                                       int                     line,
-                                       const char *            function,
-                                       const char *            parm,
-                                       const struct cute_flt * expect)
-	__cute_export;
-
+/**
+ * Schedule a floating point number range function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct reference floating point number range to perform the check
+ *                  against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_flt_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed}
+ * if the comparison of @p _parm against the @p _xpct range using the @p _op
+ * comparison operator results in a failure. Comparison is performed according
+ * to the following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _xpct.min <= @p _parm <= @p _xpct.max ;
+ * - `not_in` to ensure that @p _parm < @p _xpct.min or @p _parm > @p _xpct.max.
+ *
+ * @p _parm *MUST* be a floating point number, i.e., either :
+ * - `float`,
+ * - `double`,
+ * - `long double`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a cute_flt_range floating point number range as defined
+ * by the #CUTE_FLT_RANGE macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(float float_value, double double_value)
+ * {
+ *      cute_mock_flt_parm(float_value);
+ *      cute_mock_flt_parm(double_value);
+ * }
+ *
+ * static void
+ * caller(float float_value, double double_value)
+ * {
+ *      callee(float_value, double_value);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_flt_range range = CUTE_FLT_RANGE(-5.005, 5.005);
+ *
+ *      cute_expect_flt_range(callee,
+ *                            float_value,
+ *                            in,
+ *                            CUTE_FLT_RANGE(0.005f, 9.005f));
+ *      cute_expect_flt_range(callee,
+ *                            double_value,
+ *                            not_in,
+ *                            range);
+ *      caller(5.0025f, -7.725);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_flt_parm()
+ * - #CUTE_FLT_RANGE
+ * - cute_flt_range
+ * - #CUTE_TEST
+ */
 #define cute_expect_flt_range(_func, _parm, _op, _xpct) \
 	cute_expect_sched_flt_parm_ ##  _op ## _range(__FILE__, \
 	                                              __LINE__, \
@@ -1201,23 +1306,82 @@ cute_expect_sched_flt_parm_lower_equal(const char *            file,
 	                                              # _parm, \
 	                                              &(_xpct))
 
-extern void
-cute_expect_sched_flt_parm_in_range(const char *                  file,
-                                    int                           line,
-                                    const char *                  function,
-                                    const char *                  parm,
-                                    const struct cute_flt_range * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_flt_parm_not_in_range(
-	const char *                  file,
-	int                           line,
-	const char *                  function,
-	const char *                  parm,
-	const struct cute_flt_range * expect)
-	__cute_export;
-
+/**
+ * Schedule a floating point number set function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct reference floating point number set to perform the check
+ *                  against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_flt_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed}
+ * if the comparison of @p _parm against the @p _xpct set using the @p _op
+ * comparison operator results in a failure. Comparison is performed according
+ * to the following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _parm equals to one the @p _xpct set values ;
+ * - `not_in` to ensure that @p _parm equals to none of the @p _xpct set values.
+ *
+ * @p _parm *MUST* be a floating point number, i.e., either :
+ * - `float`,
+ * - `double`,
+ * - `long double`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * @p _xpct *MUST* be a cute_flt_set floating point number set as defined by
+ * the #CUTE_FLT_SET macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(float float_value, double double_value)
+ * {
+ *      cute_mock_flt_parm(float_value);
+ *      cute_mock_flt_parm(double_value);
+ * }
+ *
+ * static void
+ * caller(float float_value, double double_value)
+ * {
+ *      callee(float_value, double_value);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_flt_set set = CUTE_FLT_SET(-10.005, 5.005, 10.005);
+ *
+ *      cute_expect_flt_set(callee,
+ *                          float_value,
+ *                          in,
+ *                          CUTE_FLT_SET(0.5f, 5.5f, 10.5f));
+ *      cute_expect_flt_set(callee,
+ *                          double_value,
+ *                          not_in,
+ *                          set);
+ *      caller(5.5f, 7.005);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_flt_parm()
+ * - #CUTE_FLT_SET
+ * - cute_flt_set
+ * - #CUTE_TEST
+ */
 #define cute_expect_flt_set(_func, _parm, _op, _xpct) \
 	cute_expect_sched_flt_parm_ ##  _op ## _set(__FILE__, \
 	                                            __LINE__, \
@@ -1225,45 +1389,78 @@ cute_expect_sched_flt_parm_not_in_range(
 	                                            # _parm, \
 	                                            &(_xpct))
 
-extern void
-cute_expect_sched_flt_parm_in_set(const char *                file,
-                                  int                         line,
-                                  const char *                function,
-                                  const char *                parm,
-                                  const struct cute_flt_set * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_flt_parm_not_in_set(const char *                file,
-                                      int                         line,
-                                      const char *                function,
-                                      const char *                parm,
-                                      const struct cute_flt_set * expect)
-	__cute_export;
-
 /******************************************************************************
  * Floating point number return value expectation handling
  ******************************************************************************/
 
-extern void
-cute_expect_sched_flt_retval(const char *            file,
-                             int                     line,
-                             const char *            function,
-                             const struct cute_flt * retval)
-	__cute_export;
-
+/**
+ * Schedule a floating point number function return value mock expectation.
+ *
+ * @param[in] _func   function name
+ * @param[in] _retval value to be returned from mocked function
+ *
+ * Define and schedule an @rstsubst{expectation} which value is returned when
+ * cute_mock_flt_retval() is called.
+ *
+ * @p _retval *MUST* be a floating point number, i.e., either :
+ * - `float`,
+ * - `double`,
+ * - `long double`,
+ * - or equivalent *typedef*'ed types.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static float
+ * callee(void)
+ * {
+ *      return (float)cute_mock_flt_retval();
+ * }
+ *
+ * static float
+ * caller(void)
+ * {
+ *      return callee();
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_flt_retval(callee, 1.5f);
+ *      cute_check_flt(caller(), equal, 1.5f);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_flt_retval()
+ * - #CUTE_TEST
+ */
 #define cute_expect_flt_retval(_func, _retval) \
 	cute_expect_sched_flt_retval(__FILE__, \
 	                             __LINE__, \
 	                             # _func, \
 	                             &__CUTE_VALUE(flt, # _retval, _retval))
 
-extern long double
-cute_expect_check_flt_retval(const char * file,
-                             int          line,
-                             const char * function)
-	__cute_export;
-
+/**
+ * Return a floating point number function return value mock expectation.
+ *
+ * @return scheduled return value cast as an `long double`
+ *
+ * Extract and return a a floating point number value scheduled using
+ * cute_expect_flt_retval().
+ *
+ * This macro must be called from within the mocked function that returns the
+ * scheduled value.
+ *
+ * @see
+ * - cute_expect_flt_retval()
+ * - #CUTE_TEST
+ */
 #define cute_mock_flt_retval() \
 	cute_expect_check_flt_retval(__FILE__, __LINE__, __func__)
 
