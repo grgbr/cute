@@ -339,6 +339,42 @@ Signed integer function parameter expectations may be verified using so-called
 
       * :c:macro:`cute_mock_sint_parm()` function-like macro
 
+.. index:: unsigned integer expectation;API, uint expectation;API,
+           API;unsigned integer expectation, API;uint expectation,
+           integer;unsigned expectation
+
+Unsigned integers
+^^^^^^^^^^^^^^^^^
+
+Unsigned integer function parameter expectations may be verified using so-called
+`uint` definitions :
+
+.. hlist::
+
+   * **Parameter value expectation** :
+
+      * :c:macro:`cute_expect_uint_parm`
+      * :c:macro:`cute_expect_hex_parm`
+
+   * **Parameter range expectation** :
+
+     * :c:struct:`cute_uint_range` structure
+     * :c:macro:`CUTE_UINT_RANGE` initializer
+     * :c:macro:`cute_expect_uint_range` function-like macro
+     * :c:macro:`cute_expect_hex_range` function-like macro
+
+   * **Parameter set expectation** :
+
+     * :c:struct:`cute_uint_set` structure
+     * :c:macro:`CUTE_UINT_SET` initializer
+     * :c:macro:`cute_expect_uint_set` function-like macro
+     * :c:macro:`cute_expect_hex_set` function-like macro
+
+   * **Parameter check**:
+
+      * :c:macro:`cute_mock_uint_parm()` function-like macro
+      * :c:macro:`cute_mock_hex_parm()` function-like macro
+
 .. index:: function return value expectation;API, return value expectation;API,
            API;return value expectation, API;return value expectation
 
@@ -354,6 +390,11 @@ testing logic :
 
      * :c:macro:`cute_expect_sint_retval` function-like macro
      * :c:macro:`cute_mock_sint_retval` function-like macro
+
+   * **Unsigned integers** :
+
+     * :c:macro:`cute_expect_uint_retval` function-like macro
+     * :c:macro:`cute_mock_uint_retval` function-like macro
 
 .. index:: main;API, API;main
 
@@ -679,6 +720,21 @@ cute_expect_call
 
 .. doxygendefine:: cute_expect_call
 
+cute_expect_hex_parm
+********************
+
+.. doxygendefine:: cute_expect_hex_parm
+
+cute_expect_hex_range
+*********************
+
+.. doxygendefine:: cute_expect_hex_range
+
+cute_expect_hex_set
+*******************
+
+.. doxygendefine:: cute_expect_hex_set
+
 cute_expect_sint_parm
 *********************
 
@@ -699,6 +755,26 @@ cute_expect_sint_set
 
 .. doxygendefine:: cute_expect_sint_set
 
+cute_expect_uint_parm
+*********************
+
+.. doxygendefine:: cute_expect_uint_parm
+
+cute_expect_uint_range
+**********************
+
+.. doxygendefine:: cute_expect_uint_range
+
+cute_expect_uint_retval
+***********************
+
+.. doxygendefine:: cute_expect_uint_retval
+
+cute_expect_uint_set
+********************
+
+.. doxygendefine:: cute_expect_uint_set
+
 cute_fail
 *********
 
@@ -709,6 +785,11 @@ cute_mock_call
 
 .. doxygendefine:: cute_mock_call
 
+cute_mock_hex_parm
+******************
+
+.. doxygendefine:: cute_mock_hex_parm
+
 cute_mock_sint_parm
 *******************
 
@@ -718,6 +799,16 @@ cute_mock_sint_retval
 *********************
 
 .. doxygendefine:: cute_mock_sint_retval
+
+cute_mock_uint_parm
+*******************
+
+.. doxygendefine:: cute_mock_uint_parm
+
+cute_mock_uint_retval
+*********************
+
+.. doxygendefine:: cute_mock_uint_retval
 
 cute_skip
 *********
