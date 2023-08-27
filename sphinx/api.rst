@@ -407,6 +407,32 @@ so-called `flt` definitions :
 
       * :c:macro:`cute_mock_flt_parm()` function-like macro
 
+.. index:: string expectation;API, str expectation;API,
+           API;string expectation, API;str expectation,
+           integer;string
+
+Strings
+^^^^^^^
+
+String function parameter expectations may be verified using
+so-called `str` definitions :
+
+.. hlist::
+
+   * **Parameter value expectation** :
+
+      * :c:macro:`cute_expect_str_parm`
+
+   * **Parameter set expectation** :
+
+     * :c:struct:`cute_str_set` structure
+     * :c:macro:`CUTE_STR_SET` initializer
+     * :c:macro:`cute_expect_str_set` function-like macro
+
+   * **Parameter check**:
+
+      * :c:macro:`cute_mock_str_parm()` function-like macro
+
 .. index:: function return value expectation;API, return value expectation;API,
            API;return value expectation, API;return value expectation
 
@@ -432,6 +458,11 @@ testing logic :
 
      * :c:macro:`cute_expect_flt_retval` function-like macro
      * :c:macro:`cute_mock_flt_retval` function-like macro
+
+   * **Strings** :
+
+     * :c:macro:`cute_expect_str_retval` function-like macro
+     * :c:macro:`cute_mock_str_retval` function-like macro
 
 .. index:: main;API, API;main
 
@@ -812,6 +843,21 @@ cute_expect_sint_set
 
 .. doxygendefine:: cute_expect_sint_set
 
+cute_expect_str_parm
+********************
+
+.. doxygendefine:: cute_expect_str_parm
+
+cute_expect_str_retval
+**********************
+
+.. doxygendefine:: cute_expect_str_retval
+
+cute_expect_str_set
+*******************
+
+.. doxygendefine:: cute_expect_str_set
+
 cute_expect_uint_parm
 *********************
 
@@ -866,6 +912,16 @@ cute_mock_sint_retval
 *********************
 
 .. doxygendefine:: cute_mock_sint_retval
+
+cute_mock_str_parm
+******************
+
+.. doxygendefine:: cute_mock_str_parm
+
+cute_mock_str_retval
+********************
+
+.. doxygendefine:: cute_mock_str_retval
 
 cute_mock_uint_parm
 *******************

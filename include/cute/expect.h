@@ -1468,90 +1468,172 @@ cute_mock_assert(const char * expression,
  * String parameter expectation handling
  ******************************************************************************/
 
+/**
+ * Schedule a string function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct expected string content to perform the check against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_str_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed} if
+ * the comparison of @p _parm against @p _xpct using the @p _op comparison
+ * operator results in a failure. Comparison is performed according to the
+ * following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that @p _parm content equals to @p _xpct content;
+ * - `unequal` to ensure that @p _parm content differs from @p _xpct content;
+ * - `begin`, to ensure that @p _parm content begins with @p _xpct content;
+ * - `end`, to ensure that @p _parm content ends with @p _xpct content;
+ * - `contain`, to ensure that @p _parm content contains @p _xpct content, i.e.,
+ *   @p _xpct is a substring of @p _parm;
+ * - `not_contain`, to ensure that @p _parm content does not containt @p _xpct
+ *   content, i.e., @p _xpct is not a substring of @p _parm.
+ *
+ * Both @p _parm and @p _xpct *MUST* be `NULL` terminated C strings.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(const char * string)
+ * {
+ *      cute_mock_str_parm(string);
+ * }
+ *
+ * static void
+ * caller(const char * string)
+ * {
+ *      callee(string);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_str_parm(callee, string, equal, "a test string");
+ *      cute_expect_str_parm(callee, string, begin, "another");
+ *
+ *      caller("a test string");
+ *      caller("another test string");
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_str_parm()
+ * - #CUTE_TEST
+ */
 #define cute_expect_str_parm(_func, _parm, _op, _xpct) \
 	cute_expect_sched_str_parm_ ##  _op(__FILE__, \
 	                                    __LINE__, \
 	                                    # _func, \
 	                                    # _parm, \
-		                            &__CUTE_VALUE(str, # _xpct, _xpct))
+	                                    &__CUTE_VALUE(str, # _xpct, _xpct))
 
+/**
+ * Check a string function parameter mock expectation.
+ *
+ * @param[in] _parm function parameter name
+ *
+ * Check the content of a string function parameter expectation scheduled
+ * using cute_expect_str_parm() or cute_expect_str_set().
+ *
+ * This macro must be called from within the mocked function which is given the
+ * parameter to verify.
+ *
+ * @see
+ * - cute_expect_str_parm()
+ * - cute_expect_str_set()
+ * - #CUTE_TEST
+ */
 #define cute_mock_str_parm(_parm) \
 	cute_expect_check_str_parm(__FILE__, \
 	                           __LINE__, \
 	                           __func__, \
 	                           &__CUTE_VALUE(str, # _parm, _parm))
 
-extern void
-cute_expect_check_str_parm(const char *            file,
-                           int                     line,
-                           const char *            function,
-                           const struct cute_str * check)
-	__cute_export;
-
-extern void
-cute_expect_sched_str_parm_equal(const char *            file,
-                                 int                     line,
-                                 const char *            function,
-                                 const char *            parm,
-                                 const struct cute_str * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_str_parm_unequal(const char *            file,
-                                   int                     line,
-                                   const char *            function,
-                                   const char *            parm,
-                                   const struct cute_str * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_str_parm_begin(const char *            file,
-                                 int                     line,
-                                 const char *            function,
-                                 const char *            parm,
-                                 const struct cute_str * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_str_parm_not_begin(const char *            file,
-                                     int                     line,
-                                     const char *            function,
-                                     const char *            parm,
-                                     const struct cute_str * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_str_parm_end(const char *            file,
-                               int                     line,
-                               const char *            function,
-                               const char *            parm,
-                               const struct cute_str * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_str_parm_not_end(const char *            file,
-                                   int                     line,
-                                   const char *            function,
-                                   const char *            parm,
-                                   const struct cute_str * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_str_parm_contain(const char *            file,
-                                   int                     line,
-                                   const char *            function,
-                                   const char *            parm,
-                                   const struct cute_str * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_str_parm_not_contain(const char *            file,
-                                       int                     line,
-                                       const char *            function,
-                                       const char *            parm,
-                                       const struct cute_str * expect)
-	__cute_export;
-
+/**
+ * Schedule a string set function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct reference string set to perform the check against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_str_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed}
+ * if the comparison of @p _parm against the @p _xpct set using the @p _op
+ * comparison operator results in a failure. Comparison is performed according
+ * to the following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _parm equals to one the @p _xpct set values ;
+ * - `not_in` to ensure that @p _parm equals to none of the @p _xpct set values.
+ *
+ * @p _parm *MUST* be a `NULL` terminated C string.
+ *
+ * @p _xpct *MUST* be a cute_str_set string set as defined by
+ * the #CUTE_STR_SET macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(const char * string)
+ * {
+ *      cute_mock_str_parm(string);
+ * }
+ *
+ * static void
+ * caller(const char * string)
+ * {
+ *      callee(string);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      const struct cute_str_set set = CUTE_STR_SET("zero", "one", "two");
+ *
+ *      cute_expect_str_set(callee,
+ *                          string,
+ *                          in,
+ *                          CUTE_STR_SET("Lorem", "ipsum");
+ *      cute_expect_str_set(callee,
+ *                          string,
+ *                          not_in,
+ *                          set);
+ *
+ *      caller("one");
+ *      caller("dolor");
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_str_parm()
+ * - #CUTE_STR_SET
+ * - cute_str_set
+ * - #CUTE_TEST
+ */
 #define cute_expect_str_set(_func, _parm, _op, _xpct) \
 	cute_expect_sched_str_parm_ ##  _op ## _set(__FILE__, \
 	                                            __LINE__, \
@@ -1559,45 +1641,74 @@ cute_expect_sched_str_parm_not_contain(const char *            file,
 	                                            # _parm, \
 	                                            &(_xpct))
 
-extern void
-cute_expect_sched_str_parm_in_set(const char *                file,
-                                  int                         line,
-                                  const char *                function,
-                                  const char *                parm,
-                                  const struct cute_str_set * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_str_parm_not_in_set(const char *                file,
-                                      int                         line,
-                                      const char *                function,
-                                      const char *                parm,
-                                      const struct cute_str_set * expect)
-	__cute_export;
-
 /******************************************************************************
  * String return value expectation handling
  ******************************************************************************/
 
-extern void
-cute_expect_sched_str_retval(const char *            file,
-                             int                     line,
-                             const char *            function,
-                             const struct cute_str * retval)
-	__cute_export;
-
+/**
+ * Schedule a string function return value mock expectation.
+ *
+ * @param[in] _func   function name
+ * @param[in] _retval value to be returned from mocked function
+ *
+ * Define and schedule an @rstsubst{expectation} which value is returned when
+ * cute_mock_str_retval() is called.
+ *
+ * @p _retval *MUST* be a `NULL` terminated C string.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static const char *
+ * callee(void)
+ * {
+ *      return cute_mock_str_retval();
+ * }
+ *
+ * static const char *
+ * caller(void)
+ * {
+ *      return callee();
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_str_retval(callee, "a test string");
+ *      cute_check_str(caller(), contain, "test");
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_str_retval()
+ * - #CUTE_TEST
+ */
 #define cute_expect_str_retval(_func, _retval) \
 	cute_expect_sched_str_retval(__FILE__, \
 	                             __LINE__, \
 	                             # _func, \
 	                             &__CUTE_VALUE(str, # _retval, _retval))
 
-extern char *
-cute_expect_check_str_retval(const char * file,
-                             int          line,
-                             const char * function)
-	__cute_export;
-
+/**
+ * Return a string function return value mock expectation.
+ *
+ * @return scheduled return value cast as a `char *`
+ *
+ * Extract and return a pointer to a `NULL` terminated C string scheduled using
+ * cute_expect_str_retval().
+ *
+ * This macro must be called from within the mocked function that returns the
+ * scheduled value.
+ *
+ * @see
+ * - cute_expect_str_retval()
+ * - #CUTE_TEST
+ */
 #define cute_mock_str_retval() \
 	cute_expect_check_str_retval(__FILE__, __LINE__, __func__)
 
