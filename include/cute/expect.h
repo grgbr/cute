@@ -206,7 +206,7 @@ cute_mock_assert(const char * expression,
  * - `signed int`,
  * - `signed long`,
  * - `signed long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -303,7 +303,7 @@ cute_mock_assert(const char * expression,
  * - `signed int`,
  * - `signed long`,
  * - `signed long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_sint_range signed integer range as defined by the
  * #CUTE_SINT_RANGE macro.
@@ -381,7 +381,7 @@ cute_mock_assert(const char * expression,
  * - `signed int`,
  * - `signed long`,
  * - `signed long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_sint_set signed integer set as defined by
  * the #CUTE_SINT_SET macro.
@@ -450,7 +450,7 @@ cute_mock_assert(const char * expression,
  * - `signed int`,
  * - `signed long`,
  * - `signed long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -544,7 +544,7 @@ cute_mock_assert(const char * expression,
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -642,7 +642,7 @@ cute_mock_assert(const char * expression,
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_uint_range unsigned integer range as defined by the
  * #CUTE_UINT_RANGE macro.
@@ -720,7 +720,7 @@ cute_mock_assert(const char * expression,
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_uint_set unsigned integer set as defined by
  * the #CUTE_UINT_SET macro.
@@ -789,7 +789,7 @@ cute_mock_assert(const char * expression,
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -886,7 +886,7 @@ cute_mock_assert(const char * expression,
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -990,7 +990,7 @@ cute_mock_assert(const char * expression,
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_uint_range unsigned integer range as defined by the
  * #CUTE_UINT_RANGE macro.
@@ -1072,7 +1072,7 @@ cute_mock_assert(const char * expression,
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_uint_set unsigned integer set as defined by
  * the #CUTE_UINT_SET macro.
@@ -1156,7 +1156,7 @@ cute_mock_assert(const char * expression,
  * - `float`,
  * - `double`,
  * - `long double`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -1250,7 +1250,7 @@ cute_mock_assert(const char * expression,
  * - `float`,
  * - `double`,
  * - `long double`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_flt_range floating point number range as defined
  * by the #CUTE_FLT_RANGE macro.
@@ -1333,7 +1333,7 @@ cute_mock_assert(const char * expression,
  * - `float`,
  * - `double`,
  * - `long double`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_flt_set floating point number set as defined by
  * the #CUTE_FLT_SET macro.
@@ -1406,7 +1406,7 @@ cute_mock_assert(const char * expression,
  * - `float`,
  * - `double`,
  * - `long double`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -1716,6 +1716,69 @@ cute_mock_assert(const char * expression,
  * Pointer mock parameter expectation handling
  ******************************************************************************/
 
+/**
+ * Schedule a pointer function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct expected pointer value to perform the check against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_ptr_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed} if
+ * the comparison of @p _parm against @p _xpct using the @p _op comparison
+ * operator results in a failure. Comparison is performed according to the
+ * following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that @p _parm == @p _xpct ;
+ * - `unequal` to ensure that @p _parm != @p _xpct ;
+ * - `greater`, to ensure that @p _parm > @p _xpct ;
+ * - `greater_equal`, to ensure that @p _parm >= @p _xpct ;
+ * - `lower`, to ensure that @p _parm < @p _xpct ;
+ * - `lower_equal`, to ensure that @p _parm <= @p _xpct.
+ *
+ * Both @p _parm and @p _xpct *MUST* be pointers, i.e., either `void *` or
+ * equivalent *typedef*'ed types.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(const void * ptr)
+ * {
+ *      cute_mock_ptr_parm(ptr);
+ * }
+ *
+ * static void
+ * caller(const void * ptr)
+ * {
+ *      callee(ptr);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      int val = 0;
+ *
+ *      cute_expect_ptr_parm(callee, ptr, equal, (const void *)&val);
+ *      caller((const void *)&val);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_ptr_parm()
+ * - #CUTE_TEST
+ */
 #define cute_expect_ptr_parm(_func, _parm, _op, _xpct) \
 	cute_expect_sched_ptr_parm_ ##  _op(__FILE__, \
 	                                    __LINE__, \
@@ -1723,67 +1786,107 @@ cute_mock_assert(const char * expression,
 	                                    # _parm, \
 	                                    &__CUTE_VALUE(ptr, # _xpct, _xpct))
 
+/**
+ * Check a pointer function parameter mock expectation.
+ *
+ * @param[in] _parm function parameter name
+ *
+ * Check the value of a pointer function parameter expectation scheduled using
+ * cute_expect_ptr_parm(), cute_expect_ptr_range() or cute_expect_ptr_set().
+ *
+ * This macro must be called from within the mocked function which is given the
+ * parameter to verify.
+ *
+ * @see
+ * - cute_expect_ptr_parm()
+ * - cute_expect_ptr_range()
+ * - cute_expect_ptr_set()
+ * - #CUTE_TEST
+ */
 #define cute_mock_ptr_parm(_parm) \
 	cute_expect_check_ptr_parm(__FILE__, \
 	                           __LINE__, \
 	                           __func__, \
 	                           &__CUTE_VALUE(ptr, # _parm, _parm))
 
-extern void
-cute_expect_check_ptr_parm(const char *            file,
-                           int                     line,
-                           const char *            function,
-                           const struct cute_ptr * check)
-	__cute_export;
-
-extern void
-cute_expect_sched_ptr_parm_equal(const char *            file,
-                                 int                     line,
-                                 const char *            function,
-                                 const char *            parm,
-                                 const struct cute_ptr * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_ptr_parm_unequal(const char *            file,
-                                   int                     line,
-                                   const char *            function,
-                                   const char *            parm,
-                                   const struct cute_ptr * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_ptr_parm_greater(const char *            file,
-                                   int                     line,
-                                   const char *            function,
-                                   const char *            parm,
-                                   const struct cute_ptr * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_ptr_parm_greater_equal(const char *            file,
-                                         int                     line,
-                                         const char *            function,
-                                         const char *            parm,
-                                         const struct cute_ptr * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_ptr_parm_lower(const char *            file,
-                                 int                     line,
-                                 const char *            function,
-                                 const char *            parm,
-                                 const struct cute_ptr * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_ptr_parm_lower_equal(const char *            file,
-                                       int                     line,
-                                       const char *            function,
-                                       const char *            parm,
-                                       const struct cute_ptr * expect)
-	__cute_export;
-
+/**
+ * Schedule a pointer range function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct reference pointer range to perform the check
+ *                  against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_ptr_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed}
+ * if the comparison of @p _parm against the @p _xpct range using the @p _op
+ * comparison operator results in a failure. Comparison is performed according
+ * to the following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _xpct.min <= @p _parm <= @p _xpct.max ;
+ * - `not_in` to ensure that @p _parm < @p _xpct.min or @p _parm > @p _xpct.max.
+ *
+ * @p _parm *MUST* be a pointer, i.e., either `void *` or an equivalent
+ * *typedef*'ed type.
+ *
+ * @p _xpct *MUST* be a cute_ptr_range pointer range as defined by the
+ * #CUTE_PTR_RANGE macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(const void * ptr)
+ * {
+ *      cute_mock_ptr_parm(ptr);
+ * }
+ *
+ * static void
+ * caller(const void * ptr)
+ * {
+ *      callee(ptr);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      const int                   array[2] = { 0, 1, 2 };
+ *      const struct cute_ptr_range range =
+ *              CUTE_PTR_RANGE((const void *)&array[0],
+ *                             (const void *)&array[1]);
+ *
+ *      cute_expect_ptr_range(callee,
+ *                            ptr,
+ *                            in,
+ *                            CUTE_PTR_RANGE((const void *)&array[0],
+ *                                           (const void *)&array[2]));
+ *      cute_expect_ptr_range(callee,
+ *                            ptr,
+ *                            not_in,
+ *                            range);
+ *
+ *      caller((const void *)&array[1]);
+ *      caller((const void *)&array[2]);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_ptr_parm()
+ * - #CUTE_PTR_RANGE
+ * - cute_ptr_range
+ * - #CUTE_TEST
+ */
 #define cute_expect_ptr_range(_func, _parm, _op, _xpct) \
 	cute_expect_sched_ptr_parm_ ##  _op ## _range(__FILE__, \
 	                                              __LINE__, \
@@ -1791,23 +1894,84 @@ cute_expect_sched_ptr_parm_lower_equal(const char *            file,
 	                                              # _parm, \
 	                                              &(_xpct))
 
-extern void
-cute_expect_sched_ptr_parm_in_range(const char *                  file,
-                                    int                           line,
-                                    const char *                  function,
-                                    const char *                  parm,
-                                    const struct cute_ptr_range * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_ptr_parm_not_in_range(
-	const char *                   file,
-	int                            line,
-	const char *                   function,
-	const char *                   parm,
-	const struct cute_ptr_range * expect)
-	__cute_export;
-
+/**
+ * Schedule a pointer set function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct reference pointer set to perform the check against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_ptr_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed}
+ * if the comparison of @p _parm against the @p _xpct set using the @p _op
+ * comparison operator results in a failure. Comparison is performed according
+ * to the following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `in`, to ensure that @p _parm equals to one the @p _xpct set values ;
+ * - `not_in` to ensure that @p _parm equals to none of the @p _xpct set values.
+ *
+ * @p _parm *MUST* be a pointer, i.e., either `void *` or an equivalent
+ * *typedef*'ed type.
+ *
+ * @p _xpct *MUST* be a cute_ptr_set pointer set as defined by the #CUTE_PTR_SET
+ * macro.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(const void * ptr)
+ * {
+ *      cute_mock_ptr_parm(ptr);
+ * }
+ *
+ * static void
+ * caller(const void * ptr)
+ * {
+ *      callee(ptr);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      int                       array[2] = { 0, 1, 2 };
+ *      const struct cute_ptr_set set =
+ *              CUTE_PTR_SET((const void *)&array[2],
+ *                           (const void *)&array[0]);
+ *
+ *      cute_expect_ptr_set(callee,
+ *                          ptr,
+ *                          in,
+ *                          CUTE_PTR_SET((const void *)&array[2],
+ *                                       (const void *)&array[0],
+ *                                       (const void *)&array[1]);
+ *      cute_expect_ptr_set(callee,
+ *                          ptr,
+ *                          not_in,
+ *                          set);
+ *
+ *      caller((const void *)&array[0]);
+ *      caller((const void *)&array[1]);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_ptr_parm()
+ * - #CUTE_PTR_SET
+ * - cute_ptr_set
+ * - #CUTE_TEST
+ */
 #define cute_expect_ptr_set(_func, _parm, _op, _xpct) \
 	cute_expect_sched_ptr_parm_ ##  _op ## _set(__FILE__, \
                                                     __LINE__, \
@@ -1815,45 +1979,74 @@ cute_expect_sched_ptr_parm_not_in_range(
                                                     # _parm, \
                                                     &(_xpct))
 
-extern void
-cute_expect_sched_ptr_parm_in_set(const char *                file,
-                                  int                         line,
-                                  const char *                function,
-                                  const char *                parm,
-                                  const struct cute_ptr_set * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_ptr_parm_not_in_set(const char *                file,
-                                      int                         line,
-                                      const char *                function,
-                                      const char *                parm,
-                                      const struct cute_ptr_set * expect)
-	__cute_export;
-
 /******************************************************************************
  * Pointer return value expectation handling
  ******************************************************************************/
 
-extern void
-cute_expect_sched_ptr_retval(const char *            file,
-                             int                     line,
-                             const char *            function,
-                             const struct cute_ptr * retval)
-	__cute_export;
-
+/**
+ * Schedule a pointer function return value mock expectation.
+ *
+ * @param[in] _func   function name
+ * @param[in] _retval value to be returned from mocked function
+ *
+ * Define and schedule an @rstsubst{expectation} which value is returned when
+ * cute_mock_ptr_retval() is called.
+ *
+ * @p _retval *MUST* be a pointer, i.e., either `void *` or an equivalent
+ * *typedef*'ed type.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static const void *
+ * callee(void)
+ * {
+ *      return cute_mock_ptr_retval();
+ * }
+ *
+ * static const void *
+ * caller(void)
+ * {
+ *      return callee();
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_ptr_retval(callee, NULL);
+ *      cute_check_ptr(caller(), equal, NULL);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_ptr_retval()
+ * - #CUTE_TEST
+ */
 #define cute_expect_ptr_retval(_func, _retval) \
 	cute_expect_sched_ptr_retval(__FILE__, \
 	                             __LINE__, \
 	                             # _func, \
 	                             &__CUTE_VALUE(ptr, # _retval, _retval))
 
-extern void *
-cute_expect_check_ptr_retval(const char * file,
-                             int          line,
-                             const char * function)
-	__cute_export;
-
+/**
+ * Return a pointer function return value mock expectation.
+ *
+ * @return scheduled return value cast as an `void *`
+ *
+ * Extract and return a pointer value scheduled using cute_expect_ptr_retval().
+ *
+ * This macro must be called from within the mocked function that returns the
+ * scheduled value.
+ *
+ * @see
+ * - cute_expect_ptr_retval()
+ * - #CUTE_TEST
+ */
 #define cute_mock_ptr_retval() \
 	cute_expect_check_ptr_retval(__FILE__, __LINE__, __func__)
 

@@ -512,4 +512,105 @@ cute_expect_check_str_retval(const char * file,
                              const char * function)
 	__cute_export;
 
+extern void
+cute_expect_check_ptr_parm(const char *            file,
+                           int                     line,
+                           const char *            function,
+                           const struct cute_ptr * check)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_parm_equal(const char *            file,
+                                 int                     line,
+                                 const char *            function,
+                                 const char *            parm,
+                                 const struct cute_ptr * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_parm_unequal(const char *            file,
+                                   int                     line,
+                                   const char *            function,
+                                   const char *            parm,
+                                   const struct cute_ptr * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_parm_greater(const char *            file,
+                                   int                     line,
+                                   const char *            function,
+                                   const char *            parm,
+                                   const struct cute_ptr * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_parm_greater_equal(const char *            file,
+                                         int                     line,
+                                         const char *            function,
+                                         const char *            parm,
+                                         const struct cute_ptr * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_parm_lower(const char *            file,
+                                 int                     line,
+                                 const char *            function,
+                                 const char *            parm,
+                                 const struct cute_ptr * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_parm_lower_equal(const char *            file,
+                                       int                     line,
+                                       const char *            function,
+                                       const char *            parm,
+                                       const struct cute_ptr * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_parm_in_range(const char *                  file,
+                                    int                           line,
+                                    const char *                  function,
+                                    const char *                  parm,
+                                    const struct cute_ptr_range * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_parm_not_in_range(
+	const char *                   file,
+	int                            line,
+	const char *                   function,
+	const char *                   parm,
+	const struct cute_ptr_range * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_parm_in_set(const char *                file,
+                                  int                         line,
+                                  const char *                function,
+                                  const char *                parm,
+                                  const struct cute_ptr_set * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_parm_not_in_set(const char *                file,
+                                      int                         line,
+                                      const char *                function,
+                                      const char *                parm,
+                                      const struct cute_ptr_set * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_ptr_retval(const char *            file,
+                             int                     line,
+                             const char *            function,
+                             const struct cute_ptr * retval)
+	__cute_export;
+
+extern void *
+cute_expect_check_ptr_retval(const char * file,
+                             int          line,
+                             const char * function)
+	__cute_export;
+
 #endif /* _CUTE_PRIV_EXPECT_H */

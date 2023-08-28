@@ -433,6 +433,38 @@ so-called `str` definitions :
 
       * :c:macro:`cute_mock_str_parm()` function-like macro
 
+.. index:: pointer expectation;API, ptr expectation;API,
+           API;pointer expectation, API;ptr expectation,
+           integer;pointer
+
+Pointers
+^^^^^^^^
+
+Pointer function parameter expectations may be verified using so-called `ptr`
+definitions :
+
+.. hlist::
+
+   * **Parameter value expectation** :
+
+      * :c:macro:`cute_expect_ptr_parm`
+
+   * **Parameter range expectation** :
+
+     * :c:struct:`cute_ptr_range` structure
+     * :c:macro:`CUTE_PTR_RANGE` initializer
+     * :c:macro:`cute_expect_ptr_range` function-like macro
+
+   * **Parameter set expectation** :
+
+     * :c:struct:`cute_ptr_set` structure
+     * :c:macro:`CUTE_PTR_SET` initializer
+     * :c:macro:`cute_expect_ptr_set` function-like macro
+
+   * **Parameter check**:
+
+      * :c:macro:`cute_mock_ptr_parm()` function-like macro
+
 .. index:: function return value expectation;API, return value expectation;API,
            API;return value expectation, API;return value expectation
 
@@ -463,6 +495,11 @@ testing logic :
 
      * :c:macro:`cute_expect_str_retval` function-like macro
      * :c:macro:`cute_mock_str_retval` function-like macro
+
+   * **Pointers** :
+
+     * :c:macro:`cute_expect_ptr_retval` function-like macro
+     * :c:macro:`cute_mock_ptr_retval` function-like macro
 
 .. index:: main;API, API;main
 
@@ -823,6 +860,26 @@ cute_expect_hex_set
 
 .. doxygendefine:: cute_expect_hex_set
 
+cute_expect_ptr_parm
+********************
+
+.. doxygendefine:: cute_expect_ptr_parm
+
+cute_expect_ptr_range
+*********************
+
+.. doxygendefine:: cute_expect_ptr_range
+
+cute_expect_ptr_retval
+**********************
+
+.. doxygendefine:: cute_expect_ptr_retval
+
+cute_expect_ptr_set
+*******************
+
+.. doxygendefine:: cute_expect_ptr_set
+
 cute_expect_sint_parm
 *********************
 
@@ -902,6 +959,16 @@ cute_mock_hex_parm
 ******************
 
 .. doxygendefine:: cute_mock_hex_parm
+
+cute_mock_ptr_parm
+******************
+
+.. doxygendefine:: cute_mock_ptr_parm
+
+cute_mock_ptr_retval
+********************
+
+.. doxygendefine:: cute_mock_ptr_retval
 
 cute_mock_sint_parm
 *******************
