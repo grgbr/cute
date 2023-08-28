@@ -613,4 +613,27 @@ cute_expect_check_ptr_retval(const char * file,
                              const char * function)
 	__cute_export;
 
+extern void
+cute_expect_check_mem_parm(const char *            file,
+                           int                     line,
+                           const char *            function,
+                           const struct cute_ptr * check)
+	__cute_export;
+
+extern void
+cute_expect_sched_mem_parm_equal(const char *            file,
+                                 int                     line,
+                                 const char *            function,
+                                 const char *            parm,
+                                 const struct cute_mem * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_mem_parm_unequal(const char *            file,
+                                   int                     line,
+                                   const char *            function,
+                                   const char *            parm,
+                                   const struct cute_mem * expect)
+	__cute_export;
+
 #endif /* _CUTE_PRIV_EXPECT_H */

@@ -1742,8 +1742,8 @@ cute_mock_assert(const char * expression,
  * - `lower`, to ensure that @p _parm < @p _xpct ;
  * - `lower_equal`, to ensure that @p _parm <= @p _xpct.
  *
- * Both @p _parm and @p _xpct *MUST* be pointers, i.e., either `void *` or
- * equivalent *typedef*'ed types.
+ * Both @p _parm and @p _xpct *MUST* be pointers, i.e., either `void *` or an
+ * equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -2054,6 +2054,69 @@ cute_mock_assert(const char * expression,
  * Memory area parameter expectation handling
  ******************************************************************************/
 
+/**
+ * Schedule a memory area function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _ptr  address of expected memory area to perform the check against
+ * @param[in] _sz   size of expected memory area to perform the check against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_mem_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed} if
+ * the comparison of @p _parm against @p _xpct using the @p _op comparison
+ * operator results in a failure. Comparison is performed according to the
+ * following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `equal` to ensure that content of @p _parm == @p _xpct content;
+ * - `unequal` to ensure that content of @p _parm != @p _xpct content.
+ *
+ * Both @p _parm and @p _xpct *MUST* be pointers, i.e., either `void *` or an
+ * equivalent *typedef*'ed type.
+ *
+ * This macro may be used from within @rstsubst{fixture functions} as well as
+ * @rstsubst{test functions}.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ * #include <limits.h>
+ *
+ * static void
+ * callee(const int * area)
+ * {
+ *      cute_mock_mem_parm(area);
+ * }
+ *
+ * static void
+ * caller(const int * area)
+ * {
+ *      callee(area);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      const int const array[2] = { 0, 1, 2 };
+ *
+ *      cute_expect_mem_parm(callee, area, equal,   array, sizeof(array));
+ *      cute_expect_mem_parm(callee, area, unequal, array, 4U);
+ *
+ *      caller(array);
+ *      caller(&array[1]);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_mem_parm()
+ * - #CUTE_TEST
+ */
 #define cute_expect_mem_parm(_func, _parm, _op, _ptr, _sz) \
 	cute_expect_sched_mem_parm_ ##  _op(__FILE__, \
 	                                    __LINE__, \
@@ -2064,33 +2127,25 @@ cute_mock_assert(const char * expression,
 	                                                _ptr, \
 	                                                _sz))
 
+/**
+ * Check a pointer function parameter mock expectation.
+ *
+ * @param[in] _parm function parameter name
+ *
+ * Check the content pointed to by a pointer function parameter expectation
+ * scheduled using cute_expect_mem_parm().
+ *
+ * This macro must be called from within the mocked function which is given the
+ * parameter to verify.
+ *
+ * @see
+ * - cute_expect_mem_parm()
+ * - #CUTE_TEST
+ */
 #define cute_mock_mem_parm(_parm) \
 	cute_expect_check_mem_parm(__FILE__, \
 	                           __LINE__, \
 	                           __func__, \
 	                           &__CUTE_VALUE(ptr, # _parm, _parm))
-
-extern void
-cute_expect_check_mem_parm(const char *            file,
-                           int                     line,
-                           const char *            function,
-                           const struct cute_ptr * check)
-	__cute_export;
-
-extern void
-cute_expect_sched_mem_parm_equal(const char *            file,
-                                 int                     line,
-                                 const char *            function,
-                                 const char *            parm,
-                                 const struct cute_mem * expect)
-	__cute_export;
-
-extern void
-cute_expect_sched_mem_parm_unequal(const char *            file,
-                                   int                     line,
-                                   const char *            function,
-                                   const char *            parm,
-                                   const struct cute_mem * expect)
-	__cute_export;
 
 #endif /* _CUTE_EXPECT_H */

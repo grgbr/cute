@@ -81,7 +81,7 @@
  * - `signed int`,
  * - `signed long`,
  * - `signed long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -164,7 +164,7 @@
  * - `signed int`,
  * - `signed long`,
  * - `signed long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_sint_range signed integer range as defined by the
  * #CUTE_SINT_RANGE macro.
@@ -223,7 +223,7 @@
  * - `signed int`,
  * - `signed long`,
  * - `signed long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_sint_set signed integer set as defined by
  * the #CUTE_SINT_SET macro.
@@ -288,7 +288,7 @@
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -372,7 +372,7 @@
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_uint_range unsigned integer range as defined by
  * the #CUTE_UINT_RANGE macro.
@@ -431,7 +431,7 @@
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_uint_set unsigned integer set as defined by
  * the #CUTE_UINT_SET macro.
@@ -500,7 +500,7 @@
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -588,7 +588,7 @@
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_uint_range unsigned integer range as defined by
  * the #CUTE_UINT_RANGE macro.
@@ -651,7 +651,7 @@
  * - `unsigned int`,
  * - `unsigned long`,
  * - `unsigned long long`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_uint_set unsigned integer set as defined by
  * the #CUTE_UINT_SET macro.
@@ -722,7 +722,7 @@
  * - `float`,
  * - `double`,
  * - `long double`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @note
  * Quad-precision floating point numbers (`__float128`) are not yet supported.
@@ -806,7 +806,7 @@
  * - `float`,
  * - `double`,
  * - `long double`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @p _xpct *MUST* be a cute_flt_range floating point number range as defined by
  * the #CUTE_FLT_RANGE macro.
@@ -868,7 +868,7 @@
  * - `float`,
  * - `double`,
  * - `long double`,
- * - or equivalent *typedef*'ed types.
+ * - or an equivalent *typedef*'ed type.
  *
  * @note
  * Quad-precision floating point numbers (`__float128`) are not yet supported.
@@ -1068,8 +1068,8 @@
  * - `lower`, to ensure that @p _chk < @p _xpct ;
  * - `lower_equal`, to ensure that @p _chk <= @p _xpct.
  *
- * Both @p _chk and @p _xpct *MUST* be pointers, i.e., either `void *` or
- * equivalent *typedef*'ed types.
+ * Both @p _chk and @p _xpct *MUST* be pointers, i.e., either `void *` or an
+ * equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.
@@ -1293,11 +1293,11 @@
  *     _chk <_op> _xpct
  *
  * Where @p _op *MUST* be one of :
- * - `equal` to ensure that @p _chk == @p _xpct ;
- * - `unequal` to ensure that @p _chk != @p _xpct.
+ * - `equal` to ensure that content of @p _chk == @p _xpct content;
+ * - `unequal` to ensure that content of @p _chk != @p _xpct content.
  *
- * Both @p _chk and @p _xpct *MUST* be pointers, i.e., either `void *` or
- * equivalent *typedef*'ed types.
+ * Both @p _chk and @p _xpct *MUST* be pointers, i.e., either `void *` or an
+ * equivalent *typedef*'ed type.
  *
  * This macro may be used from within @rstsubst{fixture functions} as well as
  * @rstsubst{test functions}.

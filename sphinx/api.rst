@@ -465,6 +465,15 @@ definitions :
 
       * :c:macro:`cute_mock_ptr_parm()` function-like macro
 
+.. index:: memory area expectation;API, mem expectation;API,
+           API;memory area expectation, API;mem expectation
+
+Memory areas
+^^^^^^^^^^^^
+
+Combine :c:macro:`cute_expect_mem_parm()` and :c:func:`cute_mock_mem_parm()`
+to verify memory areas content.
+
 .. index:: function return value expectation;API, return value expectation;API,
            API;return value expectation, API;return value expectation
 
@@ -860,6 +869,11 @@ cute_expect_hex_set
 
 .. doxygendefine:: cute_expect_hex_set
 
+cute_expect_mem_parm
+********************
+
+.. doxygendefine:: cute_expect_mem_parm
+
 cute_expect_ptr_parm
 ********************
 
@@ -959,6 +973,11 @@ cute_mock_hex_parm
 ******************
 
 .. doxygendefine:: cute_mock_hex_parm
+
+cute_mock_mem_parm
+******************
+
+.. doxygendefine:: cute_mock_mem_parm
 
 cute_mock_ptr_parm
 ******************
