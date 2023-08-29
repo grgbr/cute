@@ -4,6 +4,7 @@ Fixes and cleanup :
 * cleanup internal assertions
 
 Missing features :
+* custom mock expectations
 * hexdump upon memory content failures
 * stack trace upon failures and errors / crashes
 * devise API to run a single test ?

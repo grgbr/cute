@@ -290,6 +290,8 @@ more informations.
 
 .. index:: assertion expectation;API, API;assertion expectation
 
+.. _sect-api-assert_xpct:
+
 Assertion expectation
 *********************
 
@@ -299,6 +301,8 @@ to ensure that an assertion failure has been thrown.
 .. index:: function call expectation;API, call expectation;API,
            API;function call expectation, API;call expectation
 
+.. _sect-api-call_xpct:
+
 Call expectation
 ****************
 
@@ -307,6 +311,8 @@ to ensure that a function is called according to the expected schedule order.
 
 .. index:: function parameter expectation;API, parameter expectation;API,
            API;function parameter expectation, API;parameter expectation
+
+.. _sect-api-parm_xpct:
 
 Parameter expectation
 *********************
@@ -483,6 +489,8 @@ to verify memory areas content.
 
 .. index:: function return value expectation;API, return value expectation;API,
            API;return value expectation, API;return value expectation
+
+.. _sect-api-retval_xpct:
 
 Return value expectation
 ************************

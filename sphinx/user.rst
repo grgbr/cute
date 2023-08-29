@@ -20,6 +20,8 @@
 .. |longjmp(3)| replace:: :manpage:`longjmp(3)`
 .. |fork(2)|    replace:: :manpage:`fork(2)`
 
+.. _passed:     sect-user-result_
+
 .. _mock: https://en.wikipedia.org/wiki/Mock_object
 .. _mocking: mock_
 
@@ -981,7 +983,165 @@ expectations. These are described in the next section.
 Mocking
 -------
 
-.. todo:: document mocking expectations.
+CUTe_ also provides the ability to test software that has external dependencies
+(such as system or external library calls for example) according to a mocking_
+strategy.
+The purpose of mocking_ is to isolate the code being tested by emulating the
+behavior and / or state of external dependencies. This allows to focus on
+software under test and not on dependencies.
+
+CUTe_ allows to replace dependencies by emulation code carefully crafted to
+control inputs and outputs of software under test. Emulation is implemented
+using so-called mock expectations.
+An expectation is a 2 steps verification process. First step schedules a testing
+assertion before executing a piece of software under test. Scheduled assertions
+are then verified in a differed manner during software under test execution.
+
+CUTe_ implements mock expectations according to a strict strategy. Expectations
+are scheduled in a First-In First-Out manner. An expectation verification
+failure interrupts the current |test case| and marks it as |failed|.
+A |test case| based upon mock expectations is marked as passed_ only when all
+of their respective verifications resolve to passed_.
+
+To ensure proper function calls ordering, use :ref:`sect-api-call_xpct`\s as
+shown below :
+
+.. code-block:: c
+   :linenos:
+
+   #include <cute/cute.h>
+   #include <cute/expect.h>
+
+   static void
+   external_callee_first(void)
+   {
+        cute_mock_call();
+   }
+
+   static void
+   external_callee_second(void)
+   {
+        cute_mock_call();
+   }
+
+   static void
+   code_to_test(void)
+   {
+        external_callee_first();
+        external_callee_second();
+   }
+
+   CUTE_TEST(sample_call_order_test)
+   {
+        /* Ensure that code_to_test() calls external_callee_first() first ... */
+        cute_expect_call(external_callee_first);
+        /* ... then external_callee_second(). */
+        cute_expect_call(external_callee_second);
+
+        /* Run the software under test. */
+        code_to_test();
+   }
+
+   CUTE_GROUP(sample_group) = {
+        CUTE_REF(sample_call_order_test)
+   };
+
+   CUTE_SUITE(sample_suite, sample_group);
+
+To check function parameter values, use :ref:`sect-api-parm_xpct`\s as shown
+below :
+
+.. code-block:: c
+   :linenos:
+
+   #include <cute/cute.h>
+   #include <cute/expect.h>
+
+   static void
+   external_callee(int first, const char * second)
+   {
+        cute_mock_sint_parm(first);
+        cute_mock_str_parm(second);
+   }
+
+   static void
+   code_to_test(void)
+   {
+        external_callee(0, "zero");
+   }
+
+   CUTE_TEST(sample_parm_test)
+   {
+        /*
+         * Ensure that code_to_test() calls external_callee() with 0 as first
+         * argument ...
+         */
+        cute_expect_sint_parm(external_callee, first, equal, 0);
+        /* and a string that begins with "ze" as second argument. */
+        cute_expect_str_parm(external_callee, second, begin, "ze");
+
+        /* Run the software under test. */
+        code_to_test();
+   }
+
+   CUTE_GROUP(sample_group) = {
+        CUTE_REF(sample_parm_test)
+   };
+
+   CUTE_SUITE(sample_suite, sample_group);
+
+To program function return codes, use :ref:`sect-api-retval_xpct`\s as shown
+below :
+
+.. code-block:: c
+   :linenos:
+
+   #include <stdbool.h>
+   #include <cute/cute.h>
+   #include <cute/expect.h>
+
+   static int
+   external_callee(void)
+   {
+        static int sum = 0;
+
+        sum += (int)cute_mock_sint_retval();
+
+        return sum;
+   }
+
+   static int
+   code_to_test(void)
+   {
+        int sum;
+
+        sum = external_callee();
+        sum += external_callee();
+
+        return sum;
+   }
+
+   CUTE_TEST(sample_retval_test)
+   {
+        /* Schedule 2 integer values to be returned by external_callee(). */
+        cute_expect_sint_retval(external_callee, 1);
+        cute_expect_sint_retval(external_callee, 2);
+
+        /*
+         * Run the software under test and ensure it returns the sum of the 2
+         * integer values above.
+         */
+        cute_check_sint(code_to_test(), equal, 3);
+   }
+
+   CUTE_GROUP(sample_group) = {
+        CUTE_REF(sample_retval_test)
+   };
+
+   CUTE_SUITE(sample_suite, sample_group);
+
+Finally, standard assertion failures may be verified using
+:ref:`sect-api-assert_xpct`\s.
 
 .. _sect-user-running_tests:
 
