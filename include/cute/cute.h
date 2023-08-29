@@ -209,7 +209,7 @@
  * Define a test case with attributes
  *
  * @param[in] _name     test case name
- * @param[in] _exec     test function
+ * @param[in] _exec     test case function
  * @param[in] _setup    setup fixture function
  * @param[in] _teardown teardown fixture function
  * @param[in] _tmout    test timeout
@@ -217,8 +217,8 @@
  * Define a test case designated by the @p _name variable with the specified
  * attributes.
  *
- * @p _exec is a test function that should implement the testing logic. It
- * should be defined according to the following signature:
+ * @p _exec is a @rstsubst{test case} function that should implement the testing
+ * logic. It should be defined according to the following signature:
  * @code{.c}
  * void test_exec(void)
  * @endcode

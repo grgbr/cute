@@ -22,7 +22,7 @@
 
 .. _mock: https://en.wikipedia.org/wiki/Mock_object
 .. _mocking: mock_
-   
+
 .. _regtest: https://en.wikipedia.org/wiki/Regression_testing
 .. _regression testing: regtest_
 
@@ -891,7 +891,89 @@ to implement test functions using CUTe_'s test assertions.
 Test assertion
 --------------
 
-.. todo:: document test assertions.
+In addition to :c:func:`cute_skip` and :c:func:`cute_fail` functions, testing
+logic of |fixture| and |test case| functions should rely upon *testing
+assertions*.
+These are an expressive way to verify behavior of the software under test. In
+addition, while |report|\ing failures, they provide *descriptive messages* to
+ease the process of debugging.
+
+Basically, a failing testing assertion interrupts current test and marks it
+as |failed|.
+The simple sample code below shows how the ``sample_test`` |test case| calls
+such testing assertions :
+
+.. code-block:: c
+   :linenos:
+
+   #include <cute/cute.h>
+   #include <cute/check.h>
+
+   static const int            sint_var = -2;
+   static const unsigned short ushrt_var = 5;
+   static const void * const   ptr_var = (const void *)&sint_var;
+   static const char * const   str_var = "a test string";
+
+   CUTE_TEST(sample_test)
+   {
+        /* Assert that sint_var > -10 */
+        cute_check_sint(sint_var, greater, -10);
+
+        /* Assert that 0 <= ushrt_var <= 10 */
+        cute_check_uint_range(ushrt_var, in, CUTE_SINT_RANGE(0U, 10U));
+
+        /* Assert that ptr_var == &sint_var */
+        cute_check_ptr(ptr_var, equal, (const void *)&sint_var);
+
+        /* Assert that str_var string ends with "string" */
+        cute_check_str(str_var, end, "string");
+   }
+
+   CUTE_GROUP(sample_group) = {
+        CUTE_REF(sample_test),
+   };
+
+   CUTE_SUITE(sample_suite, sample_group);
+
+Testing assertions are called using functions which name begins with
+``cute_check_``. Note how all assertion function signatures shown above take 3
+arguments where :
+
+1. first argument must hold the variable to test,
+2. second argument is a literal indicating which testing operation / comparison
+   to perform,
+3. third argument hold the reference variable used to compare the first argument
+   with.
+
+Refer to the |API| guide to find documentation about available types of testing
+assertions :
+
+* :ref:`sect-api-basic_assert`,
+* :ref:`sect-api-sint_assert`,
+* :ref:`sect-api-uint_assert`,
+* :ref:`sect-api-str_assert`,
+* :ref:`sect-api-ptr_assert`,
+* and :ref:`sect-api-mem_assert`.
+
+Finally, the more versatile :c:func:`cute_check_assert` testing assertion is
+also available at the expense of less descriptive failure messages :
+
+.. code-block:: c
+   :linenos:
+
+   #include <cute/cute.h>
+   #include <cute/check.h>
+
+   static const int sint_var = -2;
+
+   CUTE_TEST(sample_test)
+   {
+        /* Assert that sint_var > -10 */
+        cute_check_assert(sint_var > -10);
+   }
+
+In addition to standard testing assertions, CUTe_ also provides mocking
+expectations. These are described in the next section.
 
 .. index:: mocking, expectation
 .. _sect-user-mocking:

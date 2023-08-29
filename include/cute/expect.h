@@ -39,8 +39,8 @@
  * cute_expect_assertion() may check that `function_to_test()` function causes
  * an @man{assert(3)} failure.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -118,8 +118,8 @@ cute_mock_assert(const char * expression,
  * The check performed ensures that the function which name is given as @p _func
  * argument is called according to the expected schedule order.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -160,8 +160,8 @@ cute_mock_assert(const char * expression,
  *
  * Current test is aborted and marked as @rstsubst{failed} when the check fails.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * @see
  * - cute_expect_call()
@@ -208,8 +208,8 @@ cute_mock_assert(const char * expression,
  * - `signed long long`,
  * - or an equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -308,8 +308,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_sint_range signed integer range as defined by the
  * #CUTE_SINT_RANGE macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -386,8 +386,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_sint_set signed integer set as defined by
  * the #CUTE_SINT_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -452,8 +452,8 @@ cute_mock_assert(const char * expression,
  * - `signed long long`,
  * - or an equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -546,8 +546,8 @@ cute_mock_assert(const char * expression,
  * - `unsigned long long`,
  * - or an equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -647,8 +647,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_uint_range unsigned integer range as defined by the
  * #CUTE_UINT_RANGE macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -725,8 +725,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_uint_set unsigned integer set as defined by
  * the #CUTE_UINT_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -791,8 +791,8 @@ cute_mock_assert(const char * expression,
  * - `unsigned long long`,
  * - or an equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -888,8 +888,8 @@ cute_mock_assert(const char * expression,
  * - `unsigned long long`,
  * - or an equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -995,8 +995,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_uint_range unsigned integer range as defined by the
  * #CUTE_UINT_RANGE macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1077,8 +1077,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_uint_set unsigned integer set as defined by
  * the #CUTE_UINT_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1158,8 +1158,8 @@ cute_mock_assert(const char * expression,
  * - `long double`,
  * - or an equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1255,8 +1255,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_flt_range floating point number range as defined
  * by the #CUTE_FLT_RANGE macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1338,8 +1338,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_flt_set floating point number set as defined by
  * the #CUTE_FLT_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1408,8 +1408,8 @@ cute_mock_assert(const char * expression,
  * - `long double`,
  * - or an equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1498,8 +1498,8 @@ cute_mock_assert(const char * expression,
  *
  * Both @p _parm and @p _xpct *MUST* be `NULL` terminated C strings.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1589,8 +1589,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_str_set string set as defined by
  * the #CUTE_STR_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1656,8 +1656,8 @@ cute_mock_assert(const char * expression,
  *
  * @p _retval *MUST* be a `NULL` terminated C string.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1745,8 +1745,8 @@ cute_mock_assert(const char * expression,
  * Both @p _parm and @p _xpct *MUST* be pointers, i.e., either `void *` or an
  * equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1838,8 +1838,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_ptr_range pointer range as defined by the
  * #CUTE_PTR_RANGE macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1922,8 +1922,8 @@ cute_mock_assert(const char * expression,
  * @p _xpct *MUST* be a cute_ptr_set pointer set as defined by the #CUTE_PTR_SET
  * macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -1995,8 +1995,8 @@ cute_mock_assert(const char * expression,
  * @p _retval *MUST* be a pointer, i.e., either `void *` or an equivalent
  * *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -2080,8 +2080,8 @@ cute_mock_assert(const char * expression,
  * Both @p _parm and @p _xpct *MUST* be pointers, i.e., either `void *` or an
  * equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}

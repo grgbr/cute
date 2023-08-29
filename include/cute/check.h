@@ -33,8 +33,8 @@
  * Abort current test and mark it as @rstsubst{failed} if @p _expr is false
  * (i.e., compares equal to zero).
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Example**
  * @code{.c}
@@ -83,8 +83,8 @@
  * - `signed long long`,
  * - or an equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0 equals 0** :
  * @code{.c}
@@ -169,8 +169,8 @@
  * @p _xpct *MUST* be a cute_sint_range signed integer range as defined by the
  * #CUTE_SINT_RANGE macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0 is included within the [-10, 10] range** :
  * @code{.c}
@@ -228,8 +228,8 @@
  * @p _xpct *MUST* be a cute_sint_set signed integer set as defined by
  * the #CUTE_SINT_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0 is included within the {-10, -5, 0, 5, 10} set** :
  * @code{.c}
@@ -290,8 +290,8 @@
  * - `unsigned long long`,
  * - or an equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0 equals 0** :
  * @code{.c}
@@ -377,8 +377,8 @@
  * @p _xpct *MUST* be a cute_uint_range unsigned integer range as defined by
  * the #CUTE_UINT_RANGE macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0 is included within the [0, 10] range** :
  * @code{.c}
@@ -436,8 +436,8 @@
  * @p _xpct *MUST* be a cute_uint_set unsigned integer set as defined by
  * the #CUTE_UINT_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0 is included within the {0, 1, 2, 3, 5, 8} set** :
  * @code{.c}
@@ -502,8 +502,8 @@
  * - `unsigned long long`,
  * - or an equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0 equals 0** :
  * @code{.c}
@@ -593,8 +593,8 @@
  * @p _xpct *MUST* be a cute_uint_range unsigned integer range as defined by
  * the #CUTE_UINT_RANGE macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0xf is included within the [0x0, 0xff] range** :
  * @code{.c}
@@ -656,8 +656,8 @@
  * @p _xpct *MUST* be a cute_uint_set unsigned integer set as defined by
  * the #CUTE_UINT_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0xbeef is included within the {0xdead, 0xbeef, 0xbabe, 0xcode}
  * set** :
@@ -727,8 +727,8 @@
  * @note
  * Quad-precision floating point numbers (`__float128`) are not yet supported.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0.5 equals 0.5 (single precision)** :
  * @code{.c}
@@ -814,8 +814,8 @@
  * @note
  * Quad-precision floating point numbers (`__float128`) are not yet supported.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0.5 is included within the [-10.5, 10.5] range
  * (single precision)** :
@@ -876,8 +876,8 @@
  * @p _xpct *MUST* be a cute_flt_set floating point number set as defined by
  * the #CUTE_FLT_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that 0.5 is included within the {0.5, 1.5, 2.0, 3.5} set
  * (single precision)** :
@@ -936,8 +936,8 @@
  *
  * Both @p _chk and @p _xpct *MUST* be `NULL` terminated C strings.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that "zero" string equals to "zero" string** :
  * @code{.c}
@@ -1008,8 +1008,8 @@
  * @p _xpct *MUST* be a cute_str_set set of `NULL` terminated C strings as
  * defined by the #CUTE_STR_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that "one" string is included within the {"zero", "one", "two"} set
  * of strings** :
@@ -1071,8 +1071,8 @@
  * Both @p _chk and @p _xpct *MUST* be pointers, i.e., either `void *` or an
  * equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that (void *)0xdeadbeef pointer equals to (void *)0xdeadbeef
  * pointer** :
@@ -1172,8 +1172,8 @@
  * @p _xpct *MUST* be a cute_ptr_range pointer range as defined by the
  * #CUTE_PTR_RANGE macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that (void *)0xbabeface is included within the
  * [0xbabaface, 0xdeafbabe] range** :
@@ -1235,8 +1235,8 @@
  * @p _xpct *MUST* be a cute_ptr_set pointer set as defined by
  * the #CUTE_PTR_SET macro.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that (void *)0xdeadc0de is included within the
  * {0xbabaface, 0xdeadc0de, 0xdeadbeef} set** :
@@ -1299,8 +1299,8 @@
  * Both @p _chk and @p _xpct *MUST* be pointers, i.e., either `void *` or an
  * equivalent *typedef*'ed type.
  *
- * This macro may be used from within @rstsubst{fixture functions} as well as
- * @rstsubst{test functions}.
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
  *
  * **Ensure that content of 2 memory areas are equal** :
  * @code{.c}

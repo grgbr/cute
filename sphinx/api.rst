@@ -8,10 +8,7 @@
 .. |timeout|           replace:: :ref:`timeout <sect-user-writing_tests-test_timeout>`
 .. |user guide|        replace:: :doc:`User guide <user>`
 
-.. |failed|            replace:: :ref:`failed <sect-user-result>`
 .. |skipped|           replace:: :ref:`skipped <sect-user-result>`
-.. |fixture functions| replace:: :ref:`fixture functions <sect-user-writing_tests-fixture_operations>`
-.. |test functions|    replace:: :ref:`test functions <sect-user-writing_tests-test_definition>`
 .. |expectation|       replace:: :ref:`expectation <sect-user-mocking>`
 
 .. _sect-api-overview:
@@ -123,6 +120,8 @@ described in the following sections.
 You may also refer to :ref:`sect-user-assertion` section of |user guide| for
 more informations.
 
+.. _sect-api-basic_assert:
+
 Basic assertion
 ***************
 
@@ -132,6 +131,8 @@ exposed as a C preprocessor macros.
 .. index:: signed integer assertion;API, sint;API,
            API;signed integer assertion, API;sint assertion,
            integer;signed assertion
+
+.. _sect-api-sint_assert:
 
 Signed integers
 ***************
@@ -162,6 +163,8 @@ Signed integer values may be verified using so-called `sint` definitions :
            API;hexadecimal assertion, API;hex assertion,
            integer;unsigned assertion
 
+.. _sect-api-uint_assert:
+
 Unsigned integers
 *****************
 
@@ -191,6 +194,7 @@ definitions :
 
 .. index:: floating point assertion;API, flt assertion;API,
            API;floating point assertion, API;flt assertion
+.. _sect-api-flt_assert:
 
 Floating point numbers
 **********************
@@ -217,6 +221,7 @@ Floating point values may be verified using so-called `flt` definitions :
 
 .. index:: string assertion;API, str assertion;API,
            API;string assertion, API;str assertion
+.. _sect-api-str_assert:
 
 Strings
 *******
@@ -238,6 +243,7 @@ definitions :
 
 .. index:: pointer assertion;API, ptr assertion;API,
            API;pointer assertion, API;ptr assertion
+.. _sect-api-ptr_assert:
 
 Pointers
 ********
@@ -264,6 +270,7 @@ Pointer values may be verified using so-called `ptr` definitions :
 
 .. index:: memory area assertion;API, mem assertion;API,
            API;memory area assertion, API;mem assertion
+.. _sect-api-mem_assert:
 
 Memory areas
 ************
