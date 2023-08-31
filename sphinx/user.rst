@@ -82,8 +82,10 @@ CUTe_ is a framework allowing to write, manage and run unit tests in C. It's
 |API| provides a set of functions to :
 
 * structure |test case| / |suite| |hierarchy| ;
-* check strongly typed data against specified constraints ;
-* schecule and verify mock_ expectations against specified constraints ;
+* check strongly typed data against specified constraints using
+  `test assertion`_\s;
+* schecule and verify :ref:`mock expectations <sect-user-mocking>` against
+  specified constraints ;
 * |run| test cases and suites according to specified configurations ;
 * |report| test results onto the console and / or,
 * into files according to various specified formats.
@@ -822,7 +824,7 @@ developper workload compared to :c:macro:`CUTE_SUITE_DEFN` usage. These are :
 
 :c:macro:`CUTE_SUITE_STATIC` allows to define a |suite| with ``static`` global
 file scope. :ref:`Registering <sect-user-test_hierarchy>` the created |suite| to
-a parent one is then restricted to the source file where the it is defined :
+a parent one is then restricted to the source file where it is defined :
 
 .. code-block:: c
    :linenos:
@@ -1033,7 +1035,10 @@ shown below :
 
    CUTE_TEST(sample_call_order_test)
    {
-        /* Ensure that code_to_test() calls external_callee_first() first ... */
+        /*
+         * Ensure that code_to_test() calls external_callee_first()
+         * first ...
+         */
         cute_expect_call(external_callee_first);
         /* ... then external_callee_second(). */
         cute_expect_call(external_callee_second);
@@ -1073,8 +1078,8 @@ below :
    CUTE_TEST(sample_parm_test)
    {
         /*
-         * Ensure that code_to_test() calls external_callee() with 0 as first
-         * argument ...
+         * Ensure that code_to_test() calls external_callee() with 0 as
+         * first argument ...
          */
         cute_expect_sint_parm(external_callee, first, equal, 0);
         /* and a string that begins with "ze" as second argument. */
@@ -1123,13 +1128,16 @@ below :
 
    CUTE_TEST(sample_retval_test)
    {
-        /* Schedule 2 integer values to be returned by external_callee(). */
+        /*
+         * Schedule 2 integer values to be returned by
+         * external_callee().
+         */
         cute_expect_sint_retval(external_callee, 1);
         cute_expect_sint_retval(external_callee, 2);
 
         /*
-         * Run the software under test and ensure it returns the sum of the 2
-         * integer values above.
+         * Run the software under test and ensure it returns the sum of
+         * the 2 integer values above.
          */
         cute_check_sint(code_to_test(), equal, 3);
    }
@@ -1563,7 +1571,7 @@ Reporting formats may be selected thanks to :
 Console
 -------
 
-Console reports shows general progress informations as well as details about
+Console reports show general progress informations as well as details about
 test failures onto `standard streams <stdios_>`_.
 See section `statistics`_ for explainations about output details.
 
