@@ -19,6 +19,8 @@ endif
 
 include $(EBUILDDIR)/main.mk
 
+override ebuilddoc_online_url := http://grgbr.github.io/ebuild/
+
 # Install eBuild construction logic
 #
 # $(1): eBuild top-level source directory
@@ -62,7 +64,10 @@ endef
 
 distdir := $(BUILDDIR)/$(PACKAGE)-$(VERSION)
 
+# Make sure that source distribution tarball includes documentation pointing to
+# online GitHub pages.
 .PHONY: dist
+dist: export EBUILDDOC_TARGET_PATH := $(ebuilddoc_online_url)
 dist: doc
 	$(call sync_src_recipe,$(distdir))
 	$(call sync_ebuild_recipe,$(EBUILDDIR),$(distdir)/ebuild)
