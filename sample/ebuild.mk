@@ -18,7 +18,7 @@ sample-cflags             := -Wall \
                              -DCUTE_VERSION_STRING=\"$(VERSION)\" \
                              -I $(TOPDIR)/include \
                              $(filter-out -DNDEBUG,$(EXTRA_CFLAGS))
-sample-ldflags            := $(common-cflags) \
+sample-ldflags            := $(sample-cflags) \
                              -L$(BUILDDIR)/../src \
                              $(filter-out -DNDEBUG,$(EXTRA_LDFLAGS)) \
                              -Wl,-z,start-stop-visibility=hidden
