@@ -65,6 +65,8 @@ CUTe_ is distributed under the `GNU Lesser General Public License
 Getting Help
 ############
 
+`Latest documentation <https://grgbr.github.io/cute/>`_ is available online.
+
 `Integration guide <sphinx/install.rst>`_ shows how to **build and deploy**
 CUTe_.
 
