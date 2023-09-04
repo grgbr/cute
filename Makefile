@@ -36,12 +36,12 @@ override ebuilddoc_online_url := http://grgbr.github.io/ebuild/
 define sync_ebuild_recipe
 $(foreach f, \
           $(notdir $(wildcard $(strip $(1))/*.mk)), \
-          $(call install_recipe,-D --mode=644, \
+          $(call install_recipe,--mode=644, \
                                 $(strip $(1))/$(f), \
                                 $(strip $(2))/$(f))$(newline))
 $(foreach f, \
           $(notdir $(wildcard $(strip $(1))/scripts/*)), \
-          $(call install_recipe,-D --mode=644, \
+          $(call install_recipe,--mode=644, \
                                 $(strip $(1))/scripts/$(f), \
                                 $(strip $(2))/scripts/$(f))$(newline))
 endef
@@ -77,6 +77,7 @@ distdir := $(BUILDDIR)/$(PACKAGE)-$(VERSION)
 .PHONY: dist
 dist: export EBUILDDOC_TARGET_PATH := $(ebuilddoc_online_url)
 dist: doc
+	@$(RM) -r $(distdir)
 	$(call sync_src_recipe,$(distdir))
 	$(call sync_ebuild_recipe,$(EBUILDDIR),$(distdir)/ebuild)
 	$(call installdir_recipe,--chmod=D755 --chmod=F644, \
@@ -92,7 +93,7 @@ dist: doc
 	          $(sphinx_list_info), \
 	          $(call install_recipe,-m644, \
 	                                $(sphinxinfodir)/$(f), \
-	                                $(distdir)/docs/$(f))$(newline))
+	                                $(distdir)/docs/info/$(f))$(newline))
 	$(call make_tarball_recipe,$(BUILDDIR)/$(PACKAGE)-$(VERSION).tar.xz, \
 	                           $(distdir))
 
