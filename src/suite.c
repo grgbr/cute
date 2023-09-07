@@ -187,7 +187,7 @@ cute_suite_sum_run(const struct cute_run * run, struct cute_stats * sums)
 
 	const struct cute_stats * stats;
 
-	stats = &((const struct cute_suite_run *)run)->stats;
+	stats = &((const struct cute_suite_run *)run)->sums;
 
 	sums->pass += stats->pass;
 	sums->skip += stats->skip;
