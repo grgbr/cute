@@ -10,6 +10,27 @@
 #include "assess.h"
 #include <inttypes.h>
 
+#define __cute_check_assert_assess(_file, _line, _func) \
+	cute_assert(_file); \
+	cute_assert(_file[0]); \
+	cute_assert(_line >= 0); \
+	cute_assert(_func); \
+	cute_assert(_func[0]); \
+	cute_run_assert_intern(cute_curr_run)
+
+#define cute_check_assert_expr(_file, _line, _func, _expr) \
+	__cute_check_assert_assess(_file, _line, _func); \
+	cute_assert(_expr); \
+	cute_assert(_expr[0])
+
+#define cute_check_assert_assess(_file, _line, _func, _ops, _chk,  _xpct) \
+	__cute_check_assert_assess(_file, _line, _func); \
+	cute_assess_assert_ops(_ops); \
+	cute_assert((_chk)->expr); \
+	cute_assert((_chk)->expr[0]); \
+	cute_assert((_xpct)->expr); \
+	cute_assert((_xpct)->expr[0])
+
 void
 __cute_check_assert(bool         fail,
                     const char * file,
@@ -17,17 +38,12 @@ __cute_check_assert(bool         fail,
                     const char * function,
                     const char * expr)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assert(expr);
-	cute_assert(expr[0]);
+	cute_check_assert_expr(file, line, function, expr);
 
 	if (!fail)
 		return;
 
+	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_assert(&cute_curr_run->assess, expr);
 
 	cute_break(CUTE_FAIL_ISSUE,
@@ -85,25 +101,18 @@ cute_check_assess_sint(const char *                   file,
                        const struct cute_sint *       check,
                        const struct cute_sint *       expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
-	cute_run_assert_intern(cute_curr_run);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .sint = *check };
+	struct cute_assess            assess = {
+		.ops              = ops,
+		.file             = NULL,
+		.line             = -1,
+		.func             = NULL,
+		.expect.sint.scal = *expect
+	};
 
-	assess->ops = ops;
-	assess->expect.sint.scal = *expect;
-
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -322,26 +331,19 @@ cute_check_assess_sint_range(const char *                   file,
                              const struct cute_sint *       check,
                              const struct cute_sint_range * expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 	cute_assert(expect->min <= expect->max);
-	cute_run_assert_intern(cute_curr_run);
 
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .sint = *check };
+	struct cute_assess            assess = {
+		.ops               = ops,
+		.file              = NULL,
+		.line              = -1,
+		.func              = NULL,
+		.expect.sint.range = *expect
+	};
 
-	assess->ops = ops;
-	assess->expect.sint.range = *expect;
-
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -460,21 +462,16 @@ cute_check_assess_sint_set(const char *                   file,
                            const struct cute_sint *       check,
                            const struct cute_sint_set *   expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
-	cute_run_assert_intern(cute_curr_run);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 
 	intmax_t *                    items;
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .sint = *check };
+	struct cute_assess            assess = {
+		.ops                   = ops,
+		.file                  = NULL,
+		.line                  = -1,
+		.func                  = NULL
+	};
 
 	if (expect->count) {
 		unsigned int i;
@@ -486,11 +483,10 @@ cute_check_assess_sint_set(const char *                   file,
 	else
 		items = NULL;
 
-	assess->ops = ops;
-	assess->expect.sint.set = *expect;
-	assess->expect.sint.set.items = items;
+	assess.expect.sint.set = *expect;
+	assess.expect.sint.set.items = items;
 
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -600,25 +596,18 @@ cute_check_assess_uint(const char *                   file,
                        const struct cute_uint *       check,
                        const struct cute_uint *       expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
-	cute_run_assert_intern(cute_curr_run);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .uint = *check };
+	struct cute_assess            assess = {
+		.ops              = ops,
+		.file             = NULL,
+		.line             = -1,
+		.func             = NULL,
+		.expect.uint.scal = *expect
+	};
 
-	assess->ops = ops;
-	assess->expect.uint.scal = *expect;
-
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -837,26 +826,19 @@ cute_check_assess_uint_range(const char *                   file,
                              const struct cute_uint *       check,
                              const struct cute_uint_range * expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 	cute_assert(expect->min <= expect->max);
-	cute_run_assert_intern(cute_curr_run);
 
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .uint = *check };
+	struct cute_assess            assess = {
+		.ops               = ops,
+		.file              = NULL,
+		.line              = -1,
+		.func              = NULL,
+		.expect.uint.range = *expect
+	};
 
-	assess->ops = ops;
-	assess->expect.uint.range = *expect;
-
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -974,21 +956,16 @@ cute_check_assess_uint_set(const char *                   file,
                            const struct cute_uint *       check,
                            const struct cute_uint_set *   expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
-	cute_run_assert_intern(cute_curr_run);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 
 	uintmax_t *                   items;
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .uint = *check };
+	struct cute_assess            assess = {
+		.ops               = ops,
+		.file              = NULL,
+		.line              = -1,
+		.func              = NULL
+	};
 
 	if (expect->count) {
 		unsigned int i;
@@ -1000,11 +977,10 @@ cute_check_assess_uint_set(const char *                   file,
 	else
 		items = NULL;
 
-	assess->ops = ops;
-	assess->expect.uint.set = *expect;
-	assess->expect.uint.set.items = items;
+	assess.expect.uint.set = *expect;
+	assess.expect.uint.set.items = items;
 
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -1515,25 +1491,18 @@ cute_check_assess_flt(const char *                   file,
                       const struct cute_flt *        check,
                       const struct cute_flt *        expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
-	cute_run_assert_intern(cute_curr_run);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .flt = *check };
+	struct cute_assess            assess = {
+		.ops             = ops,
+		.file            = NULL,
+		.line            = -1,
+		.func            = NULL,
+		.expect.flt.scal = *expect
+	};
 
-	assess->ops = ops;
-	assess->expect.flt.scal = *expect;
-
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -1754,26 +1723,19 @@ cute_check_assess_flt_range(const char *                   file,
                             const struct cute_flt *        check,
                             const struct cute_flt_range *  expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 	cute_assert(expect->min <= expect->max);
-	cute_run_assert_intern(cute_curr_run);
 
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .flt = *check };
+	struct cute_assess            assess = {
+		.ops              = ops,
+		.file             = NULL,
+		.line             = -1,
+		.func             = NULL,
+		.expect.flt.range = *expect
+	};
 
-	assess->ops = ops;
-	assess->expect.flt.range = *expect;
-
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -1893,21 +1855,16 @@ cute_check_assess_flt_set(const char *                   file,
                           const struct cute_flt *        check,
                           const struct cute_flt_set *    expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
-	cute_run_assert_intern(cute_curr_run);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 
 	long double *                 items;
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .flt = *check };
+	struct cute_assess            assess = {
+		.ops              = ops,
+		.file             = NULL,
+		.line             = -1,
+		.func             = NULL
+	};
 
 	if (expect->count) {
 		unsigned int i;
@@ -1919,11 +1876,10 @@ cute_check_assess_flt_set(const char *                   file,
 	else
 		items = NULL;
 
-	assess->ops = ops;
-	assess->expect.flt.set = *expect;
-	assess->expect.flt.set.items = items;
+	assess.expect.flt.set = *expect;
+	assess.expect.flt.set.items = items;
 
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -2041,26 +1997,19 @@ cute_check_assess_str(const char *                   file,
                       const struct cute_str *        check,
                       const struct cute_str *        expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 	cute_assert(expect->value);
-	cute_run_assert_intern(cute_curr_run);
 
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .str = *check };
+	struct cute_assess            assess = {
+		.ops             = ops,
+		.file            = NULL,
+		.line            = -1,
+		.func            = NULL,
+		.expect.str.sole = *expect
+	};
 
-	assess->ops = ops;
-	assess->expect.str.sole = *expect;
-
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -2361,21 +2310,16 @@ cute_check_assess_str_set(const char *                   file,
                           const struct cute_str *        check,
                           const struct cute_str_set *    expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
-	cute_run_assert_intern(cute_curr_run);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 
 	const char **                 items;
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .str = *check };
+	struct cute_assess            assess = {
+		.ops             = ops,
+		.file            = NULL,
+		.line            = -1,
+		.func            = NULL
+	};
 
 	if (expect->count) {
 		unsigned int i;
@@ -2390,11 +2334,10 @@ cute_check_assess_str_set(const char *                   file,
 	else
 		items = NULL;
 
-	assess->ops = ops;
-	assess->expect.str.set = *expect;
-	assess->expect.str.set.items = items;
+	assess.expect.str.set = *expect;
+	assess.expect.str.set.items = items;
 
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -2504,25 +2447,18 @@ cute_check_assess_ptr(const char *                   file,
                       const struct cute_ptr *        check,
                       const struct cute_ptr *        expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
-	cute_run_assert_intern(cute_curr_run);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .ptr = *check };
+	struct cute_assess            assess = {
+		.ops             = ops,
+		.file            = NULL,
+		.line            = -1,
+		.func            = NULL,
+		.expect.ptr.scal = *expect
+	};
 
-	assess->ops = ops;
-	assess->expect.ptr.scal = *expect;
-
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -2739,26 +2675,19 @@ cute_check_assess_ptr_range(const char *                   file,
                             const struct cute_ptr *        check,
                             const struct cute_ptr_range *  expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 	cute_assert(expect->min <= expect->max);
-	cute_run_assert_intern(cute_curr_run);
 
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .ptr = *check };
+	struct cute_assess            assess = {
+		.ops              = ops,
+		.file             = NULL,
+		.line             = -1,
+		.func             = NULL,
+		.expect.ptr.range = *expect
+	};
 
-	assess->ops = ops;
-	assess->expect.ptr.range = *expect;
-
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -2876,21 +2805,16 @@ cute_check_assess_ptr_set(const char *                   file,
                           const struct cute_ptr *        check,
                           const struct cute_ptr_set *    expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
-	cute_run_assert_intern(cute_curr_run);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 
 	const void **                 items;
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .ptr = *check };
+	struct cute_assess            assess = {
+		.ops              = ops,
+		.file             = NULL,
+		.line             = -1,
+		.func             = NULL
+	};
 
 	if (expect->count) {
 		unsigned int i;
@@ -2902,11 +2826,10 @@ cute_check_assess_ptr_set(const char *                   file,
 	else
 		items = NULL;
 
-	assess->ops = ops;
-	assess->expect.ptr.set = *expect;
-	assess->expect.ptr.set.items = items;
+	assess.expect.ptr.set = *expect;
+	assess.expect.ptr.set.items = items;
 
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,
@@ -3028,27 +2951,20 @@ cute_check_assess_mem(const char *                   file,
                       const struct cute_ptr *        check,
                       const struct cute_mem *        expect)
 {
-	cute_assert(file);
-	cute_assert(file[0]);
-	cute_assert(line >= 0);
-	cute_assert(function);
-	cute_assert(function[0]);
-	cute_assess_assert_ops(ops);
-	cute_assert(check->expr);
-	cute_assert(check->expr[0]);
-	cute_assert(expect->expr);
-	cute_assert(expect->expr[0]);
+	cute_check_assert_assess(file, line, function, ops, check, expect);
 	cute_assert(expect->ptr);
 	cute_assert(expect->size);
-	cute_run_assert_intern(cute_curr_run);
 
-	struct cute_assess *          assess = &cute_curr_run->assess;
 	const union cute_assess_value chk = { .ptr = *check };
+	struct cute_assess            assess = {
+		.ops             = ops,
+		.file            = NULL,
+		.line            = -1,
+		.func            = NULL,
+		.expect.mem.area = *expect
+	};
 
-	assess->ops = ops;
-	assess->expect.mem.area = *expect;
-
-	if (!cute_assess_check(assess, &chk))
+	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
 		cute_break(CUTE_FAIL_ISSUE,
 		           file,
 		           line,

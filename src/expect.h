@@ -37,6 +37,6 @@ extern bool
 cute_expect_check_assert(void);
 
 extern int
-cute_expect_release(struct cute_expect * expect, bool check);
+cute_expect_release(struct cute_run * run, bool check);
 
 #endif /* _CUTE_INTERN_EXPECT_H */

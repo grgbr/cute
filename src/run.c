@@ -148,6 +148,7 @@ cute_run_handle_sig(int         sig,
 {
 	cute_run_assert_intern(cute_curr_run);
 
+	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_excp(&cute_curr_run->assess, sig);
 
 	cute_break(CUTE_EXCP_ISSUE,
@@ -215,6 +216,7 @@ cute_run_handle_tmout(int         sig __cute_unused,
 		 */
 		return;
 
+	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_expr(&cute_curr_run->assess, NULL);
 
 	cute_break(CUTE_FAIL_ISSUE,
@@ -347,7 +349,7 @@ cute_run_done(struct cute_run * run)
 		cute_assert_intern(run->assess.line < 0);
 		cute_assert_intern(!run->assess.func);
 
-		if (cute_expect_release(&run->call, true)) {
+		if (cute_expect_release(run, true)) {
 			run->issue = CUTE_FAIL_ISSUE;
 			run->what = cute_run_what(run, CUTE_FAIL_ISSUE);
 			run->why = "extra mock expectation left";
@@ -371,7 +373,7 @@ cute_run_done(struct cute_run * run)
 		cute_assert_intern(run->assess.line >= 0);
 		cute_assert_intern(!run->assess.func || run->assess.func[0]);
 
-		cute_expect_release(&run->call, false);
+		cute_expect_release(run, false);
 	}
 
 	run->state = CUTE_DONE_STATE;
@@ -631,7 +633,9 @@ _cute_skip(const char * reason,
 	cute_assert(line >= 0);
 	cute_assert(function);
 	cute_assert(function[0]);
+	cute_run_assert_intern(cute_curr_run);
 
+	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_expr(&cute_curr_run->assess, reason);
 
 	cute_break(CUTE_SKIP_ISSUE,
@@ -653,7 +657,9 @@ _cute_fail(const char * reason,
 	cute_assert(line >= 0);
 	cute_assert(function);
 	cute_assert(function[0]);
+	cute_run_assert_intern(cute_curr_run);
 
+	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_expr(&cute_curr_run->assess, reason);
 
 	cute_break(CUTE_FAIL_ISSUE,

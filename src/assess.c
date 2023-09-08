@@ -997,9 +997,11 @@ cute_assess_update_source(struct cute_assess * assess,
 }
 
 bool
-cute_assess_check(struct cute_assess *            assess,
+cute_assess_check(struct cute_assess *            result,
+                  struct cute_assess *            assess,
                   const union cute_assess_value * check)
 {
+	cute_assess_assert_intern(result);
 	cute_assess_assert_intern(assess);
 	cute_assert_intern(check);
 	cute_assert_intern(check->expr);
@@ -1012,12 +1014,13 @@ cute_assess_check(struct cute_assess *            assess,
 		 * safely skip release operation at cute_run_fini() time.
 		 */
 		cute_assess_release(assess);
-		assess->ops = NULL;
 
 		return true;
 	}
 
-	assess->check = *check;
+	cute_assess_release(result);
+	*result = *assess;
+	result->check = *check;
 
 	return false;
 }
@@ -1040,6 +1043,6 @@ cute_assess_release(struct cute_assess * assess)
 	if (assess->ops) {
 		cute_assess_assert_intern(assess);
 
-		return assess->ops->release(assess);
+		assess->ops->release(assess);
 	}
 }

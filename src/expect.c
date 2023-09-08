@@ -41,6 +41,7 @@ cute_expect_fail_assert(const char * file, int line, const char * function)
 	cute_assert_intern(cute_expect_assert);
 	cute_expect_assert = false;
 
+	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_expr(&cute_curr_run->assess, NULL);
 
 	cute_break(CUTE_FAIL_ISSUE,
@@ -68,6 +69,7 @@ cute_mock_assert(const char * expression,
 		/* Does not return. */
 		siglongjmp(cute_expect_assert_env, 1);
 
+	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_assert(&cute_curr_run->assess, expression);
 
 	cute_break(CUTE_FAIL_ISSUE,
@@ -228,23 +230,28 @@ cute_expect_type_label(enum cute_expect_type type)
 }
 
 static void
-cute_expect_claim_inval(struct cute_expect *           expect,
+cute_expect_claim_inval(struct cute_run *              run,
                         const struct cute_assess_ops * ops,
                         const struct cute_expect *     orig,
                         enum cute_expect_type          type)
 {
-	cute_assess_assert_intern(&expect->super);
+	cute_assert_intern(run);
+	cute_assess_assert_intern(&run->assess);
 	cute_assess_assert_ops_intern(ops);
 	cute_expect_assert_intern(orig);
 	cute_expect_assert_type_intern(type);
 
-	expect->super.ops = ops;
-	expect->next = NULL;
-	expect->xpct_type = orig->xpct_type;
-	expect->xpct_file = orig->xpct_file;
-	expect->xpct_line = orig->xpct_line;
-	expect->xpct_func = orig->xpct_func;
-	expect->got_type = type;
+	struct cute_expect * xpct = &run->call;
+
+	cute_assess_release(&run->assess);
+
+	xpct->super.ops = ops;
+	xpct->next = NULL;
+	xpct->xpct_type = orig->xpct_type;
+	xpct->xpct_file = orig->xpct_file;
+	xpct->xpct_line = orig->xpct_line;
+	xpct->xpct_func = orig->xpct_func;
+	xpct->got_type = type;
 }
 
 static struct cute_text_block *
@@ -282,14 +289,11 @@ static const struct cute_assess_ops cute_expect_inval_type_ops = {
 };
 
 static void
-cute_expect_claim_inval_type(struct cute_expect *       expect,
+cute_expect_claim_inval_type(struct cute_run *          run,
                              const struct cute_expect * orig,
                              enum cute_expect_type      type)
 {
-	cute_expect_claim_inval(expect,
-	                        &cute_expect_inval_type_ops,
-	                        orig,
-	                        type);
+	cute_expect_claim_inval(run, &cute_expect_inval_type_ops, orig, type);
 }
 
 static struct cute_text_block *
@@ -322,14 +326,11 @@ static const struct cute_assess_ops cute_expect_inval_call_ops = {
 };
 
 static void
-cute_expect_claim_inval_call(struct cute_expect *       expect,
+cute_expect_claim_inval_call(struct cute_run *          run,
                              const struct cute_expect * orig,
                              enum cute_expect_type      type)
 {
-	cute_expect_claim_inval(expect,
-	                        &cute_expect_inval_call_ops,
-	                        orig,
-	                        type);
+	cute_expect_claim_inval(run, &cute_expect_inval_call_ops, orig, type);
 }
 
 static struct cute_text_block *
@@ -361,20 +362,22 @@ static const struct cute_assess_ops cute_expect_missing_ops = {
 };
 
 static void
-cute_expect_claim_missing(struct cute_expect * expect,
-                          const char *         file,
-                          int                  line)
+cute_expect_claim_missing(struct cute_run * run, const char * file, int line)
 {
-	cute_assert_intern(expect);
-	cute_assess_assert_intern(&expect->super);
+	cute_assert_intern(run);
+	cute_assess_assert_intern(&run->assess);
 	cute_assert_intern(file);
 	cute_assert_intern(file[0]);
 	cute_assert_intern(line >= 0);
 
-	expect->super.ops = &cute_expect_missing_ops;
-	expect->xpct_file = file;
-	expect->xpct_line = line;
-	expect->xpct_func = NULL;
+	struct cute_expect * xpct = &run->call;
+
+	cute_assess_release(&run->assess);
+
+	xpct->super.ops = &cute_expect_missing_ops;
+	xpct->xpct_file = file;
+	xpct->xpct_line = line;
+	xpct->xpct_func = NULL;
 }
 
 static struct cute_expect *
@@ -393,23 +396,18 @@ cute_expect_check(enum cute_expect_type type,
 	struct cute_expect * xpct = NULL;
 	const char *         why;
 
-
 	if (!cute_expect_empty(&cute_expect_sched)) {
 		xpct = cute_expect_dqueue(&cute_expect_sched);
 		cute_expect_assert_intern(xpct);
 
 		if (type != xpct->xpct_type) {
-			cute_expect_claim_inval_type(&cute_curr_run->call,
-			                             xpct,
-			                             type);
+			cute_expect_claim_inval_type(cute_curr_run, xpct, type);
 			why = "mock expectation type mismatch";
 			goto fail;
 		}
 
 		if (strcmp(function, xpct->xpct_func)) {
-			cute_expect_claim_inval_call(&cute_curr_run->call,
-			                             xpct,
-			                             type);
+			cute_expect_claim_inval_call(cute_curr_run, xpct, type);
 			why = "mock caller function mismatch";
 			goto fail;
 		}
@@ -417,7 +415,7 @@ cute_expect_check(enum cute_expect_type type,
 		return xpct;
 	}
 
-	cute_expect_claim_missing(&cute_curr_run->call,
+	cute_expect_claim_missing(cute_curr_run,
 	                          cute_curr_run->base->file,
 	                          cute_curr_run->base->line);
 	why = "missing mock expectation";
@@ -499,22 +497,26 @@ static const struct cute_assess_ops cute_expect_xcess_ops = {
 };
 
 static void
-cute_expect_claim_xcess(struct cute_expect *       expect,
+cute_expect_claim_xcess(struct cute_run *          run,
                         const struct cute_expect * orig)
 {
-	cute_assert_intern(expect);
+	cute_assert_intern(run);
 	cute_expect_assert_intern(orig);
 
-	expect->super.ops = &cute_expect_xcess_ops;
-	expect->next = NULL;
-	expect->xpct_type = orig->xpct_type;
-	expect->xpct_file = orig->xpct_file;
-	expect->xpct_line = orig->xpct_line;
-	expect->xpct_func = orig->xpct_func;
+	struct cute_expect * xpct = &run->call;
+
+	cute_assess_release(&run->assess);
+
+	xpct->super.ops = &cute_expect_xcess_ops;
+	xpct->next = NULL;
+	xpct->xpct_type = orig->xpct_type;
+	xpct->xpct_file = orig->xpct_file;
+	xpct->xpct_line = orig->xpct_line;
+	xpct->xpct_func = orig->xpct_func;
 }
 
 int
-cute_expect_release(struct cute_expect * expect, bool check)
+cute_expect_release(struct cute_run * run, bool check)
 {
 	struct cute_expect * xpct;
 	int                  ret = 0;
@@ -522,7 +524,7 @@ cute_expect_release(struct cute_expect * expect, bool check)
 	if (check && !cute_expect_empty(&cute_expect_sched)) {
 		xpct = cute_expect_dqueue(&cute_expect_sched);
 
-		cute_expect_claim_xcess(expect, xpct);
+		cute_expect_claim_xcess(run, xpct);
 
 		cute_expect_nqueue(&cute_expect_done, xpct);
 
@@ -697,6 +699,23 @@ cute_expect_desc_parm_range(const struct cute_assess * assess,
 	return blk;
 }
 
+static void __cute_noreturn
+cute_expect_fail_parm(struct cute_expect * expect,
+                      const char *         file,
+                      int                  line,
+                      const char *         function,
+                      const char *         why)
+
+
+{
+	cute_assess_release(&cute_curr_run->assess);
+
+	cute_curr_run->parm = *(struct cute_expect_parm *)expect;
+	expect->super.ops = &cute_assess_null_ops;
+
+	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+}
+
 /******************************************************************************
  * Signed integer mock parameter expectation handling
  ******************************************************************************/
@@ -798,10 +817,7 @@ cute_expect_check_sint_parm(const char *             file,
 
 fail:
 	assess->check.sint = *check;
-	cute_curr_run->parm = *(struct cute_expect_parm *)xpct;
-	assess->ops = &cute_assess_null_ops;
-
-	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+	cute_expect_fail_parm(xpct, file, line, function, why);
 }
 
 static struct cute_text_block *
@@ -1406,10 +1422,7 @@ cute_expect_check_uint_parm(const char *             file,
 
 fail:
 	assess->check.uint = *check;
-	cute_curr_run->parm = *(struct cute_expect_parm *)xpct;
-	assess->ops = &cute_assess_null_ops;
-
-	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+	cute_expect_fail_parm(xpct, file, line, function, why);
 }
 
 static struct cute_text_block *
@@ -2388,10 +2401,7 @@ cute_expect_check_flt_parm(const char *            file,
 
 fail:
 	assess->check.flt = *check;
-	cute_curr_run->parm = *(struct cute_expect_parm *)xpct;
-	assess->ops = &cute_assess_null_ops;
-
-	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+	cute_expect_fail_parm(xpct, file, line, function, why);
 }
 
 static struct cute_text_block *
@@ -3029,10 +3039,7 @@ cute_expect_check_str_parm(const char *            file,
 
 fail:
 	assess->check.str = *check;
-	cute_curr_run->parm = *(struct cute_expect_parm *)xpct;
-	assess->ops = &cute_assess_null_ops;
-
-	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+	cute_expect_fail_parm(xpct, file, line, function, why);
 }
 
 static struct cute_text_block *
@@ -3603,10 +3610,7 @@ cute_expect_check_ptr_parm(const char *            file,
 
 fail:
 	assess->check.ptr = *check;
-	cute_curr_run->parm = *(struct cute_expect_parm *)xpct;
-	assess->ops = &cute_assess_null_ops;
-
-	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+	cute_expect_fail_parm(xpct, file, line, function, why);
 }
 
 static struct cute_text_block *
@@ -4246,10 +4250,7 @@ cute_expect_check_mem_parm(const char *            file,
 
 fail:
 	assess->check.ptr = *check;
-	cute_curr_run->parm = *(struct cute_expect_parm *)xpct;
-	assess->ops = &cute_assess_null_ops;
-
-	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+	cute_expect_fail_parm(xpct, file, line, function, why);
 }
 
 static struct cute_text_block *
