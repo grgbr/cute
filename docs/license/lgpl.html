@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GNU LESSER GENERAL PUBLIC LICENSE &mdash; CUTe 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CUTe
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user.html">1. Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user.html#basic-concepts">2. Basic concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user.html#typical-workflow">3. Typical Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user.html#writing-tests">4. Writing tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user.html#test-case">4.1. Test case</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#test-definition">4.1.1. Test definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#fixture-operations">4.1.2. Fixture operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#test-timeout">4.1.3. Test timeout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#test-file-scope">4.1.4. Test file scope</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user.html#test-hierarchy">4.2. Test hierarchy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#group-definition">4.2.1. Group definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#suite-definition">4.2.2. Suite definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#fixture-inheritance">4.2.3. Fixture inheritance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#timeout-inheritance">4.2.4. Timeout inheritance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#suite-file-scope">4.2.5. Suite file scope</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user.html#test-assertion">4.3. Test assertion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user.html#sect-user-mocking">4.4. Mocking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user.html#running-tests">4.5. Running tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#main-entry-point">4.5.1. Main entry point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#low-level-runner">4.5.2. Low-level runner</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user.html#setting-up-runner">4.5.2.1. Setting up runner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user.html#running-suites">4.5.2.2. Running suites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user.html#listing-suites">4.5.2.3. Listing suites</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#building-tests">4.5.3. Building tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#command-line">4.5.4. Command line</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../user.html#test-reports">5. Test reports</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user.html#console">5.1. Console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#terse">5.1.1. Terse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#verbose">5.1.2. Verbose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#silent">5.1.3. Silent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user.html#statistics">5.1.4. Statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user.html#junit-xml">5.2. JUnit XML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user.html#sect-user-tap">5.3. TAP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user.html#test-result">5.4. Test result</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integration Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">1. Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html#prerequisites">2. Prerequisites</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html#getting-help">3. Getting help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html#build-workflow">4. Build Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#preparation-phase">4.1. Preparation phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#configure-phase">4.2. Configure phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#build-phase">4.3. Build phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#install-phase">4.4. Install phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#alternative-staged-install-phase">4.5. Alternative staged install phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#documentation-generation">4.6. Documentation generation</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">1. Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#build-configuration">2. Build configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#functional-domains">3. Functional domains</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#test-definition">3.1. Test definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#fixture-operations">3.2. Fixture operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#timeouts">3.3. Timeouts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#group-definition">3.4. Group definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#suite-definition">3.5. Suite definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#test-assertion">3.6. Test assertion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#basic-assertion">3.6.1. Basic assertion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#booleans">3.6.2. Booleans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#signed-integers">3.6.3. Signed integers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#unsigned-integers">3.6.4. Unsigned integers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#floating-point-numbers">3.6.5. Floating point numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#strings">3.6.6. Strings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#pointers">3.6.7. Pointers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#memory-areas">3.6.8. Memory areas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#mocking">3.7. Mocking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#assertion-expectation">3.7.1. Assertion expectation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#call-expectation">3.7.2. Call expectation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#parameter-expectation">3.7.3. Parameter expectation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api.html#index-18">3.7.3.1. Booleans</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api.html#index-19">3.7.3.2. Signed integers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api.html#index-20">3.7.3.3. Unsigned integers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api.html#index-21">3.7.3.4. Floating point numbers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api.html#index-22">3.7.3.5. Strings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api.html#index-23">3.7.3.6. Pointers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api.html#index-24">3.7.3.7. Memory areas</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#return-value-expectation">3.7.4. Return value expectation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#running-tests">3.8. Running tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#reference">4. Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#configuration-macros">4.1. Configuration macros</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#config-cute-intern-assert">4.1.1. CONFIG_CUTE_INTERN_ASSERT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#config-cute-utest">4.1.2. CONFIG_CUTE_UTEST</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#macros">4.2. Macros</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-config-init">4.2.1. CUTE_CONFIG_INIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-dflt-tmout">4.2.2. CUTE_DFLT_TMOUT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-flt-range">4.2.3. CUTE_FLT_RANGE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-flt-set">4.2.4. CUTE_FLT_SET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-group">4.2.5. CUTE_GROUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-group-defn">4.2.6. CUTE_GROUP_DEFN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-group-decl">4.2.7. CUTE_GROUP_DECL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-group-static">4.2.8. CUTE_GROUP_STATIC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-group-extern">4.2.9. CUTE_GROUP_EXTERN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-inhr-setup">4.2.10. CUTE_INHR_SETUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-inhr-teardown">4.2.11. CUTE_INHR_TEARDOWN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-inhr-tmout">4.2.12. CUTE_INHR_TMOUT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-main">4.2.13. CUTE_MAIN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-none-tmout">4.2.14. CUTE_NONE_TMOUT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-null-setup">4.2.15. CUTE_NULL_SETUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-null-teardown">4.2.16. CUTE_NULL_TEARDOWN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-ptr-range">4.2.17. CUTE_PTR_RANGE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-ptr-set">4.2.18. CUTE_PTR_SET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-ref">4.2.19. CUTE_REF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-sint-range">4.2.20. CUTE_SINT_RANGE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-sint-set">4.2.21. CUTE_SINT_SET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-str-set">4.2.22. CUTE_STR_SET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-suite">4.2.23. CUTE_SUITE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-suite-defn">4.2.24. CUTE_SUITE_DEFN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-suite-decl">4.2.25. CUTE_SUITE_DECL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-suite-static">4.2.26. CUTE_SUITE_STATIC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-suite-extern">4.2.27. CUTE_SUITE_EXTERN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-test">4.2.28. CUTE_TEST</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-test-decl">4.2.29. CUTE_TEST_DECL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-test-defn">4.2.30. CUTE_TEST_DEFN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-test-extern">4.2.31. CUTE_TEST_EXTERN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-test-static">4.2.32. CUTE_TEST_STATIC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-uint-range">4.2.33. CUTE_UINT_RANGE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-uint-set">4.2.34. CUTE_UINT_SET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-assert">4.2.35. cute_check_assert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-bool">4.2.36. cute_check_bool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-flt">4.2.37. cute_check_flt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-flt-range">4.2.38. cute_check_flt_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-flt-set">4.2.39. cute_check_flt_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-hex">4.2.40. cute_check_hex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-hex-range">4.2.41. cute_check_hex_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-hex-set">4.2.42. cute_check_hex_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-mem">4.2.43. cute_check_mem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-ptr">4.2.44. cute_check_ptr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-ptr-range">4.2.45. cute_check_ptr_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-ptr-set">4.2.46. cute_check_ptr_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-sint">4.2.47. cute_check_sint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-sint-range">4.2.48. cute_check_sint_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-sint-set">4.2.49. cute_check_sint_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-str">4.2.50. cute_check_str</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-str-set">4.2.51. cute_check_str_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-uint">4.2.52. cute_check_uint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-uint-range">4.2.53. cute_check_uint_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-check-uint-set">4.2.54. cute_check_uint_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-assertion">4.2.55. cute_expect_assertion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-bool-parm">4.2.56. cute_expect_bool_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-bool-retval">4.2.57. cute_expect_bool_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-call">4.2.58. cute_expect_call</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-flt-parm">4.2.59. cute_expect_flt_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-flt-range">4.2.60. cute_expect_flt_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-flt-retval">4.2.61. cute_expect_flt_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-flt-set">4.2.62. cute_expect_flt_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-hex-parm">4.2.63. cute_expect_hex_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-hex-range">4.2.64. cute_expect_hex_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-hex-set">4.2.65. cute_expect_hex_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-mem-parm">4.2.66. cute_expect_mem_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-ptr-parm">4.2.67. cute_expect_ptr_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-ptr-range">4.2.68. cute_expect_ptr_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-ptr-retval">4.2.69. cute_expect_ptr_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-ptr-set">4.2.70. cute_expect_ptr_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-sint-parm">4.2.71. cute_expect_sint_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-sint-range">4.2.72. cute_expect_sint_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-sint-retval">4.2.73. cute_expect_sint_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-sint-set">4.2.74. cute_expect_sint_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-str-parm">4.2.75. cute_expect_str_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-str-retval">4.2.76. cute_expect_str_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-str-set">4.2.77. cute_expect_str_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-uint-parm">4.2.78. cute_expect_uint_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-uint-range">4.2.79. cute_expect_uint_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-uint-retval">4.2.80. cute_expect_uint_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-expect-uint-set">4.2.81. cute_expect_uint_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-fail">4.2.82. cute_fail</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-bool-parm">4.2.83. cute_mock_bool_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-bool-retval">4.2.84. cute_mock_bool_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-call">4.2.85. cute_mock_call</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-flt-parm">4.2.86. cute_mock_flt_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-flt-retval">4.2.87. cute_mock_flt_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-hex-parm">4.2.88. cute_mock_hex_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-mem-parm">4.2.89. cute_mock_mem_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-ptr-parm">4.2.90. cute_mock_ptr_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-ptr-retval">4.2.91. cute_mock_ptr_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-sint-parm">4.2.92. cute_mock_sint_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-sint-retval">4.2.93. cute_mock_sint_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-str-parm">4.2.94. cute_mock_str_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-str-retval">4.2.95. cute_mock_str_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-uint-parm">4.2.96. cute_mock_uint_parm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-uint-retval">4.2.97. cute_mock_uint_retval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-skip">4.2.98. cute_skip</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#enums">4.3. Enums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-config-report">4.3.1. cute_config_report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-config-tty">4.3.2. cute_config_tty</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#structs">4.4. Structs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-config">4.4.1. cute_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#id8">4.4.2. cute_flt_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#id9">4.4.3. cute_flt_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#id10">4.4.4. cute_ptr_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#id11">4.4.5. cute_ptr_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#id12">4.4.6. cute_sint_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#id13">4.4.7. cute_sint_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#id14">4.4.8. cute_str_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#id15">4.4.9. cute_uint_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#id16">4.4.10. cute_uint_set</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#functions">4.5. Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-init">4.5.1. cute_init</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-fini">4.5.2. cute_fini</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-mock-assert">4.5.3. cute_mock_assert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-run-suite">4.5.4. cute_run_suite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#cute-show-suite">4.5.5. cute_show_suite</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Licensing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../license.html#gnu-lesser-general-public-license">GNU LESSER GENERAL PUBLIC LICENSE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../license.html#additional-definitions">Additional Definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../license.html#exception-to-section-3-of-the-gnu-gpl">Exception to Section 3 of the GNU GPL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../license.html#conveying-modified-versions">Conveying Modified Versions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../license.html#object-code-incorporating-material-from-library-header-files">Object Code Incorporating Material from Library Header Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../license.html#combined-works">Combined Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../license.html#combined-libraries">Combined Libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../license.html#revised-versions-of-the-gnu-lesser-general-public-license">Revised Versions of the GNU Lesser General Public License</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../license.html#gnu-general-public-license">GNU GENERAL PUBLIC LICENSE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../license.html#preamble">Preamble</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../license.html#terms-and-conditions">TERMS AND CONDITIONS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#definitions">Definitions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#source-code">Source Code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#basic-permissions">Basic Permissions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#protecting-users-legal-rights-from-anti-circumvention-law">Protecting Users’ Legal Rights From Anti-Circumvention Law</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#conveying-verbatim-copies">Conveying Verbatim Copies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#conveying-modified-source-versions">Conveying Modified Source Versions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#conveying-non-source-forms">Conveying Non-Source Forms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#additional-terms">Additional Terms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#termination">Termination</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#acceptance-not-required-for-having-copies">Acceptance Not Required for Having Copies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#automatic-licensing-of-downstream-recipients">Automatic Licensing of Downstream Recipients</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#patents">Patents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#no-surrender-of-others-freedom">No Surrender of Others’ Freedom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#use-with-the-gnu-affero-general-public-license">Use with the GNU Affero General Public License</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#revised-versions-of-this-license">Revised Versions of this License</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#disclaimer-of-warranty">Disclaimer of Warranty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#limitation-of-liability">Limitation of Liability</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../license.html#interpretation-of-sections-15-and-16">Interpretation of Sections 15 and 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../license.html#how-to-apply-these-terms-to-your-new-programs">How to Apply These Terms to Your New Programs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../todo.html">Todo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CUTe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">GNU LESSER GENERAL PUBLIC LICENSE</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/license/lgpl.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gnu-lesser-general-public-license">
+<span id="lgpl"></span><h1>GNU LESSER GENERAL PUBLIC LICENSE<a class="headerlink" href="#gnu-lesser-general-public-license" title="Permalink to this heading"></a></h1>
+<section id="additional-definitions">
+<h2>Additional Definitions<a class="headerlink" href="#additional-definitions" title="Permalink to this heading"></a></h2>
+<p>As used herein, “this License” refers to version 3 of the GNU Lesser
+General Public License, and the “GNU GPL” refers to version 3 of the
+<a class="reference internal" href="../license.html#gpl"><span class="std std-ref">GNU General Public License</span></a>.</p>
+<p>“The Library” refers to a covered work governed by this License, other
+than an Application or a Combined Work as defined below.</p>
+<p>An “Application” is any work that makes use of an interface provided
+by the Library, but which is not otherwise based on the Library.
+Defining a subclass of a class defined by the Library is deemed a mode
+of using an interface provided by the Library.</p>
+<p>A “Combined Work” is a work produced by combining or linking an
+Application with the Library. The particular version of the Library
+with which the Combined Work was made is also called the “Linked
+Version”.</p>
+<p>The “Minimal Corresponding Source” for a Combined Work means the
+Corresponding Source for the Combined Work, excluding any source code
+for portions of the Combined Work that, considered in isolation, are
+based on the Application, and not on the Linked Version.</p>
+<p>The “Corresponding Application Code” for a Combined Work means the
+object code and/or source code for the Application, including any data
+and utility programs needed for reproducing the Combined Work from the
+Application, but excluding the System Libraries of the Combined Work.</p>
+</section>
+<section id="exception-to-section-3-of-the-gnu-gpl">
+<h2>Exception to Section 3 of the GNU GPL<a class="headerlink" href="#exception-to-section-3-of-the-gnu-gpl" title="Permalink to this heading"></a></h2>
+<p>You may convey a covered work under sections 3 and 4 of this License
+without being bound by section 3 of the <a class="reference internal" href="../license.html#gpl"><span class="std std-ref">GNU GPL</span></a>.</p>
+</section>
+<section id="conveying-modified-versions">
+<h2>Conveying Modified Versions<a class="headerlink" href="#conveying-modified-versions" title="Permalink to this heading"></a></h2>
+<p>If you modify a copy of the Library, and, in your modifications, a
+facility refers to a function or data to be supplied by an Application
+that uses the facility (other than as an argument passed when the
+facility is invoked), then you may convey a copy of the modified
+version:</p>
+<ol class="loweralpha simple">
+<li><p>under this License, provided that you make a good faith effort
+to ensure that, in the event an Application does not supply the
+function or data, the facility still operates, and performs
+whatever part of its purpose remains meaningful, or</p></li>
+<li><p>under the <a class="reference internal" href="../license.html#gpl"><span class="std std-ref">GNU GPL</span></a>, with none of the additional permissions of
+this License applicable to that copy.</p></li>
+</ol>
+</section>
+<section id="object-code-incorporating-material-from-library-header-files">
+<h2>Object Code Incorporating Material from Library Header Files<a class="headerlink" href="#object-code-incorporating-material-from-library-header-files" title="Permalink to this heading"></a></h2>
+<p>The object code form of an Application may incorporate material from a
+header file that is part of the Library. You may convey such object
+code under terms of your choice, provided that, if the incorporated
+material is not limited to numerical parameters, data structure
+layouts and accessors, or small macros, inline functions and templates
+(ten or fewer lines in length), you do both of the following:</p>
+<ol class="loweralpha simple">
+<li><p>Give prominent notice with each copy of the object code that
+the Library is used in it and that the Library and its use are
+covered by this License.</p></li>
+<li><p>Accompany the object code with a copy of the <a class="reference internal" href="../license.html#gpl"><span class="std std-ref">GNU GPL</span></a> and this
+license document.</p></li>
+</ol>
+</section>
+<section id="combined-works">
+<h2>Combined Works<a class="headerlink" href="#combined-works" title="Permalink to this heading"></a></h2>
+<p>You may convey a Combined Work under terms of your choice that, taken
+together, effectively do not restrict modification of the portions of
+the Library contained in the Combined Work and reverse engineering for
+debugging such modifications, if you also do each of the following:</p>
+<ol class="loweralpha simple">
+<li><p>Give prominent notice with each copy of the Combined Work that
+the Library is used in it and that the Library and its use are
+covered by this License.</p></li>
+<li><p>Accompany the Combined Work with a copy of the <a class="reference internal" href="../license.html#gpl"><span class="std std-ref">GNU GPL</span></a> and this
+license document.</p></li>
+<li><p>For a Combined Work that displays copyright notices during
+execution, include the copyright notice for the Library among
+these notices, as well as a reference directing the user to the
+copies of the <a class="reference internal" href="../license.html#gpl"><span class="std std-ref">GNU GPL</span></a> and this license document.</p></li>
+<li><p>Do one of the following:</p>
+<ol class="arabic simple" start="0">
+<li><p>Convey the Minimal Corresponding Source under the terms of
+this License, and the Corresponding Application Code in a form
+suitable for, and under terms that permit, the user to
+recombine or relink the Application with a modified version of
+the Linked Version to produce a modified Combined Work, in the
+manner specified by section 6 of the <a class="reference internal" href="../license.html#gpl"><span class="std std-ref">GNU GPL</span></a> for conveying
+Corresponding Source.</p></li>
+<li><p>Use a suitable shared library mechanism for linking with
+the Library. A suitable mechanism is one that (a) uses at run
+time a copy of the Library already present on the user’s
+computer system, and (b) will operate properly with a modified
+version of the Library that is interface-compatible with the
+Linked Version.</p></li>
+</ol>
+</li>
+<li><p>Provide Installation Information, but only if you would
+otherwise be required to provide such information under section 6
+of the <a class="reference internal" href="../license.html#gpl"><span class="std std-ref">GNU GPL</span></a>, and only to the extent that such information is
+necessary to install and execute a modified version of the
+Combined Work produced by recombining or relinking the Application
+with a modified version of the Linked Version. (If you use option
+4d0, the Installation Information must accompany the Minimal
+Corresponding Source and Corresponding Application Code. If you
+use option 4d1, you must provide the Installation Information in
+the manner specified by section 6 of the <a class="reference internal" href="../license.html#gpl"><span class="std std-ref">GNU GPL</span></a> for conveying
+Corresponding Source.)</p></li>
+</ol>
+</section>
+<section id="combined-libraries">
+<h2>Combined Libraries<a class="headerlink" href="#combined-libraries" title="Permalink to this heading"></a></h2>
+<p>You may place library facilities that are a work based on the Library
+side by side in a single library together with other library
+facilities that are not Applications and are not covered by this
+License, and convey such a combined library under terms of your
+choice, if you do both of the following:</p>
+<ol class="loweralpha simple">
+<li><p>Accompany the combined library with a copy of the same work
+based on the Library, uncombined with any other library
+facilities, conveyed under the terms of this License.</p></li>
+<li><p>Give prominent notice with the combined library that part of it
+is a work based on the Library, and explaining where to find the
+accompanying uncombined form of the same work.</p></li>
+</ol>
+</section>
+<section id="revised-versions-of-the-gnu-lesser-general-public-license">
+<h2>Revised Versions of the GNU Lesser General Public License<a class="headerlink" href="#revised-versions-of-the-gnu-lesser-general-public-license" title="Permalink to this heading"></a></h2>
+<p>The Free Software Foundation may publish revised and/or new versions
+of the GNU Lesser General Public License from time to time. Such new
+versions will be similar in spirit to the present version, but may
+differ in detail to address new problems or concerns.</p>
+<p>Each version is given a distinguishing version number. If the Library
+as you received it specifies that a certain numbered version of the
+GNU Lesser General Public License “or any later version” applies to
+it, you have the option of following the terms and conditions either
+of that published version or of any later version published by the
+Free Software Foundation. If the Library as you received it does not
+specify a version number of the GNU Lesser General Public License, you
+may choose any version of the GNU Lesser General Public License ever
+published by the Free Software Foundation.</p>
+<p>If the Library as you received it specifies that a proxy can decide
+whether future versions of the GNU Lesser General Public License shall
+apply, that proxy’s public statement of acceptance of any version is
+permanent authorization for you to choose that version for the
+Library.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023 Grégor Boirie.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
