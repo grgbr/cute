@@ -38,17 +38,24 @@ cute_expect_fail_assert(const char * file, int line, const char * function)
 	cute_assert(function);
 	cute_assert(function[0]);
 
+	sigset_t sigs;
+
 	cute_assert_intern(cute_expect_assert);
 	cute_expect_assert = false;
 
+	cute_run_block_sigs(&sigs);
+
 	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_expr(&cute_curr_run->assess, NULL);
-
 	cute_break(CUTE_FAIL_ISSUE,
 	           file,
 	           line,
 	           function,
 	           "expected assertion missed");
+
+	cute_run_unblock_sigs(&sigs);
+
+	siglongjmp(cute_jmp_env, CUTE_FAIL_ISSUE);
 }
 
 void
@@ -65,18 +72,25 @@ cute_mock_assert(const char * expression,
 	cute_assert(function);
 	cute_assert(function[0]);
 
+	sigset_t sigs;
+
 	if (cute_expect_check_assert())
 		/* Does not return. */
 		siglongjmp(cute_expect_assert_env, 1);
 
+	cute_run_block_sigs(&sigs);
+
 	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_assert(&cute_curr_run->assess, expression);
-
 	cute_break(CUTE_FAIL_ISSUE,
 	           file,
 	           (int)line,
 	           function,
 	           "uncaught assertion failure");
+
+	cute_run_unblock_sigs(&sigs);
+
+	siglongjmp(cute_jmp_env, CUTE_FAIL_ISSUE);
 }
 
 /******************************************************************************
@@ -394,6 +408,7 @@ cute_expect_check(enum cute_expect_type type,
 	cute_assert_intern(cute_curr_run);
 
 	struct cute_expect * xpct = NULL;
+	sigset_t             sigs;
 	const char *         why;
 
 	if (!cute_expect_empty(&cute_expect_sched)) {
@@ -401,12 +416,16 @@ cute_expect_check(enum cute_expect_type type,
 		cute_expect_assert_intern(xpct);
 
 		if (type != xpct->xpct_type) {
+			cute_run_block_sigs(&sigs);
+
 			cute_expect_claim_inval_type(cute_curr_run, xpct, type);
 			why = "mock expectation type mismatch";
 			goto fail;
 		}
 
 		if (strcmp(function, xpct->xpct_func)) {
+			cute_run_block_sigs(&sigs);
+
 			cute_expect_claim_inval_call(cute_curr_run, xpct, type);
 			why = "mock caller function mismatch";
 			goto fail;
@@ -414,6 +433,8 @@ cute_expect_check(enum cute_expect_type type,
 
 		return xpct;
 	}
+
+	cute_run_block_sigs(&sigs);
 
 	cute_expect_claim_missing(cute_curr_run,
 	                          cute_curr_run->base->file,
@@ -426,6 +447,10 @@ fail:
 
 	/* Do not return... */
 	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+
+	cute_run_unblock_sigs(&sigs);
+
+	siglongjmp(cute_jmp_env, CUTE_FAIL_ISSUE);
 }
 
 static struct cute_expect *
@@ -708,12 +733,18 @@ cute_expect_fail_parm(struct cute_expect * expect,
 
 
 {
-	cute_assess_release(&cute_curr_run->assess);
+	sigset_t sigs;
 
+	cute_run_block_sigs(&sigs);
+
+	cute_assess_release(&cute_curr_run->assess);
 	cute_curr_run->parm = *(struct cute_expect_parm *)expect;
 	expect->super.ops = &cute_assess_null_ops;
-
 	cute_break(CUTE_FAIL_ISSUE, file, line, function, why);
+
+	cute_run_unblock_sigs(&sigs);
+
+	siglongjmp(cute_jmp_env, CUTE_FAIL_ISSUE);
 }
 
 /******************************************************************************

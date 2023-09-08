@@ -474,10 +474,11 @@ cute_assess_update_source(struct cute_assess * assess,
                           int                  line,
                           const char *         function);
 
-extern bool
+extern void
 cute_assess_check(struct cute_assess *            result,
                   struct cute_assess *            assess,
-                  const union cute_assess_value * value);
+                  const union cute_assess_value * check,
+                  const char *                    why);
 
 extern struct cute_text_block *
 cute_assess_desc(const struct cute_assess * assess);

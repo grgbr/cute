@@ -60,7 +60,7 @@ cute_run_what(const struct cute_run * run, enum cute_issue issue)
 	}
 }
 
-void __cute_noreturn
+void
 cute_break(enum cute_issue issue,
            const char *    file,
            int             line,
@@ -83,19 +83,12 @@ cute_break(enum cute_issue issue,
 		cute_assert_intern((issue == CUTE_FAIL_ISSUE) ||
 		                   (issue == CUTE_EXCP_ISSUE) ||
 		                   (issue == CUTE_SKIP_ISSUE));
-		cute_assert_intern(!run->what);
-		cute_assert_intern(!run->why);
-		cute_assert_intern(!run->assess.file);
-		cute_assert_intern(run->assess.line < 0);
-		cute_assert_intern(!run->assess.func);
-
 		break;
 
 	case CUTE_TEARDOWN_STATE:
 		/* Cannot skip from within teardown fixture. */
 		cute_assert((issue == CUTE_FAIL_ISSUE) ||
 		            (issue == CUTE_EXCP_ISSUE));
-
 		/*
 		 * Overwrite any previous errors to inform test writers
 		 * on testing logic bugs preferentially.
@@ -109,8 +102,6 @@ cute_break(enum cute_issue issue,
 	run->what = cute_run_what(run, issue);
 	run->why = why;
 	cute_assess_update_source(&run->assess, file, line, func);
-
-	siglongjmp(cute_jmp_env, issue);
 }
 
 struct cute_run_sigact {
@@ -129,6 +120,7 @@ static struct cute_run_sigact cute_run_sigs[] = {
 static struct sigaction       cute_run_timer_act;
 
 static sigset_t               cute_run_sigmask;
+static sigset_t               cute_run_blksig;
 
 static stack_t                cute_run_sigstack = {
 	.ss_flags = 0,
@@ -143,12 +135,13 @@ cute_run_handle_sig(int         sig,
 
 	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_excp(&cute_curr_run->assess, sig);
-
 	cute_break(CUTE_EXCP_ISSUE,
 	           cute_curr_run->base->file,
 	           cute_curr_run->base->line,
 	           NULL,
 	           "exception raised");
+
+	siglongjmp(cute_jmp_env, CUTE_EXCP_ISSUE);
 }
 
 static void
@@ -211,12 +204,13 @@ cute_run_handle_tmout(int         sig __cute_unused,
 
 	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_expr(&cute_curr_run->assess, NULL);
-
 	cute_break(CUTE_FAIL_ISSUE,
 	           cute_curr_run->base->file,
 	           cute_curr_run->base->line,
 	           NULL,
 	           "timer expired");
+
+	siglongjmp(cute_jmp_env, CUTE_FAIL_ISSUE);
 }
 
 static void
@@ -261,11 +255,30 @@ cute_run_disarm_timer(const struct cute_run * run)
 }
 
 void
+cute_run_block_sigs(sigset_t * old)
+{
+	int err __cute_unused;
+
+	err = sigprocmask(SIG_BLOCK, &cute_run_blksig, old);
+	cute_assert_intern(!err);
+}
+
+void
+cute_run_unblock_sigs(const sigset_t * old)
+{
+	int err __cute_unused;
+
+	err = sigprocmask(SIG_SETMASK, old, NULL);
+	cute_assert_intern(!err);
+}
+
+void
 cute_run_init_sigs(void)
 {
+	int err __cute_unused;
+
 	if (!cute_the_config->debug) {
-		int           err __cute_unused;
-		unsigned int  s;
+		unsigned int s;
 
 		sigemptyset(&cute_run_sigmask);
 		err = sigaddset(&cute_run_sigmask, SIGALRM);
@@ -284,6 +297,10 @@ cute_run_init_sigs(void)
 		err = sigaltstack(&cute_run_sigstack, NULL);
 		cute_assert_intern(!err);
 	}
+
+	sigemptyset(&cute_run_blksig);
+	err = sigaddset(&cute_run_blksig, SIGALRM);
+	cute_assert_intern(!err);
 }
 
 void
@@ -628,17 +645,24 @@ _cute_skip(const char * reason,
 	cute_assert(function[0]);
 	cute_run_assert_intern(cute_curr_run);
 
+	sigset_t sigs;
+
+	cute_run_block_sigs(&sigs);
+
 	/*
 	 * No need to cleanup assess result field since CUTe does not allow
 	 * skipping from within teardown() fixture function.
 	 */
 	cute_assess_build_expr(&cute_curr_run->assess, reason);
-
 	cute_break(CUTE_SKIP_ISSUE,
 	           file,
 	           line,
 	           function,
 	           "explicit skip requested");
+
+	cute_run_unblock_sigs(&sigs);
+
+	siglongjmp(cute_jmp_env, CUTE_SKIP_ISSUE);
 }
 
 void
@@ -655,12 +679,19 @@ _cute_fail(const char * reason,
 	cute_assert(function[0]);
 	cute_run_assert_intern(cute_curr_run);
 
+	sigset_t sigs;
+
+	cute_run_block_sigs(&sigs);
+
 	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_expr(&cute_curr_run->assess, reason);
-
 	cute_break(CUTE_FAIL_ISSUE,
 	           file,
 	           line,
 	           function,
 	           "explicit fail requested");
+
+	cute_run_unblock_sigs(&sigs);
+
+	siglongjmp(cute_jmp_env, CUTE_FAIL_ISSUE);
 }

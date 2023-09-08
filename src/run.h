@@ -12,6 +12,7 @@
 #include "report.h"
 #include "iodir.h"
 #include "util.h"
+#include <signal.h>
 
 struct cute_run;
 
@@ -182,6 +183,12 @@ extern void
 cute_run_destroy(struct cute_run * run);
 
 extern void
+cute_run_block_sigs(sigset_t * old);
+
+extern void
+cute_run_unblock_sigs(const sigset_t * old);
+
+extern void
 cute_run_init_sigs(void);
 
 extern void
@@ -197,7 +204,7 @@ cute_run_foreach(struct cute_run *     run,
 
 extern struct cute_run * volatile cute_curr_run;
 
-extern void __cute_noreturn
+extern void
 cute_break(enum cute_issue issue,
            const char *    file,
            int             line,

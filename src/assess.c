@@ -987,42 +987,56 @@ cute_assess_update_source(struct cute_assess * assess,
 	cute_assert_intern(file[0]);
 	cute_assert_intern(line >= 0);
 	cute_assert_intern(!function || function[0]);
-	cute_assert_intern(!assess->file);
-	cute_assert_intern(assess->line < 0);
-	cute_assert_intern(!assess->func);
 
 	assess->file = file;
 	assess->line = line;
 	assess->func = function;
 }
 
-bool
+void
 cute_assess_check(struct cute_assess *            result,
                   struct cute_assess *            assess,
-                  const union cute_assess_value * check)
+                  const union cute_assess_value * check,
+                  const char *                    why)
 {
 	cute_assess_assert_intern(result);
 	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->file);
+	cute_assert_intern(assess->file[0]);
+	cute_assert_intern(assess->line >= 0);
+	cute_assert_intern(assess->func);
+	cute_assert_intern(assess->func[0]);
 	cute_assert_intern(check);
 	cute_assert_intern(check->expr);
+	cute_assert_intern(why);
+	cute_assert_intern(why[0]);
 
-	if (assess->ops->cmp(assess, check)) {
-		/*
-		 * Release allocated resources when check passed since report
-		 * does not access results when test is successful.
-		 * Clear operation structure so that cute_assess_release() may
-		 * safely skip release operation at cute_run_fini() time.
-		 */
-		cute_assess_release(assess);
+	if (!assess->ops->cmp(assess, check)) {
+		sigset_t sigs;
 
-		return true;
+		cute_run_block_sigs(&sigs);
+
+		cute_assess_release(result);
+		*result = *assess;
+		result->check = *check;
+		cute_break(CUTE_FAIL_ISSUE,
+		           assess->file,
+		           assess->line,
+		           assess->func,
+		           why);
+
+		cute_run_unblock_sigs(&sigs);
+
+		siglongjmp(cute_jmp_env, CUTE_FAIL_ISSUE);
 	}
 
-	cute_assess_release(result);
-	*result = *assess;
-	result->check = *check;
-
-	return false;
+	/*
+	 * Release allocated resources when check passed since report
+	 * does not access results when test is successful.
+	 * Clear operation structure so that cute_assess_release() may
+	 * safely skip release operation at cute_run_fini() time.
+	 */
+	cute_assess_release(assess);
 }
 
 struct cute_text_block *

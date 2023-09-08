@@ -40,17 +40,24 @@ __cute_check_assert(bool         fail,
 {
 	cute_check_assert_expr(file, line, function, expr);
 
+	sigset_t sigs;
+
 	if (!fail)
 		return;
 
+	cute_run_block_sigs(&sigs);
+
 	cute_assess_release(&cute_curr_run->assess);
 	cute_assess_build_assert(&cute_curr_run->assess, expr);
-
 	cute_break(CUTE_FAIL_ISSUE,
 	           file,
 	           line,
 	           function,
 	           "assertion check failed");
+
+	cute_run_unblock_sigs(&sigs);
+
+	siglongjmp(cute_jmp_env, CUTE_FAIL_ISSUE);
 }
 
 /******************************************************************************
@@ -106,18 +113,16 @@ cute_check_assess_sint(const char *                   file,
 	const union cute_assess_value chk = { .sint = *check };
 	struct cute_assess            assess = {
 		.ops              = ops,
-		.file             = NULL,
-		.line             = -1,
-		.func             = NULL,
+		.file             = file,
+		.line             = line,
+		.func             = function,
 		.expect.sint.scal = *expect
 	};
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "signed integer value check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "signed integer value check failed");
 }
 
 static struct cute_text_block *
@@ -337,18 +342,16 @@ cute_check_assess_sint_range(const char *                   file,
 	const union cute_assess_value chk = { .sint = *check };
 	struct cute_assess            assess = {
 		.ops               = ops,
-		.file              = NULL,
-		.line              = -1,
-		.func              = NULL,
+		.file              = file,
+		.line              = line,
+		.func              = function,
 		.expect.sint.range = *expect
 	};
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "signed integer range check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "signed integer range check failed");
 }
 
 static struct cute_text_block *
@@ -468,9 +471,9 @@ cute_check_assess_sint_set(const char *                   file,
 	const union cute_assess_value chk = { .sint = *check };
 	struct cute_assess            assess = {
 		.ops                   = ops,
-		.file                  = NULL,
-		.line                  = -1,
-		.func                  = NULL
+		.file                  = file,
+		.line                  = line,
+		.func                  = function
 	};
 
 	if (expect->count) {
@@ -486,12 +489,10 @@ cute_check_assess_sint_set(const char *                   file,
 	assess.expect.sint.set = *expect;
 	assess.expect.sint.set.items = items;
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "signed integer set check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "signed integer set check failed");
 }
 
 static struct cute_text_block *
@@ -601,18 +602,16 @@ cute_check_assess_uint(const char *                   file,
 	const union cute_assess_value chk = { .uint = *check };
 	struct cute_assess            assess = {
 		.ops              = ops,
-		.file             = NULL,
-		.line             = -1,
-		.func             = NULL,
+		.file             = file,
+		.line             = line,
+		.func             = function,
 		.expect.uint.scal = *expect
 	};
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "unsigned integer value check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "unsigned integer value check failed");
 }
 
 static struct cute_text_block *
@@ -832,18 +831,16 @@ cute_check_assess_uint_range(const char *                   file,
 	const union cute_assess_value chk = { .uint = *check };
 	struct cute_assess            assess = {
 		.ops               = ops,
-		.file              = NULL,
-		.line              = -1,
-		.func              = NULL,
+		.file              = file,
+		.line              = line,
+		.func              = function,
 		.expect.uint.range = *expect
 	};
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "unsigned integer range check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "unsigned integer range check failed");
 }
 
 static struct cute_text_block *
@@ -962,9 +959,9 @@ cute_check_assess_uint_set(const char *                   file,
 	const union cute_assess_value chk = { .uint = *check };
 	struct cute_assess            assess = {
 		.ops               = ops,
-		.file              = NULL,
-		.line              = -1,
-		.func              = NULL
+		.file              = file,
+		.line              = line,
+		.func              = function
 	};
 
 	if (expect->count) {
@@ -980,12 +977,10 @@ cute_check_assess_uint_set(const char *                   file,
 	assess.expect.uint.set = *expect;
 	assess.expect.uint.set.items = items;
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "unsigned integer set check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "unsigned integer set check failed");
 }
 
 static struct cute_text_block *
@@ -1496,18 +1491,16 @@ cute_check_assess_flt(const char *                   file,
 	const union cute_assess_value chk = { .flt = *check };
 	struct cute_assess            assess = {
 		.ops             = ops,
-		.file            = NULL,
-		.line            = -1,
-		.func            = NULL,
+		.file            = file,
+		.line            = line,
+		.func            = function,
 		.expect.flt.scal = *expect
 	};
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "floating point value check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "floating point value check failed");
 }
 
 static struct cute_text_block *
@@ -1729,18 +1722,16 @@ cute_check_assess_flt_range(const char *                   file,
 	const union cute_assess_value chk = { .flt = *check };
 	struct cute_assess            assess = {
 		.ops              = ops,
-		.file             = NULL,
-		.line             = -1,
-		.func             = NULL,
+		.file             = file,
+		.line             = line,
+		.func             = function,
 		.expect.flt.range = *expect
 	};
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "floating point number range check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "floating point number range check failed");
 }
 
 static struct cute_text_block *
@@ -1861,9 +1852,9 @@ cute_check_assess_flt_set(const char *                   file,
 	const union cute_assess_value chk = { .flt = *check };
 	struct cute_assess            assess = {
 		.ops              = ops,
-		.file             = NULL,
-		.line             = -1,
-		.func             = NULL
+		.file             = file,
+		.line             = line,
+		.func             = function
 	};
 
 	if (expect->count) {
@@ -1879,12 +1870,10 @@ cute_check_assess_flt_set(const char *                   file,
 	assess.expect.flt.set = *expect;
 	assess.expect.flt.set.items = items;
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "floating point number set check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "floating point number set check failed");
 }
 
 static struct cute_text_block *
@@ -2003,18 +1992,16 @@ cute_check_assess_str(const char *                   file,
 	const union cute_assess_value chk = { .str = *check };
 	struct cute_assess            assess = {
 		.ops             = ops,
-		.file            = NULL,
-		.line            = -1,
-		.func            = NULL,
+		.file            = file,
+		.line            = line,
+		.func            = function,
 		.expect.str.sole = *expect
 	};
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "string content check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "string content check failed");
 }
 
 static struct cute_text_block *
@@ -2316,9 +2303,9 @@ cute_check_assess_str_set(const char *                   file,
 	const union cute_assess_value chk = { .str = *check };
 	struct cute_assess            assess = {
 		.ops             = ops,
-		.file            = NULL,
-		.line            = -1,
-		.func            = NULL
+		.file            = file,
+		.line            = line,
+		.func            = function
 	};
 
 	if (expect->count) {
@@ -2337,12 +2324,10 @@ cute_check_assess_str_set(const char *                   file,
 	assess.expect.str.set = *expect;
 	assess.expect.str.set.items = items;
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "string content set check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "string content set check failed");
 }
 
 static struct cute_text_block *
@@ -2452,18 +2437,16 @@ cute_check_assess_ptr(const char *                   file,
 	const union cute_assess_value chk = { .ptr = *check };
 	struct cute_assess            assess = {
 		.ops             = ops,
-		.file            = NULL,
-		.line            = -1,
-		.func            = NULL,
+		.file            = file,
+		.line            = line,
+		.func            = function,
 		.expect.ptr.scal = *expect
 	};
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "pointer value check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "pointer value check failed");
 }
 
 static struct cute_text_block *
@@ -2681,18 +2664,16 @@ cute_check_assess_ptr_range(const char *                   file,
 	const union cute_assess_value chk = { .ptr = *check };
 	struct cute_assess            assess = {
 		.ops              = ops,
-		.file             = NULL,
-		.line             = -1,
-		.func             = NULL,
+		.file             = file,
+		.line             = line,
+		.func             = function,
 		.expect.ptr.range = *expect
 	};
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "pointer range check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "pointer range check failed");
 }
 
 static struct cute_text_block *
@@ -2811,9 +2792,9 @@ cute_check_assess_ptr_set(const char *                   file,
 	const union cute_assess_value chk = { .ptr = *check };
 	struct cute_assess            assess = {
 		.ops              = ops,
-		.file             = NULL,
-		.line             = -1,
-		.func             = NULL
+		.file             = file,
+		.line             = line,
+		.func             = function
 	};
 
 	if (expect->count) {
@@ -2829,12 +2810,10 @@ cute_check_assess_ptr_set(const char *                   file,
 	assess.expect.ptr.set = *expect;
 	assess.expect.ptr.set.items = items;
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "pointer set check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "pointer set check failed");
 }
 
 static struct cute_text_block *
@@ -2958,18 +2937,16 @@ cute_check_assess_mem(const char *                   file,
 	const union cute_assess_value chk = { .ptr = *check };
 	struct cute_assess            assess = {
 		.ops             = ops,
-		.file            = NULL,
-		.line            = -1,
-		.func            = NULL,
+		.file            = file,
+		.line            = line,
+		.func            = function,
 		.expect.mem.area = *expect
 	};
 
-	if (!cute_assess_check(&cute_curr_run->assess, &assess, &chk))
-		cute_break(CUTE_FAIL_ISSUE,
-		           file,
-		           line,
-		           function,
-		           "memory area check failed");
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "memory area check failed");
 }
 
 static struct cute_text_block *
