@@ -89,10 +89,6 @@ cute_break(enum cute_issue issue,
 		cute_assert_intern(run->assess.line < 0);
 		cute_assert_intern(!run->assess.func);
 
-		run->what = cute_run_what(run, issue);
-		run->why = why;
-		cute_assess_update_source(&run->assess, file, line, func);
-
 		break;
 
 	case CUTE_TEARDOWN_STATE:
@@ -100,22 +96,19 @@ cute_break(enum cute_issue issue,
 		cute_assert((issue == CUTE_FAIL_ISSUE) ||
 		            (issue == CUTE_EXCP_ISSUE));
 
-		if (!cute_assess_has_source(&run->assess) &&
-		    !run->what &&
-		    !run->why) {
-			run->what = cute_run_what(run, issue);
-			run->why = why;
-			cute_assess_update_source(&run->assess,
-			                          file,
-			                          line,
-			                          func);
-		}
-
+		/*
+		 * Overwrite any previous errors to inform test writers
+		 * on testing logic bugs preferentially.
+		 */
 		break;
 
 	default:
 		__cute_unreachable();
 	}
+
+	run->what = cute_run_what(run, issue);
+	run->why = why;
+	cute_assess_update_source(&run->assess, file, line, func);
 
 	siglongjmp(cute_jmp_env, issue);
 }
@@ -635,7 +628,10 @@ _cute_skip(const char * reason,
 	cute_assert(function[0]);
 	cute_run_assert_intern(cute_curr_run);
 
-	cute_assess_release(&cute_curr_run->assess);
+	/*
+	 * No need to cleanup assess result field since CUTe does not allow
+	 * skipping from within teardown() fixture function.
+	 */
 	cute_assess_build_expr(&cute_curr_run->assess, reason);
 
 	cute_break(CUTE_SKIP_ISSUE,
