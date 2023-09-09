@@ -330,6 +330,25 @@ Parameter expectation
 Multiple types of function parameter expectations are supported to implement
 testing logic. These are described in the following sections.
 
+.. index:: boolean expectation;API, bool expectation;API,
+           API;boolean expectation, API;bool expectation
+
+Booleans
+^^^^^^^^
+
+Boolean function parameter expectations may be verified using so-called
+`bool` definitions :
+
+.. hlist::
+
+   * **Parameter value expectation** :
+
+      * :c:macro:`cute_expect_bool_parm`
+
+   * **Parameter check**:
+
+      * :c:macro:`cute_mock_bool_parm()` function-like macro
+
 .. index:: signed integer expectation;API, sint expectation;API,
            API;signed integer expectation, API;sint expectation,
            integer;signed expectation
@@ -509,6 +528,11 @@ Multiple types of function return value expectations are supported to implement
 testing logic :
 
 .. hlist::
+
+   * **Booleans** :
+
+     * :c:macro:`cute_expect_bool_retval` function-like macro
+     * :c:macro:`cute_mock_bool_retval` function-like macro
 
    * **Signed integers** :
 
@@ -859,6 +883,16 @@ cute_expect_assertion
 
 .. doxygendefine:: cute_expect_assertion
 
+cute_expect_bool_parm
+*********************
+
+.. doxygendefine:: cute_expect_bool_parm
+
+cute_expect_bool_retval
+***********************
+
+.. doxygendefine:: cute_expect_bool_retval
+
 cute_expect_call
 ****************
 
@@ -983,6 +1017,16 @@ cute_fail
 *********
 
 .. doxygendefine:: cute_fail
+
+cute_mock_bool_parm
+*******************
+
+.. doxygendefine:: cute_mock_bool_parm
+
+cute_mock_bool_retval
+*********************
+
+.. doxygendefine:: cute_mock_bool_retval
 
 cute_mock_call
 **************

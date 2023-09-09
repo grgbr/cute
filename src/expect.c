@@ -748,6 +748,220 @@ cute_expect_fail_parm(struct cute_expect * expect,
 }
 
 /******************************************************************************
+ * Boolean mock parameter expectation handling
+ ******************************************************************************/
+
+static struct cute_text_block *
+cute_expect_desc_bool_parm_value(const struct cute_assess * assess,
+                                 const char *               op,
+                                 const char *               inv)
+{
+	return cute_expect_desc_parm_value(
+		assess,
+		op,
+		"    actual: [%s] %s [%s]",
+		assess->check.b00l.value ? "true" : "false",
+		inv,
+		assess->expect.b00l.value ? "true" : "false");
+}
+
+static void
+cute_expect_sched_bool_parm_value(const char *                   file,
+                                  int                            line,
+                                  const char *                   function,
+                                  const struct cute_assess_ops * ops,
+                                  const char *                   parm,
+                                  const struct cute_bool *       reference)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assess_assert_ops(ops);
+	cute_assert(parm);
+	cute_assert(parm[0]);
+	cute_assert(reference);
+	cute_assert(reference->expr);
+	cute_assert(reference->expr[0]);
+
+	struct cute_expect_parm * xpct;
+	struct cute_assess *      assess;
+
+	xpct = (struct cute_expect_parm *)
+	       cute_expect_create(CUTE_EXPECT_PARM_TYPE,
+	                          file,
+	                          line,
+	                          function,
+	                          sizeof(*xpct));
+
+	assess = &xpct->super.super;
+	assess->ops = ops;
+	assess->expect.b00l = *reference;
+	xpct->xpct_parm = parm;
+
+	cute_expect_nqueue(&cute_expect_sched, &xpct->super);
+}
+
+void
+cute_expect_check_bool_parm(const char *             file,
+                            int                      line,
+                            const char *             function,
+                            const struct cute_bool * check)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assert(check);
+	cute_assert(check->expr);
+	cute_assert(check->expr[0]);
+
+	struct cute_expect *          xpct;
+	const char *                  parm;
+	struct cute_assess *          assess;
+	const char *                  why;
+	const union cute_assess_value chk = { .b00l = *check };
+
+	xpct = cute_expect_check(CUTE_EXPECT_PARM_TYPE, file, line, function);
+	cute_expect_assert_intern(xpct);
+
+	parm = ((struct cute_expect_parm *)xpct)->xpct_parm;
+	cute_assert_intern(parm);
+	cute_assert_intern(parm[0]);
+
+	cute_expect_nqueue(&cute_expect_done, xpct);
+
+	assess = &xpct->super;
+	if (strcmp(check->expr, parm)) {
+		why = "boolean mock parameter name mismatch";
+		goto fail;
+	}
+
+	if (!assess->ops->cmp(assess, &chk)) {
+		why = "boolean mock parameter check failed";
+		goto fail;
+	}
+
+	return;
+
+fail:
+	assess->check.b00l = *check;
+	cute_expect_fail_parm(xpct, file, line, function, why);
+}
+
+static struct cute_text_block *
+cute_expect_desc_bool_parm_is(const struct cute_assess * assess)
+{
+	return cute_expect_desc_bool_parm_value(assess, "is", "is not");
+}
+
+static const struct cute_assess_ops cute_expect_bool_parm_is_ops = {
+	.cmp     = cute_assess_cmp_bool_is,
+	.desc    = cute_expect_desc_bool_parm_is,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_bool_parm_is(const char *             file,
+                               int                      line,
+                               const char *             function,
+                               const char *             parm,
+                               const struct cute_bool * expect)
+{
+	cute_expect_sched_bool_parm_value(file,
+	                                  line,
+	                                  function,
+	                                  &cute_expect_bool_parm_is_ops,
+	                                  parm,
+	                                  expect);
+}
+
+static struct cute_text_block *
+cute_expect_desc_bool_parm_is_not(const struct cute_assess * assess)
+{
+	return cute_expect_desc_bool_parm_value(assess, "is not", "is");
+}
+
+static const struct cute_assess_ops cute_expect_bool_parm_is_not_ops = {
+	.cmp     = cute_assess_cmp_bool_is_not,
+	.desc    = cute_expect_desc_bool_parm_is_not,
+	.release = cute_assess_release_null
+};
+
+void
+cute_expect_sched_bool_parm_is_not(const char *             file,
+                                   int                      line,
+                                   const char *             function,
+                                   const char *             parm,
+                                   const struct cute_bool * expect)
+{
+	cute_expect_sched_bool_parm_value(file,
+	                                  line,
+	                                  function,
+	                                  &cute_expect_bool_parm_is_not_ops,
+	                                  parm,
+	                                  expect);
+}
+
+/******************************************************************************
+ * Boolean return value expectation handling
+ ******************************************************************************/
+
+bool
+cute_expect_check_bool_retval(const char * file,
+                              int          line,
+                              const char * function)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+
+	struct cute_expect * xpct;
+
+	xpct = cute_expect_check(CUTE_EXPECT_RET_TYPE, file, line, function);
+	cute_expect_assert_intern(xpct);
+
+	cute_expect_nqueue(&cute_expect_done, xpct);
+
+	return xpct->super.expect.b00l.value;
+}
+
+void
+cute_expect_sched_bool_retval(const char *             file,
+                              int                      line,
+                              const char *             function,
+                              const struct cute_bool * retval)
+{
+	cute_assert(file);
+	cute_assert(file[0]);
+	cute_assert(line >= 0);
+	cute_assert(function);
+	cute_assert(function[0]);
+	cute_assert(retval);
+	cute_assert(retval->expr);
+	cute_assert(retval->expr[0]);
+
+	struct cute_expect * xpct;
+	struct cute_assess * assess;
+
+	xpct = cute_expect_create(CUTE_EXPECT_RET_TYPE,
+	                          file,
+	                          line,
+	                          function,
+	                          sizeof(*xpct));
+
+	assess = &xpct->super;
+	assess->ops = &cute_assess_null_ops;
+	assess->expect.b00l = *retval;
+
+	cute_expect_nqueue(&cute_expect_sched, xpct);
+}
+
+/******************************************************************************
  * Signed integer mock parameter expectation handling
  ******************************************************************************/
 

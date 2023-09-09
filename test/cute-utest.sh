@@ -136,6 +136,7 @@ run_testcase "check-dbl-utest" 1 || ret=1
 run_testcase "check-str-utest" 1 || ret=1
 run_testcase "check-ptr-utest" 1 || ret=1
 run_testcase "check-mem-utest" 1 || ret=1
+run_testcase "expect-bool-utest" 1 || ret=1
 run_testcase "expect-sint-utest" 1 || ret=1
 run_testcase "expect-uint-utest" 1 || ret=1
 run_testcase "expect-hex-utest" 1 || ret=1

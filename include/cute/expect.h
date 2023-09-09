@@ -171,6 +171,170 @@ cute_mock_assert(const char * expression,
 	cute_expect_check_call(__FILE__, __LINE__, __func__)
 
 /******************************************************************************
+ * Boolean mock parameter expectation handling
+ ******************************************************************************/
+
+/**
+ * Schedule a boolean function parameter mock expectation.
+ *
+ * @param[in] _func function name
+ * @param[in] _parm function parameter name
+ * @param[in] _op   constraint operation used to check the expectation
+ * @param[in] _xpct expected boolean value to perform the check against
+ *
+ * Define and schedule an @rstsubst{expectation} that is checked when
+ * cute_mock_bool_parm() is called.
+ *
+ * The check performed aborts current test and marks it as @rstsubst{failed} if
+ * the comparison of @p _parm against @p _xpct using the @p _op comparison
+ * operator results in a failure. Comparison is performed according to the
+ * following formula :
+ *
+ *     _parm <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `is` to ensure that @p _parm == @p _xpct ;
+ * - `is_not` to ensure that @p _parm != @p _xpct.
+ *
+ * Both @p _parm and @p _xpct *MUST* be booleans, i.e., either a `bool` or an
+ * equivalent *typedef*'ed type.
+ *
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ *
+ * static void
+ * callee(bool value)
+ * {
+ *      cute_mock_bool_parm(value);
+ * }
+ *
+ * static void
+ * caller(bool value)
+ * {
+ *      callee(value);
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_bool_parm(callee, value, is, true);
+ *      cute_expect_bool_parm(callee, value, is_not, true);
+ *      
+ *      caller(true);
+ *      caller(false);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_bool_parm()
+ * - #CUTE_TEST
+ */
+#define cute_expect_bool_parm(_func, _parm, _op, _xpct) \
+	cute_expect_sched_bool_parm_ ##  _op(__FILE__, \
+	                                     __LINE__, \
+	                                     # _func, \
+	                                     # _parm, \
+	                                     &__CUTE_VALUE(bool, \
+	                                                   # _xpct, \
+	                                                   _xpct))
+
+/**
+ * Check a boolean function parameter mock expectation.
+ *
+ * @param[in] _parm function parameter name
+ *
+ * Check the value of a boolean function parameter expectation scheduled
+ * using cute_expect_bool_parm().
+ *
+ * This macro must be called from within the mocked function which is given the
+ * parameter to verify.
+ *
+ * @see
+ * - cute_expect_bool_parm()
+ * - #CUTE_TEST
+ */
+#define cute_mock_bool_parm(_parm) \
+	cute_expect_check_bool_parm(__FILE__, \
+	                            __LINE__, \
+	                            __func__, \
+	                            &__CUTE_VALUE(bool, # _parm, _parm))
+
+/******************************************************************************
+ * Boolean return value expectation handling
+ ******************************************************************************/
+
+/**
+ * Schedule a boolean function return value mock expectation.
+ *
+ * @param[in] _func   function name
+ * @param[in] _retval value to be returned from mocked function
+ *
+ * Define and schedule an @rstsubst{expectation} which value is returned when
+ * cute_mock_bool_retval() is called.
+ *
+ * @p _retval *MUST* be a boolean, i.e., either a `bool` or an equivalent
+ * *typedef*'ed type.
+ *
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
+ *
+ * **Example**
+ * @code{.c}
+ * #include <cute/cute.h>
+ * #include <cute/expect.h>
+ *
+ * static int
+ * callee(void)
+ * {
+ *      return cute_mock_bool_retval();
+ * }
+ *
+ * static int
+ * caller(void)
+ * {
+ *      return callee();
+ * }
+ *
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_expect_bool_retval(callee, false);
+ *      cute_check_bool(caller(), is, false);
+ * }
+ * @endcode
+ *
+ * @see
+ * - cute_mock_bool_retval()
+ * - #CUTE_TEST
+ */
+#define cute_expect_bool_retval(_func, _retval) \
+	cute_expect_sched_bool_retval(__FILE__, \
+	                              __LINE__, \
+	                              # _func, \
+	                              &__CUTE_VALUE(bool, # _retval, _retval))
+
+/**
+ * Return a boolean function return value mock expectation.
+ *
+ * @return scheduled return value cast as an `bool`
+ *
+ * Extract and return a a boolean value scheduled using
+ * cute_expect_bool_retval().
+ *
+ * This macro must be called from within the mocked function that returns the
+ * scheduled value.
+ *
+ * @see
+ * - cute_expect_bool_retval()
+ * - #CUTE_TEST
+ */
+#define cute_mock_bool_retval() \
+	cute_expect_check_bool_retval(__FILE__, __LINE__, __func__)
+
+/******************************************************************************
  * Signed integer mock parameter expectation handling
  ******************************************************************************/
 

@@ -28,6 +28,42 @@ cute_expect_check_call(const char * file, int line, const char * function)
 	__cute_export;
 
 extern void
+cute_expect_check_bool_parm(const char *             file,
+                            int                      line,
+                            const char *             function,
+                            const struct cute_bool * check)
+	__cute_export;
+
+extern void
+cute_expect_sched_bool_parm_is(const char *             file,
+                               int                      line,
+                               const char *             function,
+                               const char *             parm,
+                               const struct cute_bool * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_bool_parm_is_not(const char *             file,
+                                   int                      line,
+                                   const char *             function,
+                                   const char *             parm,
+                                   const struct cute_bool * expect)
+	__cute_export;
+
+extern void
+cute_expect_sched_bool_retval(const char *             file,
+                              int                      line,
+                              const char *             function,
+                              const struct cute_bool * retval)
+	__cute_export;
+
+extern bool
+cute_expect_check_bool_retval(const char * file,
+                              int          line,
+                              const char * function)
+	__cute_export;
+
+extern void
 cute_expect_check_sint_parm(const char *             file,
                             int                      line,
                             const char *             function,

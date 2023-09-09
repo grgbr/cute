@@ -130,6 +130,12 @@ check-mem-utest-cflags             := $(test-cflags)
 check-mem-utest-ldflags            := $(test-ldflags) -lcute
 check-mem-utest-path               := $(LIBEXECDIR)/cute/check-mem-utest
 
+bins                               += expect-bool-utest
+expect-bool-utest-objs             := expect_bool.o
+expect-bool-utest-cflags           := $(test-cflags)
+expect-bool-utest-ldflags          := $(test-ldflags) -lcute
+expect-bool-utest-path             := $(LIBEXECDIR)/cute/expect-bool-utest
+
 bins                               += expect-sint-utest
 expect-sint-utest-objs             := expect_sint.o
 expect-sint-utest-cflags           := $(test-cflags)

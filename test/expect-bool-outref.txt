@@ -1,0 +1,119 @@
+
+#####################################  Running CUTe test(s)  #####################################
+
+expect_bool_suite::expect_bool_caller_fail_test ............................................. fail
+issue:  exec failed
+reason: mock caller function mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:26
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:15
+    caller: expect_bool_value_callee()
+
+expect_bool_suite::expect_bool_parm_fail_test ............................................... fail
+issue:  exec failed
+reason: boolean mock parameter name mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:32
+    caller: expect_bool_value_callee()
+    expect: nonexistent_parm is true
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:15
+    caller: expect_bool_value_callee()
+    expect: value is true
+
+expect_bool_suite::expect_bool_literal_is_fail_test ......................................... fail
+issue:  exec failed
+reason: boolean mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:52
+    caller: expect_bool_value_callee()
+    expect: value is true
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:15
+    caller: expect_bool_value_callee()
+    actual: [false] is not [true]
+
+expect_bool_suite::expect_bool_var_is_fail_test ............................................. fail
+issue:  exec failed
+reason: boolean mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:60
+    caller: expect_bool_value_callee()
+    expect: value is ref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:15
+    caller: expect_bool_value_callee()
+    actual: [true] is not [false]
+
+expect_bool_suite::expect_bool_literal_is_not_fail_test ..................................... fail
+issue:  exec failed
+reason: boolean mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:77
+    caller: expect_bool_value_callee()
+    expect: value is not false
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:15
+    caller: expect_bool_value_callee()
+    actual: [false] is [false]
+
+expect_bool_suite::expect_bool_var_is_not_fail_test ......................................... fail
+issue:  exec failed
+reason: boolean mock parameter check failed
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:85
+    caller: expect_bool_value_callee()
+    expect: value is not ref
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:15
+    caller: expect_bool_value_callee()
+    actual: [true] is [true]
+
+expect_bool_suite::expect_bool_retval_caller_fail_test ...................................... fail
+issue:  exec failed
+reason: mock caller function mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:122
+    caller: nonexistent_callee()
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:92
+    caller: expect_bool_retval_callee()
+
+expect_bool_suite::expect_xcess_bool_retval_fail_test ....................................... fail
+issue:  teardown failed
+reason: extra mock expectation left
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:138
+    caller: expect_bool_retval_callee()
+    expect: mock function return value
+found:  none
+
+expect_bool_suite::expect_bool_inval_retval_fail_test ....................................... fail
+issue:  exec failed
+reason: mock expectation type mismatch
+wanted:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:149
+    caller: expect_bool_retval_callee()
+    expect: mock function parameter
+found:
+    source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:92
+    caller: expect_bool_retval_callee()
+    found:  mock function return value
+
+expect_bool_suite ........................................................................... fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/expect_bool.c:174
+
+NAME                                    STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+expect_bool_suite                       fail    0.240214      3      0      9      0     12     12
+                                                            25%     0%    75%     0%   100%
+--------------------------------------------------------------------------------------------------
+Total                                   fail    0.240214      3      0      9      0     12     12
+                                                            25%     0%    75%     0%   100%
+
+                               ###           SUMMARY           ###
+                               ###  9/12 (75%) test(s) FAILED  ###
+
