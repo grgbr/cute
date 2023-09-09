@@ -61,6 +61,125 @@ __cute_check_assert(bool         fail,
 }
 
 /******************************************************************************
+ * Boolean numbers handling
+ ******************************************************************************/
+
+static struct cute_text_block *
+cute_check_desc_bool(const struct cute_assess * assess,
+                     const char *               oper,
+                     const char *               inv)
+{
+	cute_assess_assert_intern(assess);
+	cute_assert_intern(assess->check.b00l.expr);
+	cute_assert_intern(assess->check.b00l.expr[0]);
+	cute_assert_intern(assess->expect.b00l.expr);
+	cute_assert_intern(assess->expect.b00l.expr[0]);
+	cute_assert_intern(oper);
+	cute_assert_intern(oper[0]);
+	cute_assert_intern(inv);
+	cute_assert_intern(inv[0]);
+
+	struct cute_text_block * blk;
+
+	blk = cute_assess_desc_source(assess,
+	                              3 +
+	                              (unsigned int)!!assess->func);
+
+	cute_text_asprintf(blk,
+	                   "wanted: %s %s %s",
+	                   assess->check.b00l.expr,
+	                   oper,
+	                   assess->expect.b00l.expr);
+
+	cute_text_asprintf(blk,
+	                   "found:  [%s] %s [%s]",
+	                   assess->check.b00l.value ? "true" : "false",
+	                   inv,
+	                   assess->expect.b00l.value ? "true" : "false");
+
+	return blk;
+}
+
+static void
+cute_check_assess_bool(const char *                   file,
+                       int                            line,
+                       const char *                   function,
+                       const struct cute_assess_ops * ops,
+                       const struct cute_bool *       check,
+                       const struct cute_bool *       expect)
+{
+	cute_check_assert_assess(file, line, function, ops, check, expect);
+
+	const union cute_assess_value chk = { .b00l = *check };
+	struct cute_assess            assess = {
+		.ops         = ops,
+		.file        = file,
+		.line        = line,
+		.func        = function,
+		.expect.b00l = *expect
+	};
+
+	cute_assess_check(&cute_curr_run->assess,
+	                  &assess,
+	                  &chk,
+	                  "boolean value check failed");
+}
+
+static struct cute_text_block *
+cute_check_desc_bool_is(const struct cute_assess * assess)
+{
+	return cute_check_desc_bool(assess, "is", "is not");
+}
+
+static const struct cute_assess_ops cute_assess_bool_is_ops = {
+	.cmp     = cute_assess_cmp_bool_is,
+	.desc    = cute_check_desc_bool_is,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_bool_is(const char *             file,
+                   int                      line,
+                   const char *             function,
+                   const struct cute_bool * check,
+                   const struct cute_bool * expect)
+{
+	cute_check_assess_bool(file,
+	                       line,
+	                       function,
+	                       &cute_assess_bool_is_ops,
+	                       check,
+	                       expect);
+}
+
+static struct cute_text_block *
+cute_check_desc_bool_is_not(const struct cute_assess * assess)
+{
+	return cute_check_desc_bool(assess, "is not", "is");
+}
+
+static const struct cute_assess_ops cute_assess_bool_is_not_ops = {
+	.cmp     = cute_assess_cmp_bool_is_not,
+	.desc    = cute_check_desc_bool_is_not,
+	.release = cute_assess_release_null
+};
+
+void
+cute_check_bool_is_not(const char *             file,
+                       int                      line,
+                       const char *             function,
+                       const struct cute_bool * check,
+                       const struct cute_bool * expect)
+{
+	cute_check_assess_bool(file,
+	                       line,
+	                       function,
+	                       &cute_assess_bool_is_not_ops,
+	                       check,
+	                       expect);
+}
+
+/******************************************************************************
  * Signed integer numbers handling
  ******************************************************************************/
 

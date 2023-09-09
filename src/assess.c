@@ -189,6 +189,24 @@ cute_assess_build_excp(struct cute_assess * assess, int sig)
 }
 
 /******************************************************************************
+ * Boolean numbers handling
+ ******************************************************************************/
+
+bool
+cute_assess_cmp_bool_is(const struct cute_assess *      assess,
+                        const union cute_assess_value * check)
+{
+	return check->b00l.value == assess->expect.b00l.value;
+}
+
+bool
+cute_assess_cmp_bool_is_not(const struct cute_assess *      assess,
+                            const union cute_assess_value * check)
+{
+	return check->b00l.value != assess->expect.b00l.value;
+}
+
+/******************************************************************************
  * Signed integer numbers handling
  ******************************************************************************/
 

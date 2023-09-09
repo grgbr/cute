@@ -10,7 +10,6 @@
 
 #include <cute/priv/core.h>
 #include <cute/types.h>
-#include <stdbool.h>
 
 extern void
 __cute_check_assert(bool         fail,
@@ -18,6 +17,20 @@ __cute_check_assert(bool         fail,
                     int          line,
                     const char * function,
                     const char * expr) __cute_export;
+
+extern void
+cute_check_bool_is(const char *             file,
+                   int                      line,
+                   const char *             function,
+                   const struct cute_bool * check,
+                   const struct cute_bool * expect) __cute_export;
+
+extern void
+cute_check_bool_is_not(const char *             file,
+                       int                      line,
+                       const char *             function,
+                       const struct cute_bool * check,
+                       const struct cute_bool * expect) __cute_export;
 
 extern void
 cute_check_sint_equal(const char *             file,

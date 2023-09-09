@@ -9,10 +9,16 @@
 #define _CUTE_PRIV_TYPES_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <sys/types.h>
 
 #define cute_typeof_member(_type, _member) \
 	typeof(((_type *)0)->_member)
+
+struct cute_bool {
+	const char * expr;
+	bool         value;
+};
 
 struct cute_sint {
 	const char * expr;

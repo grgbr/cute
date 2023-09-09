@@ -1,0 +1,82 @@
+
+####################################  Running CUTe test(s)  #####################################
+
+check_bool_suite::check_bool_literal_is_fail_test .......................................... fail
+issue:  exec failed
+reason: boolean value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_bool.c:26
+caller: check_bool_literal_is_fail_test__cute_exec()
+wanted: false is true
+found:  [false] is not [true]
+
+check_bool_suite::check_bool_var_is_fail_test .............................................. fail
+issue:  exec failed
+reason: boolean value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_bool.c:33
+caller: check_bool_var_is_fail_test__cute_exec()
+wanted: chk is false
+found:  [true] is not [false]
+
+check_bool_suite::check_bool_is_ref_fail_test .............................................. fail
+issue:  exec failed
+reason: boolean value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_bool.c:40
+caller: check_bool_is_ref_fail_test__cute_exec()
+wanted: false is ref
+found:  [false] is not [true]
+
+check_bool_suite::check_bool_var_is_ref_fail_test .......................................... fail
+issue:  exec failed
+reason: boolean value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_bool.c:48
+caller: check_bool_var_is_ref_fail_test__cute_exec()
+wanted: chk is ref
+found:  [true] is not [false]
+
+check_bool_suite::check_bool_literal_is_not_fail_test ...................................... fail
+issue:  exec failed
+reason: boolean value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_bool.c:65
+caller: check_bool_literal_is_not_fail_test__cute_exec()
+wanted: true is not true
+found:  [true] is [true]
+
+check_bool_suite::check_bool_var_is_not_fail_test .......................................... fail
+issue:  exec failed
+reason: boolean value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_bool.c:72
+caller: check_bool_var_is_not_fail_test__cute_exec()
+wanted: chk is not false
+found:  [false] is [false]
+
+check_bool_suite::check_bool_is_not_ref_fail_test .......................................... fail
+issue:  exec failed
+reason: boolean value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_bool.c:79
+caller: check_bool_is_not_ref_fail_test__cute_exec()
+wanted: true is not ref
+found:  [true] is [true]
+
+check_bool_suite::check_bool_var_is_not_ref_fail_test ...................................... fail
+issue:  exec failed
+reason: boolean value check failed
+source: /mnt/devel/greg/tidor/cute/test/check_bool.c:87
+caller: check_bool_var_is_not_ref_fail_test__cute_exec()
+wanted: chk is not ref
+found:  [false] is [false]
+
+check_bool_suite ........................................................................... fail
+issue:  exec failed
+reason: descendants failed
+source: /mnt/devel/greg/tidor/cute/test/check_bool.c:104
+
+NAME                                   STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
+check_bool_suite                       fail    0.165114      2      0      8      0     10     10
+                                                           20%     0%    80%     0%   100%
+-------------------------------------------------------------------------------------------------
+Total                                  fail    0.165114      2      0      8      0     10     10
+                                                           20%     0%    80%     0%   100%
+
+                               ###           SUMMARY           ###
+                               ###  8/10 (80%) test(s) FAILED  ###
+

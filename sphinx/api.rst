@@ -128,6 +128,16 @@ Basic assertion
 :c:macro:`cute_check_assert` implements a basic versatile test assertion 
 exposed as a C preprocessor macros.
 
+.. index:: boolean assertion;API, bool;API,
+           API;boolean assertion, API;bool assertion,
+
+.. _sect-api-bool_assert:
+
+Booleans
+********
+
+Boolean values may be verified using the :c:macro:`cute_check_bool` macro.
+
 .. index:: signed integer assertion;API, sint;API,
            API;signed integer assertion, API;sint assertion,
            integer;signed assertion
@@ -748,6 +758,11 @@ cute_check_assert
 *****************
 
 .. doxygendefine:: cute_check_assert
+
+cute_check_bool
+***************
+
+.. doxygendefine:: cute_check_bool
 
 cute_check_flt
 **************

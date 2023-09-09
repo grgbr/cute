@@ -76,6 +76,12 @@ simple-iodir-utest-cflags          := $(test-cflags)
 simple-iodir-utest-ldflags         := $(test-ldflags) -lcute
 simple-iodir-utest-path            := $(LIBEXECDIR)/cute/simple-iodir-utest
 
+bins                               += check-bool-utest
+check-bool-utest-objs              := check_bool.o
+check-bool-utest-cflags            := $(test-cflags)
+check-bool-utest-ldflags           := $(test-ldflags) -lcute
+check-bool-utest-path              := $(LIBEXECDIR)/cute/check-bool-utest
+
 bins                               += check-sint-utest
 check-sint-utest-objs              := check_sint.o
 check-sint-utest-cflags            := $(test-cflags)

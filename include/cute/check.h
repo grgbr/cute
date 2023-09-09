@@ -51,6 +51,59 @@
 	__cute_check_assert(!(_expr), __FILE__, __LINE__, __func__, # _expr)
 
 /******************************************************************************
+ * Boolean numbers checking
+ ******************************************************************************/
+
+/**
+ * Check a boolean.
+ *
+ * @param[in] _chk  boolean value to check
+ * @param[in] _op   constraint operation used to perform the check
+ * @param[in] _xpct expected boolean value to perform the check against
+ *
+ * Abort current test and mark it as @rstsubst{failed} if the comparison of
+ * @p _chk and @p _xpct using the @p _op comparison operator results in a
+ * failure. Comparison is performed according to the following formula :
+ *
+ *     _chk <_op> _xpct
+ *
+ * Where @p _op *MUST* be one of :
+ * - `is` to ensure that @p _chk == @p _xpct ;
+ * - `is_not` to ensure that @p _chk != @p _xpct.
+ *
+ * Both @p _chk and @p _xpct *MUST* be booleans, i.e., `bool` or an equivalent
+ * *typedef*'ed type.
+ *
+ * This macro may be used from within @rstsubst{fixture} functions as well as
+ * @rstsubst{test case} functions.
+ *
+ * **Ensure that true equals true** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_bool(true, is, true);
+ * }
+ * @endcode
+ *
+ * **Ensure that true unequals false** :
+ * @code{.c}
+ * CUTE_TEST(mytest)
+ * {
+ *      cute_check_bool(true, is_not, false);
+ * }
+ * @endcode
+ *
+ * @see
+ * - #CUTE_TEST
+ */
+#define cute_check_bool(_chk, _op, _xpct) \
+	cute_check_bool_ ## _op(__FILE__, \
+	                        __LINE__, \
+	                        __func__, \
+	                        &__CUTE_VALUE(bool, # _chk, _chk), \
+	                        &__CUTE_VALUE(bool, # _xpct, _xpct))
+
+/******************************************************************************
  * Signed integral numbers checking
  ******************************************************************************/
 

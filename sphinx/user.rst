@@ -913,6 +913,7 @@ such testing assertions :
    #include <cute/cute.h>
    #include <cute/check.h>
 
+   static const bool           bool_var = true;
    static const int            sint_var = -2;
    static const unsigned short ushrt_var = 5;
    static const void * const   ptr_var = (const void *)&sint_var;
@@ -920,6 +921,9 @@ such testing assertions :
 
    CUTE_TEST(sample_test)
    {
+        /* Assert that bool_var is true */
+        cute_check_bool(bool_var, is, true);
+
         /* Assert that sint_var > -10 */
         cute_check_sint(sint_var, greater, -10);
 
@@ -953,6 +957,7 @@ Refer to the |API| guide to find documentation about available types of testing
 assertions :
 
 * :ref:`sect-api-basic_assert`,
+* :ref:`sect-api-bool_assert`,
 * :ref:`sect-api-sint_assert`,
 * :ref:`sect-api-uint_assert`,
 * :ref:`sect-api-str_assert`,

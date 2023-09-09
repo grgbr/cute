@@ -127,6 +127,7 @@ run_testcase "simple-teardown-fail-utest" 1 || ret=1
 run_testcase "simple-fixture-fail-utest" 1 || ret=1
 run_testcase "simple-tmout-utest" 1 || ret=1
 run_testcase "simple-iodir-utest" 1 || ret=1
+run_testcase "check-bool-utest" 1 || ret=1
 run_testcase "check-sint-utest" 1 || ret=1
 run_testcase "check-uint-utest" 1 || ret=1
 run_testcase "check-hex-utest" 1 || ret=1

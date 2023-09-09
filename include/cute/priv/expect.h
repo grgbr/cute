@@ -10,7 +10,6 @@
 
 #include <cute/priv/core.h>
 #include <cute/types.h>
-#include <stdbool.h>
 #include <setjmp.h>
 
 extern sigjmp_buf cute_expect_assert_env __cute_export;

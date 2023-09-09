@@ -49,6 +49,7 @@ struct cute_assess_ops {
 
 union cute_assess_value {
 	const char *      expr;
+	struct cute_bool  b00l;
 	struct cute_sint  sint;
 	struct cute_uint  uint;
 	struct cute_flt   flt;
@@ -97,6 +98,7 @@ struct cute_assess {
 	union cute_assess_value        check;
 	union {
 		const char *           expr;
+		struct cute_bool       b00l;
 		union cute_sint_assess sint;
 		union cute_uint_assess uint;
 		union cute_flt_assess  flt;
@@ -152,10 +154,20 @@ extern void
 cute_assess_build_excp(struct cute_assess * assess, int sig);
 
 /******************************************************************************
- * Signed integer numbers handling
+ * Boolean numbers handling
  ******************************************************************************/
 
-struct cute_sint;
+extern bool
+cute_assess_cmp_bool_is(const struct cute_assess *      assess,
+                        const union cute_assess_value * check);
+
+extern bool
+cute_assess_cmp_bool_is_not(const struct cute_assess *      assess,
+                            const union cute_assess_value * check);
+
+/******************************************************************************
+ * Signed integer numbers handling
+ ******************************************************************************/
 
 extern bool
 cute_assess_cmp_sint_equal(const struct cute_assess *      assess,
@@ -181,8 +193,6 @@ extern bool
 cute_assess_cmp_sint_lower_equal(const struct cute_assess *      assess,
                                  const union cute_assess_value * check);
 
-struct cute_sint_range;
-
 extern bool
 cute_assess_cmp_sint_in_range(const struct cute_assess *      assess,
                               const union cute_assess_value * check);
@@ -190,8 +200,6 @@ cute_assess_cmp_sint_in_range(const struct cute_assess *      assess,
 extern bool
 cute_assess_cmp_sint_not_in_range(const struct cute_assess *      assess,
                                   const union cute_assess_value * check);
-
-struct cute_sint_set;
 
 extern bool
 cute_assess_cmp_sint_in_set(const struct cute_assess *      assess,
@@ -210,8 +218,6 @@ cute_assess_release_sint_set(struct cute_assess * assess);
 /******************************************************************************
  * Unsigned integer value handling
  ******************************************************************************/
-
-struct cute_uint;
 
 extern bool
 cute_assess_cmp_uint_equal(const struct cute_assess *      assess,
@@ -237,8 +243,6 @@ extern bool
 cute_assess_cmp_uint_lower_equal(const struct cute_assess *      assess,
                                  const union cute_assess_value * check);
 
-struct cute_uint_range;
-
 extern bool
 cute_assess_cmp_uint_in_range(const struct cute_assess *      assess,
                               const union cute_assess_value * check);
@@ -246,8 +250,6 @@ cute_assess_cmp_uint_in_range(const struct cute_assess *      assess,
 extern bool
 cute_assess_cmp_uint_not_in_range(const struct cute_assess *      assess,
                                   const union cute_assess_value * check);
-
-struct cute_uint_set;
 
 extern bool
 cute_assess_cmp_uint_in_set(const struct cute_assess *      assess,
@@ -274,8 +276,6 @@ cute_assess_hex_set_str(const uintmax_t * items, unsigned int count);
  * Floating point numbers handling
  ******************************************************************************/
 
-struct cute_flt;
-
 extern bool
 cute_assess_cmp_flt_equal(const struct cute_assess *      assess,
                           const union cute_assess_value * check);
@@ -300,8 +300,6 @@ extern bool
 cute_assess_cmp_flt_lower_equal(const struct cute_assess *      assess,
                                 const union cute_assess_value * check);
 
-struct cute_flt_range;
-
 extern bool
 cute_assess_cmp_flt_in_range(const struct cute_assess *      assess,
                              const union cute_assess_value * check);
@@ -309,8 +307,6 @@ cute_assess_cmp_flt_in_range(const struct cute_assess *      assess,
 extern bool
 cute_assess_cmp_flt_not_in_range(const struct cute_assess *      assess,
                                  const union cute_assess_value * check);
-
-struct cute_flt_set;
 
 extern bool
 cute_assess_cmp_flt_in_set(const struct cute_assess *      assess,
@@ -389,8 +385,6 @@ cute_assess_release_str_set(struct cute_assess * assess);
  * Pointers handling
  ******************************************************************************/
 
-struct cute_ptr;
-
 extern bool
 cute_assess_cmp_ptr_equal(const struct cute_assess *      assess,
                           const union cute_assess_value * check);
@@ -415,8 +409,6 @@ extern bool
 cute_assess_cmp_ptr_lower_equal(const struct cute_assess *      assess,
                                 const union cute_assess_value * check);
 
-struct cute_ptr_range;
-
 extern bool
 cute_assess_cmp_ptr_in_range(const struct cute_assess *      assess,
                              const union cute_assess_value * check);
@@ -424,8 +416,6 @@ cute_assess_cmp_ptr_in_range(const struct cute_assess *      assess,
 extern bool
 cute_assess_cmp_ptr_not_in_range(const struct cute_assess *      assess,
                                  const union cute_assess_value * check);
-
-struct cute_ptr_set;
 
 extern bool
 cute_assess_cmp_ptr_in_set(const struct cute_assess *      assess,
