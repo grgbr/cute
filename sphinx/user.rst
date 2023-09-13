@@ -73,7 +73,9 @@ designed with the following goals in mind:
 * no parameterizable test support
 * custom check assertion not yet supported.
   
-CUTe_ is distributed under the :ref:`GNU Lesser General Public License <lgpl>`.
+CUTe_ sources are distributed under the :ref:`GNU Lesser General Public License
+<lgpl>` whereas documentation manuals are distributed under the `GNU General
+Public License <gpl>`.
 
 Basic concepts
 ==============
