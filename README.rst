@@ -1,4 +1,4 @@
-.. SPDX-License-Identifier: GFDL-1.3-only
+.. SPDX-License-Identifier: GPL-3.0-only
 
    This file is part of CUTe.
    Copyright (C) 2023 Grégor Boirie <gregor.boirie@free.fr>
@@ -59,8 +59,10 @@ suitable for test automation and `regression testing`_ activities.
 
 .. rubric:: Licensing
 
-CUTe_ is distributed under the `GNU Lesser General Public License
+CUTe_ sources are distributed under the `GNU Lesser General Public License
 <https://www.gnu.org/licenses/lgpl-3.0.html>`_.
+Documentation manuals are distributed under the `GNU General Public License
+<https://www.gnu.org/licenses/gpl-3.0.html>`_.
 
 Getting Help
 ############
