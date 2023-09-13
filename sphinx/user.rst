@@ -74,8 +74,8 @@ designed with the following goals in mind:
 * custom check assertion not yet supported.
   
 CUTe_ sources are distributed under the :ref:`GNU Lesser General Public License
-<lgpl>` whereas documentation manuals are distributed under the `GNU General
-Public License <gpl>`.
+<lgpl>` whereas documentation manuals are distributed under the :ref:`GNU
+General Public License <gpl>`.
 
 Basic concepts
 ==============
