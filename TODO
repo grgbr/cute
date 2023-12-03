@@ -9,3 +9,54 @@ Missing features :
 * stack trace upon failures and errors / crashes
 * devise API to run a single test ?
 * fork isolation ?
+
+JUnit XML support:
+* include build flags into generated output:
+  * use build flags when gcc invoked with -frecord-gcc-switches
+  * these are included withing the .GCC.command.line section of produced Elf and
+    may be shown using: readelf -p .GCC.command.line <path_to_elf>
+* include build ID into generated output:
+  * use build ID when ld invoked with --build-id
+  * these are stored into .note.gnu.build-id section of produced Elf and may be
+    shown using: readelf -n <path_to_elf>
+* include Kconfig build configuration infos into generated output
+* all of these might be stored as JUnit XML properties under the top-level
+  <testsuite> tagged element or top-level <testsuites> tagged element as shown
+  below:
+  <testsuites>
+      <properties>
+          <property name="build-id" value="56deda325eb5fa3b68d11208758e2a63c1b93b25" />
+          <property name="build-flags">
+            -mabi=aapcs-linux
+            -mtune=cortex-a9
+            -mcpu=cortex-a9
+            -mfpu=neon-vfpv3
+            -mfloat-abi=hard
+            -mtls-dialect=gnu
+            -mno-thumb-interwork
+            -marm
+            -march=armv7-a+mp+sec+simd
+            -auxbase-strip /tmp/ccfCEoY9.ltrans0.ltrans.o
+            -ggdb3
+            -O2
+            -fno-openmp
+            -fno-openacc
+            -fstack-protector-strong
+            -fstack-clash-protection
+            -fpie
+            -frecord-gcc-switches
+            -fvisibility=hidden
+            -fuse-linker-plugin
+            -fltrans
+            /tmp/ccfCEoY9.ltrans0.o
+          </property>
+          <property name="config">
+              CONFIG_MYPROJECT_FEATURE_1=y
+              CONFIG_MYPROJECT_FEATURE_2=y
+  	    # CONFIG_MYPROJECT_FEATURE_3 is not set
+          </property>
+     </properties>
+     <testsuite ...>
+         ...
+     </testsuite>
+  </testsuites>
