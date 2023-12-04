@@ -105,6 +105,9 @@ set of tools required by the build process.
 Optionally, you may set ``EXTRA_CFLAGS`` and ``EXTRA_LDFLAGS`` variables to
 give the compiler and linker additional flags respectively.
 
+Finally, you may set the ``PYTHON_SHEBAND`` variable so that installed
+tool(s) use the specified Python_ binary (defaults to ``/usr/bin/env python3``).
+
 Refer to :external+ebuild:ref:`eBuild Tools <sect-user-tools>` and
 :external+ebuild:ref:`eBuild Variables <sect-user-variables>` for further
 informations.

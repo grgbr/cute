@@ -42,6 +42,17 @@ endef
 pkgconfigs      := libcute.pc
 libcute.pc-tmpl := libcute_pkgconf_tmpl
 
+build: $(BUILDDIR)/cute-junit.py
+
+$(BUILDDIR)/cute-junit.py: $(CURDIR)/scripts/cute-junit.py | $(BUILDDIR)/
+	sed 's;@@PYTHON_SHEBANG@@;$(PYTHON_SHEBANG);g' $(<) > $(@)
+
+install: $(DESTDIR)$(BINDIR)/cute-junit.py
+
+$(DESTDIR)$(BINDIR)/cute-junit.py: $(BUILDDIR)/cute-junit.py \
+                                   | $(DESTDIR)$(BINDIR)/
+	$(call install_recipe,--mode=755,$(<),$(@))
+
 ################################################################################
 # Documentation generation
 ################################################################################

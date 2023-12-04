@@ -9,8 +9,9 @@ override PACKAGE := cute
 override VERSION := 1.0
 EXTRA_CFLAGS     := -O2
 EXTRA_LDFLAGS    := $(EXTRA_CFLAGS)
+PYTHON_SHEBANG   := /usr/bin/env python3
 
-export VERSION EXTRA_CFLAGS EXTRA_LDFLAGS
+export VERSION EXTRA_CFLAGS EXTRA_LDFLAGS PYTHON_SHEBANG
 
 ifeq ($(strip $(EBUILDDIR)),)
 ifneq ($(realpath ebuild/main.mk),)

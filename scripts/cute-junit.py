@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!@@PYTHON_SHEBANG@@
 # -*- coding: utf-8 -*-
 ################################################################################
 # SPDX-License-Identifier: GPL-3.0-only
@@ -15,6 +15,7 @@ arg0 = basename(argv[0])
 
 try:
     from typing import Iterator, Literal
+    from textwrap import dedent
     from argparse import ArgumentParser
     from tempfile import mkstemp
     from os import replace, sync, close, unlink
@@ -110,7 +111,7 @@ class CuteBase:
         self._skip: int | None = None
         self._fail: int | None = None
         self._excp: int | None = None
-    
+
     def __repr__(self) -> str:
         return str(self.__dict__)
 
@@ -154,7 +155,7 @@ class CuteBase:
                 'has_line':     self.line is not None,
                 'line':         self.line,
         }
-        
+
     @property
     def kind(self) -> str:
         return 'base'
@@ -216,7 +217,7 @@ class CuteBase:
     @property
     def exec_count(self) -> int | None:
         return self._exec
-    
+
     @property
     def exec_ratio(self) -> int | None:
         return self._ratio(self.exec_count, self.test_count)
@@ -264,7 +265,7 @@ class CuteBase:
     @property
     def has_children(self) -> bool:
         return False
-    
+
     def children(self) -> Iterator[CuteBase]:
         # Return an empty generator...
         yield from ()
@@ -272,7 +273,7 @@ class CuteBase:
     def accept(self, visit: CuteVisitor) -> None:
         raise AssertionError(self.__class__.__name__ +
                              '.accept() not implemented')
-        
+
     @staticmethod
     def _ratio(count: int | None, total: int | None) -> int | None:
         if count is None or total is None:
@@ -282,7 +283,7 @@ class CuteBase:
         except ZeroDivisionError:
             return 0
 
- 
+
 class CuteCase(CuteBase):
     def __init__(self, junit: JUnitTestCase, parent: CuteSuite) -> None:
         attrs = junit._elem.attrib
@@ -291,6 +292,9 @@ class CuteCase(CuteBase):
             s = attrs['status']
             if s and len(s) > 0:
                 status = s
+        self._msg = None
+        self._stdout = None
+        self._stderr = None
         if status == '??':
             status = CuteStatus.NONE
         elif status == 'disabled':
@@ -306,6 +310,9 @@ class CuteCase(CuteBase):
                     status = CuteStatus.EXCP
                 else:
                     status = CuteStatus.NONE
+                self._msg = self._load_msg(res)
+                self._stdout = self._load_stdio(junit.system_out)
+                self._stderr = self._load_stdio(junit.system_err)
             else:
                     status = CuteStatus.PASS
         super().__init__(junit,
@@ -318,9 +325,29 @@ class CuteCase(CuteBase):
     @property
     def kind(self) -> str:
         return 'case'
-    
+
+    @property
+    def message(self) -> str | None:
+        return self._msg
+
+    @property
+    def stdout(self) -> str | None:
+        return self._stdout
+
+    @property
+    def stderr(self) -> str | None:
+        return self._stderr
+
     def accept(self, visit: CuteVisitor) -> None:
         visit.case(self)
+
+    def _load_msg(self, result: Result) -> str:
+        return result.message.strip() + '\n\n' + dedent(result.text).strip('\n')
+
+    def _load_stdio(self, stdio: str | None) -> str | None:
+        if stdio is None:
+            return None
+        return dedent(stdio).strip('\n')
 
 
 class CuteSuite(CuteBase):
@@ -375,7 +402,7 @@ class CuteSuite(CuteBase):
         self._fail = fail_cnt
         self._excp = excp_cnt
         self._pass = pass_cnt
-    
+
     @property
     def kind(self) -> str:
         return 'suite'
@@ -386,7 +413,7 @@ class CuteSuite(CuteBase):
 
     def register(self, base: CuteBase) -> None:
         self._children.append(base)
-   
+
     def children(self) -> Iterator[CuteBase]:
         for child in self._children:
             yield child
@@ -458,7 +485,7 @@ class CuteStore(CuteBase):
     @property
     def has_children(self) -> bool:
         return len(self._suites) > 0
-    
+
     def children(self) -> Iterator[CuteBase]:
         for suite in self._suites:
             yield suite
@@ -471,7 +498,7 @@ class CuteVisitor:
     def store(self, store: CuteStore) -> None:
         raise AssertionError(self.__class__.__name__ +
                              '.store() not implemented')
-    
+
     def suite(self, suite: CuteSuite) -> None:
         raise AssertionError(self.__class__.__name__ +
                              '.suite() not implemented')
@@ -508,7 +535,7 @@ class CuteTraversal:
         else:
             match = None
         walk(store, visit, match)
-    
+
     def find(self, store:CuteStore, name: str) -> CuteBase | None:
         def walk(base: CuteBase) -> CuteBase | None:
             if name == base.name or name == base.full_name:
@@ -525,7 +552,7 @@ class CuteTraversal:
 class CuteField:
     _IDENT: str
     _DESC: str
-    
+
     @property
     def ident(self) -> str:
         return self._IDENT
@@ -543,11 +570,11 @@ class CuteField:
     @property
     def desc(self) -> str:
         return self._DESC
-    
+
     def render(self, base: CuteBase) -> Text | str:
         raise AssertionError(self.__class__.__name__ +
                              '.render() not implemented')
-    
+
     def __gt__(self: CuteField, other: CuteField) -> bool:
         if not isinstance(other, CuteField):
             return NotImplemented
@@ -557,7 +584,7 @@ class CuteField:
         if not isinstance(other, CuteField):
             return NotImplemented
         return self.ident >= other.ident
-    
+
     def __lt__(self: CuteField, other: CuteField) -> bool:
         if not isinstance(other, CuteField):
             return NotImplemented
@@ -733,7 +760,7 @@ class CuteVersionField(CuteOptionalField):
     _IDENT = 'vers'
     _LABEL = 'Version'
     _DESC = 'version of test cases / suites'
-    
+
     @classmethod
     def render(cls, base: CuteBase) -> str:
         return cls._render(base.version)
@@ -764,7 +791,7 @@ class CuteFullNameField(CuteField):
     _LABEL = 'Full name'
     _DESC = 'full name of test case / suite'
     _WRAP = 'True'
-    
+
     @staticmethod
     def render(base: CuteBase) -> str:
         return base.full_name
@@ -797,7 +824,7 @@ class CuteStatusRender(CuteRender):
         text = Text()
         text.append(self._field.render(base), style = self._style(base.status))
         return text
-    
+
     @classmethod
     def _style(cls, status: CuteStatus) -> Style:
         if status == CuteStatus.PASS:
@@ -880,7 +907,7 @@ class CuteElapsedField(CuteOptionalField):
         if base.status != CuteStatus.OFF:
             return cls._render(base.elapsed)
         return 'NA'
-    
+
     @staticmethod
     def _render(value) -> str:
         if value is not None:
@@ -1029,7 +1056,7 @@ class CuteTotalField(CuteCountField):
     @classmethod
     def render(cls, base: CuteBase) -> str:
         return cls._render(base.test_count)
-    
+
 
 class CuteFieldFabric:
     _instance: CuteFieldFabric | None = None
@@ -1063,14 +1090,14 @@ class CuteFieldFabric:
             CuteExecRatioField()
     })
     _dict: dict[str, CuteField] = dict()
-    
+
     def __new__(cls) -> CuteFieldFabric:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             for f in cls._instance._fields:
                 cls._instance._dict[f.ident] = f
         return cls._instance
-    
+
     def get(self, ident: str) -> CuteField:
         if ident in self._dict:
             return self._dict[ident]
@@ -1179,7 +1206,7 @@ class CuteStartSumField(CuteSumField):
 class CuteElapsedSumField(CuteSumField):
     _FIELD = 'time'
     _JUSTIFY = 'right'
-    
+
 
 class CutePathSumField(CuteSumField):
     _FIELD = 'path'
@@ -1198,17 +1225,17 @@ class CuteSourceSumField(CuteSumField):
 
 class CuteStatSumField(CuteSumField):
     _JUSTIFY = 'right'
-     
+
     def __init__(self):
         super().__init__()
         if self._RENDER is not None:
             self._high_render = self._RENDER(self._field)
         else:
             self._high_render = self._field
-        
+
     def store(self, store: CuteStore) -> RenderableType:
         return self._high_render.render(store)
-   
+
     def render(self, base: CuteBase) -> Text | str:
         if base.status != CuteStatus.OFF:
             return self._field.render(base)
@@ -1310,12 +1337,12 @@ class CuteSectionTitle(Text):
         self.append(title, style = Style(bold = True))
         self.append(' ###\n')
         self._width = len(title) + 8
-        
+
     @property
     def width(self) -> int:
         return self._width
-    
-    
+
+
 class CuteTableColumn(Column):
     def __init__(self,
                  header: str = '',
@@ -1365,12 +1392,12 @@ class CuteTableSection(CuteVisitor):
                 *renderables: RenderableType, 
                 style: Style | None = None) -> None:
         self._table.add_row(*renderables, style = style)
-    
+
     def __rich_console__(self,
                          console: Console,
                          options: ConsoleOptions) -> RenderResult:
         yield self._table
-    
+
 
 class CuteSumSection(CuteTableSection):
     _known: dict[str, CuteSumField] = dict()
@@ -1427,7 +1454,7 @@ class CuteSumSection(CuteTableSection):
 
     def store(self, store: CuteStore) -> None:
         self._store = store
-    
+
     def suite(self, suite: CuteSuite) -> None:
         self.add_row(*tuple(self._known[f].suite(suite) for f in self._visible))
 
@@ -1448,12 +1475,12 @@ class CuteLabelRender:
     @classmethod
     def render(cls, field: CuteField) -> RenderableType:
         return cls._render(field.label)
-    
+
     @staticmethod
     def _render(label: str) -> RenderableType:
         return Text(':' + label + ':', style = Style(bold = True))
 
-   
+
 class CuteFieldSection(CuteTableSection):
     def __init__(self, title: str) -> None:
         self._labeller = CuteLabelRender()
@@ -1522,6 +1549,50 @@ class CuteRunSection(CuteFieldSection):
                    CuteFieldFabric().get('time'))
 
 
+class CuteMessageSection(Columns):
+    def __init__(self) -> None:
+        ttl = CuteSectionTitle('Message')
+        super().__init__(align = 'left',
+                         padding = (0, 0, 0, 2),
+                         column_first = False,
+                         expand = True,
+                         title = ttl)
+
+    def case(self, case: CuteCase) -> None:
+        msg = case.message
+        if msg is not None:
+            self.add_renderable(Text(msg))
+        else:
+            self.add_renderable('none')
+
+
+class CuteSystemSection(Columns):
+    def __init__(self) -> None:
+        ttl = CuteSectionTitle(self._TITLE)
+        super().__init__(align = 'left',
+                         padding = (0, 0, 0, 2),
+                         column_first = False,
+                         expand = True,
+                         title = ttl)
+
+    def case(self, case: CuteCase) -> None:
+        msg = getattr(case, self._PROP)
+        if msg is not None:
+            self.add_renderable(Text(msg))
+        else:
+            self.add_renderable('none')
+
+
+class CuteSystemOutSection(CuteSystemSection):
+    _TITLE = 'System out'
+    _PROP = 'stdout'
+
+
+class CuteSystemErrSection(CuteSystemSection):
+    _TITLE = 'System err'
+    _PROP = 'stderr'
+
+
 class CuteStatLabelRender(CuteLabelRender):
     @classmethod
     def render(cls, field: CuteField) -> RenderableType:
@@ -1556,13 +1627,13 @@ class CuteStatSection(CuteTableSection):
                          CuteTableColumn(justify = 'right'),
                          title = 'Statistics', 
                          padding = (0, 0))
-        
+
     def store(self, store: CuteStore) -> None:
         self._fill(store)
-    
+
     def suite(self, suite: CuteSuite) -> None:
         self._fill(suite)
-    
+
     def _fill(self, base: CuteBase) -> None:
         exec_cnt = CuteFieldFabric().get('exec_count')
         self._fill_row(base,
@@ -1620,7 +1691,7 @@ class CuteChildSection(Columns):
 
     def store(self, store: CuteStore) -> None:
         self._fill(store)
-    
+
     def suite(self, suite: CuteSuite) -> None:
         self._fill(suite)
 
@@ -1636,7 +1707,7 @@ class CuteChildSection(Columns):
                     CuteNameRender(CuteFieldFabric().get('name')).render(c))
         else:
             self.add_renderable('none')
-    
+
 
 class CuteResultSection(Text):
     def __init__(self) -> None:
@@ -1644,13 +1715,13 @@ class CuteResultSection(Text):
 
     def store(self, store: CuteStore) -> None:
         self._fill(store)
-    
+
     def suite(self, suite: CuteSuite) -> None:
         self._fill(suite)
 
     def case(self, case: CuteCase) -> None:
         self._append(*self._message(case))
-        
+
     def _fill(self, base: CuteBase) -> None:
         msg, style = self._message(base)
         if base.status == CuteStatus.FAIL or base.status == CuteStatus.EXCP:
@@ -1663,7 +1734,7 @@ class CuteResultSection(Text):
                                               round(cnt * 100 /
                                                     base.exec_count))
         self._append(msg, style)
-            
+
     def _message(self, base: CuteBase) -> tuple[str, Style]:
         if base.status == CuteStatus.PASS:
             status = 'PASSED'
@@ -1684,7 +1755,7 @@ class CuteResultSection(Text):
             raise Exception("cannot setup result section: "
                             "invalid status: '{}'".format(base.status))
         return (status, style)
-    
+
     def _append(self, text: str, style: Style) -> None:
         self.append('### ')
         self.append(text, style = style + Style(bold = True))
@@ -1731,79 +1802,108 @@ class CuteSumReport:
         traverse.inorder(store, self._sumup, select)
         self._res = CuteResultSection()
         self._res.store(store)
-        
+
     def __rich_console__(self,
                          console: Console,
                          options: ConsoleOptions) -> RenderResult:
         yield self._sumup
         yield Padding(self._res, pad = (1, 0, 0, 0))
- 
- 
+
 
 class CuteResultReport(CuteVisitor):
     def __init__(self) -> None:
+        self._msg: CuteMessageSection | None
+        self._stdout: CuteSystemOutSection | None
+        self._stderr: CuteSystemErrSection | None
         self._stat: CuteStatSection | None
-    
+
     def store(self, store: CuteStore) -> None:
         self._desc = CuteDescSection()
         self._desc.store(store)
         self._run = CuteRunSection()
         self._run.store(store)
+        self._msg = None
+        self._stdout = None
+        self._stderr = None
         self._stat = CuteStatSection()
         self._stat.store(store)
         self._res = CuteResultSection()
         self._res.store(store)
-    
+
     def suite(self, suite: CuteSuite) -> None:
         self._desc = CuteDescSection()
         self._desc.suite(suite)
         self._run = CuteRunSection()
         self._run.suite(suite)
+        self._msg = None
+        self._stdout = None
+        self._stderr = None
         self._stat = CuteStatSection()
         self._stat.suite(suite)
         self._res = CuteResultSection()
         self._res.suite(suite)
-    
+
     def case(self, case: CuteCase) -> None:
         self._desc = CuteDescSection()
         self._desc.case(case)
         self._run = CuteRunSection()
         self._run.case(case)
+        if case.message is not None:
+            self._msg = CuteMessageSection()
+            self._msg.case(case)
+        else:
+            self._msg = None
+        if case.stdout is not None:
+            self._stdout = CuteSystemOutSection()
+            self._stdout.case(case)
+        else:
+            self._stdout = None
+        if case.stderr is not None:
+            self._stderr = CuteSystemErrSection()
+            self._stderr.case(case)
+        else:
+            self._stderr = None
         self._stat = None
         self._res = CuteResultSection()
         self._res.case(case)
-    
+
     def __rich_console__(self,
                          console: Console,
                          options: ConsoleOptions) -> RenderResult:
         yield self._desc
         yield Padding(self._run, pad = (1, 0, 0, 0))
+        if self._msg:
+            yield Padding(self._msg, pad = (1, 0, 0, 0))
+        if self._stdout:
+            yield Padding(self._stdout, pad = (1, 0, 0, 0))
+        if self._stderr:
+            yield Padding(self._stderr, pad = (1, 0, 0, 0))
         if self._stat:
             yield Padding(self._stat, pad = (1, 0, 0, 0))
         yield Padding(self._res, pad = (1, 0, 0, 0))
- 
+
 
 class CuteInfoReport(CuteVisitor):
     def __init__(self) -> None:
         self._child: CuteChildSection | None
-    
+
     def store(self, store: CuteStore) -> None:
         self._desc = CuteDescSection()
         self._desc.store(store)
         self._child = CuteChildSection()
         self._child.store(store)
-         
+
     def suite(self, suite: CuteSuite) -> None:
         self._desc = CuteDescSection()
         self._desc.suite(suite)
         self._child = CuteChildSection()
         self._child.suite(suite)
-    
+
     def case(self, case: CuteCase) -> None:
         self._desc = CuteDescSection()
         self._desc.case(case)
         self._child = None
-    
+
     def __rich_console__(self,
                          console: Console,
                          options: ConsoleOptions) -> RenderResult:
@@ -1865,7 +1965,7 @@ class CuteDB:
         except Exception as e:
             raise Exception("cannot delete from '{}' JUnit database: "
                             "{}".format(self._db.filepath, e))
-    
+
     # FIXME: block unwanted signals while removing temporary files...
     def save(self) -> None:
         path = self._db.filepath
@@ -1902,7 +2002,7 @@ class CuteDB:
                 "parent element '{}' not found".format(parent))
         child = self._find_child(elders[-1], name)
         return (junit, elders, child, name)
-    
+
     @staticmethod
     def _mkpath(full_name: str | None) -> list[str]:
         if full_name is None or len(full_name) == 0 or full_name == '::':
@@ -1915,7 +2015,7 @@ class CuteDB:
                 raise Exception(
                     "invalid element full name '{}'".format(full_name))
         return path
-    
+
     def _walk(self, path: list[str]) -> list[JUnitElement] | None:
         walk = [self._db]
         for n in path:
@@ -1955,7 +2055,7 @@ class CuteDB:
         suite.name = name
         elders[-1].add_testsuite(suite)
         self._refresh_stats(elders)
-        
+
     @staticmethod
     def _refresh_stats(path: list[JUnitElement]) -> None:
         assert len(path) > 0

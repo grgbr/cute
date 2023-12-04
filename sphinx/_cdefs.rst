@@ -8,6 +8,7 @@
 .. _glibc:      https://www.gnu.org/software/libc
 .. _junit:      https://en.wikipedia.org/wiki/JUnit
 .. _tap:        https://testanything.org/
+.. _python:     https://www.python.org/
   
 .. |API|            replace:: :doc:`API <api>`
 .. |test case|      replace:: :ref:`test case <sect-user-writing_tests-test_definition>`
