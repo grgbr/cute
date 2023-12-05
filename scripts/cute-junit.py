@@ -1951,6 +1951,20 @@ class CuteDB:
             raise Exception("cannot update '{}' JUnit database: "
                             "{}".format(self._db.filepath, e))
 
+    def partial_update(self,
+                       parent: str | None,
+                       path: str,
+                       name: str | None) -> None:
+        try:
+            (junit, elders, child, name) = self._cook_insert(parent, path, name)
+            if child is not None:
+                elders[-1].remove(child)
+                elders[-1].update_statistics()
+            self._partial_add(junit, name, elders)
+        except Exception as e:
+            raise Exception("cannot update '{}' JUnit database: "
+                            "{}".format(self._db.filepath, e))
+
     def delete(self, full_name: str) -> None:
         try:
             path = self._mkpath(full_name)
@@ -2046,6 +2060,7 @@ class CuteDB:
                 suite.append(props)
             for s in junit.iterchildren(JUnitTestSuite):
                 suite.add_testsuite(s)
+            suite.time = junit.time
             suite.update_statistics()
         elif isinstance(junit, JUnitTestSuite):
             suite = junit
@@ -2056,12 +2071,83 @@ class CuteDB:
         elders[-1].add_testsuite(suite)
         self._refresh_stats(elders)
 
-    @staticmethod
-    def _refresh_stats(path: list[JUnitElement]) -> None:
+    def _partial_add(self,
+                     junit: JUnitXml,
+                     name: str,
+                     elders: list[JUnitElement]) -> None:
+        if isinstance(junit, JUnitXml):
+            suite = JUnitTestSuite()
+            props = junit.child(JUnitProperties)
+            if props is not None:
+                suite.append(props)
+            suite.tests = junit.tests
+            suite.errors = junit.errors
+            suite.failures = junit.failures
+            suite.skipped = junit.skipped
+            suite.time = junit.time
+        elif isinstance(junit, JUnitTestSuite):
+            suite = junit
+            for e in list(suite.iterchildren(JUnitTestCase)):
+                suite.remove(e)
+            for e in list(suite.iterchildren(JUnitTestSuite)):
+                suite.remove(e)
+        else:
+            raise Exception(
+                "unexpected '{}' JUnit file format".format(junit.filepath))
+        suite.name = name
+        elders[-1].add_testsuite(suite)
+        self._refresh_stats(elders)
+
+    @classmethod
+    def _refresh_stats(cls, path: list[JUnitElement]) -> None:
         assert len(path) > 0
         while len(path) > 0:
             elem = path.pop()
-            elem.update_statistics()
+            cls._accnt_stats(elem)
+
+    @staticmethod
+    def _accnt_stats(elem: JUnitElement) -> None:
+        cnt = 0
+        fail = 0
+        err = 0
+        skip = 0
+        dis = 0
+        time = 0
+        for e in elem.iterchildren(JUnitTestCase):
+            cnt += 1
+            for r in e.result:
+                if isinstance(r, Failure):
+                    fail += 1
+                elif isinstance(r, Error):
+                    err += 1
+                elif isinstance(r, Skipped):
+                    skip += 1
+                else:
+                    attrs = e._elem.attrib
+                    if 'status' in attrs.keys():
+                        if attrs['status'] == 'disabled':
+                            dis += 1
+            if e.time is not None:
+                time += e.time
+        for e in elem.iterchildren(JUnitTestSuite):
+            cnt += e.tests
+            fail += e.failures
+            err += e.errors
+            skip += e.skipped
+            attrs = e._elem.attrib
+            if 'disabled' in attrs.keys():
+                try:
+                    dis += int(attrs['disabled'])
+                except ValueError:
+                    pass
+            if e.time is not None:
+                time += e.time
+        elem.tests = cnt
+        elem.failures = fail
+        elem.errors = err
+        elem.skipped = skip
+        # FIXME: accound disabled count using dis variable above ?
+        elem.time = round(time, 6)
 
 
 def cute_verify(path: str) -> int:
@@ -2083,12 +2169,21 @@ def cute_sumup(path: str,
                                           select))
 
 
+def cute_union(db_path: str,
+               junit_path: str,
+               parent: str | None = None,
+               name: str | None = None) -> None:
+    db = CuteDB(db_path)
+    db.update(parent, junit_path, name)
+    db.save()
+
+
 def cute_join(db_path: str,
               junit_path: str,
               parent: str | None = None,
               name: str | None = None) -> None:
     db = CuteDB(db_path)
-    db.update(parent, junit_path, name)
+    db.partial_update(parent, junit_path, name)
     db.save()
 
 
@@ -2188,22 +2283,27 @@ def main():
                             type = str,
                             metavar = 'DBPATH',
                             help = 'Pathname to XML JUnit database file')
-    join_parser = subparser.add_parser('join',
-                                       parents = [db_parser, path_parser],
-                                       help = 'Join JUnit file content into DB')
-    join_parser.add_argument('-p',
-                             '--parent',
-                             type = str,
-                             default = None,
-                             metavar = 'PARENT',
-                             help = 'Full name of parent to join test '
-                                    'case / suite to')
-    join_parser.add_argument('name',
-                             type = str,
-                             nargs = '?',
-                             default = None,
-                             metavar = 'NAME',
-                             help = 'Name of test case / suite to insert as')
+    parent_parser = ArgumentParser(add_help = False)
+    parent_parser.add_argument('-p',
+                               '--parent',
+                               type = str,
+                               default = None,
+                               metavar = 'PARENT',
+                               help = 'Full name of parent to join / union '
+                                      'test case / suite to')
+    iname_parser = ArgumentParser(add_help = False)
+    iname_parser.add_argument('name',
+                              type = str,
+                              nargs = '?',
+                              default = None,
+                              metavar = 'NAME',
+                              help = 'Name of test case / suite to insert as')
+    subparser.add_parser('union',
+                         parents = [parent_parser, db_parser, path_parser, iname_parser],
+                         help = 'Union JUnit file content into DB')
+    subparser.add_parser('join',
+                         parents = [parent_parser, db_parser, path_parser, iname_parser],
+                         help = 'Join JUnit file content into DB')
     del_parser = subparser.add_parser('del',
                                       parents = [db_parser],
                                       help = 'Delete element from JUnit DB')
@@ -2223,6 +2323,8 @@ def main():
             cute_result(args.path, args.name, args.color)
         elif args.cmd == 'sumup':
             cute_sumup(args.path, args.fields, args.select, args.color)
+        elif args.cmd == 'union':
+            cute_union(args.db_path, args.path, args.parent, args.name)
         elif args.cmd == 'join':
             cute_join(args.db_path, args.path, args.parent, args.name)
         elif args.cmd == 'del':
@@ -2230,6 +2332,7 @@ def main():
         else:
             raise Exception("'{}': unknown specified command")
     except Exception as e:
+        raise e
         print("{}: {}.".format(arg0, e), file=stderr)
         exit(1)
 
