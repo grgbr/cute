@@ -54,6 +54,21 @@ $(DESTDIR)$(BINDIR)/cute-junit.py: $(BUILDDIR)/cute-junit.py \
 	$(call install_recipe,--mode=755,$(<),$(@))
 
 ################################################################################
+# Source code tags generation
+################################################################################
+
+tag-files        := $(shell find $(addprefix $(CURDIR)/,$(subdirs)) \
+                                 $(HEADERDIR) \
+                                 -type f)
+.PHONY: ctags
+ctags:
+	ctags -f $(BUILDDIR)/tags $(tag-files)
+
+.PHONY: cscope
+cscope:
+	cscope -b -f $(BUILDDIR)/cscope.out -q -u $(tag-files)
+
+################################################################################
 # Documentation generation
 ################################################################################
 
