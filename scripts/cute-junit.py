@@ -1913,21 +1913,35 @@ class CuteInfoReport(CuteVisitor):
 
 
 class CuteDB:
-    def __init__(self, path: str) -> None:
+    def __init__(self,
+                 path: str,
+                 package: str | None = None,
+                 version: str | None = None) -> None:
         try:
             db = JUnitXml.fromfile(path)
-        except FileNotFoundError:
+        except (FileNotFoundError, OSError):
             db = JUnitXml()
             db.filepath = path
         if isinstance(db, JUnitTestSuite):
             self._db = JUnitXml()
             self._db.add_testsuite(db)
-            self._db.update_statistics()
+            self._accnt_stat(self._db)
         elif isinstance(db, JUnitXml):
             self._db = db
         else:
             raise Exception("cannot open '{}' JUnit database: "
                             "unexpected JUnit file format".format(path))
+        attrs = self._db._elem.attrib
+        if package is not None:
+            if len(package) == 0:
+                del attrs['package']
+            else:
+                attrs['package'] = package
+        if version is not None:
+            if len(version) == 0:
+                del attrs['version']
+            else:
+                attrs['version'] = version
 
     def insert(self, parent: str | None, path: str, name: str | None) -> None:
         try:
@@ -1945,7 +1959,7 @@ class CuteDB:
             (junit, elders, child, name) = self._cook_insert(parent, path, name)
             if child is not None:
                 elders[-1].remove(child)
-                elders[-1].update_statistics()
+                self._accnt_stats(elders[-1])
             self._add(junit, name, elders)
         except Exception as e:
             raise Exception("cannot update '{}' JUnit database: "
@@ -1959,7 +1973,7 @@ class CuteDB:
             (junit, elders, child, name) = self._cook_insert(parent, path, name)
             if child is not None:
                 elders[-1].remove(child)
-                elders[-1].update_statistics()
+                self._accnt_stats(elders[-1])
             self._partial_add(junit, name, elders)
         except Exception as e:
             raise Exception("cannot update '{}' JUnit database: "
@@ -2061,7 +2075,7 @@ class CuteDB:
             for s in junit.iterchildren(JUnitTestSuite):
                 suite.add_testsuite(s)
             suite.time = junit.time
-            suite.update_statistics()
+            self._accnt_stats(suite)
         elif isinstance(junit, JUnitTestSuite):
             suite = junit
         else:
@@ -2146,7 +2160,7 @@ class CuteDB:
         elem.failures = fail
         elem.errors = err
         elem.skipped = skip
-        # FIXME: accound disabled count using dis variable above ?
+        elem._elem.attrib['disabled'] = str(dis)
         elem.time = round(time, 6)
 
 
@@ -2172,8 +2186,10 @@ def cute_sumup(path: str,
 def cute_union(db_path: str,
                junit_path: str,
                parent: str | None = None,
-               name: str | None = None) -> None:
-    db = CuteDB(db_path)
+               name: str | None = None,
+               package: str | None = None,
+               version: str | None = None) -> None:
+    db = CuteDB(db_path, package, version)
     db.update(parent, junit_path, name)
     db.save()
 
@@ -2181,8 +2197,10 @@ def cute_union(db_path: str,
 def cute_join(db_path: str,
               junit_path: str,
               parent: str | None = None,
-              name: str | None = None) -> None:
-    db = CuteDB(db_path)
+              name: str | None = None,
+               package: str | None = None,
+               version: str | None = None) -> None:
+    db = CuteDB(db_path, package, version)
     db.partial_update(parent, junit_path, name)
     db.save()
 
@@ -2298,11 +2316,35 @@ def main():
                               default = None,
                               metavar = 'NAME',
                               help = 'Name of test case / suite to insert as')
+    pkg_parser = ArgumentParser(add_help = False)
+    pkg_parser.add_argument('-a',
+                            '--package',
+                            type = str,
+                            default = None,
+                            metavar = 'PACKAGE',
+                            help = 'Package name of JUnit DB')
+    rev_parser = ArgumentParser(add_help = False)
+    rev_parser.add_argument('-r',
+                            '--revision',
+                            type = str,
+                            default = None,
+                            metavar = 'REVISION',
+                            help = 'Version number of JUnit DB')
     subparser.add_parser('union',
-                         parents = [parent_parser, db_parser, path_parser, iname_parser],
+                         parents = [pkg_parser,
+                                    rev_parser,
+                                    parent_parser,
+                                    db_parser,
+                                    path_parser,
+                                    iname_parser],
                          help = 'Union JUnit file content into DB')
     subparser.add_parser('join',
-                         parents = [parent_parser, db_parser, path_parser, iname_parser],
+                         parents = [pkg_parser,
+                                    rev_parser,
+                                    parent_parser,
+                                    db_parser,
+                                    path_parser,
+                                    iname_parser],
                          help = 'Join JUnit file content into DB')
     del_parser = subparser.add_parser('del',
                                       parents = [db_parser],
@@ -2324,15 +2366,24 @@ def main():
         elif args.cmd == 'sumup':
             cute_sumup(args.path, args.fields, args.select, args.color)
         elif args.cmd == 'union':
-            cute_union(args.db_path, args.path, args.parent, args.name)
+            cute_union(args.db_path,
+                       args.path,
+                       args.parent,
+                       args.name,
+                       args.package,
+                       args.revision)
         elif args.cmd == 'join':
-            cute_join(args.db_path, args.path, args.parent, args.name)
+            cute_join(args.db_path,
+                      args.path,
+                      args.parent,
+                      args.name,
+                      args.package,
+                      args.revision)
         elif args.cmd == 'del':
             cute_delete(args.db_path, args.full_name)
         else:
             raise Exception("'{}': unknown specified command")
     except Exception as e:
-        raise e
         print("{}: {}.".format(arg0, e), file=stderr)
         exit(1)
 
