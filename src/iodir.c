@@ -103,7 +103,8 @@ cute_iodir_is_block_busy(const struct cute_iodir_block * block)
 void
 cute_iodir_print_block(FILE *                          stdio,
                        int                             depth,
-                       const struct cute_iodir_block * block)
+                       const struct cute_iodir_block * block,
+                       cute_iodir_format_fn *          format)
 {
 	cute_assert_intern(stdio);
 	cute_assert_intern(block);
@@ -113,24 +114,24 @@ cute_iodir_print_block(FILE *                          stdio,
 	const struct cute_iodir_atom * atom = block->head;
 
 	do {
-		int          sz;
+		size_t       sz;
 		const char * line;
 
-		sz = (int)cute_iodir_atom_busy_size(atom);
+		sz = cute_iodir_atom_busy_size(atom);
 		if (!sz)
 			break;
 
 		line = cute_iodir_atom_busy_data(atom);
 		do {
 			const char * eol;
-			int          len;
+			size_t       len;
 
-			eol = memchr(line, '\n', (size_t)sz);
+			eol = memchr(line, '\n', sz);
 			if (!eol)
 				eol = &line[sz];
-			len = (int)(eol - line);
+			len = (size_t)(eol - line);
 
-			fprintf(stdio, "%*.s%.*s\n", depth, "", len, line);
+			format(stdio, depth, len, line);
 
 			line = eol + 1;
 			sz -= len + 1;

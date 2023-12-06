@@ -254,6 +254,10 @@ cute_asprintf(const char * format, ...) __attribute__((format(printf, 1, 2)));
  * Text block utility
  ******************************************************************************/
 
+typedef void (cute_text_format_fn)(FILE *       stdio,
+                                   int          indent,
+                                   const char * string);
+
 struct cute_text_atom {
 	char * str;
 	bool   own;

@@ -138,7 +138,10 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 		        run->why);
 		blk = cute_assess_desc(&run->assess);
 		if (blk) {
-			cute_report_printf_block(blk, 0, report->stdio);
+			cute_report_printf_block(blk,
+			                         0,
+			                         report->stdio,
+			                         cute_report_format_text);
 			cute_text_destroy(blk);
 		}
 
@@ -146,7 +149,10 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 			fprintf(report->stdio,
 			        ">>> stdout >>>%s\n",
 			        report->term.italic);
-			cute_iodir_print_block(report->stdio, 0, &run->ioout);
+			cute_iodir_print_block(report->stdio,
+			                       0,
+			                       &run->ioout,
+			                       cute_iodir_format_text);
 			fprintf(report->stdio,
 			        "%s%s<<< stdout <<<\n",
 			        report->term.regular,
@@ -157,7 +163,10 @@ cute_cons_report_test_done(const struct cute_cons_report * report,
 			fprintf(report->stdio,
 			        ">>> stderr >>>%s\n",
 			        report->term.italic);
-			cute_iodir_print_block(report->stdio, 0, &run->ioerr);
+			cute_iodir_print_block(report->stdio,
+			                       0,
+			                       &run->ioerr,
+			                       cute_iodir_format_text);
 			fprintf(report->stdio,
 			        "%s%s<<< stderr <<<\n",
 			        report->term.regular,

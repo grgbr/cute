@@ -110,13 +110,14 @@ static unsigned int          cute_report_done;
 void
 cute_report_printf_block(const struct cute_text_block * block,
                          int                            indent,
-                         FILE *                         stdio)
+                         FILE *                         stdio,
+                         cute_text_format_fn *          format)
 {
 	unsigned int                  a;
 	const struct cute_text_atom * atom;
 
 	cute_text_foreach(block, a, atom)
-		fprintf(stdio, "%*s%s\n", indent, "", atom->str);
+		format(stdio, indent, atom->str);
 }
 
 unsigned int

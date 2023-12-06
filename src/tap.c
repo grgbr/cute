@@ -46,7 +46,10 @@ cute_tap_report_source_details(FILE *                  stdio,
 
 	blk = cute_assess_desc(&run->assess);
 	if (blk) {
-		cute_report_printf_block(blk, depth + 2, stdio);
+		cute_report_printf_block(blk,
+		                         depth + 2,
+		                         stdio,
+		                         cute_report_format_text);
 		cute_text_destroy(blk);
 	}
 }
@@ -61,12 +64,18 @@ cute_tap_report_stdio(FILE *                  stdio,
 
 	if (cute_iodir_is_block_busy(&run->ioout)) {
 		fprintf(stdio, "%*sstdout: |\n", depth + 2, "");
-		cute_iodir_print_block(stdio, depth + 4, &run->ioout);
+		cute_iodir_print_block(stdio,
+		                       depth + 4,
+		                       &run->ioout,
+		                       cute_iodir_format_text);
 	}
 
 	if (cute_iodir_is_block_busy(&run->ioerr)) {
 		fprintf(stdio, "%*sstderr: |\n", depth + 2, "");
-		cute_iodir_print_block(stdio, depth + 4, &run->ioerr);
+		cute_iodir_print_block(stdio,
+		                       depth + 4,
+		                       &run->ioerr,
+		                       cute_iodir_format_text);
 	}
 }
 

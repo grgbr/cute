@@ -31,6 +31,66 @@ struct cute_xml_report {
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
+static bool
+cute_xml_escape_sequence(FILE * stdio, const char * string, const char * sym)
+{
+	cute_assert_intern(stdio);
+	cute_assert_intern(string);
+	cute_assert_intern(sym);
+
+	const char * seq;
+
+	switch (*sym) {
+	case '"':
+		seq = "&quot;";
+		break;
+	case '\'':
+		seq = "&apos;";
+		break;
+	case '<':
+		seq = "&lt;";
+		break;
+	case '>':
+		seq = "&gt;";
+		break;
+	case '&':
+		seq = "&amp;";
+		break;
+	default:
+		return false;
+	}
+
+	fprintf(stdio, "%.*s%s", (int)(sym - string), string, seq);
+
+	return true;
+}
+
+static void
+cute_xml_format_iodir(FILE *       stdio,
+                      int          indent,
+                      size_t       length,
+                      const char * string)
+{
+	cute_assert_intern(stdio);
+	cute_assert_intern(string);
+
+	const char * const end = &string[length];
+	const char *       sym = string;
+
+	fprintf(stdio, "%*s", indent, "");
+
+	while (sym < end) {
+		if (!cute_xml_escape_sequence(stdio, string, sym)) {
+			sym++;
+			continue;
+		}
+
+		string = ++sym;
+	}
+
+	fprintf(stdio, "%.*s\n", (int)(end - string), string);
+}
+
 static void
 cute_xml_report_prolog(const struct cute_xml_report * report)
 {
@@ -52,15 +112,43 @@ cute_xml_report_stdio(FILE *                  stdio,
 
 	if (cute_iodir_is_block_busy(&run->ioout)) {
 		fprintf(stdio, "%*s<system-out>\n", depth, "");
-		cute_iodir_print_block(stdio, 0, &run->ioout);
+		cute_iodir_print_block(stdio,
+		                       0,
+		                       &run->ioout,
+		                       cute_xml_format_iodir);
 		fprintf(stdio, "%*s</system-out>\n", depth, "");
 	}
 
 	if (cute_iodir_is_block_busy(&run->ioerr)) {
 		fprintf(stdio, "%*s<system-err>\n", depth, "");
-		cute_iodir_print_block(stdio, 0, &run->ioerr);
+		cute_iodir_print_block(stdio,
+		                       0,
+		                       &run->ioerr,
+		                       cute_xml_format_iodir);
 		fprintf(stdio, "%*s</system-err>\n", depth, "");
 	}
+}
+
+static void
+cute_xml_format_text(FILE * stdio, int indent, const char * string)
+{
+	cute_assert_intern(stdio);
+	cute_assert_intern(string);
+
+	const char * sym = string;
+
+	fprintf(stdio, "%*s", indent, "");
+
+	while (*sym != '\0') {
+		if (!cute_xml_escape_sequence(stdio, string, sym)) {
+			sym++;
+			continue;
+		}
+
+		string = ++sym;
+	}
+
+	fprintf(stdio, "%s\n", string);
 }
 
 static void
@@ -79,14 +167,17 @@ cute_xml_report_testcase_details(FILE *                  stdio,
 
 	fprintf(stdio,
 	        ">\n"
-	        "%2$*1$s<%3$s message=\"%4$s\">\n"
-	        "%2$*1$s    reason: %5$s\n",
+	        "%*s<%s message=\"%s\">\n"
+	        "reason: %s\n",
 	        depth + 4, "", label, run->what,
 	        run->why);
 
 	blk = cute_assess_desc(&run->assess);
 	if (blk) {
-		cute_report_printf_block(blk, depth + 8, stdio);
+		cute_report_printf_block(blk,
+		                         0,
+		                         stdio,
+		                         cute_xml_format_text);
 		cute_text_destroy(blk);
 	}
 

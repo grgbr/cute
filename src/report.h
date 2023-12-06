@@ -153,10 +153,17 @@ struct cute_report {
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
+static inline void
+cute_report_format_text(FILE * stdio, int indent, const char * string)
+{
+	fprintf(stdio, "%*s%s\n", indent, "", string);
+}
+
 extern void
 cute_report_printf_block(const struct cute_text_block * block,
                          int                            indent,
-                         FILE *                         stdio);
+                         FILE *                         stdio,
+                         cute_text_format_fn *          format);
 
 extern unsigned int
 cute_report_progress(void);

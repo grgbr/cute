@@ -24,10 +24,25 @@ struct cute_iodir_block {
 extern bool
 cute_iodir_is_block_busy(const struct cute_iodir_block * block);
 
+static inline void
+cute_iodir_format_text(FILE *       stdio,
+                       int          indent,
+                       size_t       length,
+                       const char * string)
+{
+	fprintf(stdio, "%*.s%.*s\n", indent, "", (int)length, string);
+}
+
+typedef void (cute_iodir_format_fn)(FILE *       stdio,
+                                    int          indent,
+                                    size_t       length,
+                                    const char * string);
+
 extern void
 cute_iodir_print_block(FILE *                          stdio,
                        int                             depth,
-                       const struct cute_iodir_block * block);
+                       const struct cute_iodir_block * block,
+                       cute_iodir_format_fn *          format);
 
 extern void
 cute_iodir_init_block(struct cute_iodir_block * block);
