@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ 
+    <!-- Common type definitions -->
+    
+    <xs:simpleType name="TOKEN">
+        <xs:restriction base="xs:token">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="STRING">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="TEXTBLOCK">
+        <xs:restriction base="xs:string">
+            <xs:whiteSpace value="preserve"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="TIME">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Duration of a testcase / testsuite execution.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9]+(\.[0-9]+)?"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ISO8601_DATETIME">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Date and time expressed according to ISO 8601 standard.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:dateTime">
+            <xs:pattern value="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([+-][0-9]{2}:[0-9]{2}|Z)"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="PROPERTIES">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Properties (e.g., environment settings) set during testcase /
+                testsuite execution.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="property" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="name" type="TOKEN" use="required"/>
+                            <xs:attribute name="value" type="STRING" use="optional"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RESULT">
+        <xs:simpleContent>
+            <xs:extension base="TEXTBLOCK">
+                <xs:attribute name="message" type="STRING" use="optional">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Message attached to a particular testcase result.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="type" type="TOKEN" use="optional">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Type of testcase result.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+
+    <!-- Common attribute definitions -->
+    
+    <xs:attribute name="id" type="xs:nonNegativeInteger">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Starts at 0 for the first child of a testsuite (or testsuite
+                aggregation) and is incremented by 1 for each following child.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="name" type="TOKEN">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Short name of class / method / function implementing the
+                testcase / testsuite.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="classname" type="TOKEN">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Full name of class / method / function implementing the
+                testcase / testsuite.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="package" type="TOKEN">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Package name of the software under test.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="version" type="TOKEN">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Package revision number.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="file" type="STRING">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Testcase / testsuite implementation source file path.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="line" type="xs:nonNegativeInteger">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Testcase / testsuite implementation source line number.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="status">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Outcome of a testcase.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+            <xs:restriction base="xs:token">
+                <xs:enumeration value="passed"/>
+                <xs:enumeration value="skipped"/>
+                <xs:enumeration value="failure"/>
+                <xs:enumeration value="error"/>
+                <xs:enumeration value="disabled"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    
+    <xs:attribute name="tests" type="xs:nonNegativeInteger">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Total number of testcases of a testsuite.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="disabled" type="xs:nonNegativeInteger">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Total number of testcases that were disabled in a testsuite.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="failures" type="xs:nonNegativeInteger">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Total number of testcases that failed in a testsuite.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="errors" type="xs:nonNegativeInteger">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Total number of testcases that errored in a testsuite.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="skipped" type="xs:nonNegativeInteger">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Total number of testcases that were skipped in a testsuite.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="hostname" type="TOKEN">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Host on which a testsuite was executed.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="time" type="TIME">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Duration of a testcase or testsuite execution.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="timestamp" type="ISO8601_DATETIME">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Date a testcase or testsuite execution started on.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    
+    <!-- Element type definitions -->
+    
+    <xs:complexType name="TESTCASE">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Result of a testcase execution.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element name="skipped" type="RESULT">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Indicates that the testcase was skipped, i.e. has
+                            not run. Contains revelant data as a text node.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="error" type="RESULT">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Indicates that the testcase crashed. Contains data
+                            relevant to the error as a text node.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="failure" type="RESULT">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">
+                            Indicates that the testcase failed. Contains data
+                            relevant to the failure as a text node.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+            <xs:element name="system-out" type="TEXTBLOCK" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        Data that was written to standard out while the testcase
+                        was executed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="system-err" type="TEXTBLOCK" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        Data that was written to standard error while the
+                        testcase was executed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute ref="id" use="optional"/>
+        <xs:attribute ref="name" use="required"/>
+        <xs:attribute ref="classname" use="optional"/>
+        <xs:attribute ref="file" use="optional"/>
+        <xs:attribute ref="line" use="optional"/>
+        <xs:attribute ref="status" use="required"/>
+        <xs:attribute ref="time" use="optional"/>
+        <xs:attribute ref="timestamp" use="optional"/>
+    </xs:complexType>
+ 
+    <xs:complexType name="TESTSUITE">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Results of a testsuite execution.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="properties" type="PROPERTIES" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="testsuite" type="TESTSUITE" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="testcase" type="TESTCASE" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute ref="id" use="optional"/>
+        <xs:attribute ref="name" use="required"/>
+        <xs:attribute ref="classname" use="optional"/>
+        <xs:attribute ref="package" use="optional"/>
+        <xs:attribute ref="version" use="optional"/>
+        <xs:attribute ref="file" use="optional"/>
+        <xs:attribute ref="line" use="optional"/>
+        <xs:attribute ref="tests" use="optional"/>
+        <xs:attribute ref="disabled" use="optional"/>
+        <xs:attribute ref="failures" use="optional"/>
+        <xs:attribute ref="errors" use="optional"/>
+        <xs:attribute ref="skipped" use="optional"/>
+        <xs:attribute ref="hostname" use="optional"/>
+        <xs:attribute ref="time" use="optional"/>
+        <xs:attribute ref="timestamp" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="TESTSUITES">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                An aggregation of testsuite results.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="testsuite" type="TESTSUITE" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute ref="name" use="optional"/>
+        <xs:attribute ref="package" use="optional"/>
+        <xs:attribute ref="version" use="optional"/>
+        <xs:attribute ref="time" use="optional"/>
+        <xs:attribute ref="tests" use="optional"/>
+        <xs:attribute ref="disabled" use="optional"/>
+        <xs:attribute ref="failures" use="optional"/>
+        <xs:attribute ref="errors" use="optional"/>
+        <xs:attribute ref="skipped" use="optional"/>
+    </xs:complexType>
+    
+    <xs:element name="testsuites" type="TESTSUITES"/>
+    <xs:element name="testsuite" type="TESTSUITE"/>
+
+</xs:schema>
