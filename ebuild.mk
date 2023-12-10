@@ -47,11 +47,15 @@ build: $(BUILDDIR)/cute-junit.py
 $(BUILDDIR)/cute-junit.py: $(CURDIR)/scripts/cute-junit.py | $(BUILDDIR)/
 	sed 's;@@PYTHON_SHEBANG@@;$(PYTHON_SHEBANG);g' $(<) > $(@)
 
-install: $(DESTDIR)$(BINDIR)/cute-junit.py
+install: $(DESTDIR)$(BINDIR)/cute-junit.py \
+         $(DESTDIR)$(DATADIR)/cute/cute-junit.xsd
 
 $(DESTDIR)$(BINDIR)/cute-junit.py: $(BUILDDIR)/cute-junit.py \
                                    | $(DESTDIR)$(BINDIR)/
 	$(call install_recipe,--mode=755,$(<),$(@))
+
+$(DESTDIR)$(DATADIR)/cute/cute-junit.xsd: $(CURDIR)/cute-junit.xsd
+	$(call install_recipe,--mode=644,$(<),$(@))
 
 ################################################################################
 # Source code tags generation
