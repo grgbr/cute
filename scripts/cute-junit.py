@@ -168,6 +168,7 @@ class CuteBase:
     def origin(self) -> str:
         if self._origin is not None:
             return self._origin
+        assert self._parent is not None
         return self._parent.origin
 
     @property
@@ -351,7 +352,7 @@ class CuteCase(CuteBase):
     def accept(self, visit: CuteVisitor) -> None:
         visit.case(self)
 
-    def _load_msg(self, result: Result) -> str:
+    def _load_msg(self, result: JUnitElement) -> str:
         return result.message.strip() + '\n\n' + dedent(result.text).strip('\n')
 
     def _load_stdio(self, stdio: str | None) -> str | None:
@@ -413,6 +414,7 @@ class CuteSuite(CuteBase):
             if junit.filepath:
                 self._origin = junit.filepath
             else:
+                assert parent is not None
                 self._origin = parent.origin
         self._count = total_cnt
         self._off = off_cnt
@@ -421,7 +423,7 @@ class CuteSuite(CuteBase):
         self._fail = fail_cnt
         self._excp = excp_cnt
         self._pass = pass_cnt
-        
+
     @property
     def kind(self) -> str:
         return 'suite'
@@ -1622,6 +1624,9 @@ class CuteMessageSection(Columns):
 
 
 class CuteSystemSection(Columns):
+    _TITLE: str
+    _PROP: str
+
     def __init__(self) -> None:
         ttl = CuteSectionTitle(self._TITLE)
         super().__init__(align = 'left',
@@ -1980,7 +1985,7 @@ class CuteDB:
         if isinstance(db, JUnitTestSuite):
             self._db = JUnitXml()
             self._db.add_testsuite(db)
-            self._accnt_stat(self._db)
+            self._accnt_stats(self._db)
         elif isinstance(db, JUnitXml):
             self._db = db
         else:
@@ -2004,6 +2009,7 @@ class CuteDB:
             if child is not None:
                 raise Exception(
                     "element '{}::{}' already exists".format(parent, name))
+            assert name is not None
             self._add(junit, name, elders)
         except Exception as e:
             raise Exception("cannot insert into '{}' JUnit database: "
@@ -2015,6 +2021,7 @@ class CuteDB:
             if child is not None:
                 elders[-1].remove(child)
                 self._accnt_stats(elders[-1])
+            assert name is not None
             self._add(junit, name, elders)
         except Exception as e:
             raise Exception("cannot update '{}' JUnit database: "
@@ -2029,6 +2036,7 @@ class CuteDB:
             if child is not None:
                 elders[-1].remove(child)
                 self._accnt_stats(elders[-1])
+            assert name is not None
             self._partial_add(junit, name, elders)
         except Exception as e:
             raise Exception("cannot update '{}' JUnit database: "
@@ -2188,11 +2196,11 @@ class CuteDB:
         for e in elem.iterchildren(JUnitTestCase):
             cnt += 1
             for r in e.result:
-                if isinstance(r, Failure):
+                if isinstance(r, JUnitFailure):
                     fail += 1
-                elif isinstance(r, Error):
+                elif isinstance(r, JUnitError):
                     err += 1
-                elif isinstance(r, Skipped):
+                elif isinstance(r, JUnitSkipped):
                     skip += 1
                 else:
                     attrs = e._elem.attrib
