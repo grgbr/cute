@@ -8,7 +8,7 @@
 ################################################################################
 
 from __future__ import annotations
-from os.path import basename, dirname
+from os.path import basename, dirname, normpath
 from sys import argv, exit, stderr
 
 arg0 = basename(argv[0])
@@ -70,7 +70,8 @@ class CuteBase:
         if self._status != CuteStatus.OFF:
             if junit.time >= 0:
                 secs, usecs = modf(junit.time)
-                self._elapsed = timedelta(seconds = secs, microseconds = usecs)
+                self._elapsed = timedelta(seconds = secs,
+                                          microseconds = (usecs * 1000000))
         attrs = junit._elem.attrib
         self._timestamp = None
         if self._status != CuteStatus.OFF:
@@ -104,6 +105,7 @@ class CuteBase:
             parent.register(self)
         else:
             self._depth = 0
+        self._origin: str | None = None
         self._count: int | None = None
         self._exec: int | None = None
         self._off: int | None = None
@@ -154,11 +156,19 @@ class CuteBase:
                 'path':         self.path,
                 'has_line':     self.line is not None,
                 'line':         self.line,
+                'has_origin':   self.origin is not None,
+                'origin':       self.origin
         }
 
     @property
     def kind(self) -> str:
         return 'base'
+
+    @property
+    def origin(self) -> str:
+        if self._origin is not None:
+            return self._origin
+        return self._parent.origin
 
     @property
     def parent(self) -> CuteSuite | None:
@@ -395,6 +405,15 @@ class CuteSuite(CuteBase):
                 if vers and len(vers) > 0:
                     version = vers
         super().__init__(junit, parent, status, package, version, hostname)
+        for prop in junit.properties():
+            if prop.name == 'origin':
+                self._origin = prop.value
+                break
+        if self._origin == None:
+            if junit.filepath:
+                self._origin = junit.filepath
+            else:
+                self._origin = parent.origin
         self._count = total_cnt
         self._off = off_cnt
         self._exec = exec_cnt
@@ -402,7 +421,7 @@ class CuteSuite(CuteBase):
         self._fail = fail_cnt
         self._excp = excp_cnt
         self._pass = pass_cnt
-
+        
     @property
     def kind(self) -> str:
         return 'suite'
@@ -432,13 +451,28 @@ class CuteStore(CuteBase):
                 self._suites.append(self._load_junit_suite(suite, None))
         else:
             raise Exception('cannot load store: invalid specified object')
-        self._name = 'Top-level store'
+        attrs = junit._elem.attrib
+        if junit.name is None:
+            self._name = 'Top-level store'
+        else:
+            self._name = junit.name
         self._elapsed = timedelta(0)
         self._timestamp = None
-        self._package = None
-        self._version = None
+        package = None
+        version = None
+        if 'package' in attrs.keys():
+            pkg = attrs['package']
+            if pkg and len(pkg) > 0:
+                package = pkg
+            if 'version' in attrs.keys():
+                vers = attrs['version']
+                if vers and len(vers) > 0:
+                    version = vers
+        self._package = package
+        self._version = version
         self._hostname = None
-        self._path = junit.filepath
+        self._origin = normpath(junit.filepath)
+        self._path = self._origin
         self._line = None
         self._parent = None
         self._depth = -1
@@ -813,6 +847,16 @@ class CuteSourceField(CuteField):
         return '{}:{}'.format(base.path, line)
 
 
+class CuteOriginField(CuteField):
+    _IDENT = 'orig'
+    _LABEL = 'Origin'
+    _DESC = 'pathname to file where a test suite is initially stored'
+
+    @staticmethod
+    def render(base: CuteBase) -> str:
+        return base.origin
+
+
 class CuteStatusRender(CuteRender):
     PASS_STYLE = Style(color = 'green')
     SKIP_STYLE = Style(color = 'yellow')
@@ -1063,6 +1107,7 @@ class CuteFieldFabric:
     _fields = frozenset({
             CuteNameField(),
             CuteTypeField(),
+            CuteOriginField(),
             CutePathField(),
             CuteLineField(),
             CutePackageField(),
@@ -1220,6 +1265,11 @@ class CuteLineSumField(CuteSumField):
 
 class CuteSourceSumField(CuteSumField):
     _FIELD = 'src'
+    _WRAP = True
+
+
+class CuteOriginSumField(CuteSumField):
+    _FIELD = 'orig'
     _WRAP = True
 
 
@@ -1428,7 +1478,8 @@ class CuteSumSection(CuteTableSection):
             CuteTotalSumField(),
             CutePathSumField(),
             CuteLineSumField(),
-            CuteSourceSumField()
+            CuteSourceSumField(),
+            CuteOriginSumField(),
     )
 
     def __init__(self, idents: list[str]) -> None:
@@ -1500,8 +1551,10 @@ class CuteDescSection(CuteFieldSection):
     def store(self, store: CuteStore) -> None:
         self._fill(store,
                    CuteStoreRender(CuteFieldFabric().get('name')),
+                   CuteFieldFabric().get('pkg'),
+                   CuteFieldFabric().get('vers'),
                    CuteFieldFabric().get('type'),
-                   CuteFieldFabric().get('path'))
+                   CuteFieldFabric().get('orig'))
 
     def suite(self, suite: CuteSuite) -> None:
         self._fill(suite,
@@ -1512,7 +1565,8 @@ class CuteDescSection(CuteFieldSection):
                    CuteParentRender(CuteFieldFabric().get('parent')),
                    CuteFieldFabric().get('depth'),
                    CuteSuiteRender(CuteFieldFabric().get('full_name')),
-                   CuteFieldFabric().get('src'))
+                   CuteFieldFabric().get('src'),
+                   CuteFieldFabric().get('orig'))
 
     def case(self, case: CuteCase) -> None:
         self._fill(case,
@@ -1523,7 +1577,8 @@ class CuteDescSection(CuteFieldSection):
                    CuteParentRender(CuteFieldFabric().get('parent')),
                    CuteFieldFabric().get('depth'),
                    CuteFieldFabric().get('full_name'),
-                   CuteFieldFabric().get('src'))
+                   CuteFieldFabric().get('src'),
+                   CuteFieldFabric().get('orig'))
 
 
 class CuteRunSection(CuteFieldSection):
@@ -2109,6 +2164,9 @@ class CuteDB:
             raise Exception(
                 "unexpected '{}' JUnit file format".format(junit.filepath))
         suite.name = name
+        if isinstance(suite.filepath, str):
+            suite.add_property(name = 'origin',
+                               value = normpath(suite.filepath))
         elders[-1].add_testsuite(suite)
         self._refresh_stats(elders)
 
