@@ -24,27 +24,18 @@ sample-ldflags            := $(sample-cflags) \
                              -Wl,-z,start-stop-visibility=hidden
 
 bins                      += cute-hello-sample
-cute-hello-sample-objs    := hello.o
+cute-hello-sample-objs    := hello.o $(config-obj)
 cute-hello-sample-cflags  := $(sample-cflags)
 cute-hello-sample-ldflags := $(sample-ldflags) -lcute
 
 bins                      += cute-full-sample
-cute-full-sample-objs     := full.o
+cute-full-sample-objs     := full.o $(config-obj)
 cute-full-sample-cflags   := $(sample-cflags)
 cute-full-sample-ldflags  := $(sample-ldflags) -lcute
 
 bins                      += cute-mock-sample
-cute-mock-sample-objs     := mock.o
+cute-mock-sample-objs     := mock.o $(config-obj)
 cute-mock-sample-cflags   := $(sample-cflags)
 cute-mock-sample-ldflags  := $(sample-ldflags) -lcute
-
-#config.o-src := $(BUILDDIR)/config.c
-#
-##$(kconf_config) | $(BUILDDIR)
-#$(BUILDDIR)/config.c: $(BUILDDIR)/../.config \
-#                      $(EBUILDDIR)/scripts/gen_conf_obj_src.sh
-#	@echo "  CONFSRC $(strip $(@))"
-#	$(EBUILDDIR)/scripts/gen_conf_obj_src.sh $(<) > $(@) || \
-#		{ $(RM) $(@); exit 1; }
 
 # ex: filetype=make :

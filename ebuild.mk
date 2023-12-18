@@ -7,6 +7,7 @@
 
 config-in   := Config.in
 config-h    := $(PACKAGE)/priv/config.h
+config-obj  := config.o
 
 HEADERDIR   := $(CURDIR)/include
 headers     += $(PACKAGE)/cute.h
