@@ -35,6 +35,7 @@ includedir=$${prefix}/include
 Name: libcute
 Description: CUTe unit testing library
 Version: %%PKG_VERSION%%
+Requires.private: libelf
 Cflags: -I$${includedir}
 Libs: -L$${libdir} -lcute
 endef

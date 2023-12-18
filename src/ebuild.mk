@@ -45,8 +45,9 @@ libcute.so-objs    += \
 	shared/common.o \
 	shared/util.o
 libcute.so-cflags  := $(filter-out -fpie -fPIE,$(common-cflags)) -fpic
-libcute.so-ldflags := $(filter-out -fpie -fPIE,$(common-cflags)) \
+libcute.so-ldflags := $(filter-out -fpie -fPIE,$(common-ldflags)) \
                       -shared -fpic -Bsymbolic -Wl,-soname,libcute.so
+libcute.so-pkgconf := libelf
 
 arlibs             := libcute.a
 libcute.a-objs     += \

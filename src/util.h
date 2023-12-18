@@ -237,18 +237,10 @@ cute_setup_nonblock(int fd)
  * String utilities
  ******************************************************************************/
 
-#if 0
-
-extern char *
-cute_toupper(const char * string, size_t max_size);
-
-extern char *
-cute_strdup(const char * string);
-
-extern char *
-cute_asprintf(const char * format, ...) __attribute__((format(printf, 1, 2)));
-
-#endif
+#define cute_foreach_string(_str, _data, _sz) \
+	for ((_str) = (const char *)(_data); \
+	     (_str) < &((const char *)(_data))[(_sz) - 1]; \
+	     (_str) += strlen(_str) + 1)
 
 /******************************************************************************
  * Text block utility

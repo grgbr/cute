@@ -347,10 +347,9 @@ cute_report_setup_tap(const struct cute_config * config)
 		rprt->stdio = fopen(config->tap_path, "w");
 		if (!rprt->stdio) {
 			ret = -errno;
-			cute_error("'%s': cannot open output file: %s (%d).\n",
+			cute_error("'%s': cannot open output file: %s.\n",
 			           config->tap_path,
-			           strerror(errno),
-			           errno);
+			           strerror(errno));
 			goto free;
 		}
 

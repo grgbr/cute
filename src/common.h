@@ -148,10 +148,19 @@ cute_issue_label(enum cute_issue issue);
 
 #endif /* defined(CONFIG_CUTE_INTERN_ASSERT) */
 
+struct cute_prop {
+	size_t       size;
+	const void * data;
+};
+
 extern struct cute_config * cute_the_config;
 extern const char *         cute_package;
 extern const char *         cute_package_version;
 extern char                 cute_hostname[HOST_NAME_MAX + 1];
+extern char *               cute_build_id;
+extern struct cute_prop     cute_build_tool;
+extern struct cute_prop     cute_build_flags;
+extern struct cute_prop     cute_build_conf;
 extern sigjmp_buf           cute_jmp_env;
 extern unsigned int         cute_run_nr;
 
@@ -181,5 +190,15 @@ cute_base_foreach(const struct cute_base * root,
 
 extern bool
 cute_config_match_run(const struct cute_run * run);
+
+
+extern char *
+cute_buildid_string(void);
+
+extern void
+cute_load_props(const char * package, const char * version);
+
+extern void
+cute_unload_props(void);
 
 #endif /* _CUTE_COMMON_H */

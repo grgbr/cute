@@ -9,6 +9,7 @@
 #include "suite.h"
 #include <langinfo.h>
 #include <string.h>
+#include <stdlib.h>
 
 struct cute_xml_report {
 	struct cute_report super;
@@ -282,6 +283,39 @@ cute_xml_report_testcase(const struct cute_xml_report * report,
 }
 
 static void
+cute_xml_report_build_id(const struct cute_xml_report * report, int depth)
+{
+	if (cute_build_id)
+		fprintf(report->stdio,
+		        "%2$*1$s<property name=\"build-id\"\n"
+		        "%2$*1$s          value=\"%3$s\" />\n",
+		        depth, "",
+		        cute_build_id);
+}
+
+static void
+cute_xml_report_prop(const struct cute_xml_report * report,
+                     const char *                   name,
+                     const struct cute_prop *       prop,
+                     int                            depth)
+{
+	size_t sz = prop->size;
+
+	if (sz) {
+		const char * str;
+
+		fprintf(report->stdio,
+			"%*s<property name=\"%s\">\n",
+			depth, "", name);
+
+		cute_foreach_string(str, prop->data, sz)
+			fprintf(report->stdio, "%*s%s\n", depth + 4, "", str);
+
+		fprintf(report->stdio, "%*s</property>\n", depth, "");
+	}
+}
+
+static void
 cute_xml_report_begin_testsuite(const struct cute_xml_report * report,
                                 const struct cute_suite_run *  suite)
 {
@@ -339,6 +373,24 @@ cute_xml_report_begin_testsuite(const struct cute_xml_report * report,
 	        cute_hostname,
 	        suite->super.base->file,
 	        suite->super.base->line);
+
+	if (!depth) {
+		fprintf(report->stdio, "%*s<properties>\n", depth + 4, "");
+		cute_xml_report_build_id(report, depth + 8);
+		cute_xml_report_prop(report,
+		                     "build-tool",
+		                     &cute_build_tool,
+		                     depth + 8);
+		cute_xml_report_prop(report,
+		                     "build-flags",
+		                     &cute_build_flags,
+		                     depth + 8);
+		cute_xml_report_prop(report,
+		                     "build-config",
+		                     &cute_build_conf,
+		                     depth + 8);
+		fprintf(report->stdio, "%*s</properties>\n", depth + 4, "");
+	}
 }
 
 static void
@@ -483,10 +535,9 @@ cute_report_setup_xml(const struct cute_config * config)
 		rprt->stdio = fopen(config->xml_path, "w");
 		if (!rprt->stdio) {
 			ret = -errno;
-			cute_error("'%s': cannot open output file: %s (%d).\n",
+			cute_error("'%s': cannot open output file: %s.\n",
 			           config->xml_path,
-			           strerror(errno),
-			           errno);
+			           strerror(errno));
 			goto free;
 		}
 

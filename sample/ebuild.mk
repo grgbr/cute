@@ -38,4 +38,13 @@ cute-mock-sample-objs     := mock.o
 cute-mock-sample-cflags   := $(sample-cflags)
 cute-mock-sample-ldflags  := $(sample-ldflags) -lcute
 
+#config.o-src := $(BUILDDIR)/config.c
+#
+##$(kconf_config) | $(BUILDDIR)
+#$(BUILDDIR)/config.c: $(BUILDDIR)/../.config \
+#                      $(EBUILDDIR)/scripts/gen_conf_obj_src.sh
+#	@echo "  CONFSRC $(strip $(@))"
+#	$(EBUILDDIR)/scripts/gen_conf_obj_src.sh $(<) > $(@) || \
+#		{ $(RM) $(@); exit 1; }
+
 # ex: filetype=make :
