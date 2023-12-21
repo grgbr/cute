@@ -4,38 +4,38 @@
 root_suite::fail_suite::fail_3 ......................................... fail
 issue:  exec failed
 reason: assertion check failed
-source: /mnt/devel/greg/tidor/cute/sample/full.c:25
+source: /home/peon/build/cute/sample/full.c:32
 caller: fail()
 assert: 0 == 1
 
 root_suite::fail_suite ................................................. fail
 issue:  exec failed
 reason: descendants failed
-source: /mnt/devel/greg/tidor/cute/sample/full.c:143
+source: /home/peon/build/cute/sample/full.c:150
 
 root_suite::root_fail .................................................. fail
 issue:  exec failed
 reason: explicit fail requested
-source: /mnt/devel/greg/tidor/cute/sample/full.c:33
+source: /home/peon/build/cute/sample/full.c:40
 caller: request_fail()
 detail: example of an explicit fail request
 
 root_suite ............................................................. fail
 issue:  exec failed
 reason: descendants failed
-source: /mnt/devel/greg/tidor/cute/sample/full.c:158
+source: /home/peon/build/cute/sample/full.c:165
 
 NAME               STAT  TIME(s.us)  #PASS  #SKIP  #FAIL  #EXCP  #EXEC #TOTAL
-root_suite         fail    4.334139      3      1      2      0      6      6
+root_suite         fail    4.301537      3      1      2      0      6      6
                                        50%    16%    33%     0%   100%
-   pass_suite      pass    1.279061      5      0      0      0      5      5
+   pass_suite      pass    1.268208      5      0      0      0      5      5
                                       100%     0%     0%     0%   100%
-   pass_skip_suite pass    1.256189      3      2      0      0      5      5
+   pass_skip_suite pass    1.262197      3      2      0      0      5      5
                                        60%    40%     0%     0%   100%
-   fail_suite      fail    1.021692      2      1      1      0      4      4
+   fail_suite      fail    1.011520      2      1      1      0      4      4
                                        50%    25%    25%     0%   100%
 -----------------------------------------------------------------------------
-Total              fail    4.334139     11      4      2      0     17     17
+Total              fail    4.301537     11      4      2      0     17     17
                                        64%    23%    11%     0%   100%
 
                      ###           SUMMARY           ###

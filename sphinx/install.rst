@@ -5,11 +5,11 @@
 
 .. include:: _cdefs.rst
 
+.. _elfutils:               https://sourceware.org/elfutils
 .. _breathe:                https://github.com/breathe-doc/breathe
 .. _graphviz:               https://www.graphviz.org/
 .. _plantuml:               https://plantuml.com/
 .. _sphinxcontrib-plantuml: https://pypi.org/project/sphinxcontrib-plantuml/
-.. _ebuild:                 https://github.com/grgbr/ebuild/
 .. _gnu_make:               https://www.gnu.org/software/make/
 .. |eBuild|                 replace:: `eBuild <ebuild_>`_
 .. |eBuild User Guide|      replace:: :external+ebuild:doc:`eBuild User Guide <user>`
@@ -37,8 +37,8 @@ for further detailed informations.
 Prerequisites
 =============
 
-In addition to the standard |eBuild Prerequisites|, no particular packages are
-required to build CUTe_.
+In addition to the standard |eBuild Prerequisites|, elfutils_ is required to
+to build CUTe_.
 
 Optionally, you will need :command:`awk`, :command:`cmp` and a :command:`sh`
 Bourne shell at runtime when unit testsuite is enabled (see

@@ -5,12 +5,13 @@
 
 .. include:: _cdefs.rst
 
-.. _tdd:        https://en.wikipedia.org/wiki/Test-driven_development
-.. _bdd:        https://en.wikipedia.org/wiki/Behavior-driven_development
-.. _stdios:     https://www.gnu.org/software/libc/manual/html_node/Standard-Streams.html
-.. _umlclass:   https://en.wikipedia.org/wiki/Class_diagram
-.. _pkgconfig:  https://www.freedesktop.org/wiki/Software/pkg-config
-.. _make:       https://www.gnu.org/software/make/
+.. _tdd:               https://en.wikipedia.org/wiki/Test-driven_development
+.. _bdd:               https://en.wikipedia.org/wiki/Behavior-driven_development
+.. _stdios:            https://www.gnu.org/software/libc/manual/html_node/Standard-Streams.html
+.. _umlclass:          https://en.wikipedia.org/wiki/Class_diagram
+.. _pkgconfig:         https://www.freedesktop.org/wiki/Software/pkg-config
+.. _make:              https://www.gnu.org/software/make/
+
 .. |pkg-config| replace:: `pkg-config <pkgconfig_>`_
 .. |signal(7)|  replace:: :manpage:`signal(7)`
 .. |test scope| replace:: :ref:`test global file scope <sect-user-writing_tests-test_file_scope>`
@@ -35,7 +36,14 @@
 .. _utest: https://en.wikipedia.org/wiki/Unit_testing
 .. _unit tests: utest_
 .. _unit testing: utest_
+
+.. _gnu ld: https://sourceware.org/binutils/docs/ld/
+.. _gnu_gcc: https://gcc.gnu.org/
+.. |GNU GCC| replace:: `GNU GCC <gnu_gcc_>`_
  
+.. _kconfig_frontends: https://salsa.debian.org/philou/kconfig-frontends/
+.. _kconfig: `kconfig_frontends`_
+   
 Overview
 ========
 
@@ -1216,6 +1224,8 @@ executable supporting the following features :
 * :ref:`run <sect-user-run_suite>` selectable subsets of the test |hierarchy|,
 * :ref:`show <sect-user-list_suite>` informations about selectable subsets of
   the test |hierarchy|,
+* :ref:`describe <sect-user-desc_node>` a single test or suite of the test
+  |hierarchy|,
 * produce test |report|\s according to specified format(s),
 * according to options given on the command line as described in section
   `Command line`_.
@@ -1234,6 +1244,7 @@ Basically, to instantiate and operate a test |hierarchy| step by step :
 * :ref:`initialize <sect-user-setup_run>` CUTe_,
 * :ref:`run <sect-user-run_suite>` test |hierarchy|,
 * or :ref:`show <sect-user-list_suite>` test |hierarchy|,
+* or :ref:`describe <sect-user-desc_node>` a single test / suite,
 * then :ref:`release <sect-user-setup_run>` CUTe_ resources.
 
 .. _sect-user-setup_run:
@@ -1316,7 +1327,7 @@ straightforward :
         if (cute_init(&config, "My first package", "0.1"))
                 return EXIT_FAILURE;
 
-        err = cute_run_suite(&my_first_suite);
+        err = cute_run_suite(&my_first_suite, NULL, false);
 
         cute_fini();
 
@@ -1354,7 +1365,7 @@ Alternatively, you may display informations about the ``my_first_suite`` test
         if (cute_init(&config, "My first package", "0.1"))
                 return EXIT_FAILURE;
 
-        cute_show_suite(&my_first_suite);
+        cute_show_suite(&my_first_suite, NULL, false);
 
         cute_fini();
 
@@ -1362,9 +1373,55 @@ Alternatively, you may display informations about the ``my_first_suite`` test
    }
 
 Calling the :c:func:`cute_show_suite` function above displays informations
-according to the :c:struct:`configuration <cute_config>` given at
-:ref:`setup <sect-user-setup_run>` time.
+about a |test hierarchy| subset according to the :c:struct:`configuration
+<cute_config>` given at :ref:`setup <sect-user-setup_run>` time.
+
+|Test hierarchy| subset is selected thanks to the second and third arguments
+given to :c:func:`cute_show_suite`.
+
 Refer to |report| section for explanations about displayed informations.
+
+.. _sect-user-desc_node:
+
+Describe test or suite
+^^^^^^^^^^^^^^^^^^^^^^
+
+Finally, you may display full informations about the ``my_first_suite``
+top-level suite as shown below :
+
+.. code-block:: c
+   :linenos:
+   :emphasize-lines: 14
+
+   #include <cute/cute.h>
+   #include <stdlib.h>
+
+   extern CUTE_SUITE_DECL(my_first_suite);
+
+   int main(void)
+   {
+        int                err;
+        struct cute_config config = CUTE_CONFIG_INIT;
+
+        if (cute_init(&config, "My first package", "0.1"))
+                return EXIT_FAILURE;
+
+        cute_suite_info(&my_first_suite, NULL);
+
+        cute_fini();
+
+        return EXIT_SUCCESS;
+   }
+
+Calling the :c:func:`cute_suite_info` function above displays the full
+description of a test |hierarchy| node according to the :c:struct:`configuration
+<cute_config>` given at :ref:`setup <sect-user-setup_run>` time.
+
+Node is selected by full name, thanks to the second argument given to
+:c:func:`cute_suite_info`.
+
+Refer to |test description| section for explanations about displayed
+informations.
 
 .. _sect-user-building_tests:
 
@@ -1442,6 +1499,155 @@ executable against *shared* and *static* libraries respectively using the
    my_first_tests: my_first_tests.c
    	${CC} -o $@ $< ${CFLAGS} ${LDFLAGS}
 
+In addition, CUTe_ has the ability to report informations related to test
+|hierarchy| build process as described into the following sections...
+
+Build ID
+^^^^^^^^
+
+When given the :option:`--build-id` option at link time, the `GNU LD`_ linker
+generates a ``.note.gnu.build-id`` ELF note section which content is meant to
+uniquely identify a particular link.
+
+When present, CUTe_ has the ability to report the content of this section as
+stated into section `Test description`_.
+
+A simple modification of the `Makefile <make_>`_ example above allows for
+building the runner executable in *shared library* mode with *build ID* support
+:
+
+.. code-block:: make
+   :caption: Build against CUTe's shared library with embedded SHA1 build ID
+   :emphasize-lines: 3
+   :linenos:
+
+   PKG_CONFIG := pkg-config
+   CFLAGS     := ${shell ${PKG_CONFIG} --cflags libcute}
+   LDFLAGS    := ${shell ${PKG_CONFIG} --libs libcute} --build-id=sha1
+
+   my_first_tests: my_first_tests.c
+   	${CC} -o $@ $< ${CFLAGS} ${LDFLAGS}
+
+Note that you may also dump the ``.note.gnu.build-id`` section content of
+the :file:`my_first_tests` executable using :command:`readelf` like so :
+   
+.. code-block:: console
+   :emphasize-lines: 9-12
+
+   $ readelf -n my_first_tests
+
+   Displaying notes found in: .note.gnu.property
+     Owner                Data size 	Description
+     GNU                  0x00000020	NT_GNU_PROPERTY_TYPE_0
+         Properties: x86 feature: IBT, SHSTK
+   	x86 ISA needed: x86-64-baseline
+   
+   Displaying notes found in: .note.gnu.build-id
+     Owner                Data size 	Description
+     GNU                  0x00000014	NT_GNU_BUILD_ID (unique build ID bitstring)
+       Build ID: b8a1a28596eb886e8cd3531a997f2f0b5216cf09
+   
+   Displaying notes found in: .note.ABI-tag
+     Owner                Data size 	Description
+     GNU                  0x00000010	NT_GNU_ABI_TAG (ABI version tag)
+       OS: Linux, ABI: 3.2.0
+
+Build toolchain
+^^^^^^^^^^^^^^^
+
+In addition, |GNU GCC| toolchains now generates a ``.comment`` section by
+default. This ELF section contains the identifier of toolchain(s) used to
+generate a particular build.
+
+When present, CUTe_ has the ability to report the content of this section as
+stated into section `Test description`_.
+
+Build flags
+^^^^^^^^^^^
+
+Giving the :option:`-frecord-gcc-switches` option to the |GNU GCC| compiler
+requests it to record its command line into a ``.GCC.command.line`` ELF section.
+
+When present, CUTe_ has the ability to report the content of this section as
+stated into section `Test description`_.
+
+A simple modification of the `Makefile <make_>`_ example above allows for
+building the runner executable in *shared library* mode with *build flags*
+support :
+
+.. code-block:: make
+   :caption: Build against CUTe's shared library with embedded build flags
+   :emphasize-lines: 2
+   :linenos:
+
+   PKG_CONFIG := pkg-config
+   CFLAGS     := ${shell ${PKG_CONFIG} --cflags libcute} --frecord-gcc-switches
+   LDFLAGS    := ${shell ${PKG_CONFIG} --libs libcute}
+
+   my_first_tests: my_first_tests.c
+   	${CC} -o $@ $< ${CFLAGS} ${LDFLAGS}
+
+Note that you may also dump the ``.GCC.command.line`` section content of
+the :file:`my_first_tests` executable using :command:`readelf` like so :
+   
+.. code-block:: console
+
+   $ readelf readelf -p.GCC.command.line my_first_tests
+
+   String dump of section '.GCC.command.line':
+     [     0]  GNU GIMPLE 12.1.0 -march=haswell -mmmx -mpopcnt -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -mavx -mavx2 -mno-sse4a -mno-fma4 -mno-xop -mfma -mno-avx512f -mbmi -mbmi2 -maes -mpclmul -mno-avx512vl -mno-avx512bw -mno-avx512dq -mno-avx512cd -mno-avx512er -mno-avx512pf -mno-avx512vbmi -mno-avx512ifma -mno-avx5124vnniw -mno-avx5124fmaps -mno-avx512vpopcntdq -mno-avx512vbmi2 -mno-gfni -mno-vpclmulqdq -mno-avx512vnni -mno-avx512bitalg -mno-avx512bf16 -mno-avx512vp2intersect -mno-3dnow -mno-adx -mabm -mno-cldemote -mno-clflushopt -mno-clwb -mno-clzero -mcx16 -mno-enqcmd -mf16c -mfsgsbase -mfxsr -mno-hle -msahf -mno-lwp -mlzcnt -mmovbe -mno-movdir64b -mno-movdiri -mno-mwaitx -mno-pconfig -mno-pku -mno-prefetchwt1 -mno-prfchw -mno-ptwrite -mno-rdpid -mrdrnd -mno-rdseed -mno-rtm -mno-serialize -mno-sgx -mno-sha -mno-tbm -mno-tsxldtrk -mno-vaes -mno-waitpkg -mno-wbnoinvd -mxsave -mno-xsavec -mxsaveopt -mno-xsaves -mno-amx-tile -mno-amx-int8 -mno-amx-bf16 -mno-uintr -mno-hreset -mno-kl -mno-widekl -mno-avxvnni -mno-avx512fp16 -mtune=haswell -mcet-switch -mshstk -O2 -O2 -fno-openmp -fno-openacc -fcf-protection=full -fcf-protection=full -ffast-math -fuse-linker-plugin -fno-semantic-interposition -fstack-protector-strong -fstack-clash-protection -fasynchronous-unwind-tables -fpie -fltrans --param=ssp-buffer-size=4
+     [   52a]  GNU C17 12.1.0 -march=haswell -mmmx -mpopcnt -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -mavx -mavx2 -mno-sse4a -mno-fma4 -mno-xop -mfma -mno-avx512f -mbmi -mbmi2 -maes -mpclmul -mno-avx512vl -mno-avx512bw -mno-avx512dq -mno-avx512cd -mno-avx512er -mno-avx512pf -mno-avx512vbmi -mno-avx512ifma -mno-avx5124vnniw -mno-avx5124fmaps -mno-avx512vpopcntdq -mno-avx512vbmi2 -mno-gfni -mno-vpclmulqdq -mno-avx512vnni -mno-avx512bitalg -mno-avx512bf16 -mno-avx512vp2intersect -mno-3dnow -mno-adx -mabm -mno-cldemote -mno-clflushopt -mno-clwb -mno-clzero -mcx16 -mno-enqcmd -mf16c -mfsgsbase -mfxsr -mno-hle -msahf -mno-lwp -mlzcnt -mmovbe -mno-movdir64b -mno-movdiri -mno-mwaitx -mno-pconfig -mno-pku -mno-prefetchwt1 -mno-prfchw -mno-ptwrite -mno-rdpid -mrdrnd -mno-rdseed -mno-rtm -mno-serialize -mno-sgx -mno-sha -mno-tbm -mno-tsxldtrk -mno-vaes -mno-waitpkg -mno-wbnoinvd -mxsave -mno-xsavec -mxsaveopt -mno-xsaves -mno-amx-tile -mno-amx-int8 -mno-amx-bf16 -mno-uintr -mno-hreset -mno-kl -mno-widekl -mno-avxvnni -mno-avx512fp16 --param=l1-cache-size=32 --param=l1-cache-line-size=64 --param=l2-cache-size=8192 -mtune=haswell -mcet-switch -mshstk -g -O2 -fcf-protection=full -ffast-math -flto -fuse-linker-plugin -fno-semantic-interposition -fstack-protector-strong -fstack-clash-protection -fasynchronous-unwind-tables -fpie --param=ssp-buffer-size=4
+      
+Build configuration
+^^^^^^^^^^^^^^^^^^^
+
+eBuild_ is able to generate KConfig_ build configuration settings used to build
+the runner executable into a ``eBuild.config`` ELF section when requested
+through the ``$(config-obj)`` :file:`ebuild.mk` variable.
+
+When present, CUTe_ has the ability to report the content of this section as
+stated into section `Test description`_.
+
+This section is basically built upon the same model than the
+``.GCC.command.line`` section mentionned in section `Build flags`_. This is a
+read-only mergeable ELF section that contains zero terminated strings only and
+is suitable to hold the entire KConfig_ :file:`.config` file content.
+
+The following simple C source file :file:`ebuild_section.c` may be compiled to
+provide a suitable ``.eBuild.config`` section and basically corresponds to what
+eBuild_ generates :
+
+.. literalinclude:: ebuild_section.c
+   :language: c
+   :caption: sample source to provide an `eBuild.config' build configuration ELF section
+   :linenos:
+   
+The above C code may be compiled and linked into the final runner executable
+:file:`my_first_tests` as show below :
+
+.. code-block:: make
+   :caption: Build a runner executable against CUTe's shared library with embedded build configuration
+   :emphasize-lines: 5
+   :linenos:
+
+   PKG_CONFIG := pkg-config
+   CFLAGS     := ${shell ${PKG_CONFIG} --cflags libcute}
+   LDFLAGS    := ${shell ${PKG_CONFIG} --libs libcute}
+
+   my_first_tests: my_first_tests.c ebuild_section.c
+   	${CC} -o $@ $< ${CFLAGS} ${LDFLAGS}
+
+Note that you may also dump the ``.eBuild.config`` section content of
+the :file:`my_first_tests` executable using :command:`readelf` like so :
+   
+.. code-block:: console
+
+   $ readelf -p.eBuild.config my_first_tests
+   
+   String dump of section '.eBuild.config':
+     [     0]  CONFIG_CUTE_INTERN_ASSERT=y
+     [    1c]  CONFIG_CUTE_UTEST=y
+
 Command line
 ************
 
@@ -1456,11 +1662,15 @@ produced executable should behave like what is shown for the fictional
 
 .. rubric:: SYNOPSIS
 
+| **sample-test** [<*OPTIONS*>] info [<*NAME*>]
 | **sample-test** [<*OPTIONS*>] show [<*PATTERN*>]
 | **sample-test** [<*OPTIONS*>] run [<*PATTERN*>]
 | **sample-test** [-h|--help] [help]
 
 .. rubric:: DESCRIPTION
+
+When the ``info`` argument is given, a description is shown for the suite or
+test specified by :option:`NAME` as stated into the `Test description`_ section.
 
 When the ``show`` argument is given, test hierarchy is listed according to
 the specified :option:`PATTERN`.
@@ -1525,15 +1735,20 @@ Finally, the :option:`-h` and :option:`--help` options as well as the
    Controls the colorization of console output. When ``on``, it enforces
    colorization whereas it disables it when ``off``.
 
-   By default, colorization is automatically enabled if current terminal supports
-   it.
+   By default, colorization is automatically enabled if current terminal
+   supports it.
 
+.. option:: NAME
+   
+   When specified as a test hierarchy node's full name, select a single suite or
+   test. When missing, the top-level suite is considered.
+   
 .. option:: PATH
 
    A pathname to a file where to store generated output.
 
-   When unspecified or specified as ``-``, output is directed to standard output in
-   which case this option is exclusive with :option:`-s`, :option:`--silent`,
+   When unspecified or specified as ``-``, output is directed to standard output
+   in which case this option is exclusive with :option:`-s`, :option:`--silent`,
    :option:`-t`, :option:`--terse`, :option:`-v` and :option:`--verbose`.
 
 .. option:: PATTERN
@@ -1781,6 +1996,20 @@ informations about the format itself and how to understand it, see
 .. literalinclude:: junit_report.xml
    :language: xml
 
+When enabled at :ref:`runner executable build time <sect-user-building_tests>`,
+CUTe_ JUnit_ reports contain additional build logic informations stored
+along XML ``<properties>`` and ``<property>`` tags :
+
+* `Build ID`_ is stored within a ``build-id`` named ``<property>`` tag ;
+* `Build toolchain`_ is stored within a ``build-tool`` named ``<property>``
+  tag ;
+* `Build flags`_ is stored within a ``build-flags`` named ``<property>``
+  tag ;
+* and `Build configuration`_ is stored within a ``build-config`` named
+  ``<property>`` flag.
+
+Refer to `Test description`_ section for more informations.
+   
 .. note::
 
    *JUnit XML* console output may also be requested in a programmatic way by
@@ -1888,3 +2117,117 @@ caller
 
 There are additional types of reported informations that are specific to the
 failing `test assertion`_ that procuded them.
+
+.. _sect-user-test_desc:
+
+Test description
+----------------
+
+Thanks to the ``info`` subcommand mentionned into the `Command line`_ section,
+|Suite| or |test case| node description may be output using console_ reporters.
+
+The following command requests the :file:`cute-full-sample` executable shipped
+with CUTe_ to produce a **description of the pass_skip_suite sub-suite onto
+the console** :
+
+.. code-block:: console
+
+   $ cute-full-sample info root_suite::pass_skip_suite
+
+The above command should display something like what is shown below.
+
+.. literalinclude:: info_report.txt
+   :language: text
+
+The **Identification** section shows informations that precisely identify test
+|hierarchy| node :
+   
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+
+   * - Field
+     - Value
+     - Description
+   * - Name
+     - string
+     - short name of node
+   * - Type
+     - ``test`` or ``suite``
+     - kind of node
+   * - Depth
+     - unsigned integer
+     - node depth within the |hierarchy|, starting from ``0``
+   * - Full name
+     - string
+     - full name of node allowing to uniquely identify the node within the
+       |hierarchy|
+   * - Source
+     - <**source_pathname**>:<**line_number**>
+     - location of source code implementing the node
+
+The **Properties** section shows node informations that relate to the
+|hierarchy| structure :
+
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+
+   * - Field
+     - Value
+     - Description
+   * - Setup
+     - ``yes`` or ``no``
+     - node has a ``setup()`` |fixture|
+   * - Teardown
+     - ``yes`` or ``no``
+     - node has a ``teardown()`` |fixture|
+   * - Timeout
+     - ``none``, ``inherited`` (from parent) or unsigned integer
+     - node |timer| protection
+   * - #Suites
+     - unsigned integer
+     - total number of child |suite|\s + 1 if the node is a |suite| itself
+   * - #Tests
+     - unsigned integer
+     - total number of child |test case|\s
+
+The **Runtime** section shows node informations that relate to the |hierarchy|
+runtime context :
+   
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+
+   * - Field
+     - Value
+     - Description
+   * - Package
+     - string
+     - name of the package for which testing code is written
+   * - Version
+     - string
+     - package version string
+   * - Hostname
+     - string
+     - host name of system running the |hierarchy|
+   * - Build ID
+     - string
+     - build identifier generated by the linker used to build the |hierarchy|
+       (see `Build ID`_ section)
+
+The **Build flags** section shows informations related to the |hierarchy| build
+logic, i.e, :
+
+* compiler / linker / toolchain identifier when enabled at build time as stated
+  into the `Build toolchain`_ section ;
+* and options given to the compiler / linker when enabled at build time as
+  stated into the `Build flags`_ section.
+
+The **Build configuration** shows build configuration used to build the
+|hierarchy| as stated into the `Build configuration`_ section.
+
+.. note::
+
+   :ref:`Test or suite description <sect-user-desc_node>` may also be requested
+   in a programmatic way.

@@ -4,109 +4,109 @@ TAP version 14
     1..5
     ok 1 - pass_1
       ---
-      duration_ms: 250.117558
+      duration_ms: 250.118776
       ...
     ok 2 - pass_2
       ---
-      duration_ms: 250.113843
+      duration_ms: 250.117834
       ...
     ok 3 - pass_3
       ---
-      duration_ms: 250.115644
+      duration_ms: 250.118532
       ...
     ok 4 - pass_4
       ---
-      duration_ms: 250.112682
+      duration_ms: 250.094777
       ...
     ok 5 - pass_5
       ---
-      duration_ms: 250.124600
+      duration_ms: 250.116942
       ...
 ok 1 - pass_suite
   ---
-  duration_ms: 1354.906506
+  duration_ms: 1266.001572
   ...
 # Subtest: pass_skip_suite
     1..5
     ok 1 - pass_1
       ---
-      duration_ms: 250.113948
+      duration_ms: 250.112871
       ...
     ok 2 - pass_2
       ---
-      duration_ms: 250.116428
+      duration_ms: 250.114901
       ...
     ok 3 - skip_3 # SKIP exec skipped: explicit skip requested
       ---
-      source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+      source: /home/peon/build/cute/sample/full.c:24
       caller: skip()
-      duration_ms: 250.125943
+      duration_ms: 250.126526
       ...
     ok 4 - pass_4
       ---
-      duration_ms: 250.093096
+      duration_ms: 250.111627
       ...
     ok 5 - skip_5 # SKIP exec skipped: explicit skip requested
       ---
-      source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+      source: /home/peon/build/cute/sample/full.c:24
       caller: skip()
-      duration_ms: 250.121722
+      duration_ms: 250.119138
       ...
 ok 2 - pass_skip_suite
   ---
-  duration_ms: 1350.303347
+  duration_ms: 1263.031435
   ...
 # Subtest: fail_suite
     1..4
     ok 1 - pass_1
       ---
-      duration_ms: 250.118092
+      duration_ms: 250.116813
       ...
     ok 2 - skip_2 # SKIP exec skipped: explicit skip requested
       ---
-      source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+      source: /home/peon/build/cute/sample/full.c:24
       caller: skip()
-      duration_ms: 250.120104
+      duration_ms: 250.120503
       ...
     not ok 3 - fail_3
       ---
       severity: failure
       message: exec failed
       reason: assertion check failed
-      source: /mnt/devel/greg/tidor/cute/sample/full.c:25
+      source: /home/peon/build/cute/sample/full.c:32
       caller: fail()
       assert: 0 == 1
-      duration_ms: 250.121183
+      duration_ms: 250.124779
       ...
     ok 4 - pass_4
       ---
-      duration_ms: 250.114225
+      duration_ms: 250.113100
       ...
 not ok 3 - fail_suite
   ---
   severity: failure
   message: exec failed
   reason: descendants failed
-  source: /mnt/devel/greg/tidor/cute/sample/full.c:143
-  duration_ms: 1092.704318
+  source: /home/peon/build/cute/sample/full.c:150
+  duration_ms: 1010.760467
   ...
 ok 4 - root_pass
   ---
-  duration_ms: 250.113013
+  duration_ms: 250.109759
   ...
 ok 5 - root_skip # SKIP exec skipped: explicit skip requested
   ---
-  source: /mnt/devel/greg/tidor/cute/sample/full.c:17
+  source: /home/peon/build/cute/sample/full.c:24
   caller: skip()
-  duration_ms: 250.145972
+  duration_ms: 250.103928
   ...
 not ok 6 - root_fail
   ---
   severity: failure
   message: exec failed
   reason: explicit fail requested
-  source: /mnt/devel/greg/tidor/cute/sample/full.c:33
+  source: /home/peon/build/cute/sample/full.c:40
   caller: request_fail()
   detail: example of an explicit fail request
-  duration_ms: 250.132877
+  duration_ms: 250.125419
   ...
