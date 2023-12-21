@@ -583,6 +583,7 @@ The following low-level |API| is exposed for additional flexibility :
 
      * :c:func:`cute_run_suite`
      * :c:func:`cute_show_suite`
+     * :c:func:`cute_suite_info`
 
 See section :ref:`Low level runner <sect-user-low_level_runner>` of |user guide|
 for more informations.
@@ -1201,3 +1202,8 @@ cute_show_suite
 ***************
 
 .. doxygenfunction:: cute_show_suite
+
+cute_suite_info
+***************
+
+.. doxygenfunction:: cute_suite_info

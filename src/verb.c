@@ -64,6 +64,18 @@ cute_verb_report_test_done(struct cute_cons_report * report,
 }
 
 static void
+cute_verb_report_info(const struct cute_cons_report * report,
+                      const struct cute_run *         run,
+                      enum cute_kind                  kind)
+{
+	sigset_t set;
+
+	cute_cons_report_mask(report, &set);
+	cute_cons_report_on_info(report, run, kind);
+	cute_cons_report_unmask(report, &set);
+}
+
+static void
 cute_verb_report_test(struct cute_cons_report * report,
                       enum cute_event           event,
                       const struct cute_run *   run)
@@ -79,6 +91,10 @@ cute_verb_report_test(struct cute_cons_report * report,
 
 	case CUTE_DONE_EVT:
 		cute_verb_report_test_done(report, run);
+		break;
+
+	case CUTE_INFO_EVT:
+		cute_verb_report_info(report, run, CUTE_TEST_KIND);
 		break;
 
 	case CUTE_EXEC_EVT:
@@ -368,6 +384,10 @@ cute_verb_report_suite(struct cute_cons_report *     report,
 
 	case CUTE_FOOT_EVT:
 		cute_verb_report_on_foot(report, suite);
+		break;
+
+	case CUTE_INFO_EVT:
+		cute_verb_report_info(report, &suite->super, CUTE_SUITE_KIND);
 		break;
 
 	case CUTE_SHOW_EVT:

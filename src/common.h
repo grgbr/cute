@@ -164,6 +164,18 @@ extern struct cute_prop     cute_build_conf;
 extern sigjmp_buf           cute_jmp_env;
 extern unsigned int         cute_run_nr;
 
+extern int
+cute_match_parse(const char * pattern);
+
+extern bool
+cute_match_run(const struct cute_run * run);
+
+extern int
+cute_match_init(const char * pattern, bool icase);
+
+extern void
+cute_match_fini(void);
+
 extern struct cute_iter *
 cute_base_create_iter(const struct cute_base * base);
 
@@ -187,13 +199,6 @@ extern void
 cute_base_foreach(const struct cute_base * root,
                   cute_base_process_fn *   process,
                   void *                   data);
-
-extern bool
-cute_config_match_run(const struct cute_run * run);
-
-
-extern char *
-cute_buildid_string(void);
 
 extern void
 cute_load_props(const char * package, const char * version);

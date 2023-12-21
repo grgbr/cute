@@ -217,6 +217,7 @@ cute_tap_report_test(struct cute_tap_report * report,
 	case CUTE_EXEC_EVT:
 	case CUTE_TEARDOWN_EVT:
 	case CUTE_FINI_EVT:
+	case CUTE_INFO_EVT:
 		break;
 
 	default:
@@ -269,15 +270,13 @@ cute_tap_report_suite(struct cute_tap_report *       report,
 			cute_tap_report_test_done(report, &suite->super);
 		break;
 
-	case CUTE_SHOW_EVT:
-		cute_report_on_show(&suite->super, report->stdio, "", "");
-		break;
-
 	case CUTE_INIT_EVT:
 	case CUTE_EXEC_EVT:
 	case CUTE_TEARDOWN_EVT:
 	case CUTE_FINI_EVT:
 	case CUTE_FOOT_EVT:
+	case CUTE_INFO_EVT:
+	case CUTE_SHOW_EVT:
 		break;
 
 	default:

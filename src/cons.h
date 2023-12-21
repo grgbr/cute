@@ -121,6 +121,15 @@ cute_cons_report_on_head(struct cute_cons_report * report,
                          int                       colnr,
                          int                       fill_cols);
 
+extern void
+cute_cons_report_on_info(const struct cute_cons_report * report,
+                         const struct cute_run *         run,
+                         enum cute_kind                  kind);
+
+extern void
+cute_cons_report_on_show(const struct cute_cons_report * report,
+                         const struct cute_run *         run);
+
 extern int
 cute_cons_report_setup(struct cute_cons_report *  report,
                        const struct cute_config * config,

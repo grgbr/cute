@@ -14,15 +14,17 @@
 #include <gelf.h>
 #include <sys/auxv.h>
 
-const char *     cute_package = "???";
-const char *     cute_package_version;
-char             cute_hostname[HOST_NAME_MAX + 1];
-char *           cute_build_id;
-struct cute_prop cute_build_tool;
-struct cute_prop cute_build_flags;
-struct cute_prop cute_build_conf;
-sigjmp_buf       cute_jmp_env;
-unsigned int     cute_run_nr;
+const char *        cute_package = "???";
+const char *        cute_package_version;
+char                cute_hostname[HOST_NAME_MAX + 1];
+char *              cute_build_id;
+struct cute_prop    cute_build_tool;
+struct cute_prop    cute_build_flags;
+struct cute_prop    cute_build_conf;
+sigjmp_buf          cute_jmp_env;
+unsigned int        cute_run_nr;
+static const char * cute_pattern;
+static regex_t      cute_regex;
 
 const char *
 cute_state_label(enum cute_state state)
@@ -57,6 +59,73 @@ cute_issue_label(enum cute_issue issue)
 	};
 
 	return labels[issue];
+}
+
+#define CUTE_MATCH_SIZE (1024U)
+
+int
+cute_match_parse(const char * pattern)
+{
+	cute_assert_intern(pattern);
+
+	size_t len;
+
+	len = strnlen(pattern, CUTE_MATCH_SIZE);
+	if (!len || (len >= CUTE_MATCH_SIZE)) {
+		cute_error("matching regular expression missing or too long.\n");
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+bool
+cute_match_run(const struct cute_run * run)
+{
+	cute_run_assert_intern(run);
+
+	if (cute_pattern) {
+		cute_assert_intern(cute_pattern[0]);
+		cute_assert_intern(strnlen(cute_pattern,
+		                           CUTE_MATCH_SIZE) < CUTE_MATCH_SIZE);
+
+		return cute_regex_match(&cute_regex, run->name);
+	}
+
+	return true;
+}
+
+int
+cute_match_init(const char * pattern, bool icase)
+{
+	if (pattern) {
+		cute_assert_intern(pattern[0]);
+		cute_assert_intern(strnlen(pattern, CUTE_MATCH_SIZE) <
+		                   CUTE_MATCH_SIZE);
+
+		int err;
+
+		err = cute_regex_init(&cute_regex, pattern, icase);
+		if (err)
+			return err;
+
+		cute_pattern = pattern;
+	}
+
+	return 0;
+}
+
+void
+cute_match_fini(void)
+{
+	if (cute_pattern) {
+		cute_assert_intern(cute_pattern[0]);
+		cute_assert_intern(strnlen(cute_pattern,
+		                           CUTE_MATCH_SIZE) < CUTE_MATCH_SIZE);
+
+		cute_pattern = NULL;
+		cute_regex_fini(&cute_regex);
+	}
 }
 
 struct cute_iter *

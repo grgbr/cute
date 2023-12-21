@@ -458,6 +458,209 @@ cute_cons_report_on_head(struct cute_cons_report * report,
 	                                             fill_cols);
 }
 
+/*****************************************************************************/
+
+struct cute_report_info {
+	unsigned int suites;
+	unsigned int tests;
+};
+
+static void
+cute_cons_report_show_info(struct cute_run * run,
+                           enum cute_visit   visit,
+                           void *            data)
+{
+	cute_run_assert_intern(run);
+
+	struct cute_report_info * info = data;
+
+	switch (visit) {
+	case CUTE_BEGIN_VISIT:
+		info->suites++;
+		break;
+
+	case CUTE_ONCE_VISIT:
+		info->tests++;
+		break;
+
+	case CUTE_END_VISIT:
+		break;
+
+	default:
+		__cute_unreachable();
+	}
+}
+
+static void
+cute_cons_report_show_prop(const struct cute_prop * prop, FILE * stdio)
+{
+	size_t sz = prop->size;
+
+	if (sz) {
+		const char * str;
+
+		cute_foreach_string(str, prop->data, sz)
+			fprintf(stdio, "%s\n", str);
+	}
+}
+
+void
+cute_cons_report_on_info(const struct cute_cons_report * report,
+                         const struct cute_run *         run,
+                         enum cute_kind                  kind)
+{
+	cute_cons_report_assert_intern(report);
+	cute_run_assert_intern(run);
+
+	const char *            type = type;
+	const char *            bold = report->term.bold;
+	const char *            blue = report->term.blue;
+	const char *            reg = report->term.regular;
+	const char *            high;
+	const char *            under;
+	unsigned int            tmout = run->base->tmout;
+	struct cute_report_info info = {
+		.suites  = 0,
+		.tests   = 0
+	};
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch"
+	switch (kind) {
+	case CUTE_TEST_KIND:
+		type = "test";
+		high = "";
+		under = "";
+		info.tests = 1;
+		break;
+
+	case CUTE_SUITE_KIND:
+		type = "suite";
+		high = blue;
+		under = reg;
+#pragma GCC diagnostic ignored "-Wcast-qual"
+		cute_run_foreach((struct cute_run *)run,
+		                 cute_cons_report_show_info,
+		                 (void *)&info);
+		break;
+	}
+#pragma GCC diagnostic pop
+
+	fprintf(report->stdio,
+	        "### %1$sIdentification%2$s ###\n\n"
+	        "%1$sName%2$s:      %3$s%4$s%5$s\n"
+	        "%1$sType%2$s:      %6$s\n",
+	        bold, reg,
+	        high, run->base->name, under,
+	        type);
+	if (run->parent)
+		fprintf(report->stdio,
+		        "%sParent%s:    %s%s%s\n",
+		        bold, reg, blue, run->parent->base->name, reg);
+	else
+		fprintf(report->stdio, "%sParent%s:    none\n", bold, reg);
+	fprintf(report->stdio,
+	        "%1$sDepth%2$s:     %3$d\n"
+	        "%1$sFull name%2$s: %4$s%5$s%6$s\n"
+	        "%1$sSource%2$s:    %7$s:%8$d\n",
+	        bold, reg, run->depth,
+	        high, run->name, under,
+	        run->base->file, run->base->line);
+
+	fprintf(report->stdio,
+	        "\n### %1$sProperties%2$s ###\n\n"
+	        "%1$sSetup%2$s:     %3$s\n"
+	        "%1$sTeardown%2$s:  %4$s\n",
+	        bold, reg,
+	        run->base->setup ? "yes" : "no",
+	        run->base->teardown ? "yes" : "no");
+	switch (tmout) {
+	case CUTE_NONE_TMOUT:
+		fprintf(report->stdio, "%sTimeout%s:   none\n", bold, reg);
+		break;
+	case CUTE_INHR_TMOUT:
+		fprintf(report->stdio, "%sTimeout%s:   inherited\n", bold, reg);
+		break;
+	default:
+		fprintf(report->stdio, "%sTimeout%s:   %u\n", bold, reg, tmout);
+	}
+	fprintf(report->stdio,
+	        "%1$s#Suites%2$s:   %3$u\n"
+	        "%1$s#Tests%2$s:    %4$u\n",
+	        bold, reg, info.suites,
+	        info.tests);
+
+	fprintf(report->stdio,
+	        "\n### %1$sRuntime%2$s ###\n\n"
+	        "%1$sPackage%2$s:   %3$s\n"
+	        "%1$sVersion%2$s:   %4$s\n"
+	        "%1$sHostname%2$s:  %5$s\n"
+	        "%1$sBuild ID%2$s:  %6$s\n",
+	        bold, reg,
+	        cute_package,
+	        cute_package_version,
+	        cute_hostname,
+	        cute_build_id);
+
+	fprintf(report->stdio,
+	        "\n### %sBuild configuration%s ###\n\n",
+	        bold, reg);
+	cute_cons_report_show_prop(&cute_build_conf, report->stdio);
+
+	fprintf(report->stdio, "\n### %sBuild flags%s ###\n\n", bold, reg);
+	cute_cons_report_show_prop(&cute_build_tool, report->stdio);
+	fputc('\n', report->stdio);
+	cute_cons_report_show_prop(&cute_build_flags, report->stdio);
+}
+
+static void
+cute_cons_report_show_run(struct cute_run * run,
+                          enum cute_visit   visit,
+                          void *            data)
+{
+	const struct cute_cons_report * rprt = (const struct cute_cons_report *)
+	                                       data;
+
+	switch (visit) {
+	case CUTE_BEGIN_VISIT:
+		if (run->state != CUTE_OFF_STATE)
+			fprintf(rprt->stdio,
+			        "%s%s%s\n",
+			        rprt->term.blue,
+			        run->name,
+			        rprt->term.regular);
+		break;
+
+	case CUTE_ONCE_VISIT:
+		if (run->state != CUTE_OFF_STATE)
+			fprintf(rprt->stdio, "%s\n", run->name);
+		break;
+
+	case CUTE_END_VISIT:
+		break;
+
+	default:
+		__cute_unreachable();
+	}
+}
+
+void
+cute_cons_report_on_show(const struct cute_cons_report * report,
+                         const struct cute_run *         run)
+{
+	cute_cons_report_assert_intern(report);
+	cute_run_assert_intern(run);
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+	cute_run_foreach((struct cute_run *)run,
+	                 cute_cons_report_show_run,
+	                 (void *)report);
+#pragma GCC diagnostic pop
+}
+
+/*****************************************************************************/
+
 static int
 _cute_cons_report_release(struct cute_report * report)
 {

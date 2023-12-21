@@ -631,6 +631,56 @@ cute_run_foreach(struct cute_run *     run,
 	cute_stack_fini(&stk);
 }
 
+struct cute_run *
+cute_run_find(struct cute_run * run, const char * name)
+{
+	cute_run_assert_intern(run);
+	cute_assert_intern(name);
+	cute_assert_intern(name[0]);
+
+	struct cute_iter * iter;
+	struct cute_stack  stk;
+
+	iter = cute_run_create_iter(run);
+	cute_assert_intern(iter);
+
+	cute_stack_init(&stk);
+	cute_stack_push(&stk, iter);
+
+	do {
+		iter = cute_stack_peek(&stk);
+		cute_assert_intern(iter);
+
+		if (cute_iter_end(iter)) {
+			cute_stack_pop(&stk);
+			cute_iter_destroy(iter);
+			continue;
+		}
+
+		run = cute_iter_next(iter);
+		if (!strcmp(run->name, name))
+			goto found;
+
+		iter = cute_run_create_iter(run);
+		if (iter)
+			cute_stack_push(&stk, iter);
+	} while (cute_stack_count(&stk));
+
+	run = NULL;
+	goto fini;
+
+found:
+	while (cute_stack_count(&stk)) {
+		iter = cute_stack_pop(&stk);
+		cute_iter_destroy(iter);
+	}
+
+fini:
+	cute_stack_fini(&stk);
+
+	return run;
+}
+
 void
 _cute_skip(const char * reason,
            const char * file,

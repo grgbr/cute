@@ -309,7 +309,7 @@ cute_xml_report_prop(const struct cute_xml_report * report,
 			depth, "", name);
 
 		cute_foreach_string(str, prop->data, sz)
-			fprintf(report->stdio, "%*s%s\n", depth + 4, "", str);
+			fprintf(report->stdio, "%s\n", str);
 
 		fprintf(report->stdio, "%*s</property>\n", depth, "");
 	}
@@ -458,17 +458,15 @@ cute_xml_report_suite(struct cute_xml_report *      report,
 		cute_xml_report_on_foot(report, suite);
 		break;
 
-	case CUTE_SHOW_EVT:
-		cute_report_on_show(&suite->super, report->stdio, "", "");
-		break;
-
 	case CUTE_INIT_EVT:
 	case CUTE_HEAD_EVT:
 	case CUTE_SETUP_EVT:
 	case CUTE_EXEC_EVT:
 	case CUTE_TEARDOWN_EVT:
-	case CUTE_FINI_EVT:
 	case CUTE_DONE_EVT:
+	case CUTE_INFO_EVT:
+	case CUTE_SHOW_EVT:
+	case CUTE_FINI_EVT:
 		break;
 
 	default:
@@ -491,8 +489,8 @@ cute_xml_report_handle(struct cute_report *    report,
 
 	case CUTE_SUITE_KIND:
 		cute_xml_report_suite((struct cute_xml_report *)report,
-		                       event,
-		                       (const struct cute_suite_run *)run);
+		                      event,
+		                      (const struct cute_suite_run *)run);
 		break;
 
 	default:

@@ -368,7 +368,7 @@ cute_suite_enable_tree_run(struct cute_run * run,
 	switch (visit) {
 	case CUTE_BEGIN_VISIT:
 	case CUTE_ONCE_VISIT:
-		if (cute_config_match_run(run))
+		if (cute_match_run(run))
 			cute_run_turn_on(run);
 		cute_run_report(run, CUTE_INIT_EVT);
 		break;
@@ -381,20 +381,27 @@ cute_suite_enable_tree_run(struct cute_run * run,
 	}
 }
 
-static void
-cute_suite_init_tree(const struct cute_suite * suite)
+static int
+cute_suite_init_tree(const struct cute_suite * suite,
+                     const char *              pattern,
+                     bool                      icase)
 {
 	cute_suite_assert_intern(suite);
 
 	struct cute_stack  stk;
 	struct cute_run *  run;
 	struct cute_iter * iter;
+	int                err;
+
+	err = cute_match_init(pattern, icase);
+	if (err)
+		return err;
 
 	cute_stack_init(&stk);
 
 	run = cute_create_run(&suite->super, NULL);
 	cute_run_assert_intern(run);
-	if (cute_the_config->match)
+	if (pattern)
 		run->state = CUTE_OFF_STATE;
 
 	cute_suite_root_run = run;
@@ -416,6 +423,8 @@ cute_suite_init_tree(const struct cute_suite * suite)
 	cute_stack_fini(&stk);
 
 	cute_run_foreach(run, cute_suite_enable_tree_run, NULL);
+
+	return 0;
 }
 
 static void
@@ -449,30 +458,79 @@ cute_suite_fini_tree(void)
 
 		cute_suite_root_run = NULL;
 	}
+
+	cute_match_fini();
 }
 
-void
-cute_show_suite(const struct cute_suite * suite)
+int
+cute_suite_info(const struct cute_suite * suite, const char * name)
 {
 	cute_suite_assert(suite);
 	cute_config_assert(cute_the_config);
+	cute_assert_intern(!name || name[0]);
 
-	cute_suite_init_tree(suite);
+	const struct cute_run * run;
+	int                     ret = 0;
+
+	cute_suite_init_tree(suite, NULL, false);
+
+	if (name) {
+		cute_assert_intern(name[0]);
+
+		run = cute_run_find(cute_suite_root_run, name);
+		if (!run) {
+			cute_error("'%s': no such test or suite.\n", name);
+			ret = -ENOENT;
+			goto fini;
+		}
+	}
+	else
+		run = cute_suite_root_run;
+
+	cute_run_report(run, CUTE_INFO_EVT);
+
+fini:
+	cute_suite_fini_tree();
+
+	return ret;
+}
+
+int
+cute_show_suite(const struct cute_suite * suite,
+                const char *              pattern,
+                bool                      icase)
+{
+	cute_suite_assert(suite);
+	cute_config_assert(cute_the_config);
+	cute_assert_intern(!pattern || pattern[0]);
+
+	int err;
+
+	err = cute_suite_init_tree(suite, pattern, icase);
+	if (err)
+		return err;
 
 	cute_run_report(cute_suite_root_run, CUTE_SHOW_EVT);
 
 	cute_suite_fini_tree();
+
+	return 0;
 }
 
 int
-cute_run_suite(const struct cute_suite * suite)
+cute_run_suite(const struct cute_suite * suite,
+               const char *              pattern,
+               bool                      icase)
 {
 	cute_suite_assert(suite);
 	cute_config_assert(cute_the_config);
+	cute_assert_intern(!pattern || pattern[0]);
 
 	int ret;
 
-	cute_suite_init_tree(suite);
+	ret = cute_suite_init_tree(suite, pattern, icase);
+	if (ret)
+		return ret;
 
 	cute_suite_report(cute_suite_root_run, CUTE_HEAD_EVT);
 	ret = cute_suite_run_tree();

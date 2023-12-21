@@ -83,6 +83,7 @@ enum cute_event {
 	CUTE_TEARDOWN_EVT,
 	CUTE_DONE_EVT,
 	CUTE_FOOT_EVT,
+	CUTE_INFO_EVT,
 	CUTE_SHOW_EVT,
 	CUTE_FINI_EVT,
 	CUTE_EVT_NR
@@ -173,12 +174,6 @@ cute_report_test(enum cute_event event, const struct cute_run * run);
 
 extern void
 cute_report_suite(enum cute_event event, const struct cute_run * run);
-
-extern void
-cute_report_on_show(const struct cute_run * run,
-		    FILE *                  stdio,
-		    const char  *           high,
-		    const char  *           regular);
 
 extern void
 cute_report_register(struct cute_report * report);

@@ -202,6 +202,9 @@ cute_run_foreach(struct cute_run *     run,
                  cute_run_process_fn * process,
                  void *                data);
 
+extern struct cute_run *
+cute_run_find(struct cute_run * run, const char * name);
+
 extern struct cute_run * volatile cute_curr_run;
 
 extern void

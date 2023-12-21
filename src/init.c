@@ -13,8 +13,6 @@
 #include <locale.h>
 #include <unistd.h>
 
-#define CUTE_MATCH_SIZE (1024U)
-
 #define CUTE_CONFIG_CONS_REPORTS \
 	((unsigned int) \
 	 (CUTE_CONFIG_SILENT_REPORT | \
@@ -22,7 +20,6 @@
 	  CUTE_CONFIG_VERB_REPORT))
 
 struct cute_config * cute_the_config;
-static regex_t       cute_config_regex;
 
 static void
 cute_config_enable_debug(struct cute_config * config)
@@ -30,33 +27,6 @@ cute_config_enable_debug(struct cute_config * config)
 	cute_assert_intern(config);
 
 	config->debug = true;
-}
-
-static void
-cute_config_enable_icase(struct cute_config * config)
-{
-	cute_assert_intern(config);
-
-	config->icase = true;
-}
-
-static int
-cute_config_parse_match(struct cute_config * config, const char * expr)
-{
-	cute_assert_intern(config);
-	cute_assert_intern(expr);
-
-	size_t len;
-
-	len = strnlen(expr, CUTE_MATCH_SIZE);
-	if (!len || (len >= (CUTE_MATCH_SIZE))) {
-		cute_error("matching regular expression too long.\n");
-		return -EINVAL;
-	}
-
-	config->match = expr;
-
-	return 0;
 }
 
 static int
@@ -97,6 +67,15 @@ cute_config_cons_enabled(const struct cute_config * config,
 		return true;
 
 	return false;
+}
+
+static bool
+cute_config_report_enabled(const struct cute_config * config, unsigned int mask)
+{
+	cute_assert_intern(config);
+	cute_config_assert_report_intern(mask);
+
+	return !!(config->reports & mask);
 }
 
 static int
@@ -211,18 +190,8 @@ cute_config_load(struct cute_config * config)
 
 	int err = 0;
 
-	if (config->match) {
-		err = cute_regex_init(&cute_config_regex,
-		                      config->match,
-		                      config->icase);
-		if (err)
-			return err;
-	}
-
-	if (!cute_config_cons_enabled(config, 0U)) {
-		config->tty = CUTE_CONFIG_PROBE_TTY;
+	if (!cute_config_cons_enabled(config, 0U))
 		config->reports |= CUTE_CONFIG_TERSE_REPORT;
-	}
 
 	if (config->reports & CUTE_CONFIG_SILENT_REPORT)
 		err = cute_report_setup_silent(config);
@@ -232,7 +201,7 @@ cute_config_load(struct cute_config * config)
 		err = cute_report_setup_verb(config);
 
 	if (err)
-		goto regex;
+		return err;
 
 	if (config->reports & CUTE_CONFIG_TAP_REPORT) {
 		err = cute_report_setup_tap(config);
@@ -251,22 +220,7 @@ cute_config_load(struct cute_config * config)
 reports:
 	cute_report_release();
 
-regex:
-	if (config->match)
-		cute_regex_fini(&cute_config_regex);
-
 	return err;
-}
-
-bool
-cute_config_match_run(const struct cute_run * run)
-{
-	cute_run_assert_intern(run);
-
-	if (cute_the_config->match)
-		return cute_regex_match(&cute_config_regex, run->name);
-
-	return true;
 }
 
 int
@@ -314,9 +268,6 @@ cute_fini(void)
 
 	cute_report_release();
 
-	if (cute_the_config->match)
-		cute_regex_fini(&cute_config_regex);
-
 	cute_unload_props();
 
 	cute_the_config = NULL;
@@ -326,8 +277,11 @@ cute_fini(void)
 
 #define CUTE_HELP \
 "Usage:\n" \
+"       %1$s [<OPTIONS>] info [<NAME>]\n" \
+"       Show informations about requested suite or test.\n" \
+"\n" \
 "       %1$s [<OPTIONS>] show [<PATTERN>]\n" \
-"       Show informations about requested suites and tests.\n" \
+"       List requested suites and tests.\n" \
 "\n" \
 "       %1$s [<OPTIONS>] run [<PATTERN>]\n" \
 "       Run requested suites and / or tests.\n" \
@@ -340,18 +294,21 @@ cute_fini(void)
 "                                       exception handling nor timeouts.\n" \
 "    -i|--icase                      -- Ignore case when matching against\n" \
 "                                       <PATTERN>.\n" \
-"    -s|--silent                     -- Silence all suites and tests console\n" \
-"                                       output.\n" \
-"    -t[<COLOR>]|--terse[=<COLOR>]   -- Enable minimal suites and tests console\n" \
-"                                       output.\n" \
-"    -v[<COLOR>]|--verbose[=<COLOR>] -- Enable verbose suites and tests console\n" \
-"                                       output.\n" \
-"    -x[<PATH>]|--xml[=<PATH>]       -- Generate output to <PATH> according to\n" \
-"                                       JUnit XML format.\n" \
-"    -a[<PATH>]|--tap[=<PATH>]       -- Generate output to <PATH> according to\n" \
-"                                       Test Anything Protocol format.\n" \
+"    -s|--silent                     -- Enable `silent' reporter to silence all\n" \
+"                                       console output.\n" \
+"    -t[<COLOR>]|--terse[=<COLOR>]   -- Enable `terse' reporter with minimal\n" \
+"                                       console output.\n" \
+"    -v[<COLOR>]|--verbose[=<COLOR>] -- Enable `verbose' reporter with full\n" \
+"                                       console output.\n" \
+"    -x[<PATH>]|--xml[=<PATH>]       -- Enable `xml' reporter to generate output\n" \
+"                                       to <PATH> according to JUnit XML format.\n" \
+"    -a[<PATH>]|--tap[=<PATH>]       -- Enable `tap' reporter to generate output\n" \
+"                                       to <PATH> according to Test Anything\n" \
+"                                       Protocol format.\n" \
 "\n" \
-"With:\n" \
+"Where:\n" \
+"    NAME    -- Full name used to select a single suite or test ;\n" \
+"               by default, the top-level suite is selected.\n" \
 "    PATTERN -- POSIX extended regular expression used to select suites and / or\n" \
 "               tests ; by default, all suites and tests are selected.\n" \
 "    COLOR   -- enforce output colorization when `on', disable it when `off' ;\n" \
@@ -375,9 +332,11 @@ cute_main(int                        argc,
 	cute_assert(argc);
 	cute_assert(suite);
 
-	struct cute_config      conf = CUTE_CONFIG_INIT;
-	enum { SHOW, RUN, ERR } cmd = ERR;
-	int                     ret;
+	struct cute_config            conf = CUTE_CONFIG_INIT;
+	enum { INFO, SHOW, RUN, ERR } cmd = ERR;
+	const char *                  match = NULL;
+	bool                          icase = false;
+	int                           ret;
 
 	while (true) {
 		int                        o;
@@ -408,7 +367,7 @@ cute_main(int                        argc,
 			break;
 
 		case 'i':
-			cute_config_enable_icase(&conf);
+			icase = true;
 			ret = 0;
 			break;
 
@@ -457,6 +416,8 @@ cute_main(int                        argc,
 
 	if (!strcmp(argv[1], "help"))
 		goto help;
+	else if (!strcmp(argv[1], "info"))
+		cmd = INFO;
 	else if (!strcmp(argv[1], "show"))
 		cmd = SHOW;
 	else if (!strcmp(argv[1], "run"))
@@ -467,20 +428,36 @@ cute_main(int                        argc,
 		goto usage;
 	}
 
-	if (argc == 3) {
-		ret = cute_config_parse_match(&conf, argv[2]);
-		if (ret)
+	if ((cmd == INFO) || (cmd == SHOW)) {
+		if (cute_config_cons_enabled(&conf, 0U) &&
+		    !cute_config_report_enabled(&conf,
+		                                CUTE_CONFIG_TERSE_REPORT |
+		                                CUTE_CONFIG_VERB_REPORT)) {
+			cute_error("'%s' command: "
+			           "unsupported console reporter "
+			           "(use either -t or -v option).\n\n",
+			           argv[1]);
 			goto usage;
+		}
+	}
+
+	if (argc == 3) {
+		ret = cute_match_parse(argv[2]);
+		if (ret)
+			goto out;
+		match = argv[2];
 	}
 
 	ret = cute_init(&conf, package, version);
 	if (ret)
 		goto out;
 
-	if (cmd == SHOW)
-		cute_show_suite(suite);
+	if (cmd == INFO)
+		ret = cute_suite_info(suite, match);
+	else if (cmd == SHOW)
+		ret = cute_show_suite(suite, match, icase);
 	else if (cmd == RUN)
-		ret = cute_run_suite(suite);
+		ret = cute_run_suite(suite, match, icase);
 
 	cute_fini();
 

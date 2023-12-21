@@ -980,32 +980,86 @@
 	                  CUTE_INHR_TMOUT)
 
 /**
- * Display informations of a test suite.
+ * Display informations about a test hierarchy node.
  *
- * @param[in] suite suite to run
+ * @param[in] suite test hierarchy root suite
+ * @param[in] name  full name of test hierarchy node
  *
- * Show informations related to the test @rstsubst{hierarchy} which top-level
- * @rstsubst{suite} is given in argument.
+ * @return 0 if successful, an errno-like error code otherwise.
+ *
+ * Show description of a node of the test @rstsubst{hierarchy} which
+ * top-level @rstsubst{suite} is given as @p suite argument.
+ * Node is selected by matching the @p name argument against its full name.
+ *
  * Informations are displayed according to cute_config::reports setting passed
- * as argument to cute_init().
+ * as argument to cute_init() and may be use with #CUTE_CONFIG_TERSE_REPORT or
+ * #CUTE_CONFIG_VERB_REPORT reporters only.
  *
  * @see
+ * - cute_show_suite()
  * - cute_run_suite()
  * - cute_init()
  */
-extern void
-cute_show_suite(const struct cute_suite *  suite) __cute_export;
+extern int
+cute_suite_info(const struct cute_suite * suite,
+                const char *              name) __cute_export;
+
+/**
+ * Display informations about a test hierarchy run.
+ *
+ * @param[in] suite   test hierarchy root suite
+ * @param[in] pattern test hierarchy selector
+ * @param[in] icase   test hierarchy selector case sensitivity
+ *
+ * @return 0 if successful, an errno-like error code otherwise.
+ *
+ * Show informations related to the test @rstsubst{hierarchy} which top-level
+ * @rstsubst{suite} is given as @p suite argument.
+ *
+ * When non ``NULL``, @p pattern is a @man{regex(7)} regular expression allowing
+ * to select a subset of the test @rstsubst{hierarchy} to show informations for.
+ * Pattern matching is performed against test @rstsubst{hierarchy} nodes full
+ * name.  When given the @p icase parameter as ``true``, case distinction is
+ * ignored during pattern matching.
+ *
+ * Informations are displayed according to cute_config::reports setting passed
+ * as argument to cute_init() and may be use with #CUTE_CONFIG_TERSE_REPORT or
+ * #CUTE_CONFIG_VERB_REPORT reporters only.
+ *
+ * @see
+ * - cute_suite_info()
+ * - cute_run_suite()
+ * - cute_init()
+ */
+extern int
+cute_show_suite(const struct cute_suite * suite,
+                const char *              pattern,
+                bool                      icase) __cute_export;
 
 /**
  * Run a test suite.
  *
- * @param[in] suite suite to run
+ * @param[in] suite   suite to run
+ * @param[in] pattern test hierarchy selector
+ * @param[in] icase   test hierarchy selector case sensitivity
  *
  * @return 0 if successful, an errno-like error code otherwise.
  *
  * Run a test @rstsubst{hierarchy} which top-level @rstsubst{suite} is given in
- * argument. Run is carried out according to cute_config configuration passed as
- * argument to cute_init().
+ * argument.
+ *
+ * When non ``NULL``, @p pattern is a @man{regex(7)} regular expression allowing
+ * to select a subset of the test @rstsubst{hierarchy} to run. Pattern matching
+ * is performed against test @rstsubst{hierarchy} nodes full name.
+ * When given the @p icase parameter as ``true``, case distinction is ignored
+ * during pattern matching.
+ *
+ * At run initialization time, each node of the test @rstsubst{hierarchy} is
+ * compared against the @p pattern and selected for running if matched. Nodes
+ * for which the match failed are disabled.
+ *
+ * Run is carried out according to cute_config configuration passed as argument
+ * to cute_init().
  *
  * cute_run_suite() returns an error when at least one child
  * @rstsubst{test case} or @rstsubst{suite} has failed or crashed.
@@ -1013,11 +1067,14 @@ cute_show_suite(const struct cute_suite *  suite) __cute_export;
  * @rstsubst{hierarchy} outcomes.
  *
  * @see
+ * - cute_suite_info()
  * - cute_show_suite()
  * - cute_init()
  */
 extern int
-cute_run_suite(const struct cute_suite * suite) __cute_export;
+cute_run_suite(const struct cute_suite * suite,
+               const char *              pattern,
+               bool                      icase) __cute_export;
 
 /******************************************************************************
  * Top-level definitions
@@ -1073,38 +1130,6 @@ enum cute_config_tty {
  * - cute_init()
  */
 struct cute_config {
-	/**
-	 * Test hierarchy matching regular expression.
-	 *
-	 * Allows to select a subset of the test @rstsubst{hierarchy} to run.
-	 *
-	 * At run initialization time, each node of the test
-	 * @rstsubst{hierarchy} is compared against the cute_config::match
-	 * regular expression and selected for running if matched. Nodes for
-	 * which the match failed are disabled.
-	 *
-	 * cute_config::match must be specified as a POSIX extended regular
-	 * expression as described in @man{regex(7)}. cute_config::icase
-	 * alters the matching process.
-	 *
-	 * cute_config::match may also be specified as ``NULL`` in which case,
-	 * no matching is performed, meaning that the complete test
-	 * @rstsubst{hierarchy} is selected for running.
-	 *
-	 * @see cute_config::icase
-	 */
-	const char * match;
-	/**
-	 * Ignore case when matching test hierarchy nodes.
-	 *
-	 * When matching a test @rstsubst{hierarchy} node thanks to
-	 * cute_config::match, ignore case distinctions.
-	 *
-	 * cute_config::icase is ignore when cute_config::match is ``NULL``.
-	 *
-	 * @see cute_config::match
-	 */
-	bool icase;
 	/**
 	 * Enable test hierarchy running debug mode.
 	 *
@@ -1199,8 +1224,6 @@ struct cute_config {
  */
 #define CUTE_CONFIG_INIT \
 	{ \
-		.match    = NULL, \
-		.icase    = false, \
 		.debug    = false, \
 		.reports  = 0, \
 		.tty      = CUTE_CONFIG_PROBE_TTY, \
