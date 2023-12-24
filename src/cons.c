@@ -549,9 +549,13 @@ cute_cons_report_on_info(const struct cute_cons_report * report,
 	fprintf(report->stdio,
 	        "### %1$sIdentification%2$s ###\n\n"
 	        "%1$sName%2$s:      %3$s%4$s%5$s\n"
-	        "%1$sType%2$s:      %6$s\n",
+	        "%1$sPackage%2$s:   %6$s\n"
+	        "%1$sVersion%2$s:   %7$s\n"
+	        "%1$sType%2$s:      %8$s\n",
 	        bold, reg,
 	        high, run->base->name, under,
+	        cute_package,
+	        cute_package_version,
 	        type);
 	if (run->parent)
 		fprintf(report->stdio,
@@ -592,13 +596,9 @@ cute_cons_report_on_info(const struct cute_cons_report * report,
 
 	fprintf(report->stdio,
 	        "\n### %1$sRuntime%2$s ###\n\n"
-	        "%1$sPackage%2$s:   %3$s\n"
-	        "%1$sVersion%2$s:   %4$s\n"
-	        "%1$sHostname%2$s:  %5$s\n"
-	        "%1$sBuild ID%2$s:  %6$s\n",
+	        "%1$sHostname%2$s:  %3$s\n"
+	        "%1$sBuild ID%2$s:  %4$s\n",
 	        bold, reg,
-	        cute_package,
-	        cute_package_version,
 	        cute_hostname,
 	        cute_build_id);
 

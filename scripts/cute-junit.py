@@ -105,6 +105,10 @@ class CuteBase:
             parent.register(self)
         else:
             self._depth = 0
+        self._build_id = None
+        self._build_tool = None
+        self._build_flags = None
+        self._build_conf = None
         self._origin: str | None = None
         self._count: int | None = None
         self._exec: int | None = None
@@ -132,6 +136,8 @@ class CuteBase:
                 'parent':       self.parent,
                 'has_children': self.has_children,
                 'children':     self.children(),
+                'has_build_id': self.build_id is not None,
+                'build_id':     self.build_id,
                 'stat':         str(self.status),
                 'has_time':     self.elapsed is not None,
                 'time':         self.elapsed,
@@ -188,6 +194,38 @@ class CuteBase:
         if self._parent:
             return self._parent.full_name + '::' + self._name
         return self._name
+
+    @property
+    def build_id(self) -> str:
+        if self._build_id is not None:
+            return self._build_id
+        if self._parent:
+            return self.parent.build_id
+        return None
+
+    @property
+    def build_tool(self) -> str:
+        if self._build_tool is not None:
+            return self._build_tool
+        if self._parent:
+            return self.parent.build_tool
+        return None
+
+    @property
+    def build_flags(self) -> str:
+        if self._build_flags is not None:
+            return self._build_flags
+        if self._parent:
+            return self.parent.build_flags
+        return None
+
+    @property
+    def build_conf(self) -> str:
+        if self._build_conf is not None:
+            return self._build_conf
+        if self._parent:
+            return self.parent.build_conf
+        return None
 
     @property
     def status(self) -> CuteStatus:
@@ -409,7 +447,22 @@ class CuteSuite(CuteBase):
         for prop in junit.properties():
             if prop.name == 'origin':
                 self._origin = prop.value
-                break
+            elif prop.name == 'build-id':
+                txt = str(prop.value).strip(' \t\n')
+                if len(txt) > 0:
+                    self._build_id = txt
+            elif prop.name == 'build-tool':
+                txt = dedent(str(prop._elem.text)).strip(' \t\n')
+                if len(txt) > 0:
+                    self._build_tool = txt
+            elif prop.name == 'build-flags':
+                txt = dedent(str(prop._elem.text)).strip(' \t\n')
+                if len(txt) > 0:
+                    self._build_flags = txt
+            elif prop.name == 'build-config':
+                txt = dedent(str(prop._elem.text)).strip(' \t\n')
+                if len(txt) > 0:
+                    self._build_conf = txt
         if self._origin == None:
             if junit.filepath:
                 self._origin = junit.filepath
@@ -454,10 +507,7 @@ class CuteStore(CuteBase):
         else:
             raise Exception('cannot load store: invalid specified object')
         attrs = junit._elem.attrib
-        if junit.name is None:
-            self._name = 'Top-level store'
-        else:
-            self._name = junit.name
+        self._name = 'Top-level store'
         self._elapsed = timedelta(0)
         self._timestamp = None
         package = None
@@ -478,6 +528,10 @@ class CuteStore(CuteBase):
         self._line = None
         self._parent = None
         self._depth = -1
+        self._build_id = None
+        self._build_tool = None
+        self._build_flags = None
+        self._build_conf = None
         self._count = 0
         self._exec = 0
         self._off = 0
@@ -748,7 +802,7 @@ class CuteNameField(CuteField):
 
 class CuteTypeField(CuteField):
     _IDENT = 'type'
-    _DESC = 'either \'suite\' or \'case\''
+    _DESC = 'either \'store\', \'suite\' or \'case\''
 
     @staticmethod
     def render(base: CuteBase) -> str:
@@ -929,6 +983,16 @@ class CuteHostField(CuteOptionalField):
             return cls._render(base.hostname)
         return 'NA'
 
+class CuteBuildIdField(CuteOptionalField):
+    _IDENT = 'build_id'
+    _LABEL = 'Build ID'
+    _DESC = 'test case / suite unique build identifier'
+
+    @classmethod
+    def render(cls, base: CuteBase) -> str:
+        if base.build_id is not None:
+            return cls._render(base.build_id)
+        return 'none'
 
 class CuteStartField(CuteOptionalField):
     _IDENT = 'start'
@@ -1118,6 +1182,7 @@ class CuteFieldFabric:
             CuteDepthField(),
             CuteFullNameField(),
             CuteSourceField(),
+            CuteBuildIdField(),
             CuteStatusField(),
             CuteHostField(),
             CuteStartField(),
@@ -1238,6 +1303,10 @@ class CuteParentSumField(CuteSumField):
     def render(self, base: CuteBase) -> Text | str:
         return CuteParentRender(self._field).render(base)
 
+
+class CuteBuildIdSumField(CuteSumField):
+    _FIELD = 'build_id'
+    _JUSTIFY = 'center'
 
 class CuteHostSumField(CuteSumField):
     _FIELD = 'host'
@@ -1462,6 +1531,7 @@ class CuteSumSection(CuteTableSection):
             CuteVersionSumField(),
             CuteDepthSumField(),
             CuteParentSumField(),
+            CuteBuildIdSumField(),
             CuteHostSumField(),
             CuteStartSumField(),
             CuteElapsedSumField(),
@@ -1568,7 +1638,8 @@ class CuteDescSection(CuteFieldSection):
                    CuteFieldFabric().get('depth'),
                    CuteSuiteRender(CuteFieldFabric().get('full_name')),
                    CuteFieldFabric().get('src'),
-                   CuteFieldFabric().get('orig'))
+                   CuteFieldFabric().get('orig'),
+                   CuteFieldFabric().get('build_id'))
 
     def case(self, case: CuteCase) -> None:
         self._fill(case,
@@ -1580,7 +1651,8 @@ class CuteDescSection(CuteFieldSection):
                    CuteFieldFabric().get('depth'),
                    CuteFieldFabric().get('full_name'),
                    CuteFieldFabric().get('src'),
-                   CuteFieldFabric().get('orig'))
+                   CuteFieldFabric().get('orig'),
+                   CuteFieldFabric().get('build_id'))
 
 
 class CuteRunSection(CuteFieldSection):
@@ -1604,6 +1676,47 @@ class CuteRunSection(CuteFieldSection):
                    CuteFieldFabric().get('host'),
                    CuteFieldFabric().get('start'),
                    CuteFieldFabric().get('time'))
+
+
+class CuteBuildSection(CuteSectionTitle):
+    def __init__(self) -> None:
+        super().__init__('Build flags')
+        self.append('\n')
+
+    def suite(self, suite: CuteSuite) -> None:
+        self._fill(suite)
+
+    def case(self, case: CuteCase) -> None:
+        self._fill(case)
+
+    def _fill(self, base: CuteBase) -> None:
+        txt = None
+        for s in [base.build_tool, base.build_flags]:
+            if txt is None:
+                txt = s
+            elif s is not None:
+                txt = txt + '\n\n' + s
+        if txt is None:
+            txt = 'none'
+        self.append(txt)
+
+
+class CuteConfigSection(CuteSectionTitle):
+    def __init__(self) -> None:
+        super().__init__('Build configuration')
+
+    def suite(self, suite: CuteSuite) -> None:
+        self._fill(suite)
+
+    def case(self, case: CuteCase) -> None:
+        self._fill(case)
+
+    def _fill(self, base: CuteBase) -> None:
+        txt = base.build_conf
+        if txt is not None:
+            self.append('\n' + txt)
+        else:
+            self.append('\nnone')
 
 
 class CuteMessageSection(Columns):
@@ -1950,24 +2063,38 @@ class CuteInfoReport(CuteVisitor):
     def store(self, store: CuteStore) -> None:
         self._desc = CuteDescSection()
         self._desc.store(store)
+        self._build = None
+        self._conf = None
         self._child = CuteChildSection()
         self._child.store(store)
 
     def suite(self, suite: CuteSuite) -> None:
         self._desc = CuteDescSection()
         self._desc.suite(suite)
+        self._build = CuteBuildSection()
+        self._build.suite(suite)
+        self._conf = CuteConfigSection()
+        self._conf.suite(suite)
         self._child = CuteChildSection()
         self._child.suite(suite)
 
     def case(self, case: CuteCase) -> None:
         self._desc = CuteDescSection()
         self._desc.case(case)
+        self._build = CuteBuildSection()
+        self._build.case(case)
+        self._conf = CuteConfigSection()
+        self._conf.suite(case)
         self._child = None
 
     def __rich_console__(self,
                          console: Console,
                          options: ConsoleOptions) -> RenderResult:
         yield self._desc
+        if self._build:
+            yield Padding(self._build, pad = (1, 0, 0, 0))
+        if self._conf:
+            yield Padding(self._conf, pad = (1, 0, 0, 0))
         if self._child:
             yield Padding(self._child, pad = (1, 0, 0, 0))
 
@@ -2338,10 +2465,9 @@ def main():
                              help = 'Name of test case / suite to show')
     parser = ArgumentParser(description = 'CUTe reporting tool')
     subparser = parser.add_subparsers(dest = 'cmd')
-    list_parser = subparser.add_parser('list',
-                                       parents = [clr_parser],
-                                       help = 'List supported '
-                                              'information fields')
+    subparser.add_parser('list',
+                         parents = [clr_parser],
+                         help = 'List supported information fields')
     subparser.add_parser('verify',
                          parents = [path_parser],
                          help = 'Exit with overall test result as exit code')
@@ -2421,34 +2547,38 @@ def main():
                             help = 'Full name of test case / suite to remove')
     try:
         args = parser.parse_args()
-        if args.cmd == 'list':
+        cmd = args.cmd if args.cmd is not None else ''
+        if cmd == 'list':
             cute_list(args.color)
-        elif args.cmd == 'info':
+        elif cmd == 'info':
             cute_info(args.path, args.name, args.color)
-        elif args.cmd == 'verify':
+        elif cmd == 'verify':
             exit(cute_verify(args.path))
-        elif args.cmd == 'result':
+        elif cmd == 'result':
             cute_result(args.path, args.name, args.color)
-        elif args.cmd == 'sumup':
+        elif cmd == 'sumup':
             cute_sumup(args.path, args.fields, args.select, args.color)
-        elif args.cmd == 'union':
+        elif cmd == 'union':
             cute_union(args.db_path,
                        args.path,
                        args.parent,
                        args.name,
                        args.package,
                        args.revision)
-        elif args.cmd == 'join':
+        elif cmd == 'join':
             cute_join(args.db_path,
                       args.path,
                       args.parent,
                       args.name,
                       args.package,
                       args.revision)
-        elif args.cmd == 'del':
+        elif cmd == 'del':
             cute_delete(args.db_path, args.full_name)
         else:
-            raise Exception("'{}': unknown specified command")
+            parser.print_help()
+            print("{}: '{}': unknown specified command.".format(arg0, cmd),
+                  file=stderr)
+            exit(1)
     except Exception as e:
         print("{}: {}.".format(arg0, e), file=stderr)
         exit(1)
