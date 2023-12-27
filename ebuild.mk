@@ -63,16 +63,9 @@ $(DESTDIR)$(DATADIR)/cute/cute-junit.xsd: $(CURDIR)/cute-junit.xsd
 # Source code tags generation
 ################################################################################
 
-tag-files        := $(shell find $(addprefix $(CURDIR)/,$(subdirs)) \
-                                 $(HEADERDIR) \
-                                 -type f)
-.PHONY: ctags
-ctags:
-	ctags -f $(BUILDDIR)/tags $(tag-files)
-
-.PHONY: cscope
-cscope:
-	cscope -b -f $(BUILDDIR)/cscope.out -q -u $(tag-files)
+tagfiles := $(shell find $(addprefix $(CURDIR)/,$(subdirs)) \
+                         $(HEADERDIR) \
+                         -type f)
 
 ################################################################################
 # Documentation generation
