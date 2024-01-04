@@ -12,9 +12,7 @@ Missing features :
 * devise API to run a single test ?
 * fork isolation ?
 
-JUnit XML support:
-* cute-junit.py build-id, build-tool, build-flags and build-config properties
-  support
+JUnit XML support: document selector syntax
 
 TAP support:
 * properties support (see XML section above).

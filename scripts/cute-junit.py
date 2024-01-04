@@ -2391,8 +2391,8 @@ def cute_join(db_path: str,
               junit_path: str,
               parent: str | None = None,
               name: str | None = None,
-               package: str | None = None,
-               version: str | None = None) -> None:
+              package: str | None = None,
+              version: str | None = None) -> None:
     db = CuteDB(db_path, package, version)
     db.partial_update(parent, junit_path, name)
     db.save()

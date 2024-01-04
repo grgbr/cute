@@ -39,6 +39,7 @@ A copy of the license is included in the section entitled
    :caption: User Guide
 
    user
+   cute-junit
 
 
 .. only:: latex
