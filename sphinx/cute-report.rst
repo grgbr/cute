@@ -15,16 +15,16 @@
    .. |DATADIR| replace:: :external+ebuild:ref:`var-datadir`
    .. |DOCDIR|  replace:: :external+ebuild:ref:`var-docdir`
 
-.. program:: cute-junit.py
+.. program:: cute-report
 
-*************
-cute-junit.py
-*************
+***********
+cute-report
+***********
 
 Name
 ====
 
-cute-junit.py - CUTe test results manipulation and reporting tool
+cute-report - CUTe test results management and reporting tool with JUnit support
 
 .. _synopsis:
 
@@ -33,17 +33,17 @@ Synopsis
 
 .. parsed-literal::
 
-   :program:`cute-junit.py` verify_ [help_option] <:option:`PATH`>
-   :program:`cute-junit.py` sumup_ [show_options] [fields_option] <:option:`PATH`> [<:option:`SELECTOR`>]
-   :program:`cute-junit.py` result_ [show_options] <:option:`PATH`> [<:option:`NAME`>]
-   :program:`cute-junit.py` info_ [show_options] <:option:`PATH`> [<:option:`NAME`>]
+   :program:`cute-report` verify_ [help_option] <:option:`PATH`>
+   :program:`cute-report` sumup_ [show_options] [fields_option] <:option:`PATH`> [<:option:`SELECTOR`>]
+   :program:`cute-report` result_ [show_options] <:option:`PATH`> [<:option:`NAME`>]
+   :program:`cute-report` info_ [show_options] <:option:`PATH`> [<:option:`NAME`>]
 
-   :program:`cute-junit.py` union_ [update_options] <:option:`DBPATH`> <:option:`PATH`> <:option:`NAME`>
-   :program:`cute-junit.py` join_ [update_options] <:option:`DBPATH`> <:option:`PATH`> <:option:`NAME`>
-   :program:`cute-junit.py` del_ <:option:`DBPATH`> <:option:`FULLNAME`>
+   :program:`cute-report` union_ [update_options] <:option:`DBPATH`> <:option:`PATH`> <:option:`NAME`>
+   :program:`cute-report` join_ [update_options] <:option:`DBPATH`> <:option:`PATH`> <:option:`NAME`>
+   :program:`cute-report` del_ <:option:`DBPATH`> <:option:`FULLNAME`>
 
-   :program:`cute-junit.py` list_ [show_options]
-   :program:`cute-junit.py` [help_option]
+   :program:`cute-report` list_ [show_options]
+   :program:`cute-report` [help_option]
 
    *show_options*   := [help_option] [color_option]
 
@@ -63,7 +63,7 @@ Synopsis
 Description
 ===========
 
-:program:`cute-junit.py` is a command line tool that allows to manipulate and
+:program:`cute-report` is a command line tool that allows to manipulate and
 report results of testsuites that are stored into JUnit_ XML files. It provides
 multiple subcommands :
 
@@ -73,20 +73,20 @@ multiple subcommands :
 
 .. _verify:
 
-When verify_ is given as first argument, :program:`cute-junit.py` displays no
+When verify_ is given as first argument, :program:`cute-report` displays no
 output and terminates with a ``0`` (success) exit code when all tests found into
 the :option:`PATH` file have passed. It terminates with a ``1`` (failure) exit
 code otherwise.
 
 .. _sumup:
 
-When sumup_ is given as first argument, :program:`cute-junit.py` shows a tabular
+When sumup_ is given as first argument, :program:`cute-report` shows a tabular
 view of test results found into the :option:`PATH` file.  The optional
 :option:`SELECTOR` argument may be given to select a subset of results to show.
 
 .. _result:
 
-When result_ is given as first argument, :program:`cute-junit.py` shows result
+When result_ is given as first argument, :program:`cute-report` shows result
 of a single testcase or testsuite run as found into the :option:`PATH` file.
 Testcase or testsuite is selected by name according to the optional third
 argument :option:`NAME`. When unspecified, the overall result of all test runs
@@ -94,7 +94,7 @@ is shown instead.
 
 .. _info:
 
-When info_ is given as first argument, :program:`cute-junit.py` shows test
+When info_ is given as first argument, :program:`cute-report` shows test
 hierarchy related informations of a single testcase or testsuite as found into
 the :option:`PATH` file. Testcase or testsuite is selected by name according to
 the optional third argument :option:`NAME`. When unspecified, informations are
@@ -102,7 +102,7 @@ shown for the entire test results store instead.
 
 .. _union:
 
-When union_ is given as first argument, :program:`cute-junit.py` performs a
+When union_ is given as first argument, :program:`cute-report` performs a
 union of :option:`PATH` file content into :option:`DBPATH` file. Operation is
 implemented as following:
 
@@ -120,7 +120,7 @@ implemented as following:
 * save result into :option:`DBPATH` file.
 
 For example, running the command
-``cute-junit.py union testdb.xml conf0.xml conf0_suite`` would lead to the
+``cute-report union testdb.xml conf0.xml conf0_suite`` would lead to the
 following situation::
 
    «conf0.xml»           «testdb.xml»
@@ -143,7 +143,7 @@ following situation::
 
 .. _join:
 
-When join_ is given as first argument, :program:`cute-junit.py` performs a
+When join_ is given as first argument, :program:`cute-report` performs a
 *partial* union of :option:`PATH` file content into :option:`DBPATH` file.
 Operation is implemented as following:
 
@@ -160,7 +160,7 @@ Operation is implemented as following:
 * save result into :option:`DBPATH` file.
 
 For example, running the command
-``cute-junit.py join testdb.xml conf0.xml conf0_suite`` would lead to the
+``cute-report join testdb.xml conf0.xml conf0_suite`` would lead to the
 following situation::
 
    «conf0.xml»           «testdb.xml»
@@ -183,11 +183,11 @@ following situation::
 
 .. _del:
 
-When del_ is given as first argument, :program:`cute-junit.py` deletes the
+When del_ is given as first argument, :program:`cute-report` deletes the
 subtree which root node is specified by :option:`FULLNAME` from the
 :option:`DBPATH` file.
 For example, running the command
-``cute-junit.py del testdb.xml root_suite::suite_0`` would lead to the following
+``cute-report del testdb.xml root_suite::suite_0`` would lead to the following
 situation::
 
          «testdb.xml»
@@ -350,11 +350,11 @@ assigned to some of the above sample test hierarchy nodes:
 Exit status
 ===========
 
-When given the verify_ subcommand, :program:`cute-junit.py` terminates with a
+When given the verify_ subcommand, :program:`cute-report` terminates with a
 ``0`` (success) exit code when all tests found into the :option:`PATH` file have
 passed. It terminates with a ``1`` (failure) exit code otherwise.
 
-For all other subcommands :program:`cute-junit.py` terminates with a non zero
+For all other subcommands :program:`cute-report` terminates with a non zero
 failure exit code when and input files parsing or output files saving operation
 fails.
 
@@ -362,7 +362,7 @@ Files
 =====
 
 <:option:`DBPATH`> and <:option:`PATH`> given as argument to
-:program:`cute-junit.py` should hold valid JUnit_ XML content as specified by
+:program:`cute-report` should hold valid JUnit_ XML content as specified by
 the :file:`cute-junit.xsd` `XML schema`_ shipped under CUTe_'s |DATADIR|/cute
 directory.
 

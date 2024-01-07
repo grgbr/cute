@@ -178,7 +178,7 @@ latex_show_pagerefs = False
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('cute-junit', 'cute-junit.py', '', author, 1)
+    ('cute-report', 'cute-report', '', author, 1)
 ]
 man_show_urls = True
 

@@ -44,16 +44,15 @@ endef
 pkgconfigs      := libcute.pc
 libcute.pc-tmpl := libcute_pkgconf_tmpl
 
-build: $(BUILDDIR)/cute-junit.py
+build: $(BUILDDIR)/cute-report
 
-$(BUILDDIR)/cute-junit.py: $(CURDIR)/scripts/cute-junit.py | $(BUILDDIR)/
+$(BUILDDIR)/cute-report: $(CURDIR)/scripts/cute-report | $(BUILDDIR)/
 	sed 's;@@PYTHON_SHEBANG@@;$(PYTHON_SHEBANG);g' $(<) > $(@)
 
-install: $(DESTDIR)$(BINDIR)/cute-junit.py \
+install: $(DESTDIR)$(BINDIR)/cute-report \
          $(DESTDIR)$(DATADIR)/cute/cute-junit.xsd
 
-$(DESTDIR)$(BINDIR)/cute-junit.py: $(BUILDDIR)/cute-junit.py \
-                                   | $(DESTDIR)$(BINDIR)/
+$(DESTDIR)$(BINDIR)/cute-report: $(BUILDDIR)/cute-report
 	$(call install_recipe,--mode=755,$(<),$(@))
 
 $(DESTDIR)$(DATADIR)/cute/cute-junit.xsd: $(CURDIR)/cute-junit.xsd
