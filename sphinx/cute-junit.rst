@@ -10,7 +10,7 @@
    .. |DATADIR| replace:: *DATADIR*
    .. |DOCDIR|  replace:: *DOCDIR*
 
-.. only:: html or latex or info
+.. only:: not man
    
    .. |DATADIR| replace:: :external+ebuild:ref:`var-datadir`
    .. |DOCDIR|  replace:: :external+ebuild:ref:`var-docdir`

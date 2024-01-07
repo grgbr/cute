@@ -1373,10 +1373,10 @@ Alternatively, you may display informations about the ``my_first_suite`` test
    }
 
 Calling the :c:func:`cute_show_suite` function above displays informations
-about a |test hierarchy| subset according to the :c:struct:`configuration
+about a test |hierarchy| subset according to the :c:struct:`configuration
 <cute_config>` given at :ref:`setup <sect-user-setup_run>` time.
 
-|Test hierarchy| subset is selected thanks to the second and third arguments
+Test |hierarchy| subset is selected thanks to the second and third arguments
 given to :c:func:`cute_show_suite`.
 
 Refer to |report| section for explanations about displayed informations.
@@ -1505,7 +1505,7 @@ In addition, CUTe_ has the ability to report informations related to test
 Build ID
 ^^^^^^^^
 
-When given the :option:`--build-id` option at link time, the `GNU LD`_ linker
+When given the ``--build-id`` option at link time, the `GNU LD`_ linker
 generates a ``.note.gnu.build-id`` ELF note section which content is meant to
 uniquely identify a particular link.
 
@@ -1565,7 +1565,7 @@ stated into section `Test description`_.
 Build flags
 ^^^^^^^^^^^
 
-Giving the :option:`-frecord-gcc-switches` option to the |GNU GCC| compiler
+Giving the ``-frecord-gcc-switches`` option to the |GNU GCC| compiler
 requests it to record its command line into a ``.GCC.command.line`` ELF section.
 
 When present, CUTe_ has the ability to report the content of this section as
@@ -1619,9 +1619,9 @@ eBuild_ generates :
 
 .. literalinclude:: ebuild_section.c
    :language: c
-   :caption: sample source to provide an `eBuild.config' build configuration ELF section
+   :caption: sample source to provide an \`eBuild.config' build configuration ELF section
    :linenos:
-   
+
 The above C code may be compiled and linked into the final runner executable
 :file:`my_first_tests` as show below :
 
@@ -1703,22 +1703,25 @@ Finally, the :option:`-h` and :option:`--help` options as well as the
 
    Silence all suites and tests console output.
 
-   :option:`-s`, :option:`--silent`, :option:`-t`, :option:`--terse`,
-   :option:`-v`, and :option:`--verbose` options are exclusive.
+   :option:`-s`, :option:`--silent`, :option:`-t[<COLOR>]`,
+   :option:`--terse[=<COLOR>]`, :option:`-v[<COLOR>]`, and
+   :option:`--verbose[=<COLOR>]` options are exclusive.
 
 .. option:: -t[<COLOR>], --terse[=<COLOR>]
 
    Enable minimal suites and tests console output.
 
-   :option:`-s`, :option:`--silent`, :option:`-t`, :option:`--terse`,
-   :option:`-v`, and :option:`--verbose` options are exclusive.
+   :option:`-s`, :option:`--silent`, :option:`-t[<COLOR>]`,
+   :option:`--terse[=<COLOR>]`, :option:`-v[<COLOR>]`, and
+   :option:`--verbose[=<COLOR>]` options are exclusive.
 
 .. option:: -v[<COLOR>], --verbose[=<COLOR>]
 
    Enable verbose suites and tests console output.
 
-   :option:`-s`, :option:`--silent`, :option:`-t`, :option:`--terse`,
-   :option:`-v`, and :option:`--verbose` options are exclusive.
+   :option:`-s`, :option:`--silent`, :option:`-t[<COLOR>]`,
+   :option:`--terse[=<COLOR>]`, :option:`-v[<COLOR>]`, and
+   :option:`--verbose[=<COLOR>]` options are exclusive.
 
 .. option:: -x[<PATH>], --xml[=<PATH>]
 
@@ -1749,7 +1752,8 @@ Finally, the :option:`-h` and :option:`--help` options as well as the
 
    When unspecified or specified as ``-``, output is directed to standard output
    in which case this option is exclusive with :option:`-s`, :option:`--silent`,
-   :option:`-t`, :option:`--terse`, :option:`-v` and :option:`--verbose`.
+   :option:`-t[<COLOR>]`, :option:`--terse[=<COLOR>]`, :option:`-v[<COLOR>]` and
+   :option:`--verbose[=<COLOR>]`.
 
 .. option:: PATTERN
 
