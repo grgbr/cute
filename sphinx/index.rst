@@ -39,7 +39,6 @@ A copy of the license is included in the section entitled
    :caption: User Guide
 
    user
-   cute-junit
 
 
 .. only:: latex
@@ -67,6 +66,20 @@ A copy of the license is included in the section entitled
    :caption: API
 
    api
+
+   
+.. only:: latex
+
+   .. raw:: latex
+
+      \part{Man pages}
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Man pages
+
+   man/cute-report
+   man/cute-run
 
 
 .. We use the latex_appendices setting into conf.py to benefit from native latex

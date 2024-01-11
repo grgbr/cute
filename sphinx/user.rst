@@ -17,7 +17,6 @@
 .. |test scope| replace:: :ref:`test global file scope <sect-user-writing_tests-test_file_scope>`
 .. |build|      replace:: :ref:`build <sect-user-building_tests>`
 .. |run|        replace:: :ref:`run <sect-user-running_tests>`
-.. |regex(7)|   replace:: :manpage:`regex(7)`
 .. |longjmp(3)| replace:: :manpage:`longjmp(3)`
 .. |fork(2)|    replace:: :manpage:`fork(2)`
 
@@ -1654,114 +1653,10 @@ Command line
 |Build|\ing a test |hierarchy| runner using :c:macro:`CUTE_MAIN` as ``main()``
 entry point replacement should produce an executable that allows to run tests
 and / or suites according to arguments given on the command line.
+
 Unless command line arguments parsing was modified by the test developper, the
 produced executable should behave like what is shown for the fictional
-:program:`sample-test` program hereafter.
-
-.. program:: sample-test
-
-.. rubric:: SYNOPSIS
-
-| **sample-test** [<*OPTIONS*>] info [<*NAME*>]
-| **sample-test** [<*OPTIONS*>] show [<*PATTERN*>]
-| **sample-test** [<*OPTIONS*>] run [<*PATTERN*>]
-| **sample-test** [-h|--help] [help]
-
-.. rubric:: DESCRIPTION
-
-When the ``info`` argument is given, a description is shown for the suite or
-test specified by :option:`NAME` as stated into the `Test description`_ section.
-
-When the ``show`` argument is given, test hierarchy is listed according to
-the specified :option:`PATTERN`.
-
-When the ``run`` argument is given, test hierarchy is executed according
-to the specified :option:`PATTERN`. Process exits with an **error status** if
-one of the tests failed or crashed.
-
-Finally, the :option:`-h` and :option:`--help` options as well as the
-``help`` argument displays a help message.
-
-.. rubric:: OPTIONS
-
-.. option:: -d, --debug
-
-   Run in debug mode without neither exception handling nor timeouts.
-
-   This may be useful when running a test hierarchy under a debugger (see
-   |test case| section).
-
-.. option:: -h, --help
-
-   Output a help message.
-
-.. option:: -i, --icase
-
-   Ignore case when matching against <:option:`PATTERN`>.
-
-.. option:: -s, --silent
-
-   Silence all suites and tests console output.
-
-   :option:`-s`, :option:`--silent`, :option:`-t[<COLOR>]`,
-   :option:`--terse[=<COLOR>]`, :option:`-v[<COLOR>]`, and
-   :option:`--verbose[=<COLOR>]` options are exclusive.
-
-.. option:: -t[<COLOR>], --terse[=<COLOR>]
-
-   Enable minimal suites and tests console output.
-
-   :option:`-s`, :option:`--silent`, :option:`-t[<COLOR>]`,
-   :option:`--terse[=<COLOR>]`, :option:`-v[<COLOR>]`, and
-   :option:`--verbose[=<COLOR>]` options are exclusive.
-
-.. option:: -v[<COLOR>], --verbose[=<COLOR>]
-
-   Enable verbose suites and tests console output.
-
-   :option:`-s`, :option:`--silent`, :option:`-t[<COLOR>]`,
-   :option:`--terse[=<COLOR>]`, :option:`-v[<COLOR>]`, and
-   :option:`--verbose[=<COLOR>]` options are exclusive.
-
-.. option:: -x[<PATH>], --xml[=<PATH>]
-
-   Generate output to <:option:`PATH`> according to
-   :ref:`JUnit XML format <sect-user-junit>`.
-
-.. option:: -a[<PATH>], --tap[=<PATH>]
-
-   Generate output to <:option:`PATH`> according to
-   :ref:`Test Anything Protocol format <sect-user-tap>`.
-
-.. option:: COLOR
-
-   Controls the colorization of console output. When ``on``, it enforces
-   colorization whereas it disables it when ``off``.
-
-   By default, colorization is automatically enabled if current terminal
-   supports it.
-
-.. option:: NAME
-   
-   When specified as a test hierarchy node's full name, select a single suite or
-   test. When missing, the top-level suite is considered.
-   
-.. option:: PATH
-
-   A pathname to a file where to store generated output.
-
-   When unspecified or specified as ``-``, output is directed to standard output
-   in which case this option is exclusive with :option:`-s`, :option:`--silent`,
-   :option:`-t[<COLOR>]`, :option:`--terse[=<COLOR>]`, :option:`-v[<COLOR>]` and
-   :option:`--verbose[=<COLOR>]`.
-
-.. option:: PATTERN
-
-   When given, selects a subset of the test hierarchy. When missing, the whole
-   hierarchy is considered.
-
-   It should be specified as a POSIX extended regular expression as described in
-   |regex(7)|.
+:doc:`/man/cute-run` program that is documented into the :doc:`man` appendix.
 
 .. _sect-user-test_reports:
 
@@ -2095,8 +1990,8 @@ status
     crashed ;
   * *off* : a test case has been deselected or all sub-tests / sub-suites of a
     suite have been deselected because of an unsuccessful regular expression
-    matching (see :option:`command line test selection <PATTERN>` and
-    :c:member:`programmatic test selection <cute_config.match>`).
+    matching (see :option:`PATTERN` argument of :doc:`/man/cute-run` man page
+    and :c:func:`programmatic test selection <cute_run_suite>`).
 
 .. index:: issue, result;issue, test;issue, suite;issue
 

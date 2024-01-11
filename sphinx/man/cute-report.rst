@@ -1,25 +1,20 @@
-.. include:: _cdefs.rst
+.. SPDX-License-Identifier: GPL-3.0-only
+   
+   This file is part of CUTe.
+   Copyright (C) 2024 Grégor Boirie <gregor.boirie@free.fr>
+
+.. include:: /_cdefs.rst
 
 .. _xml schema: https://en.wikipedia.org/wiki/XML_schema
 .. _jenkins:    https://www.jenkins.io
 .. _short name: `test naming`_
 .. _full name:  `test naming`_
    
-.. only:: man
-   
-   .. |DATADIR| replace:: *DATADIR*
-   .. |DOCDIR|  replace:: *DOCDIR*
-
-.. only:: not man
-   
-   .. |DATADIR| replace:: :external+ebuild:ref:`var-datadir`
-   .. |DOCDIR|  replace:: :external+ebuild:ref:`var-docdir`
-
 .. program:: cute-report
 
-***********
-cute-report
-***********
+**************
+cute-report(1)
+**************
 
 Name
 ====
@@ -312,6 +307,8 @@ Options
    into the :option:`PATH` file and that is attached / included into
    :option:`DBPATH` store.
  
+.. _sect-cute-report-test_naming:
+
 Test naming
 ===========
 
@@ -369,19 +366,17 @@ directory.
 :file:`cute-junit.xsd` `XML schema`_ is deeply inspired from 
 Jenkins_ JUnit_ schema augmented with a few optional extensions. Refer to
 section :ref:`JUnit XML <sect-user-junit>` of the CUTe_'s
-:doc:`user manual <user>` for more informations.
+:doc:`user manual <../user>` for more informations.
 
 See also
 ========
 
-User manual is available locally in HTML format at |DOCDIR|/cute/html/user.html,
-or via :command:`info cute_user` info page.
+.. only:: not man
 
-Integration manual is available locally in HTML format at
-|DOCDIR|/cute/html/install.html, or via :command:`info cute_install` info page.
+   :doc:`cute-run(1) <cute-run>`
 
-API manual is available locally in HTML format at
-|DOCDIR|/cute/html/api.html location or via :command:`info cute_api` info page.
+.. only:: man
 
-In addition, all manuals mentionned above are available locally in PDF format at
-|DOCDIR|/cute/cute.pdf.
+   **cute-run(1)**
+
+.. include:: /man/see_also.rst

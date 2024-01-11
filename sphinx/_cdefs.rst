@@ -11,7 +11,7 @@
 .. _python:     https://www.python.org/
 .. _ebuild:     https://github.com/grgbr/ebuild/
   
-.. |API|              replace:: :doc:`API <api>`
+.. |API|              replace:: :doc:`API </api>`
 .. |test case|        replace:: :ref:`test case <sect-user-writing_tests-test_definition>`
 .. |fixture|          replace:: :ref:`fixture <sect-user-writing_tests-fixture_operations>`
 .. |timer|            replace:: :ref:`timer <sect-user-writing_tests-test_timeout>`
