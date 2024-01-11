@@ -829,7 +829,7 @@ class CutePathField(CuteOptionalField):
 
 class CuteLineField(CuteOptionalField):
     _IDENT = 'line'
-    _DESC = 'line within source file of test case / suite'
+    _DESC = 'line number within source file where test case / suite is defined'
 
     @classmethod
     def render(cls, base: CuteBase) -> str:
@@ -906,7 +906,7 @@ class CuteSourceField(CuteField):
 class CuteOriginField(CuteField):
     _IDENT = 'orig'
     _LABEL = 'Origin'
-    _DESC = 'pathname to file where a test suite is initially stored'
+    _DESC = 'pathname to file where test suite result is initially stored'
 
     @staticmethod
     def render(base: CuteBase) -> str:
@@ -1102,7 +1102,7 @@ class CuteFailRatioField(CuteCountField):
 class CuteExcpField(CuteCountField):
     _IDENT = 'excp_count'
     _LABEL = '#Excp'
-    _DESC = 'absolute number of executed test cases'
+    _DESC = 'absolute number of crashed test cases'
 
     @classmethod
     def render(cls, base: CuteBase) -> str:
@@ -1112,7 +1112,7 @@ class CuteExcpField(CuteCountField):
 class CuteExcpRatioField(CuteCountField):
     _IDENT = 'excp_ratio'
     _LABEL = '%Excp'
-    _DESC = 'ratio of executed test cases'
+    _DESC = 'ratio of crashed test cases'
 
     @classmethod
     def render(cls, base: CuteBase) -> str:
@@ -1141,7 +1141,7 @@ class CuteOffRatioField(CuteCountField):
 class CuteExecField(CuteCountField):
     _IDENT = 'exec_count'
     _LABEL = '#Exec'
-    _DESC = 'absolute number of crashed test cases'
+    _DESC = 'absolute number of executed test cases'
 
     @classmethod
     def render(cls, base: CuteBase) -> str:
@@ -1151,7 +1151,7 @@ class CuteExecField(CuteCountField):
 class CuteExecRatioField(CuteCountField):
     _IDENT = 'exec_ratio'
     _LABEL = '%Exec'
-    _DESC = 'ratio of crashed test cases'
+    _DESC = 'ratio of executed test cases'
 
     @classmethod
     def render(cls, base: CuteBase) -> str:

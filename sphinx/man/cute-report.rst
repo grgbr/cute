@@ -9,7 +9,7 @@
 .. _jenkins:    https://www.jenkins.io
 .. _short name: `test naming`_
 .. _full name:  `test naming`_
-   
+
 .. program:: cute-report
 
 **************
@@ -63,7 +63,7 @@ report results of testsuites that are stored into JUnit_ XML files. It provides
 multiple subcommands :
 
 * verify_, sumup_, result_ and info_ report results ;
-* union_, join_ and del_ modify results hierarchy ;
+* union_, join_ and del_ modify results |hierarchy| ;
 * list_ displays supported result information fields.
 
 .. _verify:
@@ -90,7 +90,7 @@ is shown instead.
 .. _info:
 
 When info_ is given as first argument, :program:`cute-report` shows test
-hierarchy related informations of a single testcase or testsuite as found into
+|hierarchy| related informations of a single testcase or testsuite as found into
 the :option:`PATH` file. Testcase or testsuite is selected by name according to
 the optional third argument :option:`NAME`. When unspecified, informations are
 shown for the entire test results store instead.
@@ -101,7 +101,7 @@ When union_ is given as first argument, :program:`cute-report` performs a
 union of :option:`PATH` file content into :option:`DBPATH` file. Operation is
 implemented as following:
 
-* search for the top-level node of hierarchy found into the :option:`PATH`
+* search for the top-level node of |hierarchy| found into the :option:`PATH`
   file ; let's call this node the *node to attach* ;
 * in addition, let's call the *node to attach* and all of its descendants the
   *subtree to attach* ;
@@ -142,7 +142,7 @@ When join_ is given as first argument, :program:`cute-report` performs a
 *partial* union of :option:`PATH` file content into :option:`DBPATH` file.
 Operation is implemented as following:
 
-* search for the top-level node of hierarchy found into the :option:`PATH`
+* search for the top-level node of |hierarchy| found into the :option:`PATH`
   file ; let's call this node the *node to attach* ;
 * into :option:`DBPATH` file, search for the node which
   :option:`FULLNAME` is passed to :option:`-p` or :option:`--parent` option ; if
@@ -223,7 +223,7 @@ Arguments
 =========
 
 .. option:: DBPATH
-   
+
    Pathname to JUnit_ XML formatted file where to store the result of union_,
    join_ or del_ operations. See section Files_ for more informations.
 
@@ -241,16 +241,16 @@ Arguments
 
 .. option:: NAME
 
-   `Short name`_ or `full name`_ identifying a single testcase or testsuite for use
-   with result_, info_, union_ and join_ subcommands.
+   `Short name`_ or `full name`_ identifying a single testcase or testsuite for
+   use with result_, info_, union_ and join_ subcommands.
    See section `Test naming`_ for more informations.
-   
+
 .. option:: PACKAGE
 
    When performing a union_ or join_ operation, name of package to assign to the
-   top-level node of hierarchy found into the :option:`PATH` file that is
+   top-level node of |hierarchy| found into the :option:`PATH` file that is
    attached / included into :option:`DBPATH` store.
- 
+
 .. option:: PATH
 
    A pathname to a file where JUnit_ XML content to process is to stored.
@@ -259,12 +259,14 @@ Arguments
 .. option:: REVISION
 
    When performing a union_ or join_ operation, package revision string to
-   assign to the top-level node of hierarchy found into the :option:`PATH` file
+   assign to the top-level node of |hierarchy| found into the :option:`PATH` file
    and that is attached / included into :option:`DBPATH` store.
-   
+
 .. option:: SELECTOR
 
-   A Python_ expression to select a subset of results to show.
+   A Python_ expression to select a subset of results to show when used in
+   combination with the sumup_ subcommand. See section `Selecting test`_ for
+   more informations.
 
 Options
 =======
@@ -291,9 +293,9 @@ Options
 .. option:: -a <PACKAGE>, --package <PACKAGE>
 
    While performing a union_ or join_ operation, setup :option:`PACKAGE` name to
-   assign to the top-level node of hierarchy found into the :option:`PATH` file
+   assign to the top-level node of |hierarchy| found into the :option:`PATH` file
    and that is attached / included into :option:`DBPATH` store.
-   
+
 .. option:: -p <FULLNAME>, --parent <FULLNAME>
 
    Specify the :option:`DBPATH` file's node under which to perform a union_ or
@@ -303,17 +305,17 @@ Options
 .. option:: -r <REVISION>, --revision <REVISION>
 
    While performing a union_ or join_ operation, setup package
-   :option:`REVISION` string to assign to the top-level node of hierarchy found
-   into the :option:`PATH` file and that is attached / included into
+   :option:`REVISION` string to assign to the top-level node of |hierarchy|
+   found into the :option:`PATH` file and that is attached / included into
    :option:`DBPATH` store.
- 
+
 .. _sect-cute-report-test_naming:
 
 Test naming
 ===========
 
 :option:`PATH` and :option:`DBPATH` arguments must point to a file containing
-a JUnit_ XML test hierarchy such as::
+a JUnit_ XML test |hierarchy| such as::
 
       --- root_suite ---
       |                |
@@ -325,13 +327,13 @@ When given to :ref:`subcommands <synopsis>`, :option:`NAME` and
 :option:`FULLNAME` allows to select a particular node within hierarchies
 according to 2 different naming schemes: *short name* and *full name*.
 
-As opposed to short names, a *full name* can uniquely identify a test hierarchy
-node (either testcase or testsuite). This node is selected by following a path
-along a hierarchy composed of a double colon (``::``) separated sequence of
-*short names* for each of its ancestors.
+As opposed to short names, a *full name* can uniquely identify a test
+|hierarchy| node (either testcase or testsuite). This node is selected by
+following a path along a hierarchy composed of a double colon (``::``) separated
+sequence of *short names* for each of its ancestors.
 
 As an example, the following table shows short and full names that would be
-assigned to some of the above sample test hierarchy nodes:
+assigned to some of the above sample test |hierarchy| nodes:
 
 .. table::
    :align: left
@@ -343,6 +345,70 @@ assigned to some of the above sample test hierarchy nodes:
    suite_0         root_suite::suite_0
    test_10         root_suite::suite_1::test_10
    ==============  ============================
+
+Selecting test
+==============
+
+Basically, the sumup_ subcommand reports informations for each existing
+|hierarchy| node that the :option:`SELECTOR` expression matches.
+To select a particular node. :option:`SELECTOR` expression must return ``True``.
+It should return ``False`` otherwise. The following node fields are exposed for
+selection purposes :
+
+.. table::
+   :align: left
+
+   ==============  ==================  ====================================================================================
+   **Field**       **Type**            **Description**
+   ==============  ==================  ====================================================================================
+   *build_id*      str                 node build identifier
+   *children*      Iterator[CuteBase]  Iterator over node's children
+   *depth*         int                 node depth starting from ``0`` within the |hierarchy|
+   *excp_count*    int                 absolute number of crashed test cases for a test suite
+   *excp_ratio*    int                 ratio of crashed test cases for a test suite
+   *exec_count*    int                 absolute number of executed test cases for a test suite
+   *exec_ratio*    int                 ratio of executed test cases for a test suite
+   *fail_count*    int                 absolute number of failed test cases for a test suite
+   *fail_ratio*    int                 ratio of failed test cases for a test suite
+   *full_name*     str                 node `full name`_
+   *has_build_id*  bool                ``True`` if node is assigned a build identifier, ``False`` otherwise
+   *has_children*  bool                ``True`` if node has child nodes, ``False`` otherwise
+   *has_host*      bool                ``True`` if node is assigned a host, ``False`` otherwise
+   *has_line*      bool                ``True`` if node is assigned a source file line number, ``False`` otherwise
+   *has_origin*    bool                ``True`` if node is assigned a result source file pathname, ``False`` otherwise
+   *has_parent*    bool                ``True`` if node has a parent node, ``False`` otherwise
+   *has_path*      bool                ``True`` if node is assigned a source file pathname, ``False`` otherwise
+   *has_pkg*       bool                ``True`` if node is assigned a package name, ``False`` otherwise
+   *has_start*     bool                ``True`` if node is assigned a start date, ``False`` otherwise
+   *has_time*      bool                ``True`` if node is assigned an elapsed running time, ``False`` otherwise
+   *has_vers*      bool                ``True`` if node is assigned a package version, ``False`` otherwise
+   *host*          str                 name of host that ran node
+   *line*          int                 line number within source file where test node is defined
+   *name*          str                 node `short name`_
+   *off_count*     int                 absolute number of disabled test cases for a test suite
+   *off_ratio*     int                 ratio of disabled test cases for a test suite
+   *origin*        str                 pathname to file where test suite result is initially stored
+   *parent*        CuteSuite           node's parent object
+   *pass_count*    int                 absolute number of passed test cases for a test suite
+   *pass_ratio*    int                 ratio of passed test cases for a test suite
+   *path*          str                 pathname to source file of node
+   *pkg*           str                 package name of test case / suite
+   *skip_count*    int                 absolute number of skipped test cases for a test suite
+   *skip_ratio*    int                 ratio of skipped test cases for a test suite
+   *start*         str                 start date expressed according to local time settings
+   *stat*          str                 node result status, i.e., either ``pass``, ``skip``, ``fail``, ``excp`` or ``off``
+   *time*          str                 elapsed running time expressed as <*hours*>:<*minutes*>:<*seconds*>.<*microseconds*>
+   *total*         int                 absolute number of test cases
+   *type*          str                 either ``store``, ``suite`` or ``case``
+   *vers*          str                 node package version
+   ==============  ==================  ====================================================================================
+
+As an example, the following command would show a result summary for |hierarchy|
+test suites which `short name`_ starts with ``myproject_``:
+
+.. code-block:: console
+
+   cute-report sumup myproject.xml "name.startswith('myproject_') and type == 'suite'"
 
 Exit status
 ===========

@@ -47,8 +47,8 @@ Synopsis
    *xml_console*     := :option:`-x` | :option:`--xml`
    *tap_console*     := :option:`-a` | :option:`--tap`
 
-   *tap_store*       := :option:`-a`\<:option:`PATH`> | :option:`--tap`\=<:option:`PATH`>
-   *xml_store*       := :option:`-x`\<:option:`PATH`> | :option:`--xml`\=<:option:`PATH`>
+   *tap_store*       := :option:`-a`\<:option:`PATH`> | :option:`--tap`\=<:option:`PATH`>
+   *xml_store*       := :option:`-x`\<:option:`PATH`> | :option:`--xml`\=<:option:`PATH`>
 
 Description
 ===========
