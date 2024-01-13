@@ -44,6 +44,8 @@ endef
 pkgconfigs      := libcute.pc
 libcute.pc-tmpl := libcute_pkgconf_tmpl
 
+ifneq ($(call kconf_is_enabled,CUTE_REPORT),)
+
 build: $(BUILDDIR)/cute-report
 
 $(BUILDDIR)/cute-report: $(CURDIR)/scripts/cute-report | $(BUILDDIR)/
@@ -57,6 +59,15 @@ $(DESTDIR)$(BINDIR)/cute-report: $(BUILDDIR)/cute-report
 
 $(DESTDIR)$(DATADIR)/cute/cute-junit.xsd: $(CURDIR)/cute-junit.xsd
 	$(call install_recipe,--mode=644,$(<),$(@))
+
+uninstall: _uninstall-report
+
+.PHONY: _uninstall-report
+_uninstall-report:
+	$(call uninstall_recipe,$(DESTDIR)$(BINDIR),cute-report)
+	$(call uninstall_recipe,$(DESTDIR)$(DATADIR)/cute,cute-junit.xsd)
+
+endif # ifneq ($(call kconf_is_enabled,CUTE_REPORT),)
 
 ################################################################################
 # Source code tags generation
@@ -75,6 +86,7 @@ doxyenv   := SRCDIR="$(HEADERDIR) $(SRCDIR)"
 
 sphinxsrc := $(CURDIR)/sphinx
 sphinxenv := \
+	CONFIG_CUTE_REPORT="$(CONFIG_CUTE_REPORT)" \
 	VERSION="$(VERSION)" \
 	$(if $(strip $(EBUILDDOC_TARGET_PATH)), \
 	     EBUILDDOC_TARGET_PATH="$(strip $(EBUILDDOC_TARGET_PATH))") \

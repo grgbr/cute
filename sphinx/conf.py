@@ -178,9 +178,11 @@ latex_show_pagerefs = False
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('man/cute-report', 'cute-report', '', author, 1),
     ('man/cute-run',    'cute-run',    '', author, 1)
 ]
+
+if os.getenv('CONFIG_CUTE_REPORT', u'n') == 'y':
+    man_pages.append(('man/cute-report', 'cute-report', '', author, 1))
 
 man_show_urls = False
 

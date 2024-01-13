@@ -5,6 +5,12 @@
 # Copyright (C) 2023 Grégor Boirie <gregor.boirie@free.fr>
 ################################################################################
 
+config CUTE_REPORT
+	bool "CUTe result reporting tool"
+	default y
+	help
+	  Enable `cute-report' test result management and reporting tool.
+
 config CUTE_INTERN_ASSERT
 	bool "Internal assertion"
 	default n
