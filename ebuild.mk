@@ -24,8 +24,10 @@ subdirs     := src
 subdirs     += sample
 sample-deps := src
 
-subdirs     += $(call kconf_enabled,CUTE_UTEST,test)
+ifeq ($(CONFIG_CUTE_UTEST),y)
+subdirs     += test
 test-deps   := src
+endif # ifeq ($(CONFIG_CUTE_UTEST),y)
 
 define libcute_pkgconf_tmpl
 prefix=$(PREFIX)
@@ -51,19 +53,27 @@ build: $(BUILDDIR)/cute-report
 $(BUILDDIR)/cute-report: $(CURDIR)/scripts/cute-report | $(BUILDDIR)/
 	sed 's;@@PYTHON_SHEBANG@@;$(PYTHON_SHEBANG);g' $(<) > $(@)
 
-install: $(DESTDIR)$(BINDIR)/cute-report \
-         $(DESTDIR)$(DATADIR)/cute/cute-junit.xsd
+clean: _clean
 
+.PHONY: _clean
+_clean:
+	$(call rm_recipe,$(BUILDDIR)/cute-report)
+
+install install-strip: $(DESTDIR)$(BINDIR)/cute-report \
+                       $(DESTDIR)$(DATADIR)/cute/cute-junit.xsd
+
+.PHONY: $(DESTDIR)$(BINDIR)/cute-report
 $(DESTDIR)$(BINDIR)/cute-report: $(BUILDDIR)/cute-report
 	$(call install_recipe,--mode=755,$(<),$(@))
 
+.PHONY: $(DESTDIR)$(DATADIR)/cute/cute-junit.xsd
 $(DESTDIR)$(DATADIR)/cute/cute-junit.xsd: $(CURDIR)/cute-junit.xsd
 	$(call install_recipe,--mode=644,$(<),$(@))
 
-uninstall: _uninstall-report
+uninstall: _uninstall
 
-.PHONY: _uninstall-report
-_uninstall-report:
+.PHONY: _uninstall
+_uninstall:
 	$(call uninstall_recipe,$(DESTDIR)$(BINDIR),cute-report)
 	$(call uninstall_recipe,$(DESTDIR)$(DATADIR)/cute,cute-junit.xsd)
 
