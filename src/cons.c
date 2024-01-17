@@ -466,7 +466,7 @@ struct cute_report_info {
 };
 
 static void
-cute_cons_report_show_info(struct cute_run * run,
+cute_cons_report_show_info(struct cute_run * run __cute_unused,
                            enum cute_visit   visit,
                            void *            data)
 {

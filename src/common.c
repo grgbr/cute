@@ -550,7 +550,7 @@ cute_load_props(const char * package, const char * version)
 {
 	const char *    path;
 	struct cute_elf elf;
-	int             err;
+	int             err __cute_unused;
 
 	path = (const char *)getauxval(AT_EXECFN);
 	cute_assert_intern(path);
