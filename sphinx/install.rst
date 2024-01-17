@@ -181,7 +181,7 @@ Testing
 -------
 
 When the :c:macro:`CONFIG_CUTE_UTEST` build configuration setting is enabled,
-you may build CUTe_ testsuite by running the `build-check`
+you may build CUTe_ testsuite by running the
 :external+ebuild:ref:`eBuild build-check target <target-build-check>` target
 like so:
 
@@ -189,7 +189,7 @@ like so:
 
    $ make build-check BUILDDIR=$HOME/build/cute PREFIX=/usr
 
-You may further install generated testsuite by running the `install-check`
+You may further install generated testsuite by running the
 :external+ebuild:ref:`eBuild install-check target <target-install-check>`
 target:
 
