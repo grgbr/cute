@@ -195,16 +195,18 @@ clean-check: _clean-check
 _clean-check:
 	$(call rm_recipe,$(BUILDDIR)/cute-utest.sh)
 
-_outrefs := $(foreach b,$(bins),$(DESTDIR)$(LIBEXECDIR)/cute/$(b)-outref.txt)
+_outrefs := $(foreach b, \
+                      $(checkbins), \
+                      $(DESTDIR)$(LIBEXECDIR)/cute/$(b)-outref.txt)
 
-install-check install-strip-check: $(DESTDIR)$(BINDIR)/cute-utest.sh $(outrefs)
+install-check install-strip-check: $(DESTDIR)$(BINDIR)/cute-utest.sh $(_outrefs)
 
 .PHONY: $(DESTDIR)$(BINDIR)/cute-utest.sh
 $(DESTDIR)$(BINDIR)/cute-utest.sh: $(BUILDDIR)/cute-utest.sh
 	$(call install_recipe,--mode=755,$(<),$(@))
 
-.PHONY: $(outrefs)
-$(DESTDIR)$(LIBEXECDIR)/cute/%-utest-outref.txt: $(SRCDIR)/%-outref.txt
+.PHONY: $(_outrefs)
+$(_outrefs): $(DESTDIR)$(LIBEXECDIR)/cute/%: $(SRCDIR)/%
 	$(call install_recipe,--mode=644,$(<),$(@))
 
 uninstall-check: _uninstall-check
@@ -212,9 +214,8 @@ uninstall-check: _uninstall-check
 .PHONY: _uninstall-check
 _uninstall-check:
 	$(foreach b, \
-	          $(bins), \
-	          $(call rmr_recipe, \
-	                 $(DESTDIR)$(LIBEXECDIR)/cute/$(b)-outref.txt)$(newline))
+	          $(_outrefs), \
+	          $(call rm_recipe,$(b))$(newline))
 	$(call rm_recipe,$(DESTDIR)$(BINDIR)/cute-utest.sh)
 
 # ex: filetype=make :

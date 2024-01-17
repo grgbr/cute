@@ -6,7 +6,8 @@
 # Copyright (C) 2023 Grégor Boirie <gregor.boirie@free.fr>
 ################################################################################
 
-libexecdir=@@LIBEXECDIR@@/cute
+libexecdir="${LIBEXECDIR:-@@LIBEXECDIR@@/cute}"
+testsrcdir="${TESTSRCDIR:-${libexecdir}}"
 testdir="${TMPDIR:-/tmp}/cute-utest"
 
 hrule='..........................................................................'
@@ -78,7 +79,7 @@ run_testcase()
 	trap "clean_testcase \"$case\"" HUP INT QUIT TERM
 
 	if ! awk "$adjust" \
-	          $libexecdir/$case-outref.txt \
+	          $testsrcdir/$case-outref.txt \
 	          > $testdir/$case-outref.txt; then
 		fail "$case" "cannot generate output reference."
 		return 1

@@ -1656,7 +1656,7 @@ and / or suites according to arguments given on the command line.
 
 Unless command line arguments parsing was modified by the test developper, the
 produced executable should behave like what is shown for the fictional
-:doc:`/man/cute-run` program that is documented into the :doc:`man` appendix.
+:doc:`/man/cute-run` program that is documented into the man pages appendix.
 
 .. _sect-user-test_reports:
 

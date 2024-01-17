@@ -18,6 +18,7 @@
 .. |Staged install|         replace:: :external+ebuild:ref:`sect-user-staged-install`
 .. |BUILDDIR|               replace:: :external+ebuild:ref:`var-builddir`
 .. |PREFIX|                 replace:: :external+ebuild:ref:`var-prefix`
+.. |BINDIR|                 replace:: :external+ebuild:ref:`var-bindir`
 .. |CROSS_COMPILE|          replace:: :external+ebuild:ref:`var-cross_compile`
 .. |DESTDIR|                replace:: :external+ebuild:ref:`var-destdir`
 .. |GNU Make|               replace:: `GNU Make <gnu_make_>`_
@@ -39,12 +40,12 @@ In addition to the standard |eBuild Prerequisites|, elfutils_ is required to
 to build CUTe_.
 
 Optionally, you will need :command:`awk`, :command:`cmp` and a :command:`sh`
-Bourne shell at runtime when unit testsuite is enabled (see
+Bourne shell at runtime when unit testsuite_ is enabled (see
 :c:macro:`CONFIG_CUTE_UTEST`).
 
 Optionally, you will need multiple packages installed to build the
-documentation. In addition to packages listed into |eBuild Prerequisites|,
-CUTe_'s documentation generation process requires :
+documentation_. In addition to packages listed into |eBuild Prerequisites|,
+CUTe_'s documentation_ generation process requires :
 
 * breathe_,
 * graphviz_,
@@ -81,13 +82,18 @@ based build system. To build and install CUTe_, the typical workflow is:
 
 #. Prepare and collect workflow requirements,
 #. |Configure| the construction logic,
-#. |Build| programs, libraries, documentation, etc.,
+#. |Build| programs, libraries, etc.,
 #. |Install| components, copying files previously built to
    system-wide directories
 
 Alternatively, you may replace the last step mentioned above with a |Staged
 Install|. You will find below a **quick starting guide** showing how to build
 CUTe_.
+
+You are also provided with the ability to :
+
+* generate documentation_,
+* build, install, and / or run CUTe_'s testsuite_.
 
 Preparation phase
 -----------------
@@ -152,21 +158,60 @@ instead:
 
    $ make install BUILDDIR=$HOME/build/cute PREFIX=/usr DESTDIR=$HOME/staging
 
-Documentation generation
-------------------------
+Documentation
+-------------
 
-You may generate CUTe_ documentation by running the `doc` target like so:
+You may generate CUTe_ documentation by running the
+:external+ebuild:ref:`eBuild doc target <target-doc>` like so:
 
 .. code-block:: console
 
    $ make doc BUILDDIR=$HOME/build/cute PREFIX=/usr
 
-You may further install generated documentation by running the `install-doc`
-target:
+You may further install generated documentation by running the
+:external+ebuild:ref:`eBuild install-doc target <target-install-doc>` target:
 
 .. code-block:: console
 
    $ make install-doc BUILDDIR=$HOME/build/cute PREFIX=/usr DESTDIR=$HOME/staging
+
+.. _testsuite:
+
+Testing
+-------
+
+When the :c:macro:`CONFIG_CUTE_UTEST` build configuration setting is enabled,
+you may build CUTe_ testsuite by running the `build-check`
+:external+ebuild:ref:`eBuild build-check target <target-build-check>` target
+like so:
+
+.. code-block:: console
+
+   $ make build-check BUILDDIR=$HOME/build/cute PREFIX=/usr
+
+You may further install generated testsuite by running the `install-check`
+:external+ebuild:ref:`eBuild install-check target <target-install-check>`
+target:
+
+.. code-block:: console
+
+   $ make install-check BUILDDIR=$HOME/build/cute PREFIX=/usr DESTDIR=$HOME/staging
+
+Use the :command:`cute-utest.sh` program installed under the |BINDIR| directory
+to run the testsuite.
+
+When *not cross-compiling*, running the ``check`` target builds and runs
+the testsuite all at once with no required installation:
+
+.. code-block:: console
+
+   $ make check BUILDDIR=$HOME/build/cute CHECK_VERBOSE=y
+
+The ``CHECK_VERBOSE`` :command:`make` variable given above may be specified as
+one of ``y`` or ``1`` values to enable testsuite verbose output.
+
+Further informations
+--------------------
 
 Finally, you may find lots of usefull informations into the
 :external+ebuild:ref:`Reference <sect-user-reference>` section of the |eBuild
