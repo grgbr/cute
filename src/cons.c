@@ -524,8 +524,6 @@ cute_cons_report_on_info(const struct cute_cons_report * report,
 		.tests   = 0
 	};
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wswitch"
 	switch (kind) {
 	case CUTE_TEST_KIND:
 		type = "test";
@@ -538,13 +536,17 @@ cute_cons_report_on_info(const struct cute_cons_report * report,
 		type = "suite";
 		high = blue;
 		under = reg;
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
 		cute_run_foreach((struct cute_run *)run,
 		                 cute_cons_report_show_info,
 		                 (void *)&info);
-		break;
-	}
 #pragma GCC diagnostic pop
+		break;
+	default:
+		cute_assert_intern(0);
+		__cute_unreachable();
+	}
 
 	fprintf(report->stdio,
 	        "### %1$sIdentification%2$s ###\n\n"
