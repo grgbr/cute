@@ -569,12 +569,14 @@ cute_load_props(const char * package, const char * version)
 		goto err;
 
 	if (cute_parse_elf(&elf))
-		goto err;
+		goto close;
 
 	cute_close_elf(&elf);
 
 	return;
 
+close:
+	cute_close_elf(&elf);
 err:
 	cute_error("'%s': cannot load ELF properties.\n", path);
 }
