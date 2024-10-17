@@ -502,7 +502,7 @@ cute_load_build_id(void)
 {
 	const ElfW(Phdr) * phdrs;
 	unsigned long      nr;
-	const void *       addr;
+	const void *       addr = NULL;
 	unsigned int       h;
 
 	phdrs = (const ElfW(Phdr) *)getauxval(AT_PHDR);
@@ -511,7 +511,19 @@ cute_load_build_id(void)
 	nr = getauxval(AT_PHNUM);
 	cute_assert_intern(nr);
 
-	addr = (const void *)phdrs - phdrs[0].p_offset;
+	for (h = 0; h < nr; h++) {
+		if (phdrs[h].p_type == PT_PHDR) {
+			addr = (const void *)phdrs - phdrs[h].p_offset;
+			break;
+		}
+	}
+
+	if (!addr)
+		/*
+		 * ELF sections mapping base address not found: no way to parse
+		 * sections content...
+		 */
+		return;
 
 	for (h = 0; h < nr; h++) {
 		const ElfW(Phdr) * phdr = &phdrs[h];

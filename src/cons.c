@@ -602,7 +602,7 @@ cute_cons_report_on_info(const struct cute_cons_report * report,
 	        "%1$sBuild ID%2$s:  %4$s\n",
 	        bold, reg,
 	        cute_hostname,
-	        cute_build_id);
+	        cute_build_id ? cute_build_id : "none");
 
 	fprintf(report->stdio,
 	        "\n### %sBuild configuration%s ###\n\n",
