@@ -766,8 +766,10 @@ close_out_pipe:
 	                      STDOUT_FILENO);
 close_stderr:
 	fclose(cute_iodir_stderr);
+	cute_iodir_stderr = 0;
 close_stdout:
 	fclose(cute_iodir_stdout);
+	cute_iodir_stdout = 0;
 err:
 	cute_error("cannot setup standard I/Os: %s: %s (%d)\n",
 	           msg,

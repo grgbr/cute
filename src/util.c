@@ -119,13 +119,19 @@ cute_lock_init(pthread_mutex_t * lock)
 	if (ret)
 		return -ret;
 
+	/*
+	 * Warning: Enabling mutex priority inheritance is not supported from
+	 * within QEMU (pthread_mutex_init() will fail with EOPNOTSUPP error
+	 * code).
+	 * We might have to fix this in the future...
+	 */
 	ret = pthread_mutexattr_setprotocol(&attr, PTHREAD_PRIO_INHERIT);
 	if (ret) {
 		cute_assert_intern(ret != EINVAL);
 		cute_assert_intern(ret != EPERM);
 		goto destroy;
 	}
-	
+
 	ret = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
 	if (ret) {
 		cute_assert_intern(ret != EINVAL);
