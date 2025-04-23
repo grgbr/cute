@@ -8,7 +8,7 @@
 #ifndef _CUTE_COMMON_H
 #define _CUTE_COMMON_H
 
-#include "cute/config.h"
+#include "cute/priv/config.h"
 #include "cute/cute.h"
 #include "iodir.h"
 #include "util.h"
