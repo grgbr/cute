@@ -21,4 +21,4 @@ In addition, all manuals mentionned above are available locally in PDF format at
 |DOCDIR|/cute/cute.pdf.
 
 Note that `Latest documentation <https://grgbr.github.io/cute/>`_ is available
-online.
+online at https://grgbr.github.io/cute/.
